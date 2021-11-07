@@ -1,7 +1,0 @@
-stuff todo:
-===========
- -> graphics
-     -> opengl
- -> input
- -> platform
-     -> sdl2
