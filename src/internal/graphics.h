@@ -2,8 +2,14 @@
 
 #include <lev/core/app.h>
 
-namespace LEV
+namespace Lev
 {
+	enum class RendererType
+	{
+		None = -1,
+		OpenGL
+	};
+
 	namespace Graphics
 	{
 		bool init();

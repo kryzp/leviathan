@@ -1,28 +1,18 @@
 #pragma once
 
-namespace LEV
+namespace Lev
 {
+	struct Vec2;
+
 	struct Float2
 	{
 		float x;
 		float y;
 
-		Float2()
-			: x(0)
-			, y(0)
-		{
-		}
+		Float2();
+		Float2(float x);
+		Float2(float x, float y);
 
-		Float2(float x)
-			: x(x)
-			, y(x)
-		{
-		}
-
-		Float2(float x, float y)
-			: x(x)
-			, y(y)
-		{
-		}
+		Vec2 to_vec2() const;
 	};
 }

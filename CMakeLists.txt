@@ -7,10 +7,24 @@ add_library(${PROJECT_NAME}
 
 	src/core/app.cpp
 	
-	src/math/calc.cpp
-	src/math/vec2.cpp
+	src/graphics/batch.cpp
+	src/graphics/framebuffer.cpp
+	src/graphics/mesh.cpp
+	src/graphics/shader.cpp
+	src/graphics/texture.cpp
 
 	src/input/input.cpp
+
+	src/math/calc.cpp
+	src/math/circle.cpp
+	src/math/colour.cpp
+	src/math/float2.cpp
+	src/math/line.cpp
+	src/math/mat3x2.cpp
+	src/math/mat4x4.cpp
+	src/math/quad.cpp
+	src/math/rect.cpp
+	src/math/vec2.cpp
 	
 	src/internal/platform_sdl2.cpp
 	src/internal/graphics_opengl.cpp
@@ -46,6 +60,6 @@ if (SDL2_ENABLED)
 	target_link_libraries(${PROJECT_NAME} PUBLIC ${SDL2_LIBRARIES})
 endif()
 
-add_executable(lv_test testing/main.cpp)
+add_executable(lv_test testing/src/main.cpp)
 target_include_directories(lv_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/public)
 target_link_libraries(lv_test PUBLIC ${PROJECT_NAME})

@@ -7,7 +7,7 @@
 #include <internal/graphics.h>
 #include <internal/input.h>
 
-using namespace LEV;
+using namespace Lev;
 
 namespace
 {

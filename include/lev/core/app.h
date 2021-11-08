@@ -1,12 +1,8 @@
 #pragma once
 
-namespace LEV
+namespace Lev
 {
-	enum class RendererType
-	{
-		None = -1,
-		OpenGL
-	};
+	enum class RendererType;
 
 	struct Config
 	{

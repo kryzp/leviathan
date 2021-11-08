@@ -2,7 +2,7 @@
 
 #include "graphics.h"
 
-using namespace LEV;
+using namespace Lev;
 
 bool Graphics::init()
 {

@@ -219,7 +219,7 @@
 	DEFINE_KEY(RightAlt, 230) \
 	DEFINE_KEY(RightGui, 231)
 
-namespace LEV
+namespace Lev
 {
 	namespace Input
 	{

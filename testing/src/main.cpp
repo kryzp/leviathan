@@ -1,7 +1,7 @@
 ﻿#include <leviathan.h>
 #include <iostream>
 
-using namespace LEV;
+using namespace Lev;
 
 namespace
 {
@@ -16,6 +16,7 @@ namespace
 
 int main()
 {
+	/*
 	Config config;
 	config.name = "leviathan demo";
 	config.width = 1280;
@@ -25,6 +26,7 @@ int main()
 	config.on_render = render;
 
 	App::start(&config);
+	*/
 
 	return 0;
 }

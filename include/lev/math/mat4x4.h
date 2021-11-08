@@ -2,7 +2,8 @@
 
 namespace Lev
 {
-	class Batch
+	struct Mat4x4
 	{
+		// todo
 	};
-}
+};

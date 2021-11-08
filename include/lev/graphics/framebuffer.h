@@ -1,6 +1,6 @@
 #pragma once
 
-namespace LEV
+namespace Lev
 {
 	class FrameBuffer
 	{

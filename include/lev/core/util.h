@@ -3,6 +3,8 @@
 #include <inttypes.h>
 #include <memory>
 
+#define LEV_ARRAY_LENGTH(_arr) (sizeof(_arr)/sizeof(*_arr))
+
 #ifdef LEVIATHAN_DEBUG
 
 #define LEVIATHAN_ASSERT(exp) do{if(!(exp)){*((volatile int*)0)=0;}}while(false)
@@ -13,7 +15,7 @@
 
 #endif
 
-namespace LEV
+namespace Lev
 {
 	using u8  = uint8_t;
 	using u16 = uint16_t;

@@ -2,7 +2,7 @@
 
 #include <math.h>
 
-using namespace LEV;
+using namespace Lev;
 
 float Calc::abs(float x)
 {

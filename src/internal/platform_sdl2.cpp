@@ -7,7 +7,7 @@
 
 #include <SDL.h>
 
-using namespace LEV;
+using namespace Lev;
 
 namespace
 {
