@@ -22,12 +22,16 @@ namespace Lev
 
 		Float2 to_float2() const;
 
+		float angle() const;
+
 		float length() const;
 		float length_squared() const;
 
 		Vec2 normalized() const;
 
 		static float dot(const Vec2& a, const Vec2& b);
+
+		static Vec2 from_angle(float angle, float length);
 
 		bool operator == (const Vec2& other) const;
 		bool operator != (const Vec2& other) const;

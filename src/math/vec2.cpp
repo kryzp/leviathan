@@ -25,6 +25,11 @@ Float2 Vec2::to_float2() const
 	return Float2(x, y);
 }
 
+float Vec2::angle() const
+{
+	return Calc::atan2(y, x);
+}
+
 float Vec2::length() const
 {
 	return Calc::sqrt(length_squared());
@@ -48,6 +53,14 @@ Vec2 Vec2::normalized() const
 float Vec2::dot(const Vec2& a, const Vec2& b)
 {
 	return (a.x * b.x) + (a.y * b.y);
+}
+
+Vec2 Vec2::from_angle(float angle, float length)
+{
+	return Vec2(
+		Calc::cos(angle) * length,
+		Calc::sin(angle) * length
+	);
 }
 
 bool Vec2::operator == (const Vec2& other) const { return x == other.x && y == other.y; }

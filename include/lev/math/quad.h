@@ -4,6 +4,8 @@
 
 namespace Lev
 {
+	struct Rect;
+
 	struct Quad
 	{
 		Vec2 a;
@@ -13,5 +15,6 @@ namespace Lev
 
 		Quad();
 		Quad(const Vec2& a, const Vec2& b, const Vec2& c, const Vec2& d);
+		Quad(const Rect& rect);
 	};
 }

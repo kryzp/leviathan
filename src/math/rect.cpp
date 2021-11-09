@@ -4,6 +4,10 @@
 using namespace Lev;
 
 Rect::Rect()
+	: x(0)
+	, y(0)
+	, w(0)
+	, h(0)
 {
 }
 
@@ -23,27 +27,16 @@ Rect::Rect(float x, float y, float w, float h)
 {
 }
 
-float Rect::left() const
-{
-	return x;
-}
+float Rect::left()         const { return x; }
+float Rect::right()        const { return x + w; }
+float Rect::top()          const { return y; }
+float Rect::bottom()       const { return y + h; }
+Vec2  Rect::top_left()     const { return Vec2(left(),  top()); }
+Vec2  Rect::top_right()    const { return Vec2(right(), top()); }
+Vec2  Rect::bottom_left()  const { return Vec2(left(),  bottom()); }
+Vec2  Rect::bottom_right() const { return Vec2(right(), bottom()); }
 
-float Rect::right() const
-{
-	return x + w;
-}
-
-float Rect::top() const
-{
-	return y;
-}
-
-float Rect::bottom() const
-{
-	return y + h;
-}
-
-bool Rect::intersects(const Vec2& other)
+bool Rect::intersects(const Vec2& other) const
 {
 	return (
 		this->left() < other.x &&
@@ -53,7 +46,7 @@ bool Rect::intersects(const Vec2& other)
 	);
 }
 
-bool Rect::intersects(const Rect& other)
+bool Rect::intersects(const Rect& other) const
 {
 	return (
 		this->left() < other.right() &&

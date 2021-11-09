@@ -20,7 +20,12 @@ namespace Lev
 		float top() const;
 		float bottom() const;
 
-		bool intersects(const Vec2& other);
-		bool intersects(const Rect& other);
+		Vec2 top_left() const;
+		Vec2 top_right() const;
+		Vec2 bottom_left() const;
+		Vec2 bottom_right() const;
+
+		bool intersects(const Vec2& other) const;
+		bool intersects(const Rect& other) const;
 	};
 }

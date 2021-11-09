@@ -1,4 +1,5 @@
 #include <lev/math/quad.h>
+#include <lev/math/rect.h>
 
 using namespace Lev;
 
@@ -11,5 +12,13 @@ Quad::Quad(const Vec2& a, const Vec2& b, const Vec2& c, const Vec2& d)
 	, b(b)
 	, c(c)
 	, d(d)
+{
+}
+
+Quad::Quad(const Rect& rect)
+	: a(rect.top_left())
+	, b(rect.top_right())
+	, c(rect.bottom_left())
+	, d(rect.bottom_right())
 {
 }

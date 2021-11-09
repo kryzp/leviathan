@@ -8,6 +8,12 @@
 using namespace Lev;
 
 Mat3x2::Mat3x2()
+	: m11(0)
+	, m12(0)
+	, m21(0)
+	, m22(0)
+	, m31(0)
+	, m32(0)
 {
 }
 
@@ -47,7 +53,7 @@ Mat3x2 Mat3x2::inverse() const
 
 Mat3x2 Lev::Mat3x2::create_skew(const Vec2& amount)
 {
-	Mat3x2 mat = IDENTITY;
+	Mat3x2 mat;
 
 	mat.m11 = 1;
 	mat.m12 = amount.y;
@@ -61,7 +67,7 @@ Mat3x2 Lev::Mat3x2::create_skew(const Vec2& amount)
 
 Mat3x2 Mat3x2::create_scale(const Vec2& scale)
 {
-	Mat3x2 mat = IDENTITY;
+	Mat3x2 mat;
 
 	mat.m11 = scale.x;
 	mat.m12 = 0;
@@ -75,7 +81,7 @@ Mat3x2 Mat3x2::create_scale(const Vec2& scale)
 
 Mat3x2 Mat3x2::create_rotation(float rotation)
 {
-	Mat3x2 mat = IDENTITY;
+	Mat3x2 mat;
 
 	mat.m11 = Calc::cos(rotation);
 	mat.m12 = -Calc::sin(rotation);
@@ -89,7 +95,7 @@ Mat3x2 Mat3x2::create_rotation(float rotation)
 
 Mat3x2 Mat3x2::create_translation(const Vec2& position)
 {
-	Mat3x2 mat = IDENTITY;
+	Mat3x2 mat;
 
 	mat.m11 = 1;
 	mat.m12 = 0;

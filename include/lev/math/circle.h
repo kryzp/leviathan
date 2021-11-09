@@ -6,6 +6,9 @@ namespace Lev
 {
 	struct Circle
 	{
+		static const Circle ZERO;
+		static const Circle ONE;
+
 		Vec2 position;
 		float radius;
 

@@ -24,3 +24,6 @@ float Circle::diameter() const
 {
 	return radius * 2;
 }
+
+const Circle Circle::ZERO = Circle(Vec2::ZERO, 0.0f);
+const Circle Circle::ONE  = Circle(Vec2::ZERO, 1.0f);
