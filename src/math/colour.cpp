@@ -55,10 +55,10 @@ Colour Colour::operator - () const
 Colour Colour::operator * (float mult) const
 {
 	return Colour(
-		r * mult,
-		g * mult,
-		b * mult,
-		a * mult
+		(u8)((float)r * mult),
+		(u8)((float)g * mult),
+		(u8)((float)b * mult),
+		(u8)((float)a * mult)
 	);
 }
 

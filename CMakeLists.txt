@@ -28,6 +28,7 @@ add_library(${PROJECT_NAME}
 	
 	src/internal/platform_sdl2.cpp
 	src/internal/graphics_opengl.cpp
+	src/internal/glad/src/glad.c
 )
 
 target_include_directories(${PROJECT_NAME}

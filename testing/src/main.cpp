@@ -5,6 +5,10 @@ using namespace Lev;
 
 namespace
 {
+	void startup()
+	{
+	}
+
 	void update()
 	{
 	}
@@ -16,7 +20,6 @@ namespace
 
 int main()
 {
-	/*
 	Config config;
 	config.name = "leviathan demo";
 	config.width = 1280;
@@ -24,9 +27,9 @@ int main()
 	config.target_framerate = 60;
 	config.on_update = update;
 	config.on_render = render;
+	config.on_startup = startup;
 
 	App::start(&config);
-	*/
 
 	return 0;
 }

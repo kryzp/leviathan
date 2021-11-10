@@ -1,8 +1,7 @@
 #if LEVIATHAN_USE_SDL2
 
-#include "platform.h"
-#include "graphics.h"
-
+#include <internal/platform.h>
+#include <internal/graphics.h>
 #include <lev/core/app.h>
 
 #include <SDL.h>
