@@ -10,8 +10,6 @@ add_library(${PROJECT_NAME}
 	src/graphics/batch.cpp
 	src/graphics/framebuffer.cpp
 	src/graphics/mesh.cpp
-	src/graphics/shader.cpp
-	src/graphics/texture.cpp
 
 	src/input/input.cpp
 

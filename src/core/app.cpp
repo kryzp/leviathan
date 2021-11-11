@@ -30,6 +30,8 @@ Config::Config()
 	this->on_exit_request = nullptr;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////
+
 void App::start(const Config* cfg)
 {
 	LEVIATHAN_ASSERT(cfg != nullptr);

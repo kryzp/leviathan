@@ -15,14 +15,11 @@ namespace Lev
 	{
 		bool init();
 		void shutdown();
+
+		void render(/*todo: take an argument containing what to render here? a render pass struct idk. to be used by the batch when i get to it lol :/*/);
 		
 		void before_render();
 		void after_render();
-
-		u32 create_shader(const char* vertex, const char* fragment);
-		void use_shader(u32 shader);
-		void shader_set_u1i(u32 id, const char* name, int value);
-		void shader_set_u1f(u32 id, const char* name, float value);
 
 		RendererType renderer_type();
 	}
