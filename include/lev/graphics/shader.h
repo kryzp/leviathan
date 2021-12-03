@@ -4,8 +4,23 @@
 
 namespace Lev
 {
-	class Shader;
-	using ShaderRef = Ref<Shader>;
+	enum class UniformType
+	{
+        Float,
+        Integer,
+        Vector2,
+        Vector3,
+        Vector4,
+        Max
+	};
+
+	struct ShaderData
+	{
+		const char* vertex_source;
+		const char* fragment_source;
+
+		// stuff like uniforms, source data, etc...
+	};
 
 	class Shader
 	{

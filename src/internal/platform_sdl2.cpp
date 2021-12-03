@@ -1,4 +1,4 @@
-#if LEVIATHAN_USE_SDL2
+#if LEV_USE_SDL2
 
 #include <internal/platform.h>
 #include <internal/graphics.h>

@@ -3,17 +3,23 @@
 #include <inttypes.h>
 #include <memory>
 
-#define LEV_ARRAY_LENGTH(_arr) (sizeof(_arr)/sizeof(*_arr))
+#ifdef LEV_DBG
 
-#ifdef LEVIATHAN_DEBUG
-
-#define LEVIATHAN_ASSERT(exp) do{if(!(exp)){*((volatile int*)0)=0;}}while(false)
+#define LEV_ASSERT(exp) do{if(!(exp)){*((volatile int*)0)=0;}}while(false)
 
 #else
 
-#define LEVIATHAN_ASSERT(exp, message)
+#define LEV_ASSERT(exp)
 
 #endif
+
+#define LEV_ARRAY_SIZE(arr) (sizeof((arr)) / sizeof((*arr)))
+
+#define LEV_BYTES(x) (x)
+#define LEV_KILOBYTES(x) (LEV_BYTES(x) * 1024LL)
+#define LEV_MEGABYTES(x) (LEV_KILOBYTES(x) * 1024LL)
+#define LEV_GIGABYTES(x) (LEV_MEGABYTES(x) * 1024LL)
+#define LEV_TERABYTES(x) (LEV_GIGABYTES(x) * 1024LL)
 
 namespace Lev
 {
@@ -31,16 +37,19 @@ namespace Lev
 	using c16 = char16_t;
 	using c32 = char32_t;
 
+	using byte = char;
+	using ubyte = unsigned char;
+
 	using f32 = float;
 	using f64 = double;
 
-	template<typename T>
+	template <typename T>
 	using Scope = std::unique_ptr<T>;
-	template<typename T, typename... Args>
+	template <typename T, typename... Args>
 	constexpr Scope<T> create_scope(Args&&... args) { return std::make_unique<T>(std::forward<Args>(args)...); }
 
-	template<typename T>
+	template <typename T>
 	using Ref = std::shared_ptr<T>;
-	template<typename T, typename... Args>
+	template <typename T, typename... Args>
 	constexpr Ref<T> create_ref(Args&&... args) { return std::make_shared<T>(std::forward<Args>(args)...); }
 }

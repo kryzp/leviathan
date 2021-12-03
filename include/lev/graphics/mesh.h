@@ -4,8 +4,7 @@
 
 namespace Lev
 {
-	class Mesh;
-	using MeshRef = Ref<Mesh>;
+    // todo: mesh is an array of vertices
 
 	class Mesh
 	{

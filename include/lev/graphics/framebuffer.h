@@ -4,9 +4,6 @@
 
 namespace Lev
 {
-	class FrameBuffer;
-	using FrameBufferRef = Ref<FrameBuffer>;
-
 	class FrameBuffer
 	{
 	};

@@ -34,7 +34,7 @@ Config::Config()
 
 void App::start(const Config* cfg)
 {
-	LEVIATHAN_ASSERT(cfg != nullptr);
+	LEV_ASSERT(cfg != nullptr);
 
 	g_config = *cfg;
 

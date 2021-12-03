@@ -9,6 +9,7 @@ add_library(${PROJECT_NAME}
 	
 	src/graphics/batch.cpp
 	src/graphics/framebuffer.cpp
+	src/graphics/image.cpp
 	src/graphics/mesh.cpp
 
 	src/input/input.cpp
@@ -26,7 +27,7 @@ add_library(${PROJECT_NAME}
 	
 	src/internal/platform_sdl2.cpp
 	src/internal/graphics_opengl.cpp
-	src/internal/glad/src/glad.c
+	src/third_party/glad/src/glad.c
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -40,21 +41,21 @@ target_include_directories(${PROJECT_NAME}
 
 set(OPENGL_ENABLED true CACHE BOOL "Use OpenGL as the graphics implementation")
 set(SDL2_ENABLED true CACHE BOOL "Use SDL2 as the system implementation")
-set(SDL2_INCLUDE_DIRS "D:\\_DEV\\libs\\SDL2-2.0.16\\include\\")
-set(SDL2_LIBRARIES "D:\\_DEV\\libs\\SDL2-2.0.16\\lib\\x64\\SDL2.lib" "D:\\_DEV\\libs\\SDL2-2.0.16\\lib\\x64\\SDL2main.lib")
+set(SDL2_INCLUDE_DIRS "D:/_DEV/libs/SDL2-2.0.16/include/")
+set(SDL2_LIBRARIES "D:/_DEV/libs/SDL2-2.0.16/lib/x64/SDL2.lib" "D:/_DEV/libs/SDL2-2.0.16/lib/x64/SDL2main.lib")
 
 set(DEBUG_MODE true)
 
 if (DEBUG_MODE)
-	add_compile_definitions(LEVIATHAN_DEBUG)
+	add_compile_definitions(LEV_DBG)
 endif()
 
 if (OPENGL_ENABLED)
-	add_compile_definitions(LEVIATHAN_USE_OPENGL)
+	add_compile_definitions(LEV_USE_OPENGL)
 endif()
 
 if (SDL2_ENABLED)
-	add_compile_definitions(LEVIATHAN_USE_SDL2)
+	add_compile_definitions(LEV_USE_SDL2)
 	target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SDL2_INCLUDE_DIRS}>")
 	target_link_libraries(${PROJECT_NAME} PUBLIC ${SDL2_LIBRARIES})
 endif()

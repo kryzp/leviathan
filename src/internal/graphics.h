@@ -3,6 +3,9 @@
 #include <lev/core/app.h>
 #include <lev/core/util.h>
 
+#include <lev/graphics/shader.h>
+#include <lev/graphics/texture.h>
+
 namespace Lev
 {
 	enum class RendererType
@@ -20,6 +23,9 @@ namespace Lev
 		
 		void before_render();
 		void after_render();
+
+		Ref<Texture> create_texture();
+		Ref<Shader> create_shader(const ShaderData& data);
 
 		RendererType renderer_type();
 	}

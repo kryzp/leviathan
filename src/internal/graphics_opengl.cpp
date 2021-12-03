@@ -1,9 +1,7 @@
-#if LEVIATHAN_USE_OPENGL
+#if LEV_USE_OPENGL
 
 #include <internal/graphics.h>
-#include <internal/glad/include/glad/glad.h>
-#include <lev/graphics/shader.h>
-#include <lev/graphics/texture.h>
+#include <third_party/glad/include/glad/glad.h>
 
 using namespace Lev;
 
@@ -36,6 +34,14 @@ void Graphics::after_render()
 {
 }
 
+Ref<Texture> Graphics::create_texture()
+{
+}
+
+Ref<Shader> Graphics::create_shader(const ShaderData& data)
+{
+}
+
 RendererType Graphics::renderer_type()
 {
 	return RendererType::OpenGL;
@@ -49,6 +55,11 @@ Texture::Texture()
 {
 }
 
+Texture::Texture(const Ref<Image>& image)
+{
+	load(image);
+}
+
 Texture::Texture(const char* path)
 {
 	load(path);
@@ -59,9 +70,27 @@ Texture::~Texture()
 	free();
 }
 
+void Texture::load(const Ref<Image>& image)
+{
+	if (!image->data())
+		return;
+
+	glTexImage2D(
+		GL_TEXTURE_2D,
+		0,
+		GL_RGB,
+		image->width(),
+		image->height(),
+		0,
+		GL_RGBA,
+		GL_UNSIGNED_BYTE,
+		image->data()
+	);
+}
+
 void Texture::load(const char* path)
 {
-	// todo
+	load(create_ref<Image>(path));
 }
 
 void Texture::bind(int i) const
@@ -69,8 +98,7 @@ void Texture::bind(int i) const
 	GLenum active = GL_TEXTURE0;
 
 	// lmao what
-	if      (i == 0)  active = GL_TEXTURE0;
-	else if (i == 1)  active = GL_TEXTURE1;
+	if      (i == 1)  active = GL_TEXTURE1;
 	else if (i == 2)  active = GL_TEXTURE2;
 	else if (i == 3)  active = GL_TEXTURE3;
 	else if (i == 4)  active = GL_TEXTURE4;
