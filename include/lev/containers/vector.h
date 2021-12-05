@@ -18,7 +18,6 @@ namespace Lev
         Vector();
         Vector(std::initializer_list<T> data);
         Vector(int initial_capacity);
-
         ~Vector();
 
         void allocate(int capacity);
@@ -107,8 +106,6 @@ namespace Lev
     void Vector<T>::allocate(int capacity)
     {
         LEV_ASSERT(capacity > 0);
-
-
 
 		T* new_buf = (T*)::operator new (sizeof(T) * capacity);
 

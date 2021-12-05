@@ -36,10 +36,12 @@ void Graphics::after_render()
 
 Ref<Texture> Graphics::create_texture()
 {
+	return create_ref<Texture>();
 }
 
 Ref<Shader> Graphics::create_shader(const ShaderData& data)
 {
+	return create_ref<Shader>();
 }
 
 RendererType Graphics::renderer_type()

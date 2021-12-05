@@ -7,6 +7,8 @@ add_library(${PROJECT_NAME}
 
 	src/core/app.cpp
 	
+	src/containers/string.cpp
+
 	src/graphics/batch.cpp
 	src/graphics/framebuffer.cpp
 	src/graphics/image.cpp
@@ -45,6 +47,8 @@ set(SDL2_INCLUDE_DIRS "D:/_DEV/libs/SDL2-2.0.16/include/")
 set(SDL2_LIBRARIES "D:/_DEV/libs/SDL2-2.0.16/lib/x64/SDL2.lib" "D:/_DEV/libs/SDL2-2.0.16/lib/x64/SDL2main.lib")
 
 set(DEBUG_MODE true)
+
+add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
 
 if (DEBUG_MODE)
 	add_compile_definitions(LEV_DBG)

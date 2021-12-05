@@ -22,12 +22,14 @@ namespace Lev
 
 		Node* find(T item) const;
 
-		Node* first = nullptr;
-		Node* last = nullptr;
+		Node* first;
+		Node* last;
 	};
 
 	template <typename T>
 	LinkedList<T>::LinkedList()
+		: first(nullptr)
+		, last(nullptr)
 	{
 	}
 
@@ -35,7 +37,7 @@ namespace Lev
 	LinkedList<T>::~LinkedList()
 	{
 		Node* node = first;
-		while (node != nullptr)
+		while (node)
 		{
 			Node* next = node->next;
 			delete node;
