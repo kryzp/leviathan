@@ -7,16 +7,23 @@ namespace Lev
 {
 	namespace Input
 	{
-		constexpr int MAX_MOUSE_BUTTONS = 3;
-		constexpr int MAX_KEYBOARD_KEYS = 512;
 		constexpr int MAX_TEXT_INPUT = 256;
 	}
+
+	// i hate c++ enum classes so much
+	// its like this great idea and then they go "no screw you this is too good"
+	// and make it so you have to type cast the crap out of them
+	// ...
+	// why?????????????????????
+	// ...
+	// i could just use a struct instead with static consts but then that looks super messy D:
 
 	enum class MouseButton
 	{
 		Left = 0,
 		Middle = 1,
-		Right = 2
+		Right = 2,
+		Max
 	};
 
 	enum class Key
@@ -229,28 +236,28 @@ namespace Lev
 		LeftControl = 224,
 		LeftShift = 225,
 		LeftAlt = 226,
-		LeftGui = 227,
+		LeftSuper = 227,
 		RightControl = 228,
 		RightShift = 229,
 		RightAlt = 230,
-		RightGui = 231,
+		RightSuper = 231,
 		Max
 	};
 
 	struct KeyboardState
 	{
-		bool down[Input::MAX_KEYBOARD_KEYS];
-		bool released[Input::MAX_KEYBOARD_KEYS];
-		bool pressed[Input::MAX_KEYBOARD_KEYS];
+		bool down[(int)Key::Max];
+		bool released[(int)Key::Max];
+		bool pressed[(int)Key::Max];
 
 		char text[Input::MAX_TEXT_INPUT];
 	};
 
 	struct MouseState
 	{
-		bool down[Input::MAX_MOUSE_BUTTONS];
-		bool released[Input::MAX_MOUSE_BUTTONS];
-		bool pressed[Input::MAX_MOUSE_BUTTONS];
+		bool down[(int)MouseButton::Max];
+		bool released[(int)MouseButton::Max];
+		bool pressed[(int)MouseButton::Max];
 
 		Vec2 screen_position;
 		Vec2 draw_position;

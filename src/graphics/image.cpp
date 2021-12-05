@@ -23,8 +23,7 @@ void Image::load(const char* path)
 {
 	int w, h, nrc;
 
-	ubyte* data = stbi_load(path, &w, &h, &nrc, 0);
-
+	m_data = stbi_load(path, &w, &h, &nrc, 0);
 	m_width = w;
 	m_height = h;
 	m_nr_channels = nrc;
@@ -35,7 +34,7 @@ void Image::free() const
 	stbi_image_free(m_data);
 }
 
-const ubyte* Image::data() const
+const byte* Image::data() const
 {
 	return m_data;
 }

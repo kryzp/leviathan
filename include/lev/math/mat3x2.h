@@ -19,7 +19,6 @@ namespace Lev
 		Mat3x2(float m11, float m12, float m21, float m22, float m31, float m32);
 
 		float scaling_factor() const;
-
 		float determinant() const;
 		Mat3x2 inverse() const;
 

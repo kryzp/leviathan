@@ -1,6 +1,6 @@
 #if LEV_USE_OPENGL
 
-#include <internal/graphics.h>
+#include <backend/graphics.h>
 #include <third_party/glad/include/glad/glad.h>
 
 using namespace Lev;
@@ -18,7 +18,7 @@ bool Graphics::init()
 	return true;
 }
 
-void Graphics::shutdown()
+void Graphics::destroy()
 {
 }
 
@@ -28,18 +28,21 @@ void Graphics::render()
 
 void Graphics::before_render()
 {
+	// clear the screen i guess
 }
 
 void Graphics::after_render()
 {
 }
 
-Ref<Texture> Graphics::create_texture()
+Ref<Texture> Graphics::create_texture(int width, int height, TextureFormat format)
 {
+	return create_ref<Texture>();
 }
 
 Ref<Shader> Graphics::create_shader(const ShaderData& data)
 {
+	return create_ref<Shader>();
 }
 
 RendererType Graphics::renderer_type()
@@ -52,17 +55,10 @@ RendererType Graphics::renderer_type()
 /*********************************************************/
 
 Texture::Texture()
+	: m_id(0)
+	, m_width(0)
+	, m_height(0)
 {
-}
-
-Texture::Texture(const Ref<Image>& image)
-{
-	load(image);
-}
-
-Texture::Texture(const char* path)
-{
-	load(path);
 }
 
 Texture::~Texture()
@@ -70,27 +66,21 @@ Texture::~Texture()
 	free();
 }
 
-void Texture::load(const Ref<Image>& image)
+void Texture::set(const byte* data)
 {
-	if (!image->data())
-		return;
+	LEV_ASSERT(data != nullptr);
 
 	glTexImage2D(
 		GL_TEXTURE_2D,
 		0,
 		GL_RGB,
-		image->width(),
-		image->height(),
+		m_width,
+		m_height,
 		0,
 		GL_RGBA,
 		GL_UNSIGNED_BYTE,
-		image->data()
+		data
 	);
-}
-
-void Texture::load(const char* path)
-{
-	load(create_ref<Image>(path));
 }
 
 void Texture::bind(int i) const
@@ -139,26 +129,16 @@ void Texture::free() const
 }
 
 /*********************************************************/
-// SHADER STUFF
+/* SHADER STUFF                                          */
 /*********************************************************/
 
 Shader::Shader()
 {
 }
 
-Shader::Shader(const char* vertex, const char* fragment)
-{
-	load(vertex, fragment);
-}
-
 Shader::~Shader()
 {
 	free();
-}
-
-void Shader::load(const char* vertex, const char* fragment)
-{
-	// todo
 }
 
 void Shader::use() const
@@ -181,7 +161,7 @@ void Shader::set(const char* name, int value) const
 	glUniform1i(glGetUniformLocation(m_id, name), value);
 }
 
-void Shader::set( const char* name, float value) const
+void Shader::set(const char* name, float value) const
 {
 	glUniform1f(glGetUniformLocation(m_id, name), value);
 }

@@ -3,19 +3,19 @@
 
 #include <iostream>
 
-#include <internal/platform.h>
-#include <internal/graphics.h>
-#include <internal/input.h>
+#include <backend/platform.h>
+#include <backend/graphics.h>
+#include <backend/input.h>
 
 using namespace Lev;
 
 namespace
 {
 	bool g_running = false;
-	Config g_config;
+	AppConfig g_config;
 }
 
-Config::Config()
+AppConfig::AppConfig()
 {
 	this->name = nullptr;
 	this->width = 1280;
@@ -23,16 +23,15 @@ Config::Config()
 	this->target_framerate = 60;
 	this->resizable = false;
 
-	this->on_startup = nullptr;
-	this->on_shutdown = nullptr;
+	this->on_init = nullptr;
+	this->on_destroy = nullptr;
 	this->on_update = nullptr;
 	this->on_render = nullptr;
-	this->on_exit_request = nullptr;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void App::start(const Config* cfg)
+void App::start(const AppConfig* cfg)
 {
 	LEV_ASSERT(cfg != nullptr);
 
@@ -50,8 +49,8 @@ void App::start(const Config* cfg)
 
 bool App::init()
 {
-	if (g_config.on_startup)
-		g_config.on_startup();
+	if (g_config.on_init)
+		g_config.on_init();
 
 	if (!Platform::init(&g_config))
 	{
@@ -82,11 +81,11 @@ void App::run()
 
 	while (g_running)
 	{
-		Platform::frame();
+		Platform::update();
 
 		// update
 		{
-			Input::frame();
+			Input::update();
 
 			if (g_config.on_update)
 				g_config.on_update();
@@ -107,21 +106,18 @@ void App::run()
 
 void App::destroy()
 {
-	if (g_config.on_shutdown)
-		g_config.on_shutdown();
+	if (g_config.on_destroy)
+		g_config.on_destroy();
 
-	Platform::shutdown();
-	Graphics::shutdown();
-	Input::shutdown();
+	Platform::destroy();
+	Graphics::destroy();
+	Input::destroy();
 
 	g_running = false;
 }
 
 void App::exit()
 {
-	if (g_config.on_exit_request)
-		g_config.on_exit_request();
-
 	g_running = false;
 }
 
@@ -130,7 +126,7 @@ bool App::is_running()
 	return g_running;
 }
 
-const Config* App::config()
+const AppConfig* App::config()
 {
 	return &g_config;
 }

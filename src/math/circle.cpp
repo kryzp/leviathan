@@ -22,7 +22,7 @@ Circle::Circle(const Vec2& pos, float rad)
 
 float Circle::diameter() const
 {
-	return radius * 2;
+	return radius * 2.0f;
 }
 
 const Circle Circle::ZERO = Circle(Vec2::ZERO, 0.0f);

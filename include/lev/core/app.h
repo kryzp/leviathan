@@ -4,7 +4,13 @@ namespace Lev
 {
 	enum class RendererType;
 
-	struct Config
+	struct ProcessConfig
+	{
+		// ?? maybe maybe maybe ??
+		// data like ram usage, process name, etc...
+	};
+
+	struct AppConfig
 	{
 		const char* name;
 		int width;
@@ -12,25 +18,24 @@ namespace Lev
 		int target_framerate;
 		bool resizable;
 
-		void (*on_startup)();
 		void (*on_update)();
 		void (*on_render)();
-		void (*on_shutdown)();
-		void (*on_exit_request)();
+		void (*on_init)();
+		void (*on_destroy)();
 
-		Config();
+		AppConfig();
 	};
 
 	namespace App
 	{
-		void start(const Config* cfg);
+		void start(const AppConfig* cfg);
 		bool init();
 		void destroy();
 		void run();
 
 		void exit();
 		bool is_running();
-		const Config* config();
+		const AppConfig* config();
 
 		int window_width();
 		int window_height();

@@ -2,15 +2,15 @@
 
 namespace Lev
 {
-	struct Config;
+	struct AppConfig;
 
 	namespace Platform
 	{
-		bool init(const Config* cfg);
-		void shutdown();
+		bool init(const AppConfig* cfg);
+		void destroy();
 
 		void prepare();
-		void frame();
+		void update();
 		void present();
 
 		int window_width();

@@ -10,14 +10,13 @@ namespace Lev
         Integer,
         Vector2,
         Vector3,
-        Vector4,
-        Max
+        Vector4
 	};
 
 	struct ShaderData
 	{
-		const char* vertex_source;
-		const char* fragment_source;
+		char vertex_source[512];
+		char fragment_source[512];
 
 		// stuff like uniforms, source data, etc...
 	};
@@ -26,16 +25,16 @@ namespace Lev
 	{
 	public:
 		Shader();
-		Shader(const char* vertex, const char* fragment);
 		~Shader();
 
-		void load(const char* vertex, const char* fragment);
 		void use() const;
 		void free() const;
 
 		void set(const char* name, bool value) const;
 		void set(const char* name, int value) const;
 		void set(const char* name, float value) const;
+
+		static Ref<Shader> create(const char* vertex, const char* fragment);
 
 	private:
 		u32 m_id;

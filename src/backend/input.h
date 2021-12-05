@@ -5,7 +5,7 @@ namespace Lev
 	namespace Input
 	{
 		bool init();
-		void shutdown();
-		void frame();
+		void destroy();
+		void update();
 	}
 }

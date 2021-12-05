@@ -1,7 +1,7 @@
 #if LEV_USE_SDL2
 
-#include <internal/platform.h>
-#include <internal/graphics.h>
+#include <backend/platform.h>
+#include <backend/graphics.h>
 #include <lev/core/app.h>
 
 #include <SDL.h>
@@ -13,7 +13,7 @@ namespace
 	SDL_Window* g_window;
 }
 
-bool Platform::init(const Config* cfg)
+bool Platform::init(const AppConfig* cfg)
 {
 	int flags = SDL_WINDOW_ALLOW_HIGHDPI;
 
@@ -29,7 +29,7 @@ bool Platform::init(const Config* cfg)
 	return true;
 }
 
-void Platform::shutdown()
+void Platform::destroy()
 {
 }
 
@@ -37,7 +37,7 @@ void Platform::prepare()
 {
 }
 
-void Platform::frame()
+void Platform::update()
 {
 	SDL_Event e;
 	while (SDL_PollEvent(&e))

@@ -1,4 +1,4 @@
-#include <internal/input.h>
+#include <backend/input.h>
 #include <lev/input/input.h>
 
 using namespace Lev;
@@ -9,12 +9,12 @@ bool Input::init()
 	return true;
 }
 
-void Input::shutdown()
+void Input::destroy()
 {
 	// todo
 }
 
-void Input::frame()
+void Input::update()
 {
 	// todo
 }

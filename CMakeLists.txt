@@ -7,10 +7,12 @@ add_library(${PROJECT_NAME}
 
 	src/core/app.cpp
 	
-	src/graphics/batch.cpp
+	src/graphics/sprite_batch.cpp
 	src/graphics/framebuffer.cpp
 	src/graphics/image.cpp
 	src/graphics/mesh.cpp
+	src/graphics/texture.cpp
+	src/graphics/shader.cpp
 
 	src/input/input.cpp
 
@@ -25,8 +27,8 @@ add_library(${PROJECT_NAME}
 	src/math/rect.cpp
 	src/math/vec2.cpp
 	
-	src/internal/platform_sdl2.cpp
-	src/internal/graphics_opengl.cpp
+	src/backend/platform_sdl2.cpp
+	src/backend/graphics_opengl.cpp
 	src/third_party/glad/src/glad.c
 )
 
@@ -46,8 +48,10 @@ set(SDL2_LIBRARIES "D:/_DEV/libs/SDL2-2.0.16/lib/x64/SDL2.lib" "D:/_DEV/libs/SDL
 
 set(DEBUG_MODE true)
 
+add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
+
 if (DEBUG_MODE)
-	add_compile_definitions(LEV_DBG)
+	add_compile_definitions(LEV_DEBUG)
 endif()
 
 if (OPENGL_ENABLED)

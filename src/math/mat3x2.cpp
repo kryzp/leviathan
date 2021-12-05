@@ -5,6 +5,13 @@
 // nice spelling of 'transformation' alan :/
 // https://www.alanzucconi.com/2016/02/10/tranfsormation-matrix/
 
+/* Heres how it works:
+This is actually just a 2x2 transformation matrix + position (m31, m32)
+
+So, multiplication means doing 2x2 matrix multiplication then also applying
+that 'other' matrix to the position vector!
+*/
+
 using namespace Lev;
 
 Mat3x2::Mat3x2()
@@ -83,10 +90,10 @@ Mat3x2 Mat3x2::create_rotation(float rotation)
 {
 	Mat3x2 mat;
 
-	mat.m11 = Calc::cos(rotation);
+	mat.m11 = +Calc::cos(rotation);
 	mat.m12 = -Calc::sin(rotation);
-	mat.m21 = Calc::sin(rotation);
-	mat.m22 = Calc::cos(rotation);
+	mat.m21 = +Calc::sin(rotation);
+	mat.m22 = +Calc::cos(rotation);
 	mat.m31 = 0;
 	mat.m32 = 0;
 
@@ -149,6 +156,12 @@ Mat3x2 Mat3x2::operator + (const Mat3x2& other)
 		m32 + other.m32
 	);
 }
+
+/* note to self
+[ kx lx Bx ][ ix jx Ax ] = [ ix*kx + jy*lx   jx*kx + jy*lx   Ax*kx + Ay*lx + Bx ]
+[ ky ly By ][ iy jy Ay ]   [ ix*ky + jy*ly   jx*ky + jy*ly   Ay*ky + Ay*ly + By ]
+
+*/
 
 Mat3x2 Mat3x2::operator * (const Mat3x2& other)
 {

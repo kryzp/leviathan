@@ -1,13 +1,14 @@
 #pragma once
 
+#include <lev/core/app.h>
+#include <lev/core/util.h>
+
+#include <lev/containers/hash_map.h>
 #include <lev/containers/linked_list.h>
 #include <lev/containers/string.h>
 #include <lev/containers/vector.h>
 
-#include <lev/core/app.h>
-#include <lev/core/util.h>
-
-#include <lev/graphics/batch.h>
+#include <lev/graphics/sprite_batch.h>
 #include <lev/graphics/framebuffer.h>
 #include <lev/graphics/mesh.h>
 #include <lev/graphics/shader.h>

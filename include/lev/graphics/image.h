@@ -14,14 +14,14 @@ namespace Lev
 		void load(const char* path);
 		void free() const;
 
-		const ubyte* data() const;
+		const byte* data() const;
 
 		int width() const;
 		int height() const;
 		int nr_channels() const;
 		
 	private:
-		ubyte* m_data = nullptr;
+		byte* m_data = nullptr;
 
 		int m_width = 0;
 		int m_height = 0;
