@@ -8,6 +8,9 @@
 // writes to null memory crashing the program at that location
 // neat trick!
 
+// writes to null memory crashing the program at that location
+// neat trick!
+
 #define LEV_ASSERT(exp) do{if(!(exp)){*((volatile int*)0)=0;}}while(false)
 
 #else

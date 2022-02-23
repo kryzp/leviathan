@@ -1,8 +1,11 @@
 #pragma once
 
+<<<<<<< HEAD
 #include <lev/core/app.h>
 #include <lev/core/util.h>
 
+=======
+>>>>>>> e5268c6ecd106d46bc506f7496d77d5c1f83ddfb
 #include <lev/containers/hash_map.h>
 #include <lev/containers/linked_list.h>
 #include <lev/containers/string.h>
