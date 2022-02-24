@@ -7,13 +7,9 @@ add_library(${PROJECT_NAME}
 
 	src/core/app.cpp
 	
-<<<<<<< HEAD
-	src/graphics/sprite_batch.cpp
-=======
 	src/containers/string.cpp
 
-	src/graphics/batch.cpp
->>>>>>> e5268c6ecd106d46bc506f7496d77d5c1f83ddfb
+	src/graphics/sprite_batch.cpp
 	src/graphics/framebuffer.cpp
 	src/graphics/image.cpp
 	src/graphics/mesh.cpp

@@ -5,10 +5,6 @@ using namespace Lev;
 
 namespace
 {
-<<<<<<< HEAD
-	// i have been putting off doing the graphics backend for so long now :/
-	// time to start learning some opengl stuff i guess...
-
 	Ref<Texture> tex0;
 	Ref<Shader> shd0;
 	SpriteBatch batch;
@@ -23,10 +19,6 @@ namespace
 		);
 
 		batch.set_shader(shd0);
-=======
-	void startup()
-	{
->>>>>>> e5268c6ecd106d46bc506f7496d77d5c1f83ddfb
 	}
 
 	void update()

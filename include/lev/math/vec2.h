@@ -1,5 +1,7 @@
 #pragma once
 
+#include <lev/math/mat3x2.h>
+
 namespace Lev
 {
 	struct Float2;
@@ -29,8 +31,8 @@ namespace Lev
 
 		Vec2 normalized() const;
 
+		static Vec2 transform(const Vec2& vec, const Mat3x2& mat);
 		static float dot(const Vec2& a, const Vec2& b);
-
 		static Vec2 from_angle(float angle, float length);
 
 		bool operator == (const Vec2& other) const;

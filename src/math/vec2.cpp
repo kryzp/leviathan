@@ -50,6 +50,14 @@ Vec2 Vec2::normalized() const
 	);
 }
 
+Vec2 Vec2::transform(const Vec2& vec, const Mat3x2& mat)
+{
+	return Vec2(
+		(vec.x * mat.m11) + (vec.y * mat.m21),
+		(vec.x * mat.m12) + (vec.y * mat.m22)
+	);
+}
+
 float Vec2::dot(const Vec2& a, const Vec2& b)
 {
 	return (a.x * b.x) + (a.y * b.y);

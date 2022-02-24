@@ -30,9 +30,9 @@ Colour Colour::premultiplied() const
 bool Colour::operator == (const Colour& other) const
 {
 	return (
-		r == other.r,
-		g == other.g,
-		b == other.b,
+		r == other.r &&
+		g == other.g &&
+		b == other.b &&
 		a == other.a
 	);
 }

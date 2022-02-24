@@ -7,9 +7,11 @@
 
 // writes to null memory crashing the program at that location
 // neat trick!
-
-// writes to null memory crashing the program at that location
-// neat trick!
+// net gk!
+// nt23tr1%^ !
+// ntt fWk145
+// neatr 542SFGk?
+// nf y7&*(d$AIIKK^
 
 #define LEV_ASSERT(exp) do{if(!(exp)){*((volatile int*)0)=0;}}while(false)
 

@@ -157,10 +157,11 @@ Mat3x2 Mat3x2::operator + (const Mat3x2& other)
 	);
 }
 
-/* note to self
-[ kx lx Bx ][ ix jx Ax ] = [ ix*kx + jy*lx   jx*kx + jy*lx   Ax*kx + Ay*lx + Bx ]
-[ ky ly By ][ iy jy Ay ]   [ ix*ky + jy*ly   jx*ky + jy*ly   Ay*ky + Ay*ly + By ]
-
+/*
+m31 and m32 think they're part of the 2x2 matrix crew
+and the 2x2 matrix numbers pretend they like them when
+in reality nobody likes m31 and m32 they just brought them along out of pity.
+hence, m31 and m32 dont get to get multiplied like the other cool numbers
 */
 
 Mat3x2 Mat3x2::operator * (const Mat3x2& other)
@@ -170,7 +171,7 @@ Mat3x2 Mat3x2::operator * (const Mat3x2& other)
 		(m11 * other.m12) + (m12 * other.m22),
 		(m21 * other.m11) + (m22 * other.m21),
 		(m21 * other.m12) + (m22 * other.m22),
-		(m31 * other.m11) + (m32 * other.m21) + other.m31,
+		(m31 * other.m11) + (m32 * other.m21) + other.m31, 
 		(m31 * other.m12) + (m32 * other.m22) + other.m32
 	);
 }
