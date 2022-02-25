@@ -16,7 +16,7 @@ namespace Lev
 	// ...
 	// why?????????????????????
 	// ...
-	// i could just use a struct instead with static consts but then that looks super messy D:
+	// i could just use a struct instead with static consts but then that looks super messy aswell :((
 
 	enum class MouseButton
 	{

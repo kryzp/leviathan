@@ -21,7 +21,7 @@
 
 #endif
 
-#define LEV_ARRAY_SIZE(arr) (sizeof((arr)) / sizeof((*arr)))
+#define LEV_ARRAY_LENGTH(arr) (sizeof((arr)) / sizeof((*arr)))
 
 #define LEV_BYTES(x)     (x)
 #define LEV_KILOBYTES(x) (LEV_BYTES(x) * 1024LL)
@@ -52,7 +52,7 @@ namespace Lev
 
 	using sbyte = char;
 	using ubyte = unsigned char;
-	using byte = unsigned char;
+	using byte  = unsigned char;
 
 	using f32 = float;
 	using f64 = double;

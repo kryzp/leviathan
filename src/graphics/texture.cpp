@@ -19,6 +19,7 @@ Ref<Texture> Texture::create(int width, int height, const byte* data, TextureFor
 	result->m_width = width;
 	result->m_height = height;
 	result->set(data);
+
 	return result;
 }
 
@@ -30,4 +31,9 @@ int Texture::width() const
 int Texture::height() const
 {
 	return m_height;
+}
+
+u32 Texture::id() const
+{
+	return m_id;
 }

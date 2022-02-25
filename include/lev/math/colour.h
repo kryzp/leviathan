@@ -34,4 +34,7 @@ namespace Lev
 		Colour operator * (float mult) const;
 		Colour& operator *= (float mult);
 	};
+
+	// hamburger spelling
+	using Color = Colour;
 }

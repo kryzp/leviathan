@@ -15,7 +15,7 @@ namespace Lev
 
 	struct ShaderData
 	{
-		char vertex_source[512];
+		char vertex_source[512]; // todo: string class?
 		char fragment_source[512];
 
 		// stuff like uniforms, source data, etc...
@@ -24,11 +24,12 @@ namespace Lev
 	class Shader
 	{
 	public:
-		Shader();
+		Shader(u32 id);
 		~Shader();
 
 		void use() const;
 		void free() const;
+		u32 id() const;
 
 		void set(const char* name, bool value) const;
 		void set(const char* name, int value) const;

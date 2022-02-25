@@ -23,14 +23,17 @@ namespace
 
 	void update()
 	{
-		static int time = 0;
-		shd0->set("u_time", time);
-		time++;
+		//static int time = 0;
+		//shd0->set("u_time", time);
+		//time++;
 	}
 
 	void render()
 	{
-		batch.render(0, 0, tex0);
+		shd0->set("u_texture", 0);
+		tex0->bind();
+		shd0->use();
+		batch.render_quad(0, 0);
 	}
 }
 

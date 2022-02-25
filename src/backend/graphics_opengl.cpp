@@ -1,48 +1,98 @@
 #if LEV_USE_OPENGL
 
+#include <lev/core/app.h>
 #include <backend/graphics.h>
-#include <third_party/glad/include/glad/glad.h>
+#include <backend/platform.h>
+#include <third_party/glad/glad.h>
+#include <iostream>
 
 using namespace Lev;
 
+struct State
+{
+	void* context;
+};
+
 namespace
 {
+	State gl_state;
 }
 
 /*********************************************************/
-// GRAPHICS STUFF
+/* GRAPHICS STUFF                                        */
 /*********************************************************/
 
 bool Graphics::init()
 {
+	//glDisable(GL_DEPTH_TEST);
+	//glDisable(GL_CULL_FACE);
+
+	gl_state.context = Platform::context_create();
+	Platform::context_make_current(gl_state.context);
+
+	if (!Platform::gl_load_glad_loader())
+	{
+		std::cout << "failed to initialize glad" << std::endl;
+		return false;
+	}
+
 	return true;
 }
 
 void Graphics::destroy()
 {
-}
-
-void Graphics::render()
-{
+	Platform::context_destroy(gl_state.context);
 }
 
 void Graphics::before_render()
 {
-	// clear the screen i guess
+	clear(0.0f, 0.75f, 0.7f);
 }
 
 void Graphics::after_render()
 {
 }
 
-Ref<Texture> Graphics::create_texture(int width, int height, TextureFormat format)
+void Graphics::render(const RenderPass& pass)
 {
-	return create_ref<Texture>();
+	// todo: temp
+
+	u32 vao, vbo, ebo;
+
+	glGenVertexArrays(1, &vao);
+	glGenBuffers(1, &vbo);
+	glGenBuffers(1, &ebo);
+
+	glBindVertexArray(vao);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, pass.vertex_count * sizeof(float), pass.vertices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, pass.index_count * sizeof(u32), pass.indices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(0 * sizeof(float)));
+	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+
+	glBindVertexArray(vao);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	glDeleteVertexArrays(1, &vao);
+	glDeleteBuffers(1, &vbo);
+	glDeleteBuffers(1, &ebo);
 }
 
-Ref<Shader> Graphics::create_shader(const ShaderData& data)
+void Graphics::clear(float r, float g, float b, float a)
 {
-	return create_ref<Shader>();
+	glViewport(0, 0, App::draw_width(), App::draw_height());
+	glClearColor(r, g, b, a);
+	glClear(GL_COLOR_BUFFER_BIT);
 }
 
 RendererType Graphics::renderer_type()
@@ -51,11 +101,19 @@ RendererType Graphics::renderer_type()
 }
 
 /*********************************************************/
-// TEXTURE STUFF
+/* TEXTURE STUFF                                         */
 /*********************************************************/
 
-Texture::Texture()
-	: m_id(0)
+Ref<Texture> Graphics::create_texture(int width, int height, TextureFormat format)
+{
+	u32 id = 0;
+	glGenTextures(1, &id);
+	return create_ref<Texture>(id, format);
+}
+
+Texture::Texture(u32 id, TextureFormat format)
+	: m_id(id)
+	, m_format(format)
 	, m_width(0)
 	, m_height(0)
 {
@@ -70,17 +128,25 @@ void Texture::set(const byte* data)
 {
 	LEV_ASSERT(data != nullptr);
 
-	glTexImage2D(
-		GL_TEXTURE_2D,
-		0,
-		GL_RGB,
-		m_width,
-		m_height,
-		0,
-		GL_RGBA,
-		GL_UNSIGNED_BYTE,
-		data
-	);
+	int fmt = GL_RGBA; // default format
+
+	if (m_format == TextureFormat::RGBA) {
+		fmt = GL_RGBA;
+	} else if (m_format == TextureFormat::RGB) {
+		fmt = GL_RGB;
+	}
+
+	bind();
+
+	// temp //
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// temp //
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_width, m_height, 0, fmt, GL_UNSIGNED_BYTE, data);
+	glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 void Texture::bind(int i) const
@@ -132,7 +198,55 @@ void Texture::free() const
 /* SHADER STUFF                                          */
 /*********************************************************/
 
-Shader::Shader()
+Ref<Shader> Graphics::create_shader(const ShaderData& data)
+{
+	int success;
+	char infolog[512];
+
+	const char* vertexdata = data.vertex_source;
+	const char* fragmentdata = data.fragment_source;
+
+	u32 vertex = glCreateShader(GL_VERTEX_SHADER);
+	glShaderSource(vertex, 1, &vertexdata, NULL);
+	glCompileShader(vertex);
+	glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
+	if (!success)
+	{
+		glGetShaderInfoLog(vertex, 512, NULL, infolog);
+		std::cout << "failed to compile vertex shader:\n" << infolog << std::endl;
+		// todo: log
+	}
+
+	u32 fragment = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragment, 1, &fragmentdata, NULL);
+	glCompileShader(fragment);
+	glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
+	if (!success)
+	{
+		glGetShaderInfoLog(fragment, 512, NULL, infolog);
+		std::cout << "failed to compile fragment shader:\n" << infolog << std::endl;
+		// todo: log
+	}
+
+	u32 id = glCreateProgram();
+	glAttachShader(id, vertex);
+	glAttachShader(id, fragment);
+	glLinkProgram(id);
+	glGetProgramiv(id, GL_LINK_STATUS, &success);
+	if (!success)
+	{
+		glGetProgramInfoLog(id, 512, NULL, infolog);
+		std::cout << "failed to link program:\n" << infolog << std::endl;
+	}
+
+	glDeleteShader(vertex);
+	glDeleteShader(fragment);
+
+	return create_ref<Shader>(id);
+}
+
+Shader::Shader(u32 id)
+	: m_id(id)
 {
 }
 

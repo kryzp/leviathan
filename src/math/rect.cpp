@@ -36,7 +36,7 @@ Vec2  Rect::top_right()    const { return Vec2(right(), top()); }
 Vec2  Rect::bottom_left()  const { return Vec2(left(),  bottom()); }
 Vec2  Rect::bottom_right() const { return Vec2(right(), bottom()); }
 
-bool Rect::intersects(const Vec2& other) const
+bool Rect::contains(const Vec2& other) const
 {
 	return (
 		this->left() < other.x &&

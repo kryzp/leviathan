@@ -39,7 +39,7 @@ void App::start(const AppConfig* cfg)
 
 	if (!init())
 	{
-		std::cout << "failed to initialize" << std::endl;
+		std::cout << "exiting..." << std::endl;
 		return;
 	}
 
@@ -49,9 +49,6 @@ void App::start(const AppConfig* cfg)
 
 bool App::init()
 {
-	if (g_config.on_init)
-		g_config.on_init();
-
 	if (!Platform::init(&g_config))
 	{
 		std::cout << "failed to initialize platform" << std::endl;
@@ -69,6 +66,9 @@ bool App::init()
 		std::cout << "failed to initialize input" << std::endl;
 		return false;
 	}
+
+	if (g_config.on_init)
+		g_config.on_init();
 
 	g_running = true;
 

@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 add_library(${PROJECT_NAME}
 
 	src/core/app.cpp
+	src/core/log.cpp
 	
 	src/containers/string.cpp
 
@@ -31,7 +32,7 @@ add_library(${PROJECT_NAME}
 	
 	src/backend/platform_sdl2.cpp
 	src/backend/graphics_opengl.cpp
-	src/third_party/glad/src/glad.c
+	src/third_party/glad/glad.c
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -45,8 +46,8 @@ target_include_directories(${PROJECT_NAME}
 
 set(OPENGL_ENABLED true CACHE BOOL "Use OpenGL as the graphics implementation")
 set(SDL2_ENABLED true CACHE BOOL "Use SDL2 as the system implementation")
-set(SDL2_INCLUDE_DIRS "D:/_DEV/libs/SDL2-2.0.16/include/")
-set(SDL2_LIBRARIES "D:/_DEV/libs/SDL2-2.0.16/lib/x64/SDL2.lib" "D:/_DEV/libs/SDL2-2.0.16/lib/x64/SDL2main.lib")
+set(SDL2_INCLUDE_DIRS "D:/_DEV/libs/SDL2-2.0.16/include/") # disgusting
+set(SDL2_LIBRARIES "D:/_DEV/libs/SDL2-2.0.16/lib/x64/SDL2.lib" "D:/_DEV/libs/SDL2-2.0.16/lib/x64/SDL2main.lib") # disgusting - the sequel
 
 set(DEBUG_MODE true)
 

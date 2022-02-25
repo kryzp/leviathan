@@ -25,7 +25,7 @@ namespace Lev
 		Vec2 bottom_left() const;
 		Vec2 bottom_right() const;
 
-		bool intersects(const Vec2& other) const;
+		bool contains(const Vec2& other) const;
 		bool intersects(const Rect& other) const;
 	};
 }

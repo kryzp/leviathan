@@ -19,9 +19,14 @@ float Calc::invsqrt(float x)
 	return 1.0f / sqrt(x);
 }
 
+float Calc::exp(float x)
+{
+	return ::powf(Calc::E, x);
+}
+
 float Calc::sigmoid(float x)
 {
-	return 1.0f - 1.0f/(1 + ::powf(Calc::E, x));
+	return 1.0f - 1.0f/(1 + exp(x));
 }
 
 float Calc::max(float a, float b)

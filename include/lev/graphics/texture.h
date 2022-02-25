@@ -14,7 +14,7 @@ namespace Lev
 	class Texture
 	{
 	public:
-		Texture();
+		Texture(u32 id, TextureFormat format);
 		~Texture();
 
 		void set(const byte* data);
@@ -23,6 +23,7 @@ namespace Lev
 
 		int width() const;
 		int height() const;
+		u32 id() const;
 
 		static Ref<Texture> create(const char* path);
 		static Ref<Texture> create(const Image& image);
@@ -30,6 +31,7 @@ namespace Lev
 
 	private:
 		u32 m_id;
+		TextureFormat m_format;
 		int m_width;
 		int m_height;
 
