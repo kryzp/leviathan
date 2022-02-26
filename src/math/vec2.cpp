@@ -50,6 +50,11 @@ Vec2 Vec2::normalized() const
 	);
 }
 
+Vec2 Vec2::perpendicular() const
+{
+	return Vec2(-y, x);
+}
+
 Vec2 Vec2::transform(const Vec2& vec, const Mat3x2& mat)
 {
 	return Vec2(

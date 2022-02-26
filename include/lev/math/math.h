@@ -9,3 +9,5 @@
 #include <lev/math/quad.h>
 #include <lev/math/rect.h>
 #include <lev/math/vec2.h>
+#include <lev/math/polygon.h>
+#include <lev/math/transform.h>

@@ -17,6 +17,11 @@ add_library(${PROJECT_NAME}
 	src/graphics/texture.cpp
 	src/graphics/shader.cpp
 
+	src/io/endian.cpp
+	src/io/file_stream.cpp
+	src/io/memory_stream.cpp
+	src/io/binary_stream.cpp
+
 	src/input/input.cpp
 
 	src/math/calc.cpp
@@ -29,6 +34,10 @@ add_library(${PROJECT_NAME}
 	src/math/quad.cpp
 	src/math/rect.cpp
 	src/math/vec2.cpp
+	src/math/polygon.cpp
+	src/math/transform.cpp
+
+	src/physics/collider.cpp
 	
 	src/backend/platform_sdl2.cpp
 	src/backend/graphics_opengl.cpp

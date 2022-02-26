@@ -16,6 +16,7 @@ namespace Lev
 	{
     public:
         Vector();
+        Vector(const Vector& other);
         Vector(std::initializer_list<T> data);
         Vector(int initial_capacity);
         ~Vector();
@@ -57,6 +58,16 @@ namespace Lev
         , m_size(0)
     {
     }
+
+    template <typename T>
+    Vector<T>::Vector(const Vector<T>& other)
+    {
+        allocate(other.m_size);
+        m_size = m_count = other.size();
+
+        for (int i = 0; i < m_size; i++)
+            m_buf[i] = other[i];
+    }
     
     template <typename T>
     Vector<T>::Vector(std::initializer_list<T> data)
@@ -70,11 +81,14 @@ namespace Lev
 
     template <typename T>
     Vector<T>::Vector(int initial_capacity)
-        : m_size(initial_capacity)
-        , m_buf(nullptr)
-        , m_count()
+        : m_buf(nullptr)
     {
         allocate(initial_capacity);
+
+        m_size = m_count = initial_capacity;
+
+        for (int i = 0; i < m_size; i++)
+            m_buf[i] = T();
     }
 
     template <typename T>
@@ -239,6 +253,6 @@ namespace Lev
     template<typename T>
     const T& Vector<T>::operator [] (int i) const
     {
-        return m_buf[i]
+        return m_buf[i];
     }
 }

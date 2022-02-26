@@ -195,6 +195,7 @@ Mat3x2& Mat3x2::operator *= (const Mat3x2& other)
 }
 
 const Mat3x2 Mat3x2::IDENTITY = Mat3x2(
-	1, 0, 0,
-	0, 1, 0
+	1, 0,
+	0, 1,
+	0, 0
 );

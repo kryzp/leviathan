@@ -1,4 +1,0 @@
-going to put physics utilities here intended to be as general as possible
-(the entity system uses this, but this wont directly talk to the entity system)
-
-so, stuff like polygons, rigidbodies, collision resolution, the fun stuff!

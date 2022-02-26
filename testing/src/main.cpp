@@ -39,6 +39,8 @@ namespace
 
 int main()
 {
+	Log::directory("D:\\_PROJECTS\\leviathan\\testing\\res\\logs\\");
+
 	AppConfig config;
 	config.name = "leviathan demo";
 	config.width = 1280;

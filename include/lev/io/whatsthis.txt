@@ -1,7 +1,0 @@
-file i/o stuff
-
-e.g:
- * memorystream
- * binarystream
- * filestream
- * endian-ness checking

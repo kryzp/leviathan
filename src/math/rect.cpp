@@ -27,15 +27,6 @@ Rect::Rect(float x, float y, float w, float h)
 {
 }
 
-float Rect::left()         const { return x; }
-float Rect::right()        const { return x + w; }
-float Rect::top()          const { return y; }
-float Rect::bottom()       const { return y + h; }
-Vec2  Rect::top_left()     const { return Vec2(left(),  top()); }
-Vec2  Rect::top_right()    const { return Vec2(right(), top()); }
-Vec2  Rect::bottom_left()  const { return Vec2(left(),  bottom()); }
-Vec2  Rect::bottom_right() const { return Vec2(right(), bottom()); }
-
 bool Rect::contains(const Vec2& other) const
 {
 	return (
@@ -55,3 +46,15 @@ bool Rect::intersects(const Rect& other) const
 		this->bottom() > other.top()
 	);
 }
+
+float Rect::left()         const { return x; }
+float Rect::right()        const { return x + w; }
+float Rect::top()          const { return y; }
+float Rect::bottom()       const { return y + h; }
+Vec2  Rect::top_left()     const { return Vec2(left(),  top()); }
+Vec2  Rect::top_right()    const { return Vec2(right(), top()); }
+Vec2  Rect::bottom_left()  const { return Vec2(left(),  bottom()); }
+Vec2  Rect::bottom_right() const { return Vec2(right(), bottom()); }
+
+const Rect Rect::ZERO  = Rect(0, 0, 0, 0);
+const Rect Rect::ONE   = Rect(0, 0, 1, 1);

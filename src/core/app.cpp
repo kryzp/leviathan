@@ -1,5 +1,6 @@
 #include <lev/core/app.h>
 #include <lev/core/util.h>
+#include <lev/core/log.h>
 
 #include <iostream>
 
@@ -67,6 +68,14 @@ bool App::init()
 		return false;
 	}
 
+#ifdef LEV_DEBUG
+	if (!Log::init())
+	{
+		std::cout << "failed to initialize logging" << std::endl;
+		return false;
+	}
+#endif
+
 	if (g_config.on_init)
 		g_config.on_init();
 
@@ -112,6 +121,10 @@ void App::destroy()
 	Platform::destroy();
 	Graphics::destroy();
 	Input::destroy();
+
+#ifdef LEV_DEBUG
+	Log::destroy();
+#endif
 
 	g_running = false;
 }
