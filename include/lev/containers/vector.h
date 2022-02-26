@@ -41,8 +41,8 @@ namespace Lev
         T* at(int i);
         const T* at(int i) const;
 
-        T* operator [] (int i);
-        const T* operator [] (int i) const;
+        T& operator [] (int i);
+        const T& operator [] (int i) const;
 
     private:
         T* m_buf = nullptr;
@@ -154,7 +154,7 @@ namespace Lev
 
         allocate(m_count + amount);
 
-        for (int i = 0; i < m_count; i++)
+        for (int i = 0; i < amount; i++)
             new (m_buf + m_count + i) T();
     }
 
@@ -231,14 +231,14 @@ namespace Lev
     }
 
     template<typename T>
-    T* Vector<T>::operator [] (int i)
+    T& Vector<T>::operator [] (int i)
     {
-        return at(i);
+        return m_buf[i];
     }
 
     template<typename T>
-    const T* Vector<T>::operator [] (int i) const
+    const T& Vector<T>::operator [] (int i) const
     {
-        return at(i);
+        return m_buf[i]
     }
 }
