@@ -40,6 +40,8 @@ namespace Lev
 
         Mat3x2 matrix();
 
+		std::function<void(void)> on_transformed;
+
     private:
         Mat3x2 m_matrix;
         Vec2 m_origin;

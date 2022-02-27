@@ -46,24 +46,19 @@ void Transform::origin(const Vec2& v)
 
 	m_origin = v;
 	m_dirty = true;
+
+	if (on_transformed)
+		on_transformed();
 }
 
 void Transform::origin(float x, float y)
 {
-	if (x == 0 && y == 0)
-		return;
-
-	m_origin = Vec2(x, y);
-	m_dirty = true;
+	origin(Vec2(x, y));
 }
 
 void Transform::offset(const Vec2& v)
 {
-	if (v == Vec2::ZERO)
-		return;
-
-	m_origin += v;
-	m_dirty = true;
+	origin(m_origin + v);
 }
 
 Vec2 Transform::position_with_origin() const
@@ -83,24 +78,19 @@ void Transform::position(const Vec2& v)
 
 	m_position = v;
 	m_dirty = true;
+
+	if (on_transformed)
+		on_transformed();
 }
 
 void Transform::position(float x, float y)
 {
-	if (x == 0 && y == 0)
-		return;
-
-	m_position = Vec2(x, y);
-	m_dirty = true;
+	position(Vec2(x, y));
 }
 
 void Transform::move(const Vec2& v)
 {
-	if (v == Vec2::ZERO)
-		return;
-
-	m_position += v;
-	m_dirty = true;
+	position(m_position + v);
 }
 
 void Transform::movex(float x)
@@ -110,6 +100,9 @@ void Transform::movex(float x)
 
 	m_position.x += x;
 	m_dirty = true;
+
+	if (on_transformed)
+		on_transformed();
 }
 
 void Transform::movey(float y)
@@ -119,6 +112,9 @@ void Transform::movey(float y)
 
 	m_position.y += y;
 	m_dirty = true;
+
+	if (on_transformed)
+		on_transformed();
 }
 
 Vec2 Transform::scale() const
@@ -133,15 +129,14 @@ void Transform::scale(const Vec2& v)
 
 	m_scale = v;
 	m_dirty = true;
+
+	if (on_transformed)
+		on_transformed();
 }
 
 void Transform::scale(float x, float y)
 {
-	if (x == 0 && y == 0)
-		return;
-
-	m_scale = Vec2(x, y);
-	m_dirty = true;
+	scale(Vec2(x, y));
 }
 
 float Transform::rotation() const
@@ -156,15 +151,14 @@ void Transform::rotation(float r)
 
 	m_rotation = r;
 	m_dirty = true;
+
+	if (on_transformed)
+		on_transformed();
 }
 
 void Transform::rotate(float r)
 {
-	if (r == 0)
-		return;
-
-	m_rotation += r;
-	m_dirty = true;
+	rotation(m_rotation + r);
 }
 
 float Transform::rotation_rad() const
