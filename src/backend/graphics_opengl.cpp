@@ -280,4 +280,14 @@ void Shader::set(const char* name, float value) const
 	glUniform1f(glGetUniformLocation(m_id, name), value);
 }
 
+void Shader::set(const char* name, const Mat3x2& value) const
+{
+	glUniformMatrix3x2fv(glGetUniformLocation(m_id, name), 1, GL_FALSE, value.value_ptr());
+}
+
+void Shader::set(const char* name, const Mat4x4& value) const
+{
+	glUniformMatrix4fv(glGetUniformLocation(m_id, name), 1, GL_FALSE, value.value_ptr());
+}
+
 #endif

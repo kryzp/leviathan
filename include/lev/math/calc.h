@@ -21,6 +21,9 @@ namespace Lev
 		float min(float a, float b);
 		float clamp(float v, float mn, float mx);
 
+		float floor(float x);
+		float ceil(float x);
+
 		float approach(float from, float to, float amount);
 		float lerp(float from, float to, float amount);
 

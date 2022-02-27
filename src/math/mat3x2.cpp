@@ -1,4 +1,5 @@
 #include <lev/math/mat3x2.h>
+#include <lev/math/mat4x4.h>
 #include <lev/math/vec2.h>
 #include <lev/math/calc.h>
 
@@ -15,23 +16,52 @@ that 'other' matrix to the position vector!
 using namespace Lev;
 
 Mat3x2::Mat3x2()
-	: m11(0)
-	, m12(0)
-	, m21(0)
-	, m22(0)
-	, m31(0)
-	, m32(0)
+	: m11(0), m12(0)
+	, m21(0), m22(0)
+	, m31(0), m32(0)
 {
 }
 
-Mat3x2::Mat3x2(float m11, float m12, float m21, float m22, float m31, float m32)
-	: m11(m11)
-	, m12(m12)
-	, m21(m21)
-	, m22(m22)
-	, m31(m31)
-	, m32(m32)
+Mat3x2::Mat3x2(float initial)
+	: m11(initial), m12(0)
+	, m21(0), m22(initial)
+	, m31(0), m32(0)
 {
+}
+
+Mat3x2::Mat3x2(
+	float m11, float m12,
+	float m21, float m22,
+	float m31, float m32
+)
+	: m11(m11), m12(m12)
+	, m21(m21), m22(m22)
+	, m31(m31), m32(m32)
+{
+}
+
+float* Mat3x2::value_ptr()
+{
+	return elements; //&m11;
+}
+
+const float* Mat3x2::value_ptr() const
+{
+	return elements; //&m11;
+}
+
+// this looks clunky (because it is)
+// basically im just copying over the 2D transformation (m11, m12, m21, m22)
+// and the position (m31, m32) and just ignoring the 3D transformation and extra Z-axis position
+Mat4x4 Mat3x2::to_mat4x4_transform() const
+{
+	// temp until im bored enough to make the transformation functions for the mat4x4...
+	return Mat4x4(
+		m11, m21, 0, 0,
+		m12, m22, 0, 0,
+		0,   0,   1, 0,
+		m31, m32, 0, 1
+	);
 }
 
 float Mat3x2::scaling_factor() const

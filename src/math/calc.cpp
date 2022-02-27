@@ -44,6 +44,16 @@ float Calc::clamp(float v, float mn, float mx)
 	return max(mn, min(mx, v));
 }
 
+float Calc::floor(float x)
+{
+	return ::floorf(x);
+}
+
+float Calc::ceil(float x)
+{
+	return ::ceilf(x);
+}
+
 float Calc::approach(float from, float to, float amount)
 {
 	return (to > from) ? min(from + amount, to) : max(from - amount, to);

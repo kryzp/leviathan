@@ -23,9 +23,18 @@ namespace
 
 	void update()
 	{
-		//static int time = 0;
-		//shd0->set("u_time", time);
-		//time++;
+		static int time = 0;
+		shd0->set("u_time", time);
+		time++;
+
+		Mat3x2 transform = Mat3x2::create_transformation(
+			Vec2::ZERO,
+			-time * Calc::DEG2RAD * 1/2,
+			Vec2::ONE,
+			Vec2::ZERO
+		);
+
+		shd0->set("u_transform", transform.to_mat4x4_transform());
 	}
 
 	void render()
@@ -46,6 +55,7 @@ int main()
 	config.width = 1280;
 	config.height = 720;
 	config.target_framerate = 60;
+	config.resizable = true;
 	config.on_update = update;
 	config.on_render = render;
 	config.on_init = init;

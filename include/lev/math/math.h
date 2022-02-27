@@ -5,7 +5,6 @@
 #include <lev/math/line.h>
 #include <lev/math/mat3x2.h>
 #include <lev/math/mat4x4.h>
-#include <lev/math/matrix.h>
 #include <lev/math/quad.h>
 #include <lev/math/rect.h>
 #include <lev/math/vec2.h>

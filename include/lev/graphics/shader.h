@@ -1,6 +1,8 @@
 #pragma once
 
 #include <lev/core/util.h>
+#include <lev/math/mat3x2.h>
+#include <lev/math/mat4x4.h>
 
 namespace Lev
 {
@@ -34,6 +36,8 @@ namespace Lev
 		void set(const char* name, bool value) const;
 		void set(const char* name, int value) const;
 		void set(const char* name, float value) const;
+		void set(const char* name, const Mat3x2& value) const;
+		void set(const char* name, const Mat4x4& value) const;
 
 		static Ref<Shader> create(const char* vertex, const char* fragment);
 
