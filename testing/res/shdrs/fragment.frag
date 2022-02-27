@@ -5,7 +5,7 @@ out vec4 frag_colour;
 in vec3 in_colour;
 in vec2 tex_coord;
 
-uniform int u_time;
+uniform float u_time;
 uniform sampler2D u_texture;
 
 void main()

@@ -25,6 +25,7 @@ add_library(${PROJECT_NAME}
 	src/input/input.cpp
 
 	src/math/calc.cpp
+	src/math/ease.cpp
 	src/math/circle.cpp
 	src/math/colour.cpp
 	src/math/float2.cpp

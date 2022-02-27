@@ -19,6 +19,11 @@ float Calc::invsqrt(float x)
 	return 1.0f / sqrt(x);
 }
 
+float Calc::pow(float x, float e)
+{
+	return ::powf(x, e);
+}
+
 float Calc::exp(float x)
 {
 	return ::powf(Calc::E, x);

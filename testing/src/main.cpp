@@ -21,15 +21,34 @@ namespace
 		batch.set_shader(shd0);
 	}
 
+	float rotation_time = 0.0f;
+	float target_rotation = 0.0f;
+	float rotation = 0.0f;
+
+	float shader_time = 0.0f;
+
 	void update()
 	{
-		static int time = 0;
-		shd0->set("u_time", time);
-		time++;
+		shd0->set("u_time", shader_time++);
+
+		float duration = 250.0f;
+		float t = rotation_time / duration;
+		if (rotation_time < duration)
+		{
+			t = Ease::exp_in_out(t);
+			rotation = target_rotation + Calc::PI*t;
+		}
+		else
+		{
+			target_rotation += Calc::PI;
+			rotation_time = 0;
+		}
+
+		rotation_time++;
 
 		Mat3x2 transform = Mat3x2::create_transformation(
 			Vec2::ZERO,
-			-time * Calc::DEG2RAD * 1/2,
+			-rotation,
 			Vec2::ONE,
 			Vec2::ZERO
 		);

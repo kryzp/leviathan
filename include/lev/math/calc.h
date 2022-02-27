@@ -14,6 +14,7 @@ namespace Lev
 		float sqrt(float x);
 		float invsqrt(float x);
 
+		float pow(float x, float e);
 		float exp(float x);
 		float sigmoid(float x);
 

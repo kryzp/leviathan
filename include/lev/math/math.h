@@ -1,4 +1,5 @@
 #include <lev/math/calc.h>
+#include <lev/math/ease.h>
 #include <lev/math/circle.h>
 #include <lev/math/colour.h>
 #include <lev/math/float2.h>
