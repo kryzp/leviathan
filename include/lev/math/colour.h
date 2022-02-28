@@ -22,7 +22,7 @@ namespace Lev
 		u8 a;
 
 		Colour();
-		Colour(u8 r, u8 g, u8 b, u8 a);
+		Colour(u8 r, u8 g, u8 b, u8 a = 255);
 
 		void premultiply();
 		Colour premultiplied() const;

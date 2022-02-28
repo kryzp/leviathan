@@ -71,8 +71,6 @@ void Log::warn(const char* fmt, ...)
 void Log::file(const char* type, const char *msg, ...)
 {
     FILE *f = fopen(g_curr_file, "a");
-    char log_type[32];
-    strcpy(log_type, type);
     
     va_list args;
     va_start(args, msg);
@@ -82,7 +80,7 @@ void Log::file(const char* type, const char *msg, ...)
     
     if (f)
     {
-        fprintf(f, "[%s] %s\n", log_type, format);
+        fprintf(f, "[%s] %s\n", type, format);
         fclose(f);
     }
     

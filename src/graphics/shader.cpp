@@ -1,11 +1,19 @@
 #include <lev/graphics/shader.h>
-#include <backend/graphics.h>
+#include <backend/renderer.h>
 
 #include <iostream>
 #include <fstream>
 #include <sstream>
 
 using namespace Lev;
+
+Shader::Shader()
+{
+}
+
+Shader::~Shader()
+{
+}
 
 Ref<Shader> Shader::create(const char* vertex, const char* fragment)
 {
@@ -19,19 +27,25 @@ Ref<Shader> Shader::create(const char* vertex, const char* fragment)
 		std::ifstream fragment_file(fragment);
 		
 		buffer << vertex_file.rdbuf();
-		strncpy(data.vertex_source, buffer.str().c_str(), 512);
+		data.vertex_source = buffer.str().c_str();
 
 		buffer.str(std::string());
 
 		buffer << fragment_file.rdbuf();
-		strncpy(data.fragment_source, buffer.str().c_str(), 512);
+		data.fragment_source = buffer.str().c_str();
 	}
 
-	Ref<Shader> result = Graphics::create_shader(data);
+	Ref<Shader> result = Renderer::create_shader(data);
 	return result;
 }
 
-u32 Shader::id() const
+const UniformData& Shader::get_uniform_data(UniformFlags flags) const
 {
-	return m_id;
+	for (auto& uniform : data().uniforms)
+	{
+		if (uniform.flags == flags)
+			return uniform;
+	}
+
+	return UniformData();
 }

@@ -1,7 +1,15 @@
 #include <lev/graphics/texture.h>
-#include <backend/graphics.h>
+#include <backend/renderer.h>
 
 using namespace Lev;
+
+Texture::Texture()
+{
+}
+
+Texture::~Texture()
+{
+}
 
 Ref<Texture> Texture::create(const char* path)
 {
@@ -15,25 +23,14 @@ Ref<Texture> Texture::create(const Image& image)
 
 Ref<Texture> Texture::create(int width, int height, const byte* data, TextureFormat format)
 {
-	Ref<Texture> result = Graphics::create_texture(width, height, format);
-	result->m_width = width;
-	result->m_height = height;
+	TextureData tex = {
+		.width = width,
+		.height = height,
+		.format = format
+	};
+
+	Ref<Texture> result = Renderer::create_texture(tex);
 	result->set(data);
 
 	return result;
-}
-
-int Texture::width() const
-{
-	return m_width;
-}
-
-int Texture::height() const
-{
-	return m_height;
-}
-
-u32 Texture::id() const
-{
-	return m_id;
 }

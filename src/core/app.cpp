@@ -5,7 +5,7 @@
 #include <iostream>
 
 #include <backend/platform.h>
-#include <backend/graphics.h>
+#include <backend/renderer.h>
 #include <backend/input.h>
 
 using namespace Lev;
@@ -40,7 +40,7 @@ void App::start(const AppConfig* cfg)
 
 	if (!init())
 	{
-		std::cout << "exiting..." << std::endl;
+		Log::error("exiting...");
 		return;
 	}
 
@@ -50,31 +50,33 @@ void App::start(const AppConfig* cfg)
 
 bool App::init()
 {
+#ifdef LEV_DEBUG
+	if (!Log::init())
+	{
+		// r/hmmm
+		Log::error("failed to initialize logging");
+
+		return false;
+	}
+#endif
+
 	if (!Platform::init(&g_config))
 	{
-		std::cout << "failed to initialize platform" << std::endl;
+		Log::error("failed to initialize platform");
 		return false;
 	}
 
-	if (!Graphics::init())
+	if (!Renderer::init())
 	{
-		std::cout << "failed to initialize graphics" << std::endl;
+		Log::error("failed to initialize rendering");
 		return false;
 	}
 
 	if (!Input::init())
 	{
-		std::cout << "failed to initialize input" << std::endl;
+		Log::error("failed to initialize input");
 		return false;
 	}
-
-#ifdef LEV_DEBUG
-	if (!Log::init())
-	{
-		std::cout << "failed to initialize logging" << std::endl;
-		return false;
-	}
-#endif
 
 	if (g_config.on_init)
 		g_config.on_init();
@@ -102,12 +104,12 @@ void App::run()
 
 		// render
 		{
-			Graphics::before_render();
+			Renderer::before_render();
 
 			if (g_config.on_render)
 				g_config.on_render();
 
-			Graphics::after_render();
+			Renderer::after_render();
 			Platform::present();
 		}
 	}
@@ -119,7 +121,7 @@ void App::destroy()
 		g_config.on_destroy();
 
 	Platform::destroy();
-	Graphics::destroy();
+	Renderer::destroy();
 	Input::destroy();
 
 #ifdef LEV_DEBUG
@@ -166,5 +168,5 @@ int App::draw_height()
 
 RendererType App::renderer_type()
 {
-	return Graphics::renderer_type();
+	return Renderer::renderer_type();
 }

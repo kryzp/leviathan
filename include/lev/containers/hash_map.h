@@ -7,5 +7,6 @@ namespace Lev
 	template <typename Key, typename Value>
 	class HashMap
 	{
+		// todo
 	};
 };

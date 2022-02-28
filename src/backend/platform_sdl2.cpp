@@ -1,7 +1,7 @@
 #if LEV_USE_SDL2
 
 #include <backend/platform.h>
-#include <backend/graphics.h>
+#include <backend/renderer.h>
 #include <lev/core/app.h>
 #include <iostream>
 
@@ -92,7 +92,7 @@ void Platform::update()
 
 void Platform::present()
 {
-	if (Graphics::renderer_type() == RendererType::OpenGL)
+	if (Renderer::renderer_type() == RendererType::OpenGL)
 		SDL_GL_SwapWindow(g_window);
 
 	SDL_ShowWindow(g_window);
@@ -116,7 +116,7 @@ int Platform::draw_width()
 {
 	int result = 0;
 
-	if (Graphics::renderer_type() == RendererType::OpenGL)
+	if (Renderer::renderer_type() == RendererType::OpenGL)
 		SDL_GL_GetDrawableSize(g_window, &result, nullptr);
 	else
 		result = window_width();
@@ -128,7 +128,7 @@ int Platform::draw_height()
 {
 	int result = 0;
 
-	if (Graphics::renderer_type() == RendererType::OpenGL)
+	if (Renderer::renderer_type() == RendererType::OpenGL)
 		SDL_GL_GetDrawableSize(g_window, nullptr, &result);
 	else
 		result = window_height();
@@ -136,7 +136,7 @@ int Platform::draw_height()
 	return result;
 }
 
-void* Platform::context_create()
+void* Platform::gl_context_create()
 {
 	if (App::renderer_type() == RendererType::OpenGL)
 		return SDL_GL_CreateContext(g_window);
@@ -144,13 +144,13 @@ void* Platform::context_create()
 	return nullptr;
 }
 
-void Platform::context_make_current(void* context)
+void Platform::gl_context_make_current(void* context)
 {
 	if (App::renderer_type() == RendererType::OpenGL)
 		SDL_GL_MakeCurrent(g_window, context);
 }
 
-void Platform::context_destroy(void* context)
+void Platform::gl_context_destroy(void* context)
 {
 	if (App::renderer_type() == RendererType::OpenGL)
 		SDL_GL_DeleteContext(context);

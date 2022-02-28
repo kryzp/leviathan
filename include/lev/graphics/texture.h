@@ -11,29 +11,28 @@ namespace Lev
 		RGBA
 	};
 
+	struct TextureData
+	{
+		int width;
+		int height;
+
+		TextureFormat format;
+	};
+
 	class Texture
 	{
 	public:
-		Texture(u32 id, TextureFormat format);
-		~Texture();
+		Texture();
+		virtual ~Texture();
 
-		void set(const byte* data);
-		void bind(int i = 0) const;
-		void free() const;
+		virtual void set(const byte* data) = 0;
+		virtual void bind(int i = 0) const = 0;
 
-		int width() const;
-		int height() const;
-		u32 id() const;
+		virtual TextureData data() const = 0;
 
 		static Ref<Texture> create(const char* path);
 		static Ref<Texture> create(const Image& image);
 		static Ref<Texture> create(int width, int height, const byte* data, TextureFormat format);
-
-	private:
-		u32 m_id;
-		TextureFormat m_format;
-		int m_width;
-		int m_height;
 
 	};
 }

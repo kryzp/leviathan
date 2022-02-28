@@ -5,10 +5,6 @@
 
 namespace Lev
 {
-	// :sunglasses: cry about it :sunglasses:
-	// basically my string implementation has a "maximum size" allocated, which for regular strings is 64.
-	// its much more efficient to allocate the memory up-front rather than allocate it every time it is edited.
-
 	template <int Size>
 	class Str
 	{
@@ -49,8 +45,8 @@ namespace Lev
 
 	template <int Size>
 	Str<Size>::Str()
-		: m_length(0)
-		, m_buf(nullptr)
+		: m_buf(nullptr)
+		, m_length(0)
 	{
 		m_buf = new char[Size+1];
 		memset(m_buf, 0, Size);

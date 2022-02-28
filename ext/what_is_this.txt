@@ -1,2 +1,12 @@
 ill just dump some single header "extensions" for leviathan here, which
 will let you just drag and drop them into a project and then just use 'em.
+
+-> theyll only use the leviathan lib and nothing else so by including one you dont end up including the rest of time and space aswell
+   -> and if they did it'd be in a case like a TiledMap renderer extension needing to also have a TiledMap parser/asset extension
+
+examples include:
+ * gaussian blur
+ * physics extensions
+ * rendering extensions
+ * extra entity 'components'
+ * support for more file types / parsing into usable assets (e.g: `Tiled` maps, `Aseprite` files)

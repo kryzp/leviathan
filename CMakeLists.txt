@@ -41,7 +41,7 @@ add_library(${PROJECT_NAME}
 	src/physics/collider.cpp
 	
 	src/backend/platform_sdl2.cpp
-	src/backend/graphics_opengl.cpp
+	src/backend/renderer_opengl.cpp
 	src/third_party/glad/glad.c
 )
 

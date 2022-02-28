@@ -42,36 +42,22 @@ Mat3x2::Mat3x2(
 
 float* Mat3x2::value_ptr()
 {
-	return elements; //&m11;
+	return elements;//&m11;
 }
 
 const float* Mat3x2::value_ptr() const
 {
-	return elements; //&m11;
-}
-
-// this looks clunky (because it is)
-// basically im just copying over the 2D transformation (m11, m12, m21, m22)
-// and the position (m31, m32) and just ignoring the 3D transformation and extra Z-axis position
-Mat4x4 Mat3x2::to_mat4x4_transform() const
-{
-	// temp until im bored enough to make the transformation functions for the mat4x4...
-	return Mat4x4(
-		m11, m21, 0, 0,
-		m12, m22, 0, 0,
-		0,   0,   1, 0,
-		m31, m32, 0, 1
-	);
+	return elements;//&m11;
 }
 
 float Mat3x2::scaling_factor() const
 {
-	return Calc::sqrt(m11 * m11 + m12 * m12);
+	return Calc::sqrt(m11*m11 + m12*m12);
 }
 
 float Mat3x2::determinant() const
 {
-	return (m11 * m22) - (m21 * m12);
+	return m11*m22 - m21*m12;
 }
 
 Mat3x2 Mat3x2::inverse() const
@@ -83,75 +69,64 @@ Mat3x2 Mat3x2::inverse() const
 		-m12 * inv_det,
 		-m21 * inv_det,
 		 m11 * inv_det,
-		(m21 * m32 - m31 * m22) * inv_det,
-		(m31 * m12 - m11 * m32) * inv_det
+		(m21*m32 - m31*m22) * inv_det,
+		(m31*m12 - m11*m32) * inv_det
 	);
 }
 
 Mat3x2 Lev::Mat3x2::create_skew(const Vec2& amount)
 {
-	Mat3x2 mat;
-
-	mat.m11 = 1;
-	mat.m12 = amount.y;
-	mat.m21 = amount.x;
-	mat.m22 = 1;
-	mat.m31 = 0;
-	mat.m32 = 0;
-
-	return mat;
+	return Mat3x2(
+		1, amount.y,
+		amount.x, 1,
+		0, 0
+	);
 }
 
 Mat3x2 Mat3x2::create_scale(const Vec2& scale)
 {
-	Mat3x2 mat;
+	return Mat3x2(
+		scale.x, 0,
+		0, scale.y,
+		0, 0
+	);
+}
 
-	mat.m11 = scale.x;
-	mat.m12 = 0;
-	mat.m21 = 0;
-	mat.m22 = scale.y;
-	mat.m31 = 0;
-	mat.m32 = 0;
-
-	return mat;
+Mat3x2 Mat3x2::create_scale(float scale)
+{
+	return Mat3x2(
+		scale, 0,
+		0, scale,
+		0, 0
+	);
 }
 
 Mat3x2 Mat3x2::create_rotation(float rotation)
 {
-	Mat3x2 mat;
-
-	mat.m11 = +Calc::cos(rotation);
-	mat.m12 = -Calc::sin(rotation);
-	mat.m21 = +Calc::sin(rotation);
-	mat.m22 = +Calc::cos(rotation);
-	mat.m31 = 0;
-	mat.m32 = 0;
-
-	return mat;
+	return Mat3x2(
+		Calc::cos(rotation), Calc::sin(rotation),
+		-Calc::sin(rotation), Calc::cos(rotation),
+		0, 0
+	);
 }
 
-Mat3x2 Mat3x2::create_translation(const Vec2& position)
+Mat3x2 Mat3x2::create_translation(const Vec2& translation)
 {
-	Mat3x2 mat;
-
-	mat.m11 = 1;
-	mat.m12 = 0;
-	mat.m21 = 0;
-	mat.m22 = 1;
-	mat.m31 = position.x;
-	mat.m32 = position.y;
-
-	return mat;
+	return Mat3x2(
+		1, 0,
+		0, 1,
+		translation.x, translation.y
+	);
 }
 
 Mat3x2 Mat3x2::create_transformation(const Vec2& position, float rotation, const Vec2& scale, const Vec2& origin)
 {
-	Mat3x2 mat = IDENTITY;
+	Mat3x2 mat = Mat3x2::IDENTITY;
 
 	if (origin.x != 0 || origin.y != 0)
 		mat *= create_translation(-origin);
 
-	if (scale.x != 0 || scale.y != 0)
+	if (scale.x != 1 || scale.y != 1)
 		mat *= create_scale(scale);
 
 	if (rotation != 0)
@@ -197,12 +172,12 @@ hence, m31 and m32 dont get to get multiplied like the other cool numbers
 Mat3x2 Mat3x2::operator * (const Mat3x2& other)
 {
 	return Mat3x2(
-		(m11 * other.m11) + (m12 * other.m21),
-		(m11 * other.m12) + (m12 * other.m22),
-		(m21 * other.m11) + (m22 * other.m21),
-		(m21 * other.m12) + (m22 * other.m22),
-		(m31 * other.m11) + (m32 * other.m21) + other.m31, 
-		(m31 * other.m12) + (m32 * other.m22) + other.m32
+		(this->m11 * other.m11) + (this->m12 * other.m21),
+		(this->m11 * other.m12) + (this->m12 * other.m22),
+		(this->m21 * other.m11) + (this->m22 * other.m21),
+		(this->m21 * other.m12) + (this->m22 * other.m22),
+		(this->m31 * other.m11) + (this->m32 * other.m21) + other.m31, 
+		(this->m31 * other.m12) + (this->m32 * other.m22) + other.m32
 	);
 }
 

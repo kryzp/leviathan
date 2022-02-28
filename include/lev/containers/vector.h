@@ -8,9 +8,6 @@
 
 namespace Lev
 {
-    // im pretty sure this is much worse than the standard library vector...
-    // was still fun to make though!
-
 	template <typename T>
 	class Vector
 	{
@@ -24,7 +21,12 @@ namespace Lev
         void allocate(int capacity);
         void resize(int new_size);
         void erase(int index, int amount);
-        void expand(int amount);
+        void expand(int amount = 1);
+
+        T& front();
+        const T& front() const;
+        T& back();
+        const T& back() const;
 
         void push_front(T item);
         void push_back(T item);
@@ -62,11 +64,14 @@ namespace Lev
     template <typename T>
     Vector<T>::Vector(const Vector<T>& other)
     {
-        allocate(other.m_size);
-        m_size = m_count = other.size();
+        if (other.m_size > 0)
+        {
+            allocate(other.m_size);
+            m_size = m_count = other.size();
 
-        for (int i = 0; i < m_size; i++)
-            m_buf[i] = other[i];
+            for (int i = 0; i < m_size; i++)
+                m_buf[i] = other[i];
+        }
     }
     
     template <typename T>
@@ -96,18 +101,22 @@ namespace Lev
     {
         m_size = 0;
         m_count = 0;
-        m_buf = 0;
+        m_buf = nullptr;
     }
 
     template <typename T>
     void Vector<T>::clear()
     {
-        m_count = 0;
-
         for (int i = 0; i < m_count; i++)
             m_buf[i].~T();
 
+        if (m_buf)
+            ::operator delete (m_buf, sizeof(T) * m_size);
+
         m_buf = nullptr;
+
+        m_count = 0;
+        m_size = 0;
     }
 
     template <typename T>
@@ -121,20 +130,28 @@ namespace Lev
     {
         LEV_ASSERT(capacity > 0);
 
-		T* new_buf = (T*)::operator new (sizeof(T) * capacity);
-
-        for (int i = 0; i < m_count; i++)
+        if (capacity > m_size)
         {
-            if (i < m_size)
-                new (new_buf+i) T(std::move(m_buf[i]));
+            int newsize = Calc::max(1, m_size);
+            
+            while (newsize < capacity)
+                newsize *= 2;
 
-            m_buf[i].~T();
+		    T* new_buf = (T*)::operator new (sizeof(T) * capacity);
+
+            for (int i = 0; i < m_count; i++)
+            {
+                if (i < m_size)
+                    new (new_buf+i) T(std::move(m_buf[i]));
+
+                m_buf[i].~T();
+            }
+
+		    ::operator delete (m_buf, sizeof(T) * m_size);
+
+            m_buf = new_buf;
+            m_size = newsize;
         }
-
-		::operator delete (m_buf, sizeof(T) * m_size);
-
-        m_buf = new_buf;
-        m_size = capacity;
     }
 
     template <typename T>
@@ -173,6 +190,30 @@ namespace Lev
     }
 
     template <typename T>
+    T& Vector<T>::front()
+    {
+        return m_buf[0];
+    }
+
+    template <typename T>
+    const T& Vector<T>::front() const
+    {
+        return m_buf[0];
+    }
+
+    template <typename T>
+    T& Vector<T>::back()
+    {
+        return m_buf[m_count - 1];
+    }
+
+    template <typename T>
+    const T& Vector<T>::back() const
+    {
+        return m_buf[m_count - 1];
+    }
+
+    template <typename T>
     void Vector<T>::push_front(T item)
     {
         resize(m_count + 1);
@@ -193,7 +234,7 @@ namespace Lev
     T Vector<T>::pop_front()
     {
         T item = std::move(*m_buf);
-        (*m_buf).~T();
+        m_buf[0].~T();
         memmove(m_buf - 1, m_buf, sizeof(T) * m_count);
         resize(m_count - 1);
         return item;
@@ -202,8 +243,9 @@ namespace Lev
     template <typename T>
     T Vector<T>::pop_back()
     {
+        // todo: wait i think m_size isnt changed here??? is this a bug?? too lazy rn fix later future me
         T item = std::move(*(m_buf + m_count - 1));
-        (*(m_buf + m_count - 1)).~T();
+        m_buf[m_count-1].~T();
         resize(m_count - 1);
         return item;
     }

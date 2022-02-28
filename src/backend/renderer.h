@@ -17,16 +17,15 @@ namespace Lev
 
 	struct RenderPass
 	{
-		float* vertices; // todo: super temporary! (maybe if i keep saying this i can trick myself into thinking i wont keep this till the end of time)
+		// todo: temp, this stuff will be in the mesh
+		float* vertices;
 		int vertex_count;
 
 		u32* indices;
 		int index_count;
-		
-		// data on what to render...
 	};
 
-	namespace Graphics
+	namespace Renderer
 	{
 		bool init();
 		void destroy();
@@ -38,7 +37,7 @@ namespace Lev
 
 		void clear(float r, float g, float b, float a = 1.0f);
 
-		Ref<Texture> create_texture(int width, int height, TextureFormat format);
+		Ref<Texture> create_texture(const TextureData& data);
 		Ref<Shader> create_shader(const ShaderData& data);
 
 		RendererType renderer_type();

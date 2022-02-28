@@ -1,8 +1,12 @@
 #pragma once
 
 #include <lev/graphics/texture.h>
+#include <lev/graphics/texture_sampler.h>
 #include <lev/graphics/shader.h>
 #include <lev/math/mat3x2.h>
+#include <lev/math/mat4x4.h>
+#include <lev/math/vec2.h>
+#include <lev/math/colour.h>
 #include <lev/containers/vector.h>
 
 namespace Lev
@@ -15,14 +19,39 @@ namespace Lev
 
 		void push_matrix(const Mat3x2& mat);
 		Mat3x2 pop_matrix();
-		Mat3x2 final_transform() const;
 
-		void set_shader(const Ref<Shader>& shader);
+		void push_shader(const Ref<Shader>& shader);
+		Ref<Shader> pop_shader();
+		const Ref<Shader>& current_shader() const;
 
-		void render_vertices(float* vertices, int vertex_count, u32* indices, int index_count);
-		void render_quad(int x, int y);
+		void render(const Mat4x4& projection);
+
+		void render_texture(const Ref<Texture>& texture);
 
 	private:
-		Vector<Mat3x2> m_transform_stack;
+		struct Vertex
+		{
+			Vec2 pos;
+			Colour col;
+			Vec2 texcoord;
+		};
+
+		struct RenderBatch
+		{
+			Ref<Texture> texture;
+			TextureSampler sampler;
+			Mat3x2 matrix;
+		};
+
+		void render_batch(const RenderBatch& b);
+
+		void compute_matrix();
+
+		Vector<Mat3x2> m_matrix_stack;
+		Mat3x2 m_transform_matrix;
+
+		Vector<Ref<Shader>> m_shader_stack;
+
+		Vector<RenderBatch> m_batches;
 	};
 }

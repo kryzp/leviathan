@@ -1,47 +1,72 @@
 #pragma once
 
 #include <lev/core/util.h>
+#include <lev/containers/vector.h>
+#include <lev/containers/string.h>
 #include <lev/math/mat3x2.h>
 #include <lev/math/mat4x4.h>
 
 namespace Lev
 {
+	// informs the backend on if it should use the uniforms in a specific way
+	// e.g: flag what uniform should be set by the sprite batch when rendering a texture
+	// e.g: flag what unifrom should be used as the projection matrix
+	// not sure if this is the best way to go about doing things buuuutttttt...
+
+	enum class UniformFlags
+	{
+		None,
+		Projection,
+		MainTexture
+	};
+
 	enum class UniformType
 	{
-        Float,
         Integer,
+        Float,
         Vector2,
         Vector3,
-        Vector4
+        Vector4,
+		Mat3x2,
+		Mat4x4,
+		Sampler2D
+	};
+
+	struct UniformData
+	{
+		String name;
+		UniformType type;
+		UniformFlags flags;
 	};
 
 	struct ShaderData
 	{
-		char vertex_source[512]; // todo: string class?
-		char fragment_source[512];
+		Str<512> vertex_source;
+		Str<512> fragment_source;
 
-		// stuff like uniforms, source data, etc...
+		// todo: hash map? (name = key)
+		Vector<UniformData> uniforms;
 	};
 
 	class Shader
 	{
 	public:
-		Shader(u32 id);
-		~Shader();
+		Shader();
+		virtual ~Shader();
 
-		void use() const;
-		void free() const;
-		u32 id() const;
+		virtual void use() const = 0;
+		virtual ShaderData data() const = 0;
 
-		void set(const char* name, bool value) const;
-		void set(const char* name, int value) const;
-		void set(const char* name, float value) const;
-		void set(const char* name, const Mat3x2& value) const;
-		void set(const char* name, const Mat4x4& value) const;
+		virtual void set(const char* name, bool value) const = 0;
+		virtual void set(const char* name, int value) const = 0;
+		virtual void set(const char* name, float value) const = 0;
+		virtual void set(const char* name, const Mat3x2& value) const = 0;
+		virtual void set(const char* name, const Mat4x4& value) const = 0;
+
+		virtual void assign_uniform(const char* name, UniformType type, UniformFlags flags) = 0;
+		
+		const UniformData& get_uniform_data(UniformFlags flags) const;
 
 		static Ref<Shader> create(const char* vertex, const char* fragment);
-
-	private:
-		u32 m_id;
 	};
 }

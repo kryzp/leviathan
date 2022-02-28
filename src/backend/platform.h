@@ -19,9 +19,9 @@ namespace Lev
 		int draw_width();
 		int draw_height();
 
-		void* context_create();
-		void context_make_current(void* context);
-		void context_destroy(void* context);
+		void* gl_context_create();
+		void gl_context_make_current(void* context);
+		void gl_context_destroy(void* context);
 
 		// todo: is there a way to make this support other libs like vulkan and directx?
 		bool gl_load_glad_loader();
