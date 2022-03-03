@@ -5,6 +5,9 @@
 
 #include <lev/graphics/shader.h>
 #include <lev/graphics/texture.h>
+#include <lev/graphics/mesh.h>
+#include <lev/graphics/material.h>
+#include <lev/graphics/framebuffer.h>
 
 namespace Lev
 {
@@ -23,6 +26,10 @@ namespace Lev
 
 		u32* indices;
 		int index_count;
+
+		// todo
+		Ref<Mesh> mesh;
+		Ref<Material> material;
 	};
 
 	namespace Renderer
@@ -39,6 +46,8 @@ namespace Lev
 
 		Ref<Texture> create_texture(const TextureData& data);
 		Ref<Shader> create_shader(const ShaderData& data);
+		Ref<Framebuffer> create_framebuffer();
+		Ref<Mesh> create_mesh();
 
 		RendererType renderer_type();
 	}

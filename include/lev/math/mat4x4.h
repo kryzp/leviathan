@@ -53,9 +53,9 @@ namespace Lev
 		float* value_ptr();
 		const float* value_ptr() const;
 
-		Mat4x4 operator - (const Mat4x4& other);
-		Mat4x4 operator + (const Mat4x4& other);
-		Mat4x4 operator * (const Mat4x4& other);
+		Mat4x4 operator - (const Mat4x4& other) const;
+		Mat4x4 operator + (const Mat4x4& other) const;
+		Mat4x4 operator * (const Mat4x4& other) const;
 
 		Mat4x4& operator -= (const Mat4x4& other);
 		Mat4x4& operator += (const Mat4x4& other);

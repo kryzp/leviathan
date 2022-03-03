@@ -6,37 +6,110 @@ namespace Lev
 {
 	struct Vec2;
 
+	template <typename T>
 	struct Rect
 	{
 		static const Rect ZERO;
 		static const Rect ONE;
 
-		float x;
-		float y;
-		float w;
-		float h;
+		T x;
+		T y;
+		T w;
+		T h;
 
 		Rect();
-		Rect(float w, float h);
-		Rect(float x, float y, float w, float h);
+		Rect(T w, T h);
+		Rect(T x, T y, T w, T h);
 
-		float left() const;
-		float right() const;
-		float top() const;
-		float bottom() const;
+		bool contains(const Vec2& other) const;
+		bool intersects(const Rect& other) const;
+
+		Vec2 position() const;
+		Vec2 size() const;
+
+		T left() const;
+		T right() const;
+		T top() const;
+		T bottom() const;
 
 		Vec2 top_left() const;
 		Vec2 top_right() const;
 		Vec2 bottom_left() const;
 		Vec2 bottom_right() const;
 
-		bool contains(const Vec2& other) const;
-		bool intersects(const Rect& other) const;
-
 		friend std::ostream& operator << (std::ostream& os, const Rect& r);
 	};
 
-	inline std::ostream& operator << (std::ostream& os, const Rect& r)
+	template <typename T> const Rect<T> Rect<T>::ZERO = Rect<T>(0, 0, 0, 0);
+	template <typename T> const Rect<T> Rect<T>::ONE  = Rect<T>(0, 0, 1, 1);
+
+	using RectF = Rect<float>;
+	using RectI = Rect<int>;
+
+	template <typename T>
+	Rect<T>::Rect()
+		: x(0)
+		, y(0)
+		, w(0)
+		, h(0)
+	{
+	}
+
+	template <typename T>
+	Rect<T>::Rect(T w, T h)
+		: x(0)
+		, y(0)
+		, w(w)
+		, h(h)
+	{
+	}
+
+	template <typename T>
+	Rect<T>::Rect(T x, T y, T w, T h)
+		: x(x)
+		, y(y)
+		, w(w)
+		, h(h)
+	{
+	}
+
+	template <typename T>
+	bool Rect<T>::contains(const Vec2& other) const
+	{
+		return (
+			this->left() < other.x &&
+			this->right() > other.x &&
+			this->top() < other.y &&
+			this->bottom() > other.y
+		);
+	}
+
+	template <typename T>
+	bool Rect<T>::intersects(const Rect<T>& other) const
+	{
+		return (
+			this->left() < other.right() &&
+			this->right() > other.left() &&
+			this->top() < other.bottom() &&
+			this->bottom() > other.top()
+		);
+	}
+
+	template <typename T> Vec2 Rect<T>::position() const { return Vec2(x, y); }
+	template <typename T> Vec2 Rect<T>::size() const { return Vec2(w, h); }
+
+	template <typename T> T Rect<T>::left()   const { return x; }
+	template <typename T> T Rect<T>::right()  const { return x + w; }
+	template <typename T> T Rect<T>::top()    const { return y; }
+	template <typename T> T Rect<T>::bottom() const { return y + h; }
+
+	template <typename T> Vec2 Rect<T>::top_left()     const { return Vec2(left(),  top()); }
+	template <typename T> Vec2 Rect<T>::top_right()    const { return Vec2(right(), top()); }
+	template <typename T> Vec2 Rect<T>::bottom_left()  const { return Vec2(left(),  bottom()); }
+	template <typename T> Vec2 Rect<T>::bottom_right() const { return Vec2(right(), bottom()); }
+
+	template <typename T>
+	inline std::ostream& operator << (std::ostream& os, const Rect<T>& r)
 	{
 		std::cout << "{ " << r.x << ", " << r.y << ", " << r.w << ", " << r.h << " }" << std::endl;
 		return os;

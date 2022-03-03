@@ -12,10 +12,10 @@ SpriteBatch::~SpriteBatch()
 {
 }
 
-void SpriteBatch::render(const Mat4x4& projection)
+void SpriteBatch::render(const Mat4x4& proj)
 {
 	String projectionname = current_shader()->get_uniform_data(UniformFlags::Projection).name;
-	m_shader_stack.back()->set("u_projection", projection);
+	m_shader_stack.back()->set(projectionname, proj);
 
 	for (auto& b : m_batches)
 		render_batch(b);
@@ -28,23 +28,26 @@ void SpriteBatch::render_batch(const RenderBatch& b)
 	float width = 1.0f;
 	float height = 1.0f;
 
-	current_shader()->use();
+	Ref<Material> material = create_ref<Material>();
+
+	material->shader(current_shader());
 
 	if (b.texture)
 	{
-		String textureuniform = current_shader()->get_uniform_data(UniformFlags::MainTexture).name;
-		m_shader_stack.back()->set(textureuniform, 0);
-		b.texture->bind();
-		
 		width = b.texture->data().width;
 		height = b.texture->data().height;
+
+		material->texture(b.texture);
+		material->sampler(b.sampler);
 	}
 
 	Vertex vertices[] = {
-		{ .pos = Vec2(width, height), .col = Colour::RED,    .texcoord = Vec2(1.0f, 1.0f) },
-		{ .pos = Vec2(width, 0.0f),   .col = Colour::GREEN,  .texcoord = Vec2(1.0f, 0.0f) },
-		{ .pos = Vec2(0.0f,  0.0f),   .col = Colour::BLUE,   .texcoord = Vec2(0.0f, 0.0f) },
-		{ .pos = Vec2(0.0f,  height), .col = Colour::YELLOW, .texcoord = Vec2(0.0f, 1.0f) }
+		// todo: make colours controllable somehow
+		// todo: also very temporary while i get stuff working
+		{ .pos = Vec2(0.0f,  0.0f),   .col = Colour::WHITE, .texcoord = Vec2(0.0f, 0.0f) },
+		{ .pos = Vec2(0.0f,  height), .col = Colour::WHITE, .texcoord = Vec2(0.0f, 1.0f) },
+		{ .pos = Vec2(width, height), .col = Colour::WHITE, .texcoord = Vec2(1.0f, 1.0f) },
+		{ .pos = Vec2(width, 0.0f),   .col = Colour::WHITE, .texcoord = Vec2(1.0f, 0.0f) }
 	};
 
 	f32 glvertices[32];
@@ -76,43 +79,40 @@ void SpriteBatch::render_batch(const RenderBatch& b)
 		.vertices = glvertices,
 		.vertex_count = 32,
 		.indices = indices,
-		.index_count = 6
+		.index_count = 6,
+		.material = material
 	};
 
 	Renderer::render(pass);
+}
+
+void SpriteBatch::render_texture(const TextureRegion& tex)
+{
+	// todo: temp
+	render_texture(tex.texture);
 }
 
 void SpriteBatch::render_texture(const Ref<Texture>& tex)
 {
 	RenderBatch b = {
 		.texture = tex,
-		.sampler = TextureSampler(TextureFilter::Point, TextureWrap::Clamp, TextureWrap::Clamp),
+		.sampler = TextureSampler(TextureFilter::Nearest, TextureWrap::Clamp, TextureWrap::Clamp),
 		.matrix = m_transform_matrix
 	};
 
 	m_batches.push_back(b);
 }
 
-void SpriteBatch::compute_matrix()
-{
-	Mat3x2 result = Mat3x2::IDENTITY;
-
-	for (const auto& mat : m_matrix_stack)
-		result *= mat;
-
-	m_transform_matrix = result;
-}
-
 void SpriteBatch::push_matrix(const Mat3x2& matrix)
 {
-	m_matrix_stack.push_back(matrix);
-	compute_matrix();
+	m_matrix_stack.push_back(m_transform_matrix);
+	m_transform_matrix = matrix * m_transform_matrix;
 }
 
 Mat3x2 SpriteBatch::pop_matrix()
 {
-	auto val = m_matrix_stack.pop_back();
-	compute_matrix();
+	auto val = m_transform_matrix;
+	m_transform_matrix = m_matrix_stack.pop_back();
 	return val;
 }
 

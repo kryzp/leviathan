@@ -9,62 +9,94 @@ namespace
 	constexpr int WINDOW_HEIGHT = 720;
 
 	Ref<Texture> tex0;
+	Ref<Texture> tex1;
+	Ref<Texture> tex2;
 	Ref<Shader> shd0;
+
 	SpriteBatch batch;
+	UIComponent ui_container;
 
-	float time = 0.0f;
-
+	constexpr float ROT_INTERVAL = Calc::TAU * 1/4; // 1 quarter circle rotation
 	float rotation_time = 0.0f;
 	float target_rotation = 0.0f;
 	float rotation = 0.0f;
-	float rotation_duration = 200.0f;
+	float rotation_duration = 200;
 
 	void init()
 	{
+		// load texture
 		tex0 = Texture::create("D:\\_PROJECTS\\leviathan\\testing\\res\\textures\\p0.png");
+		tex1 = Texture::create("D:\\_PROJECTS\\leviathan\\testing\\res\\textures\\p1.png");
+		tex2 = Texture::create("D:\\_PROJECTS\\leviathan\\testing\\res\\textures\\arrow.png");
 
+		// load shader
 		shd0 = Shader::create(
 			"D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\vertex.vert",
 			"D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\fragment.frag"
 		);
-		
+
+		// assign the shaders uniform variables
 		shd0->assign_uniform("u_projection", UniformType::Mat4x4, UniformFlags::Projection);
 		shd0->assign_uniform("u_texture", UniformType::Sampler2D, UniformFlags::MainTexture);
 
 		// set the default shader
 		batch.push_shader(shd0);
+
+		// ui
+		ui_container.x(0);
+		ui_container.y(0);
+		ui_container.width(App::draw_width());
+		ui_container.height(App::draw_height());
+
+		TextureRegion uitexture = {
+			.texture = tex0,
+			.source = RectI(0, 0, 256, 256)
+		};
+
+		ui_container.add<UITextureComponent>(UIConstraints::create_fixed(0, 0, 256, 256), uitexture);
+		//ui_container.add(create_ref<UITextureComponent>(uitexture), UIConstraints::create_fixed(0, 0, 256, 256));
 	}
 
 	void update()
 	{
-		time++; 
 		rotation_time++;
 
-		float t = rotation_time / rotation_duration;
 		if (rotation_time < rotation_duration)
 		{
-			t = Ease::exp_in_out(t);
-			rotation = target_rotation + Calc::PI*t;
+			rotation = target_rotation + (ROT_INTERVAL * Ease::elastic_in_out(rotation_time / rotation_duration));
 		}
 		else
 		{
-			target_rotation += Calc::PI;
+			target_rotation += ROT_INTERVAL;
 			rotation_time = 0;
 		}
+
+		ui_container.update();
 	}
 
 	void render()
 	{
-		Mat3x2 transformation = Mat3x2::create_transformation(
-			Vec2(0, Calc::sin(time / 100.0f) * 100.0f),
+		auto transform = Mat3x2::create_transform(
+			Vec2(Calc::cos(Time::ticks / 100.0f) * 100.0f, Calc::sin(Time::ticks / 100.0f) * 100.0f),
 			rotation,
-			Vec2::ONE * (Calc::cos(time / 100.0f)+1) * 0.5f,
+			Vec2::ONE * (((Calc::cos(Time::ticks/50.0f)+1)*0.5f)*0.5f + 0.5f),
 			Vec2(128, 128)
-		);
+		);// * Mat3x2::create_skew(Vec2(Calc::sin(Time::ticks / 100.0f), Calc::cos(Time::ticks / 100.0f)));
 
-		batch.push_matrix(transformation);
-		batch.render_texture(tex0);
+		batch.push_matrix(transform);
+		{
+			batch.render_texture(tex2);
+
+			batch.push_matrix(Mat3x2::create_transform(Vec2(512, 256), 0, Vec2::ONE, Vec2::ZERO));
+			{
+				batch.render_texture(tex1);
+			}
+			batch.pop_matrix();
+		}
 		batch.pop_matrix();
+
+		ui_container.render(batch);
+
 		batch.render(Mat4x4::create_orthographic(1280.0f, 720.0f, 0.0f, 1000.0f));
 	}
 }
@@ -74,14 +106,16 @@ int main()
 	Log::directory("D:\\_PROJECTS\\leviathan\\testing\\logs\\");
 
 	AppConfig config;
-	config.name = "leviathan demo";
-	config.width = WINDOW_WIDTH;
-	config.height = WINDOW_HEIGHT;
-	config.target_framerate = 60;
-	config.resizable = true;
-	config.on_update = update;
-	config.on_render = render;
-	config.on_init = init;
+	{
+		config.name = "leviathan demo";
+		config.width = WINDOW_WIDTH;
+		config.height = WINDOW_HEIGHT;
+		config.target_framerate = 60;
+		config.resizable = true;
+		config.on_update = update;
+		config.on_render = render;
+		config.on_init = init;
+	}
 
 	App::start(&config);
 

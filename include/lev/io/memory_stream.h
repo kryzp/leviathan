@@ -1,8 +1,10 @@
 #pragma once
 
+#include <lev/io/stream.h>
+
 namespace Lev
 {
-	class MemoryStream
+	class MemoryStream : public Stream
 	{
 	};
 }

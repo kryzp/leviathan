@@ -1,7 +1,8 @@
 #pragma once
 
+#include <lev/containers/vector.h>
 #include <lev/math/vec2.h>
-#include <lev/math/float2.h>
+#include <lev/math/pair.h>
 
 namespace Lev
 {
@@ -266,15 +267,36 @@ namespace Lev
 		Float2 wheel;
 	};
 
+	struct VirtualKey
+	{
+		Vector<Key> keys;
+		Vector<MouseButton> mouse_buttons;
+	};
+
 	namespace Input
 	{
-		bool down(MouseButton mouse);
+		bool down(VirtualKey vkey);
+		bool down(MouseButton mb);
 		bool down(Key key);
-
-		bool released(MouseButton mouse);
+		
+		bool released(VirtualKey vkey);
+		bool released(MouseButton mb);
 		bool released(Key key);
-
-		bool pressed(MouseButton mouse);
+		
+		bool pressed(VirtualKey vkey);
+		bool pressed(MouseButton mb);
 		bool pressed(Key key);
+
+		bool ctrl();
+		bool shift();
+		bool alt();
+
+		const char* text();
+
+		Vec2 mouse_screen_pos();
+		Vec2 mouse_draw_pos();
+		Vec2 mouse_position();
+		Float2 mouse_wheel();
+		Float2 mouse_wheel_change();
 	}
 }

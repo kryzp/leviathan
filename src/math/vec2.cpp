@@ -1,6 +1,6 @@
 #include <lev/math/vec2.h>
 #include <lev/math/calc.h>
-#include <lev/math/float2.h>
+#include <lev/math/pair.h>
 
 using namespace Lev;
 

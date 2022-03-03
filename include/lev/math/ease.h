@@ -5,7 +5,8 @@ namespace Lev
 	namespace Ease
 	{
 		float linear(float t);
-
+		
+		// (this ones the best)
 		float elastic_in(float t);
 		float elastic_out(float t);
 		float elastic_in_out(float t);
@@ -18,7 +19,6 @@ namespace Lev
 		float sine_out(float t);
 		float sine_in_out(float t);
 
-		// (this ones the most satisfying :) )
 		float exp_in(float t);
 		float exp_out(float t);
 		float exp_in_out(float t);

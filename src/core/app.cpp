@@ -1,6 +1,5 @@
 #include <lev/core/app.h>
 #include <lev/core/util.h>
-#include <lev/core/log.h>
 
 #include <iostream>
 
@@ -28,6 +27,7 @@ AppConfig::AppConfig()
 	this->on_destroy = nullptr;
 	this->on_update = nullptr;
 	this->on_render = nullptr;
+	this->on_log = nullptr;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -97,7 +97,7 @@ void App::run()
 		// update
 		{
 			Input::update();
-
+			
 			if (g_config.on_update)
 				g_config.on_update();
 		}
@@ -112,6 +112,9 @@ void App::run()
 			Renderer::after_render();
 			Platform::present();
 		}
+
+		// update time
+		Time::ticks++;
 	}
 }
 

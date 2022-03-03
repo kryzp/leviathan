@@ -8,7 +8,7 @@ using namespace Lev;
 Collider::Collider()
 	: polygon()
 	, world_polygon()
-	, m_world_bounds(Rect::ZERO)
+	, m_world_bounds(RectF::ZERO)
 	, m_axis()
 {
 }
@@ -28,14 +28,14 @@ Collider::Collider(const Polygon& polygon)
 	make_polygon(polygon);
 }
 
-Collider::Collider(const Rect& rect)
+Collider::Collider(const RectF& rect)
 {
 	make_rect(rect);
 }
 
 Collider::Collider(float x, float y, float w, float h)
 {
-	make_rect(Rect(x, y, w, h));
+	make_rect(RectF(x, y, w, h));
 }
 
 void Collider::make_polygon(const Polygon& poly)
@@ -47,7 +47,7 @@ void Collider::make_polygon(const Polygon& poly)
 		this->m_axis.push_back(Vec2::ZERO);
 }
 
-void Collider::make_rect(const Rect& rect)
+void Collider::make_rect(const RectF& rect)
 {
 	Polygon rectpoly = Polygon({
 		Vec2(0, 0),
@@ -69,7 +69,7 @@ Collider Collider::get_offset(const Vec2& offset) const
 	return collider;
 }
 
-Rect Collider::get_world_bounds()
+RectF Collider::get_world_bounds()
 {
 	update_world_bounds();
 	return m_world_bounds;

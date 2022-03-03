@@ -19,8 +19,8 @@ namespace Lev
         ~Vector();
 
         void allocate(int capacity);
-        void resize(int new_size);
-        void erase(int index, int amount);
+        void resize(int new_count);
+        void erase(int index, int amount = 1);
         void expand(int amount = 1);
 
         T& front();
@@ -48,9 +48,9 @@ namespace Lev
         const T& operator [] (int i) const;
 
     private:
-        T* m_buf = nullptr;
-        int m_count = 0;
-        int m_size = 0;
+        T* m_buf;
+        int m_count;
+        int m_size;
 	};
 
     template <typename T>
@@ -63,6 +63,7 @@ namespace Lev
 
     template <typename T>
     Vector<T>::Vector(const Vector<T>& other)
+        : Vector()
     {
         if (other.m_size > 0)
         {
@@ -76,32 +77,37 @@ namespace Lev
     
     template <typename T>
     Vector<T>::Vector(std::initializer_list<T> data)
+        : Vector()
     {
         allocate(data.size());
         m_size = m_count = data.size();
 
         for (int i = 0; i < m_size; i++)
-            m_buf[i] = *(data.begin() + i);
+            m_buf[i] = data.begin()[i];
     }
 
     template <typename T>
     Vector<T>::Vector(int initial_capacity)
-        : m_buf(nullptr)
+        : Vector()
     {
         allocate(initial_capacity);
-
         m_size = m_count = initial_capacity;
 
         for (int i = 0; i < m_size; i++)
-            m_buf[i] = T();
+            new (m_buf + i) T();
     }
 
     template <typename T>
     Vector<T>::~Vector()
     {
+        clear();
+
+        if (m_buf)
+            ::operator delete (m_buf, sizeof(T) * m_size);
+
+        m_buf = nullptr;
         m_size = 0;
         m_count = 0;
-        m_buf = nullptr;
     }
 
     template <typename T>
@@ -110,26 +116,12 @@ namespace Lev
         for (int i = 0; i < m_count; i++)
             m_buf[i].~T();
 
-        if (m_buf)
-            ::operator delete (m_buf, sizeof(T) * m_size);
-
-        m_buf = nullptr;
-
         m_count = 0;
-        m_size = 0;
-    }
-
-    template <typename T>
-    int Vector<T>::size() const
-    {
-        return m_count;
     }
 
     template <typename T>
     void Vector<T>::allocate(int capacity)
     {
-        LEV_ASSERT(capacity > 0);
-
         if (capacity > m_size)
         {
             int newsize = Calc::max(1, m_size);
@@ -137,7 +129,7 @@ namespace Lev
             while (newsize < capacity)
                 newsize *= 2;
 
-		    T* new_buf = (T*)::operator new (sizeof(T) * capacity);
+		    T* new_buf = (T*)::operator new (sizeof(T) * newsize);
 
             for (int i = 0; i < m_count; i++)
             {
@@ -155,22 +147,22 @@ namespace Lev
     }
 
     template <typename T>
-    void Vector<T>::resize(int new_size)
+    void Vector<T>::resize(int new_count)
     {
-        if (new_size < m_size)
-            erase(new_size, m_size - new_size);
+        if (new_count < m_count)
+            erase(new_count, m_count - new_count);
 
-        else if (new_size > m_size)
-            expand(new_size - m_size);
+        else if (new_count > m_count)
+            expand(new_count - m_count);
     }
 
     template <typename T>
     void Vector<T>::erase(int index, int amount)
     {
-        LEV_ASSERT((index + amount) <= m_count);
+        LEV_ASSERT(amount > 0);
 
-        if (index + amount <= m_count)
-            memmove(m_buf + index, m_buf + index + amount, sizeof(T) * amount);
+        for (int i = 0; i < m_count - amount; i++)
+            m_buf[i] = std::move(m_buf[i+amount]);
 
         for (int i = (m_count - amount); i < m_count; i++)
             m_buf[i].~T();
@@ -233,21 +225,29 @@ namespace Lev
     template <typename T>
     T Vector<T>::pop_front()
     {
-        T item = std::move(*m_buf);
+        T item = std::move(m_buf[0]);
         m_buf[0].~T();
-        memmove(m_buf - 1, m_buf, sizeof(T) * m_count);
-        resize(m_count - 1);
+
+        for (int i = 0; i < m_count-1; i++)
+            m_buf[i] = std::move(m_buf[i+1]);
+
+        m_count--;
         return item;
     }
 
     template <typename T>
     T Vector<T>::pop_back()
     {
-        // todo: wait i think m_size isnt changed here??? is this a bug?? too lazy rn fix later future me
-        T item = std::move(*(m_buf + m_count - 1));
+        T item = std::move(m_buf[m_count-1]);
         m_buf[m_count-1].~T();
-        resize(m_count - 1);
+        m_count--;
         return item;
+    }
+
+    template <typename T>
+    int Vector<T>::size() const
+    {
+        return m_count;
     }
     
     template <typename T>

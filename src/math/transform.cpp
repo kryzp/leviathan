@@ -27,7 +27,7 @@ Mat3x2 Transform::matrix()
 {
 	if (m_dirty)
 	{
-		m_matrix = Mat3x2::create_transformation(m_position, m_rotation, m_scale, m_origin);;
+		m_matrix = Mat3x2::create_transform(m_position, m_rotation, m_scale, m_origin);;
 		m_dirty = false;
 	}
 

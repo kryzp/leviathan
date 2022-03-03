@@ -66,4 +66,33 @@ namespace Lev
 	using Ref = std::shared_ptr<T>;
 	template <typename T, typename... Args>
 	constexpr Ref<T> create_ref(Args&&... args) { return std::make_shared<T>(std::forward<Args>(args)...); }
+
+	enum class LogType
+	{
+		Normal,
+		Warn,
+		Error,
+		File
+	};
+
+	namespace Log
+	{
+		bool init();
+		void destroy();
+
+		void print(const char* fmt, ...);
+		void error(const char* fmt, ...);
+		void warn(const char* fmt, ...);
+
+		void file(const char *msg, ...);
+		void filenewline();
+
+		void directory(const char* dir);
+		const char* directory();
+	}
+
+	namespace Time
+	{
+		extern u64 ticks;
+	}
 }

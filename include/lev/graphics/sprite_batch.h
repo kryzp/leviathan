@@ -1,7 +1,6 @@
 #pragma once
 
 #include <lev/graphics/texture.h>
-#include <lev/graphics/texture_sampler.h>
 #include <lev/graphics/shader.h>
 #include <lev/math/mat3x2.h>
 #include <lev/math/mat4x4.h>
@@ -24,9 +23,10 @@ namespace Lev
 		Ref<Shader> pop_shader();
 		const Ref<Shader>& current_shader() const;
 
-		void render(const Mat4x4& projection);
+		void render(const Mat4x4& proj);
 
-		void render_texture(const Ref<Texture>& texture);
+		void render_texture(const TextureRegion& tex);
+		void render_texture(const Ref<Texture>& tex);
 
 	private:
 		struct Vertex
@@ -44,8 +44,6 @@ namespace Lev
 		};
 
 		void render_batch(const RenderBatch& b);
-
-		void compute_matrix();
 
 		Vector<Mat3x2> m_matrix_stack;
 		Mat3x2 m_transform_matrix;

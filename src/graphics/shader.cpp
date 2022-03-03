@@ -19,8 +19,8 @@ Ref<Shader> Shader::create(const char* vertex, const char* fragment)
 {
 	ShaderData data;
 	{
-		// todo: i dont like this should it be in the platform layer?
-		
+		// todo: once filestream is finished use that instead of the std::ifstream
+
 		std::stringstream buffer;
 
 		std::ifstream vertex_file(vertex);

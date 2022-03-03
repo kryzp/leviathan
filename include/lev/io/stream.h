@@ -1,11 +1,10 @@
 #pragma once
 
-#include <lev/core/util.h>
-
 namespace Lev
 {
-	class Framebuffer
+	class Stream
 	{
 	public:
+		// ...
 	};
 }

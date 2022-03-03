@@ -3,11 +3,14 @@
 namespace Lev
 {
 	enum class RendererType;
+	enum class LogType;
 
 	struct ProcessConfig
 	{
-		// ?? maybe maybe maybe ??
-		// data like ram usage, process name, etc...
+		// would control exactly how much
+		// ram the app would take up, whether
+		// it should allocate all of it at the
+		// start, etc...
 	};
 
 	struct AppConfig
@@ -19,10 +22,11 @@ namespace Lev
 		bool resizable;
 		// vsync option?
 
-		void (*on_update)();
-		void (*on_render)();
 		void (*on_init)();
 		void (*on_destroy)();
+		void (*on_update)();
+		void (*on_render)();
+		void (*on_log)(const char*, LogType);
 
 		AppConfig();
 	};

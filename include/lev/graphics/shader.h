@@ -43,8 +43,6 @@ namespace Lev
 	{
 		Str<512> vertex_source;
 		Str<512> fragment_source;
-
-		// todo: hash map? (name = key)
 		Vector<UniformData> uniforms;
 	};
 
@@ -55,7 +53,7 @@ namespace Lev
 		virtual ~Shader();
 
 		virtual void use() const = 0;
-		virtual ShaderData data() const = 0;
+		virtual const ShaderData& data() const = 0;
 
 		virtual void set(const char* name, bool value) const = 0;
 		virtual void set(const char* name, int value) const = 0;

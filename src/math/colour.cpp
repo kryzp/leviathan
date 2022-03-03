@@ -20,9 +20,9 @@ Colour::Colour(u8 r, u8 g, u8 b, u8 a)
 
 void Colour::premultiply()
 {
-	r = r * a / 255;
-	g = g * a / 255;
-	b = b * a / 255;
+	r *= a / 255;
+	g *= a / 255;
+	b *= a / 255;
 }
 
 Colour Colour::premultiplied() const

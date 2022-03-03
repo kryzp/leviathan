@@ -1,11 +1,14 @@
 #pragma once
 
 #include <lev/math/mat3x2.h>
+#include <lev/math/calc.h>
+
 #include <iostream>
 
 namespace Lev
 {
-	struct Float2;
+	template <typename T>
+	struct Pair;
 
 	struct Vec2
 	{
@@ -23,7 +26,7 @@ namespace Lev
 		Vec2(float x);
 		Vec2(float x, float y);
 
-		Float2 to_float2() const;
+		Pair<float> to_float2() const;
 
 		float angle() const;
 

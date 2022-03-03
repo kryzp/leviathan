@@ -24,15 +24,15 @@ namespace Lev
 		Collider(const Collider& other);
 
 		Collider(const Polygon& poly);
-		Collider(const Rect& rect);
+		Collider(const RectF& rect);
 		Collider(float x, float y, float w, float h);
 		
 		void make_polygon(const Polygon& polygon);
-		void make_rect(const Rect& rect);
+		void make_rect(const RectF& rect);
 
 		Collider get_offset(const Vec2& offset) const;
 
-		Rect get_world_bounds();
+		RectF get_world_bounds();
 
 		bool overlaps(Collider& other, Vec2* pushout);
 
@@ -45,7 +45,7 @@ namespace Lev
 
 		void update_world_bounds();
 
-		Rect m_world_bounds;
+		RectF m_world_bounds;
 		Vector<Vec2> m_axis;
 	};
 }

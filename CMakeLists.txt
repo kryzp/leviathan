@@ -7,6 +7,7 @@ add_library(${PROJECT_NAME}
 
 	src/core/app.cpp
 	src/core/log.cpp
+	src/core/time.cpp
 	
 	src/containers/string.cpp
 
@@ -14,26 +15,29 @@ add_library(${PROJECT_NAME}
 	src/graphics/framebuffer.cpp
 	src/graphics/image.cpp
 	src/graphics/mesh.cpp
+	src/graphics/material.cpp
 	src/graphics/texture.cpp
 	src/graphics/shader.cpp
 
 	src/io/endian.cpp
+	src/io/stream.cpp
 	src/io/file_stream.cpp
 	src/io/memory_stream.cpp
 	src/io/binary_stream.cpp
 
 	src/input/input.cpp
 
+	src/ui/ui_component.cpp
+	src/ui/ui_constraints.cpp
+
 	src/math/calc.cpp
 	src/math/ease.cpp
 	src/math/circle.cpp
 	src/math/colour.cpp
-	src/math/float2.cpp
 	src/math/line.cpp
 	src/math/mat3x2.cpp
 	src/math/mat4x4.cpp
 	src/math/quad.cpp
-	src/math/rect.cpp
 	src/math/vec2.cpp
 	src/math/polygon.cpp
 	src/math/transform.cpp

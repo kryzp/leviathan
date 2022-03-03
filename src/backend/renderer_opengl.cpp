@@ -1,7 +1,6 @@
 #if LEV_USE_OPENGL
 
 #include <lev/core/app.h>
-#include <lev/core/log.h>
 #include <backend/renderer.h>
 #include <backend/platform.h>
 #include <third_party/glad/glad.h>
@@ -9,14 +8,9 @@
 
 using namespace Lev;
 
-struct State
-{
-	void* context;
-};
-
 namespace
 {
-	State g_state;
+	void* g_context;
 }
 
 /*********************************************************/
@@ -42,7 +36,7 @@ public:
 		glDeleteTextures(1, &m_id);
 	}
 
-	void set(const byte* data) override
+	void set_data(const byte* data) override
 	{
 		LEV_ASSERT(data != nullptr);
 
@@ -54,14 +48,7 @@ public:
 			fmt = GL_RGB;
 		}
 
-		bind();
-
-		// temp //
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		// temp //
+		bind(0);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_data.width, m_data.height, 0, fmt, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
@@ -71,7 +58,7 @@ public:
 	{
 		GLenum active = GL_TEXTURE0;
 
-		// lmao what
+		// lmao
 		if      (i == 1)  active = GL_TEXTURE1;
 		else if (i == 2)  active = GL_TEXTURE2;
 		else if (i == 3)  active = GL_TEXTURE3;
@@ -107,7 +94,7 @@ public:
 		glBindTexture(GL_TEXTURE_2D, m_id);
 	}
 
-	TextureData data() const override { return m_data; }
+	const TextureData& data() const override { return m_data; }
 	u32 id() const { return m_id; }
 };
 
@@ -194,7 +181,7 @@ public:
 		m_data.uniforms.push_back(uniform);
 	}
 
-	ShaderData data() const override { return m_data; }
+	const ShaderData& data() const override { return m_data; }
 	u32 id() const { return m_id; }
 
 	void set(const char* name, bool value) const override { glUniform1i(glGetUniformLocation(m_id, name), (int)value); }
@@ -210,13 +197,41 @@ Ref<Shader> Renderer::create_shader(const ShaderData& data)
 }
 
 /*********************************************************/
+/* FRAMEBUFFER STUFF                                     */
+/*********************************************************/
+
+class OpenGLFramebuffer : public Framebuffer
+{
+public:
+};
+
+Ref<Framebuffer> Renderer::create_framebuffer()
+{
+	return create_ref<OpenGLFramebuffer>();
+}
+
+/*********************************************************/
+/* MESH STUFF                                            */
+/*********************************************************/
+
+class OpenGLMesh : public Mesh
+{
+public:
+};
+
+Ref<Mesh> Renderer::create_mesh()
+{
+	return create_ref<OpenGLMesh>();
+}
+
+/*********************************************************/
 /* MAIN STUFF                                            */
 /*********************************************************/
 
 bool Renderer::init()
 {
-	g_state.context = Platform::gl_context_create();
-	Platform::gl_context_make_current(g_state.context);
+	g_context = Platform::gl_context_create();
+	Platform::gl_context_make_current(g_context);
 
 	if (!Platform::gl_load_glad_loader())
 	{
@@ -234,7 +249,7 @@ bool Renderer::init()
 
 void Renderer::destroy()
 {
-	Platform::gl_context_destroy(g_state.context);
+	Platform::gl_context_destroy(g_context);
 }
 
 void Renderer::before_render()
@@ -248,7 +263,63 @@ void Renderer::after_render()
 
 void Renderer::render(const RenderPass& pass)
 {
+	const auto& shader = pass.material->shader();
+	const auto& texture = pass.material->texture();
+	const auto& sampler = pass.material->sampler();
+
+	shader->use();
+
+	if (texture)
+	{
+		texture->bind(0);
+
+		String textureuniform = shader->get_uniform_data(UniformFlags::MainTexture).name;
+		shader->set(textureuniform, 0);
+
+		int wrap_x, wrap_y, filter;
+
+		switch (sampler.filter)
+		{
+			case TextureFilter::Linear:
+				filter = GL_LINEAR;
+				break;
+
+			case TextureFilter::Nearest:
+				filter = GL_NEAREST;
+				break;
+		}
+
+		switch (sampler.wrap_x)
+		{
+			case TextureWrap::Clamp:
+				wrap_x = GL_CLAMP;
+				break;
+
+			case TextureWrap::Repeat:
+				wrap_x = GL_REPEAT;
+				break;
+		}
+		
+		switch (sampler.wrap_y)
+		{
+			case TextureWrap::Clamp:
+				wrap_y = GL_CLAMP;
+				break;
+
+			case TextureWrap::Repeat:
+				wrap_y = GL_REPEAT;
+				break;
+		}
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_x);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_y);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+	}
+
 	// todo: temp
+	// note: could i use the indices passed in by the sprite batch to control what vertices to render in what order?
+	// that way i could just do a single renderpass with all the vertices in the scene and just control the order they're rendered in via indices
 
 	u32 vao, vbo, ebo;
 

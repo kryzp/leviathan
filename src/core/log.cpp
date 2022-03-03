@@ -1,4 +1,5 @@
-#include <lev/core/log.h>
+#include <lev/core/util.h>
+#include <lev/core/app.h>
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -24,6 +25,8 @@ namespace
     }
 }
 
+using namespace Lev;
+
 bool Log::init()
 {
     time_t raw_time = time(NULL);
@@ -43,19 +46,12 @@ void Log::print(const char* fmt, ...)
     va_list valist;
     va_start(valist, fmt);
     char format[512];
-    sprintf(format, "[LOG] %s\n", fmt);
-    vprintf(format, valist);
+    vsprintf(format, fmt, valist);
+    printf("%s\n", format);
     va_end(valist);
-}
 
-void Log::error(const char* fmt, ...)
-{
-    va_list valist;
-    va_start(valist, fmt);
-    char format[512];
-    sprintf(format, "\033[0;31m[ERROR] %s\033[0m\n", fmt);
-    vprintf(format, valist);
-    va_end(valist);
+    if (App::config()->on_log)
+        App::config()->on_log(format, LogType::Normal);
 }
 
 void Log::warn(const char* fmt, ...)
@@ -63,12 +59,28 @@ void Log::warn(const char* fmt, ...)
     va_list valist;
     va_start(valist, fmt);
     char format[512];
-    sprintf(format, "\033[0;33m[WARN] %s\033[0m\n", fmt);
-    vprintf(format, valist);
+    vsprintf(format, fmt, valist);
+    printf("\033[0;33m[WARN] %s\033[0m\n", format);
     va_end(valist);
+
+    if (App::config()->on_log)
+        App::config()->on_log(format, LogType::Warn);
 }
 
-void Log::file(const char* type, const char *msg, ...)
+void Log::error(const char* fmt, ...)
+{
+    va_list valist;
+    va_start(valist, fmt);
+    char format[512];
+    vsprintf(format, fmt, valist);
+    printf("\033[0;31m[ERROR] %s\033[0m\n", format);
+    va_end(valist);
+
+    if (App::config()->on_log)
+        App::config()->on_log(format, LogType::Error);
+}
+
+void Log::file(const char *msg, ...)
 {
     FILE *f = fopen(g_curr_file, "a");
     
@@ -80,8 +92,11 @@ void Log::file(const char* type, const char *msg, ...)
     
     if (f)
     {
-        fprintf(f, "[%s] %s\n", type, format);
+        fprintf(f, "%s\n", format);
         fclose(f);
+
+        if (App::config()->on_log)
+            App::config()->on_log(format, LogType::File);
     }
     
     va_end(args);

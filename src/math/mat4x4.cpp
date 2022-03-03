@@ -34,7 +34,6 @@ Mat4x4::Mat4x4(
 {
 }
 
-// todo: test
 Mat4x4 Mat4x4::create_orthographic(float width, float height, float near, float far)
 {
 	Mat4x4 result = Mat4x4::IDENTITY;
@@ -47,7 +46,6 @@ Mat4x4 Mat4x4::create_orthographic(float width, float height, float near, float 
 	return result;
 }
 
-// todo: test
 Mat4x4 Mat4x4::create_orthographic_ext(float left, float right, float bottom, float top, float near, float far)
 {
 	Mat4x4 result = Mat4x4::IDENTITY;
@@ -103,7 +101,7 @@ const float* Mat4x4::value_ptr() const
 	return elements;//&m11;
 }
 
-Mat4x4 Mat4x4::operator - (const Mat4x4& other)
+Mat4x4 Mat4x4::operator - (const Mat4x4& other) const
 {
 	return Mat4x4(
 		m11 - other.m11,
@@ -128,7 +126,7 @@ Mat4x4 Mat4x4::operator - (const Mat4x4& other)
 	);
 }
 
-Mat4x4 Mat4x4::operator + (const Mat4x4& other)
+Mat4x4 Mat4x4::operator + (const Mat4x4& other) const
 {
 	return Mat4x4(
 		m11 + other.m11,
@@ -153,35 +151,8 @@ Mat4x4 Mat4x4::operator + (const Mat4x4& other)
 	);
 }
 
-Mat4x4 Mat4x4::operator * (const Mat4x4& other)
+Mat4x4 Mat4x4::operator * (const Mat4x4& other) const
 {
-	/*
-	Mat4x4 result;
-
-	int row = 0;
-
-	for (int i = 0; i < 15; i++)
-	{
-		float sum = 0.0f;
-
-		for (int j = 0; j < 4; j++)
-		{
-			int elm0 = row*4 + j;
-			int elm1 = (i%4) + (j*4);
-
-			sum += this->elements[elm0] * other.elements[elm1];
-		}
-
-		if ((i+1) % 4 == 0)
-			row++;
-
-		result.elements[i] = sum;
-	}
-
-	return result;
-	*/
-
-	// pain
 	return Mat4x4(
 		(this->m11 * other.m11) + (this->m12 * other.m21) + (this->m13 * other.m31) + (this->m14 * other.m41),
 		(this->m11 * other.m12) + (this->m12 * other.m22) + (this->m13 * other.m32) + (this->m14 * other.m42),

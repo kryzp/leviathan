@@ -30,7 +30,7 @@ Ref<Texture> Texture::create(int width, int height, const byte* data, TextureFor
 	};
 
 	Ref<Texture> result = Renderer::create_texture(tex);
-	result->set(data);
+	result->set_data(data);
 
 	return result;
 }

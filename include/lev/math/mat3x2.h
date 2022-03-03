@@ -36,15 +36,11 @@ namespace Lev
 		);
 
 		static Mat3x2 create_skew(const Vec2& amount);
-		
 		static Mat3x2 create_scale(const Vec2& scale);
 		static Mat3x2 create_scale(float scale);
-		
 		static Mat3x2 create_rotation(float rotation);
-		
 		static Mat3x2 create_translation(const Vec2& translation);
-		
-		static Mat3x2 create_transformation(const Vec2& position, float rotation, const Vec2& scale, const Vec2& origin);
+		static Mat3x2 create_transform(const Vec2& position, float rotation, const Vec2& scale, const Vec2& origin);
 
 		float* value_ptr();
 		const float* value_ptr() const;
@@ -53,9 +49,9 @@ namespace Lev
 		float determinant() const;
 		Mat3x2 inverse() const;
 
-		Mat3x2 operator - (const Mat3x2& other);
-		Mat3x2 operator + (const Mat3x2& other);
-		Mat3x2 operator * (const Mat3x2& other);
+		Mat3x2 operator - (const Mat3x2& other) const;
+		Mat3x2 operator + (const Mat3x2& other) const;
+		Mat3x2 operator * (const Mat3x2& other) const;
 
 		Mat3x2& operator -= (const Mat3x2& other);
 		Mat3x2& operator += (const Mat3x2& other);

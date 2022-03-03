@@ -2,7 +2,7 @@
 #include <lev/math/ease.h>
 #include <lev/math/circle.h>
 #include <lev/math/colour.h>
-#include <lev/math/float2.h>
+#include <lev/math/pair.h>
 #include <lev/math/line.h>
 #include <lev/math/mat3x2.h>
 #include <lev/math/mat4x4.h>
@@ -11,3 +11,4 @@
 #include <lev/math/vec2.h>
 #include <lev/math/polygon.h>
 #include <lev/math/transform.h>
+#include <lev/math/rng.h>

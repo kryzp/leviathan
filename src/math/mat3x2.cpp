@@ -16,8 +16,8 @@ that 'other' matrix to the position vector!
 using namespace Lev;
 
 Mat3x2::Mat3x2()
-	: m11(0), m12(0)
-	, m21(0), m22(0)
+	: m11(1), m12(0)
+	, m21(0), m22(1)
 	, m31(0), m32(0)
 {
 }
@@ -119,7 +119,7 @@ Mat3x2 Mat3x2::create_translation(const Vec2& translation)
 	);
 }
 
-Mat3x2 Mat3x2::create_transformation(const Vec2& position, float rotation, const Vec2& scale, const Vec2& origin)
+Mat3x2 Mat3x2::create_transform(const Vec2& position, float rotation, const Vec2& scale, const Vec2& origin)
 {
 	Mat3x2 mat = Mat3x2::IDENTITY;
 
@@ -138,7 +138,7 @@ Mat3x2 Mat3x2::create_transformation(const Vec2& position, float rotation, const
 	return mat;
 }
 
-Mat3x2 Mat3x2::operator - (const Mat3x2& other)
+Mat3x2 Mat3x2::operator - (const Mat3x2& other) const
 {
 	return Mat3x2(
 		m11 - other.m11,
@@ -150,7 +150,7 @@ Mat3x2 Mat3x2::operator - (const Mat3x2& other)
 	);
 }
 
-Mat3x2 Mat3x2::operator + (const Mat3x2& other)
+Mat3x2 Mat3x2::operator + (const Mat3x2& other) const
 {
 	return Mat3x2(
 		m11 + other.m11,
@@ -162,14 +162,7 @@ Mat3x2 Mat3x2::operator + (const Mat3x2& other)
 	);
 }
 
-/*
-m31 and m32 think they're part of the 2x2 matrix crew
-and the 2x2 matrix numbers pretend they like them when
-in reality nobody likes m31 and m32 they just brought them along out of pity.
-hence, m31 and m32 dont get to get multiplied like the other cool numbers
-*/
-
-Mat3x2 Mat3x2::operator * (const Mat3x2& other)
+Mat3x2 Mat3x2::operator * (const Mat3x2& other) const
 {
 	return Mat3x2(
 		(this->m11 * other.m11) + (this->m12 * other.m21),
