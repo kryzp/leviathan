@@ -62,7 +62,7 @@ bool App::init()
 
 	if (!System::init(&g_config))
 	{
-		Log::error("failed to initialize platform");
+		Log::error("failed to initialize system");
 		return false;
 	}
 
