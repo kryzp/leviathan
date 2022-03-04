@@ -1,5 +1,7 @@
 # Leviathan
-game engine thingy
+lightweight-ish game engine
+
+(this is my first attempt at a proper game engine)
 
 this is mainly just a demonstration of what i can do
 but also probably something ill make use of when doing my own projects
