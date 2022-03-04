@@ -1,6 +1,5 @@
 # Leviathan
-game engine thingy  
-i want this to be an opengl + sdl2 game engine  
+game engine thingy
 
 this is mainly just a demonstration of what i can do
 but also probably something ill make use of when doing my own projects

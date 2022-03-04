@@ -79,7 +79,7 @@ namespace Lev
 	{
 		reallocate();
 
-		Entry existing = m_entrys[index(key)];
+		Entry& existing = m_entrys[index(key)];
 
 		if (existing.value == Value())
 		{

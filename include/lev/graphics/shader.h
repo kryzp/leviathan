@@ -15,21 +15,21 @@ namespace Lev
 
 	enum class UniformFlags
 	{
-		None,
-		Projection,
-		MainTexture
+		NONE,
+		PROJECTION,
+		MAIN_TEXTURE
 	};
 
 	enum class UniformType
 	{
-        Integer,
-        Float,
-        Vector2,
-        Vector3,
-        Vector4,
-		Mat3x2,
-		Mat4x4,
-		Sampler2D
+        INTEGER,
+        FLOAT,
+        VECTOR2,
+        VECTOR3,
+        VECTOR4,
+		MAT3X2,
+		MAT4X4,
+		SAMPLER2D
 	};
 
 	struct UniformData

@@ -2,7 +2,6 @@
 
 namespace Lev
 {
-	enum class RendererType;
 	enum class LogType;
 
 	struct ProcessConfig
@@ -46,7 +45,5 @@ namespace Lev
 		int window_height();
 		int draw_width();
 		int draw_height();
-
-		RendererType renderer_type();
 	}
 }

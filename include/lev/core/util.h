@@ -69,10 +69,10 @@ namespace Lev
 
 	enum class LogType
 	{
-		Normal,
-		Warn,
-		Error,
-		File
+		NORMAL,
+		WARN,
+		ERROR,
+		FILE
 	};
 
 	namespace Log

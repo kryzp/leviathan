@@ -51,7 +51,7 @@ void Log::print(const char* fmt, ...)
     va_end(valist);
 
     if (App::config()->on_log)
-        App::config()->on_log(format, LogType::Normal);
+        App::config()->on_log(format, LogType::NORMAL);
 }
 
 void Log::warn(const char* fmt, ...)
@@ -64,7 +64,7 @@ void Log::warn(const char* fmt, ...)
     va_end(valist);
 
     if (App::config()->on_log)
-        App::config()->on_log(format, LogType::Warn);
+        App::config()->on_log(format, LogType::WARN);
 }
 
 void Log::error(const char* fmt, ...)
@@ -77,7 +77,7 @@ void Log::error(const char* fmt, ...)
     va_end(valist);
 
     if (App::config()->on_log)
-        App::config()->on_log(format, LogType::Error);
+        App::config()->on_log(format, LogType::ERROR);
 }
 
 void Log::file(const char *msg, ...)
@@ -96,7 +96,7 @@ void Log::file(const char *msg, ...)
         fclose(f);
 
         if (App::config()->on_log)
-            App::config()->on_log(format, LogType::File);
+            App::config()->on_log(format, LogType::FILE);
     }
     
     va_end(args);

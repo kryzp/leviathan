@@ -4,8 +4,8 @@ namespace Lev
 {
 	enum class TextAlign
 	{
-		Left,
-		Centre,
-		Right
+		LEFT,
+		CENTRE,
+		RIGHT
 	};
 };

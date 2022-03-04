@@ -4,8 +4,9 @@ namespace Lev
 {
 	class NonCopyable;
 
-	struct NonMovable
+	class NonMovable
 	{
+	public:
 		NonMovable() = default;
 		NonMovable& operator = (NonCopyable&&) = delete;
 		NonMovable(NonCopyable&&) = delete;

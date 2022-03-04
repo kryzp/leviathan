@@ -11,23 +11,8 @@
 
 namespace Lev
 {
-	enum class RendererType
-	{
-		None = -1,
-		OpenGL,
-		Max
-	};
-
 	struct RenderPass
 	{
-		// todo: temp, this stuff will be in the mesh
-		float* vertices;
-		int vertex_count;
-
-		u32* indices;
-		int index_count;
-
-		// todo
 		Ref<Mesh> mesh;
 		Ref<Material> material;
 	};
@@ -48,7 +33,5 @@ namespace Lev
 		Ref<Shader> create_shader(const ShaderData& data);
 		Ref<Framebuffer> create_framebuffer();
 		Ref<Mesh> create_mesh();
-
-		RendererType renderer_type();
 	}
 }

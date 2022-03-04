@@ -112,17 +112,17 @@ bool Input::pressed(Key key)
 
 bool Input::ctrl()
 {
-	return g_kb.down[(int)Key::LeftControl] || g_kb.down[(int)Key::RightControl];
+	return g_kb.down[(int)Key::LEFT_CONTROL] || g_kb.down[(int)Key::RIGHT_CONTROL];
 }
 
 bool Input::shift()
 {
-	return g_kb.down[(int)Key::LeftShift] || g_kb.down[(int)Key::RightShift];
+	return g_kb.down[(int)Key::LEFT_SHIFT] || g_kb.down[(int)Key::RIGHT_SHIFT];
 }
 
 bool Input::alt()
 {
-	return g_kb.down[(int)Key::LeftAlt] || g_kb.down[(int)Key::RightAlt];
+	return g_kb.down[(int)Key::LEFT_ALT] || g_kb.down[(int)Key::RIGHT_ALT];
 }
 
 const char* Input::text()

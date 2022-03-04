@@ -9,21 +9,24 @@ namespace Lev
 	enum class TextureFormat
 	{
 		RGB,
-		RGBA
+		RGBA,
+		MAX
 	};
 
 	enum class TextureFilter
 	{
-		None,
-		Nearest,
-		Linear
+		NONE,
+		NEAREST,
+		LINEAR,
+		MAX
 	};
 
 	enum class TextureWrap
 	{
-		None,
-		Clamp,
-		Repeat
+		NONE,
+		CLAMP,
+		REPEAT,
+		MAX
 	};
 
 	struct TextureData
@@ -40,8 +43,7 @@ namespace Lev
 		Texture();
 		virtual ~Texture();
 
-		virtual void set_data(const byte* data) = 0;
-		virtual void bind(int i = 0) const = 0;
+		virtual void generate(const byte* data) = 0;
 
 		virtual const TextureData& data() const = 0;
 
@@ -57,9 +59,9 @@ namespace Lev
 		TextureWrap wrap_y;
 
 		TextureSampler()
-			: filter(TextureFilter::Nearest)
-			, wrap_x(TextureWrap::Clamp)
-			, wrap_y(TextureWrap::Clamp)
+			: filter(TextureFilter::NEAREST)
+			, wrap_x(TextureWrap::CLAMP)
+			, wrap_y(TextureWrap::CLAMP)
 		{
 		}
 

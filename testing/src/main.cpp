@@ -36,8 +36,8 @@ namespace
 		);
 
 		// assign the shaders uniform variables
-		shd0->assign_uniform("u_projection", UniformType::Mat4x4, UniformFlags::Projection);
-		shd0->assign_uniform("u_texture", UniformType::Sampler2D, UniformFlags::MainTexture);
+		shd0->assign_uniform("u_projection", UniformType::MAT4X4, UniformFlags::PROJECTION);
+		shd0->assign_uniform("u_texture", UniformType::SAMPLER2D, UniformFlags::MAIN_TEXTURE);
 
 		// set the default shader
 		batch.push_shader(shd0);
@@ -54,7 +54,6 @@ namespace
 		};
 
 		ui_container.add<UITextureComponent>(UIConstraints::create_fixed(0, 0, 256, 256), uitexture);
-		//ui_container.add(create_ref<UITextureComponent>(uitexture), UIConstraints::create_fixed(0, 0, 256, 256));
 	}
 
 	void update()
@@ -63,7 +62,7 @@ namespace
 
 		if (rotation_time < rotation_duration)
 		{
-			rotation = target_rotation + (ROT_INTERVAL * Ease::elastic_in_out(rotation_time / rotation_duration));
+			rotation = target_rotation + (ROT_INTERVAL * Ease::back_in_out(rotation_time / rotation_duration));
 		}
 		else
 		{

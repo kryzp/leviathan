@@ -44,7 +44,7 @@ add_library(${PROJECT_NAME}
 
 	src/physics/collider.cpp
 	
-	src/backend/platform_sdl2.cpp
+	src/backend/system_sdl2.cpp
 	src/backend/renderer_opengl.cpp
 	src/third_party/glad/glad.c
 )
@@ -58,7 +58,7 @@ target_include_directories(${PROJECT_NAME}
 	${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-set(OPENGL_ENABLED true CACHE BOOL "Use OpenGL as the graphics implementation")
+set(OPENGL_ENABLED true CACHE BOOL "Use OpenGL as the renderer implementation")
 set(SDL2_ENABLED true CACHE BOOL "Use SDL2 as the system implementation")
 set(SDL2_INCLUDE_DIRS "D:/_DEV/libs/SDL2-2.0.16/include/") # disgusting
 set(SDL2_LIBRARIES "D:/_DEV/libs/SDL2-2.0.16/lib/x64/SDL2.lib" "D:/_DEV/libs/SDL2-2.0.16/lib/x64/SDL2main.lib") # disgusting - the sequel

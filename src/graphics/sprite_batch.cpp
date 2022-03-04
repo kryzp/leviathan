@@ -1,4 +1,5 @@
 #include <lev/graphics/sprite_batch.h>
+#include <lev/graphics/mesh.h>
 #include <lev/containers/string.h>
 #include <backend/renderer.h>
 
@@ -14,7 +15,7 @@ SpriteBatch::~SpriteBatch()
 
 void SpriteBatch::render(const Mat4x4& proj)
 {
-	String projectionname = current_shader()->get_uniform_data(UniformFlags::Projection).name;
+	String projectionname = current_shader()->get_uniform_data(UniformFlags::PROJECTION).name;
 	m_shader_stack.back()->set(projectionname, proj);
 
 	for (auto& b : m_batches)
@@ -29,6 +30,7 @@ void SpriteBatch::render_batch(const RenderBatch& b)
 	float height = 1.0f;
 
 	Ref<Material> material = create_ref<Material>();
+	Ref<Mesh> mesh = Renderer::create_mesh();
 
 	material->shader(current_shader());
 
@@ -44,10 +46,15 @@ void SpriteBatch::render_batch(const RenderBatch& b)
 	Vertex vertices[] = {
 		// todo: make colours controllable somehow
 		// todo: also very temporary while i get stuff working
-		{ .pos = Vec2(0.0f,  0.0f),   .col = Colour::WHITE, .texcoord = Vec2(0.0f, 0.0f) },
-		{ .pos = Vec2(0.0f,  height), .col = Colour::WHITE, .texcoord = Vec2(0.0f, 1.0f) },
-		{ .pos = Vec2(width, height), .col = Colour::WHITE, .texcoord = Vec2(1.0f, 1.0f) },
-		{ .pos = Vec2(width, 0.0f),   .col = Colour::WHITE, .texcoord = Vec2(1.0f, 0.0f) }
+		{ .pos = Vec2(0.0f,  0.0f),   .texcoord = Vec2(0.0f, 0.0f), .col = Colour::WHITE },
+		{ .pos = Vec2(0.0f,  height), .texcoord = Vec2(0.0f, 1.0f), .col = Colour::WHITE },
+		{ .pos = Vec2(width, height), .texcoord = Vec2(1.0f, 1.0f), .col = Colour::WHITE },
+		{ .pos = Vec2(width, 0.0f),   .texcoord = Vec2(1.0f, 0.0f), .col = Colour::WHITE }
+	};
+
+	u32 indices[] = {
+		0, 1, 3,
+		1, 2, 3
 	};
 
 	f32 glvertices[32];
@@ -70,20 +77,21 @@ void SpriteBatch::render_batch(const RenderBatch& b)
 		glvertices[i*8 + 7] = vertex.texcoord.y;
 	}
 
-	u32 indices[] = {
-		0, 1, 3,
-		1, 2, 3
-	};
+	mesh->index_data(indices, 6);
+	mesh->vertex_data(glvertices, 32, {
+		.attrib_count = 3,
+		.attribs = {
+			VertexAttrib::FLOAT3, // position
+			VertexAttrib::FLOAT3, // colour
+			VertexAttrib::FLOAT2  // texture coordinates
+		},
+		.stride = 8
+	});
 
-	RenderPass pass = {
-		.vertices = glvertices,
-		.vertex_count = 32,
-		.indices = indices,
-		.index_count = 6,
+	Renderer::render({
+		.mesh = mesh,
 		.material = material
-	};
-
-	Renderer::render(pass);
+	});
 }
 
 void SpriteBatch::render_texture(const TextureRegion& tex)
@@ -96,7 +104,7 @@ void SpriteBatch::render_texture(const Ref<Texture>& tex)
 {
 	RenderBatch b = {
 		.texture = tex,
-		.sampler = TextureSampler(TextureFilter::Nearest, TextureWrap::Clamp, TextureWrap::Clamp),
+		.sampler = TextureSampler(TextureFilter::NEAREST, TextureWrap::CLAMP, TextureWrap::CLAMP),
 		.matrix = m_transform_matrix
 	};
 

@@ -1,8 +1,6 @@
 #include <lev/math/ease.h>
 #include <lev/math/calc.h>
 
-// thanks easings.net!
-
 using namespace Lev;
 
 float Ease::linear(float t)
@@ -81,7 +79,7 @@ float Ease::exp_in_out(float t)
 
 float Ease::back_in(float t)
 {
-	return 2.70158*t*t*t - 1.70158*t*t;
+	return 2.70158f*t*t*t - 1.70158f*t*t;
 }
 
 float Ease::back_out(float t)

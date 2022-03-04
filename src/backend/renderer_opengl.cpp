@@ -2,7 +2,7 @@
 
 #include <lev/core/app.h>
 #include <backend/renderer.h>
-#include <backend/platform.h>
+#include <backend/system.h>
 #include <third_party/glad/glad.h>
 #include <iostream>
 
@@ -36,7 +36,7 @@ public:
 		glDeleteTextures(1, &m_id);
 	}
 
-	void set_data(const byte* data) override
+	void generate(const byte* data) override
 	{
 		LEV_ASSERT(data != nullptr);
 
@@ -54,7 +54,7 @@ public:
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 
-	void bind(int i = 0) const override
+	void bind(int i = 0) const
 	{
 		GLenum active = GL_TEXTURE0;
 
@@ -216,7 +216,84 @@ Ref<Framebuffer> Renderer::create_framebuffer()
 
 class OpenGLMesh : public Mesh
 {
+	u32 m_id;
+	VertexFormat m_format;
+	
+	u32 m_vertex_buffer;
+	u64 m_vertex_count;
+
+	u32 m_index_buffer;
+	u64 m_index_count;
+
 public:
+	OpenGLMesh()
+		: m_id(0)
+		, m_vertex_buffer(0)
+		, m_vertex_count(0)
+		, m_index_buffer(0)
+		, m_index_count(0)
+	{
+		glGenVertexArrays(1, &m_id);
+		glGenBuffers(1, &m_vertex_buffer);
+		glGenBuffers(1, &m_index_buffer);
+	}
+
+	~OpenGLMesh()
+	{
+		glDeleteVertexArrays(1, &m_id);
+		glDeleteBuffers(1, &m_vertex_buffer);
+		glDeleteBuffers(1, &m_index_buffer);
+	}
+
+	void vertex_data(const void* vertices, u64 count, const VertexFormat& format) override
+	{
+		m_format = format;
+		m_vertex_count = count;
+
+		glBindVertexArray(m_id);
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, m_vertex_buffer);
+			glBufferData(GL_ARRAY_BUFFER, count * sizeof(float), vertices, GL_STATIC_DRAW);
+
+			int pointer = 0;
+
+			for (int i = 0; i < format.attrib_count; i++)
+			{
+				VertexAttrib attrib = format.attribs[i];
+				int stride = format.stride;
+
+				int size = 0;
+
+				if      (attrib == VertexAttrib::FLOAT)  size = 1;
+				else if (attrib == VertexAttrib::FLOAT2) size = 2;
+				else if (attrib == VertexAttrib::FLOAT3) size = 3;
+				else if (attrib == VertexAttrib::FLOAT4) size = 4;
+
+				glVertexAttribPointer(i, size, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(pointer * sizeof(float)));
+				glEnableVertexAttribArray(i);
+
+				pointer += size;
+			}
+		}
+		glBindVertexArray(0);
+	}
+
+	void index_data(const u32* indices, u64 count) override
+	{
+		m_index_count = count;
+
+		glBindVertexArray(m_id);
+		{
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(u32), indices, GL_STATIC_DRAW);
+		}
+		glBindVertexArray(0);
+	}
+
+	u64 vertex_count() const override { return m_vertex_count; }
+	u64 index_count() const override { return m_index_count; }
+	VertexFormat format() const override { return m_format; }
+	u32 id() const { return m_id; }
 };
 
 Ref<Mesh> Renderer::create_mesh()
@@ -230,10 +307,10 @@ Ref<Mesh> Renderer::create_mesh()
 
 bool Renderer::init()
 {
-	g_context = Platform::gl_context_create();
-	Platform::gl_context_make_current(g_context);
+	g_context = System::gl_context_create();
+	System::gl_context_make_current(g_context);
 
-	if (!Platform::gl_load_glad_loader())
+	if (!System::gl_load_glad_loader())
 	{
 		std::cout << "failed to initialize glad" << std::endl;
 		return false;
@@ -249,7 +326,7 @@ bool Renderer::init()
 
 void Renderer::destroy()
 {
-	Platform::gl_context_destroy(g_context);
+	System::gl_context_destroy(g_context);
 }
 
 void Renderer::before_render()
@@ -263,50 +340,56 @@ void Renderer::after_render()
 
 void Renderer::render(const RenderPass& pass)
 {
-	const auto& shader = pass.material->shader();
-	const auto& texture = pass.material->texture();
-	const auto& sampler = pass.material->sampler();
+	OpenGLShader* shader = (OpenGLShader*)pass.material->shader().get();
+	OpenGLTexture* texture = (OpenGLTexture*)pass.material->texture().get();
+	const TextureSampler& sampler = pass.material->sampler();
+
+	OpenGLMesh* mesh = (OpenGLMesh*)pass.mesh.get();
+	const VertexFormat& vfmt = mesh->format();
 
 	shader->use();
 
 	if (texture)
 	{
-		texture->bind(0);
+		texture->bind();
 
-		String textureuniform = shader->get_uniform_data(UniformFlags::MainTexture).name;
+		String textureuniform = shader->get_uniform_data(UniformFlags::MAIN_TEXTURE).name;
 		shader->set(textureuniform, 0);
 
 		int wrap_x, wrap_y, filter;
 
 		switch (sampler.filter)
 		{
-			case TextureFilter::Linear:
+			case TextureFilter::NONE:
+			case TextureFilter::LINEAR:
 				filter = GL_LINEAR;
 				break;
 
-			case TextureFilter::Nearest:
+			case TextureFilter::NEAREST:
 				filter = GL_NEAREST;
 				break;
 		}
 
 		switch (sampler.wrap_x)
 		{
-			case TextureWrap::Clamp:
+			case TextureWrap::NONE:
+			case TextureWrap::CLAMP:
 				wrap_x = GL_CLAMP;
 				break;
 
-			case TextureWrap::Repeat:
+			case TextureWrap::REPEAT:
 				wrap_x = GL_REPEAT;
 				break;
 		}
 		
 		switch (sampler.wrap_y)
 		{
-			case TextureWrap::Clamp:
+			case TextureWrap::NONE:
+			case TextureWrap::CLAMP:
 				wrap_y = GL_CLAMP;
 				break;
 
-			case TextureWrap::Repeat:
+			case TextureWrap::REPEAT:
 				wrap_y = GL_REPEAT;
 				break;
 		}
@@ -317,41 +400,9 @@ void Renderer::render(const RenderPass& pass)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
 	}
 
-	// todo: temp
-	// note: could i use the indices passed in by the sprite batch to control what vertices to render in what order?
-	// that way i could just do a single renderpass with all the vertices in the scene and just control the order they're rendered in via indices
-
-	u32 vao, vbo, ebo;
-
-	glGenVertexArrays(1, &vao);
-	glGenBuffers(1, &vbo);
-	glGenBuffers(1, &ebo);
-
-	glBindVertexArray(vao);
-
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, pass.vertex_count * sizeof(float), pass.vertices, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, pass.index_count * sizeof(u32), pass.indices, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(0 * sizeof(float)));
-	glEnableVertexAttribArray(0);
-
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
-
-	glBindVertexArray(vao);
+	glBindVertexArray(mesh->id());
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
 	glBindVertexArray(0);
-
-	glDeleteVertexArrays(1, &vao);
-	glDeleteBuffers(1, &vbo);
-	glDeleteBuffers(1, &ebo);
 }
 
 void Renderer::clear(float r, float g, float b, float a)
@@ -359,11 +410,6 @@ void Renderer::clear(float r, float g, float b, float a)
 	glViewport(0, 0, App::draw_width(), App::draw_height());
 	glClearColor(r, g, b, a);
 	glClear(GL_COLOR_BUFFER_BIT);
-}
-
-RendererType Renderer::renderer_type()
-{
-	return RendererType::OpenGL;
 }
 
 #endif

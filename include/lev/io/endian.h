@@ -4,8 +4,8 @@ namespace Lev
 {
 	enum class Endianness
 	{
-		Little,
-		Big
+		LITTLE,
+		BIG
 	};
 
 	namespace Endian

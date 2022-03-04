@@ -5,17 +5,17 @@ using namespace Lev;
 
 Endianness Endian::get_endianness()
 {
-	Endianness result = Endianness::Little;
+	Endianness result = Endianness::LITTLE;
 	if (is_big_endian())
-		result = Endianness::Big;
+		result = Endianness::BIG;
 	return result;
 }
 
 bool Endian::is_endian(Endianness endian)
 {
 	return (
-		(endian == Endianness::Little && is_little_endian()) ||
-		(endian == Endianness::Big && is_big_endian())
+		(endian == Endianness::LITTLE && is_little_endian()) ||
+		(endian == Endianness::BIG && is_big_endian())
 	);
 }
 

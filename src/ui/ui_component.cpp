@@ -93,7 +93,7 @@ bool UIComponent::mouse_clicked_over(bool include_children)
 
 bool UIComponent::mouse_clicked()
 {
-	return Input::pressed(MouseButton::Left); // todo: temp
+	return Input::pressed(MouseButton::LEFT); // todo: temp
 }
 
 Vec2 UIComponent::position() const { return Vec2(x(), y()); }

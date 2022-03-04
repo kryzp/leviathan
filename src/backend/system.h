@@ -4,7 +4,7 @@ namespace Lev
 {
 	struct AppConfig;
 
-	namespace Platform
+	namespace System
 	{
 		bool init(const AppConfig* cfg);
 		void destroy();

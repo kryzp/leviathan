@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include <backend/platform.h>
+#include <backend/system.h>
 #include <backend/renderer.h>
 #include <backend/input.h>
 
@@ -60,7 +60,7 @@ bool App::init()
 	}
 #endif
 
-	if (!Platform::init(&g_config))
+	if (!System::init(&g_config))
 	{
 		Log::error("failed to initialize platform");
 		return false;
@@ -88,11 +88,11 @@ bool App::init()
 
 void App::run()
 {
-	Platform::prepare();
+	System::prepare();
 
 	while (g_running)
 	{
-		Platform::update();
+		System::update();
 
 		// update
 		{
@@ -110,7 +110,7 @@ void App::run()
 				g_config.on_render();
 
 			Renderer::after_render();
-			Platform::present();
+			System::present();
 		}
 
 		// update time
@@ -123,7 +123,7 @@ void App::destroy()
 	if (g_config.on_destroy)
 		g_config.on_destroy();
 
-	Platform::destroy();
+	System::destroy();
 	Renderer::destroy();
 	Input::destroy();
 
@@ -151,25 +151,20 @@ const AppConfig* App::config()
 
 int App::window_width()
 {
-	return Platform::window_width();
+	return System::window_width();
 }
 
 int App::window_height()
 {
-	return Platform::window_height();
+	return System::window_height();
 }
 
 int App::draw_width()
 {
-	return Platform::draw_width();
+	return System::draw_width();
 }
 
 int App::draw_height()
 {
-	return Platform::draw_height();
-}
-
-RendererType App::renderer_type()
-{
-	return Renderer::renderer_type();
+	return System::draw_height();
 }
