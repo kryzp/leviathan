@@ -1,3 +1,0 @@
-ai lol
-
-idk maybe A* pathfinding implementation
