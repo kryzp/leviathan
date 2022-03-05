@@ -29,7 +29,7 @@
 #define LEV_GIGABYTES(x) (LEV_MEGABYTES(x) * 1024LL)
 #define LEV_TERABYTES(x) (LEV_GIGABYTES(x) * 1024LL)
 
-namespace Lev
+namespace lev
 {
 	using u8  = uint8_t;
 	using u16 = uint16_t;

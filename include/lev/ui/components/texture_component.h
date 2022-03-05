@@ -1,17 +1,17 @@
 #pragma once
 
 #include <lev/graphics/sprite_batch.h>
-#include <lev/ui/ui_component.h>
 #include <lev/graphics/texture.h>
+#include <lev/ui/ui_component.h>
 
-namespace Lev
+namespace lev::ui
 {
 	class UITextureComponent : public UIComponent
 	{
 	public:
-		TextureRegion texture;
+		gfx::TextureRegion texture;
 
-		UITextureComponent(const TextureRegion& tex)
+		UITextureComponent(const gfx::TextureRegion& tex)
 			: UIComponent()
 			, texture(tex)
 		{
@@ -21,7 +21,7 @@ namespace Lev
 		{
 		}
 
-		void render(SpriteBatch& b) override
+		void render(gfx::SpriteBatch& b) override
 		{
 			UIComponent::render(b);
 

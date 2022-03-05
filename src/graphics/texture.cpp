@@ -1,7 +1,8 @@
 #include <lev/graphics/texture.h>
 #include <backend/renderer.h>
 
-using namespace Lev;
+using namespace lev;
+using namespace lev::gfx;
 
 Texture::Texture()
 {

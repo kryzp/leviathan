@@ -1,20 +1,22 @@
 ﻿#include <leviathan.h>
+#include <lev/ui/components/texture_component.h>
+
 #include <iostream>
 
-using namespace Lev;
+using namespace lev;
 
 namespace
 {
 	constexpr int WINDOW_WIDTH = 1280;
 	constexpr int WINDOW_HEIGHT = 720;
 
-	Ref<Texture> tex0;
-	Ref<Texture> tex1;
-	Ref<Texture> tex2;
-	Ref<Shader> shd0;
+	Ref<gfx::Texture> tex0;
+	Ref<gfx::Texture> tex1;
+	Ref<gfx::Texture> tex2;
+	Ref<gfx::Shader> shd0;
 
-	SpriteBatch batch;
-	UIComponent ui_container;
+	gfx::SpriteBatch batch;
+	ui::UIComponent ui_container;
 
 	constexpr float ROT_INTERVAL = Calc::TAU * 1/4; // 1 quarter circle rotation
 	float rotation_time = 0.0f;
@@ -25,22 +27,29 @@ namespace
 	void init()
 	{
 		// load texture
-		tex0 = Texture::create("D:\\_PROJECTS\\leviathan\\testing\\res\\textures\\p0.png");
-		tex1 = Texture::create("D:\\_PROJECTS\\leviathan\\testing\\res\\textures\\p1.png");
-		tex2 = Texture::create("D:\\_PROJECTS\\leviathan\\testing\\res\\textures\\arrow.png");
+		tex0 = gfx::Texture::create("D:\\_PROJECTS\\leviathan\\testing\\res\\textures\\p0.png");
+		tex1 = gfx::Texture::create("D:\\_PROJECTS\\leviathan\\testing\\res\\textures\\p1.png");
+		tex2 = gfx::Texture::create("D:\\_PROJECTS\\leviathan\\testing\\res\\textures\\arrow.png");
 
 		// load shader
-		shd0 = Shader::create(
+		shd0 = gfx::Shader::create(
 			"D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\vertex.vert",
 			"D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\fragment.frag"
 		);
 
 		// assign the shaders uniform variables
-		shd0->assign_uniform("u_projection", UniformType::MAT4X4, UniformFlags::PROJECTION);
-		shd0->assign_uniform("u_texture", UniformType::SAMPLER2D, UniformFlags::MAIN_TEXTURE);
+		shd0->assign_uniform("u_projection", gfx::UniformType::MAT4X4, gfx::UniformFlags::PROJECTION);
+		shd0->assign_uniform("u_texture", gfx::UniformType::SAMPLER2D, gfx::UniformFlags::MAIN_TEXTURE);
 
 		// set the default shader
 		batch.push_shader(shd0);
+
+		// test out physics
+		phys::Collider col0 = phys::Collider(-2, -1, 4, 2);
+		phys::Collider col1 = phys::Collider(1, -1, 2, 2);
+		Vec2 pushout;
+		col1.overlaps(col0, &pushout);
+		std::cout << pushout << std::endl;
 
 		// ui
 		ui_container.x(0);
@@ -48,12 +57,12 @@ namespace
 		ui_container.width(App::draw_width());
 		ui_container.height(App::draw_height());
 
-		TextureRegion uitexture = {
+		gfx::TextureRegion uitexture = {
 			.texture = tex0,
 			.source = RectI(0, 0, 256, 256)
 		};
 
-		ui_container.add<UITextureComponent>(UIConstraints::create_fixed(0, 0, 256, 256), uitexture);
+		ui_container.add<ui::UITextureComponent>(ui::UIConstraints::create_fixed(0, 0, 256, 256), uitexture);
 	}
 
 	void update()

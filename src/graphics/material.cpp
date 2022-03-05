@@ -1,6 +1,7 @@
 #include <lev/graphics/material.h>
 
-using namespace Lev;
+using namespace lev;
+using namespace lev::gfx;
 
 Material::Material()
 {

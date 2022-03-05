@@ -2,7 +2,8 @@
 #include <lev/ui/ui_component.h>
 #include <lev/ui/constraints/pixel_constraint.h>
 
-using namespace Lev;
+using namespace lev;
+using namespace lev::ui;
 
 UIConstraints::UIConstraints()
 	: x(nullptr)

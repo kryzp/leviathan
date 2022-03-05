@@ -1,3 +1,4 @@
 #include <lev/io/stream.h>
 
-using namespace Lev;
+using namespace lev;
+using namespace lev::io;

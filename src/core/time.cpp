@@ -1,5 +1,5 @@
 #include <lev/core/util.h>
 
-using namespace Lev;
+using namespace lev;
 
 u64 Time::ticks = 0;

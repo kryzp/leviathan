@@ -10,6 +10,8 @@
 
 #define FILE_EXT ".levlog"
 
+using namespace lev;
+
 namespace
 {
     const char* g_directory;
@@ -24,8 +26,6 @@ namespace
         strcpy(dest, buf);
     }
 }
-
-using namespace Lev;
 
 bool Log::init()
 {

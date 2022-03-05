@@ -5,7 +5,8 @@
 #include <fstream>
 #include <sstream>
 
-using namespace Lev;
+using namespace lev;
+using namespace lev::gfx;
 
 Shader::Shader()
 {

@@ -3,7 +3,8 @@
 #include <lev/containers/string.h>
 #include <backend/renderer.h>
 
-using namespace Lev;
+using namespace lev;
+using namespace lev::gfx;
 
 SpriteBatch::SpriteBatch()
 {

@@ -6,7 +6,7 @@
 #include <lev/math/mat3x2.h>
 #include <lev/math/mat4x4.h>
 
-namespace Lev
+namespace lev::gfx
 {
 	// informs the backend on if it should use the uniforms in a specific way
 	// e.g: flag what uniform should be set by the sprite batch when rendering a texture

@@ -5,10 +5,10 @@
 #include <lev/math/rect.h>
 #include <lev/ui/ui_constraints.h>
 
-namespace Lev
-{
-	class SpriteBatch;
+namespace lev::gfx { class SpriteBatch; }
 
+namespace lev::ui
+{
 	class UIComponent
 	{
 	public:
@@ -17,7 +17,7 @@ namespace Lev
 
 		virtual void init();
 		virtual void update();
-		virtual void render(SpriteBatch& b);
+		virtual void render(gfx::SpriteBatch& b);
 
 		virtual bool mouse_hovering_over(bool include_children = true);
 		virtual bool mouse_clicked_over(bool include_children = true);

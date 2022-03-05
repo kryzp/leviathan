@@ -9,12 +9,12 @@
 #include <lev/graphics/material.h>
 #include <lev/graphics/framebuffer.h>
 
-namespace Lev
+namespace lev
 {
 	struct RenderPass
 	{
-		Ref<Mesh> mesh;
-		Ref<Material> material;
+		Ref<gfx::Mesh> mesh;
+		Ref<gfx::Material> material;
 	};
 
 	namespace Renderer
@@ -29,9 +29,9 @@ namespace Lev
 
 		void clear(float r, float g, float b, float a = 1.0f);
 
-		Ref<Texture> create_texture(const TextureData& data);
-		Ref<Shader> create_shader(const ShaderData& data);
-		Ref<Framebuffer> create_framebuffer();
-		Ref<Mesh> create_mesh();
+		Ref<gfx::Texture> create_texture(const gfx::TextureData& data);
+		Ref<gfx::Shader> create_shader(const gfx::ShaderData& data);
+		Ref<gfx::Framebuffer> create_framebuffer();
+		Ref<gfx::Mesh> create_mesh();
 	}
 }

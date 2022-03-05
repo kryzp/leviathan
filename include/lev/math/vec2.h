@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-namespace Lev
+namespace lev
 {
 	template <typename T>
 	struct Pair;

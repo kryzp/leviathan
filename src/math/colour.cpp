@@ -1,6 +1,6 @@
 #include <lev/math/colour.h>
 
-using namespace Lev;
+using namespace lev;
 
 Colour::Colour()
 	: r(0)

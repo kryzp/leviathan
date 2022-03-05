@@ -2,7 +2,7 @@
 
 #include <lev/core/util.h>
 
-namespace Lev
+namespace lev::gfx
 {
 	class Framebuffer
 	{

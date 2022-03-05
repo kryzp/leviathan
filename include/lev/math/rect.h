@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace Lev
+namespace lev
 {
 	struct Vec2;
 

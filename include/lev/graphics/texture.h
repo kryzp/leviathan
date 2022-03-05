@@ -4,7 +4,7 @@
 #include <lev/math/rect.h>
 #include <lev/graphics/image.h>
 
-namespace Lev
+namespace lev::gfx
 {
 	enum class TextureFormat
 	{

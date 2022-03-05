@@ -3,7 +3,7 @@
 #include <lev/containers/vector.h>
 #include <functional>
 
-namespace Lev
+namespace lev
 {
 	struct Vec2;
 

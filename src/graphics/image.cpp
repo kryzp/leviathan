@@ -3,7 +3,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <third_party/stb/stb_image.h>
 
-using namespace Lev;
+using namespace lev;
+using namespace lev::gfx;
 
 Image::Image()
 {

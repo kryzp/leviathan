@@ -1,6 +1,6 @@
 #include <lev/math/circle.h>
 
-using namespace Lev;
+using namespace lev;
 
 Circle::Circle()
 	: position(Vec2::ZERO)

@@ -3,7 +3,8 @@
 
 #include <limits>
 
-using namespace Lev;
+using namespace lev;
+using namespace lev::phys;
 
 Collider::Collider()
 	: polygon()
@@ -40,8 +41,8 @@ Collider::Collider(float x, float y, float w, float h)
 
 void Collider::make_polygon(const Polygon& poly)
 {
-	this->polygon = Polygon(poly.vertices);
-	this->world_polygon = Polygon(poly.vertices);
+	this->polygon.vertices = poly.vertices;
+	this->world_polygon.vertices = poly.vertices;
 
 	for (int i = 0; i < poly.vertices.size(); i++)
 		this->m_axis.push_back(Vec2::ZERO);
@@ -57,9 +58,7 @@ void Collider::make_rect(const RectF& rect)
 	});
 
 	make_polygon(rectpoly);
-
-	// offset by rectangle position
-	transform.position(rect.x, rect.y);
+	transform.move(Vec2(rect.x, rect.y));
 }
 
 Collider Collider::get_offset(const Vec2& offset) const
@@ -142,7 +141,7 @@ bool Collider::poly_to_poly(Collider& a, Collider& b, Vec2* pushout)
 	if (!a.m_world_bounds.intersects(b.m_world_bounds))
 		return false;
 
-	float distance = 0;
+	float length = std::numeric_limits<float>::max();
 
 	for (int i = 0; i < a.m_axis.size(); i++)
 	{
@@ -152,13 +151,10 @@ bool Collider::poly_to_poly(Collider& a, Collider& b, Vec2* pushout)
 		if (!Polygon::axis_overlaps(a.world_polygon, b.world_polygon, axis, &amount))
 			return false;
 
-		if (i == 0 || Calc::abs(amount) < distance)
-		{
-			if (pushout)
-				(*pushout) = axis * amount;
+		length = Calc::min(Calc::abs(amount), length);
 
-			distance = Calc::abs(amount);
-		}
+		if (pushout)
+			(*pushout) = axis * length;
 	}
 
 	for (int i = 0; i < b.m_axis.size(); i++)
@@ -169,14 +165,11 @@ bool Collider::poly_to_poly(Collider& a, Collider& b, Vec2* pushout)
 		if (!Polygon::axis_overlaps(a.world_polygon, b.world_polygon, axis, &amount))
 			return false;
 
-		if (i == 0 || Calc::abs(amount) < distance)
-		{
-			if (pushout)
-				(*pushout) = axis * amount;
+		length = Calc::min(Calc::abs(amount), length);
 
-			distance = Calc::abs(amount);
-		}
-	}
+		if (pushout)
+			(*pushout) = axis * length;
+}
 
 	return true;
 }

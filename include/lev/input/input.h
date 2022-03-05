@@ -4,13 +4,13 @@
 #include <lev/math/vec2.h>
 #include <lev/math/pair.h>
 
-namespace Lev
+namespace lev
 {
 	namespace Input
 	{
 		constexpr int MAX_TEXT_INPUT = 256;
 	}
-
+	
 	enum class MouseButton
 	{
 		LEFT = 0,

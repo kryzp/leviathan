@@ -3,7 +3,7 @@
 #include <random>
 #include <ctime>
 
-namespace Lev
+namespace lev
 {
 	template <typename Engine = std::mt19937>
 	class Rng

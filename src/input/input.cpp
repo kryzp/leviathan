@@ -1,7 +1,7 @@
 #include <backend/input.h>
 #include <lev/input/input.h>
 
-using namespace Lev;
+using namespace lev;
 
 namespace
 {

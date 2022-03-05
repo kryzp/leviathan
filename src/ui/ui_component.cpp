@@ -1,7 +1,8 @@
 #include <lev/ui/ui_component.h>
 #include <lev/input/input.h>
 
-using namespace Lev;
+using namespace lev;
+using namespace lev::ui;
 
 UIComponent::UIComponent()
 	: parent(nullptr)
@@ -32,7 +33,7 @@ void UIComponent::update()
 	}
 }
 
-void UIComponent::render(SpriteBatch& b)
+void UIComponent::render(gfx::SpriteBatch& b)
 {
 	for (auto& component : m_components)
 	{

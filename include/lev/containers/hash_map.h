@@ -3,7 +3,7 @@
 #include <lev/core/util.h>
 #include <functional>
 
-namespace Lev
+namespace lev
 {
 	template <typename Key, typename Value>
 	class HashMap

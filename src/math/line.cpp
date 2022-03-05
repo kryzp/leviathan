@@ -1,7 +1,7 @@
 #include <lev/math/line.h>
 #include <lev/math/calc.h>
 
-using namespace Lev;
+using namespace lev;
 
 Line::Line()
 	: a(Vec2::ZERO)

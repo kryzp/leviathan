@@ -2,7 +2,7 @@
 
 #include <lev/math/vec2.h>
 
-namespace Lev
+namespace lev
 {
 	struct Line
 	{

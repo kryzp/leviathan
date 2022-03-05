@@ -1,7 +1,7 @@
 #include <lev/math/transform.h>
 #include <lev/math/calc.h>
 
-using namespace Lev;
+using namespace lev;
 
 Transform::Transform()
 	: m_matrix(Mat3x2::IDENTITY)

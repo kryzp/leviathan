@@ -6,7 +6,7 @@
 #include <third_party/glad/glad.h>
 #include <iostream>
 
-using namespace Lev;
+using namespace lev;
 
 namespace
 {
@@ -17,13 +17,13 @@ namespace
 /* TEXTURE STUFF                                         */
 /*********************************************************/
 
-class OpenGLTexture : public Texture
+class OpenGLTexture : public gfx::Texture
 {
 	u32 m_id;
-	TextureData m_data;
+	gfx::TextureData m_data;
 
 public:
-	OpenGLTexture(const TextureData& data)
+	OpenGLTexture(const gfx::TextureData& data)
 		: Texture()
 		, m_id(0)
 		, m_data(data)
@@ -42,9 +42,9 @@ public:
 
 		int fmt = GL_RGBA; // default format
 
-		if (m_data.format == TextureFormat::RGBA) {
+		if (m_data.format == gfx::TextureFormat::RGBA) {
 			fmt = GL_RGBA;
-		} else if (m_data.format == TextureFormat::RGB) {
+		} else if (m_data.format == gfx::TextureFormat::RGB) {
 			fmt = GL_RGB;
 		}
 
@@ -94,11 +94,11 @@ public:
 		glBindTexture(GL_TEXTURE_2D, m_id);
 	}
 
-	const TextureData& data() const override { return m_data; }
+	const gfx::TextureData& data() const override { return m_data; }
 	u32 id() const { return m_id; }
 };
 
-Ref<Texture> Renderer::create_texture(const TextureData& data)
+Ref<gfx::Texture> Renderer::create_texture(const gfx::TextureData& data)
 {
 	return create_ref<OpenGLTexture>(data);
 }
@@ -107,13 +107,13 @@ Ref<Texture> Renderer::create_texture(const TextureData& data)
 /* SHADER STUFF                                          */
 /*********************************************************/
 
-class OpenGLShader : public Shader
+class OpenGLShader : public gfx::Shader
 {
 	u32 m_id;
-	ShaderData m_data;
+	gfx::ShaderData m_data;
 
 public:
-	OpenGLShader(const ShaderData& data)
+	OpenGLShader(const gfx::ShaderData& data)
 		: Shader()
 		, m_id(0)
 		, m_data(data)
@@ -171,9 +171,9 @@ public:
 		glUseProgram(m_id);
 	}
 
-	void assign_uniform(const char* name, UniformType type, UniformFlags flags) override
+	void assign_uniform(const char* name, gfx::UniformType type, gfx::UniformFlags flags) override
 	{
-		UniformData uniform;
+		gfx::UniformData uniform;
 		uniform.name = name;
 		uniform.type = type;
 		uniform.flags = flags;
@@ -181,7 +181,7 @@ public:
 		m_data.uniforms.push_back(uniform);
 	}
 
-	const ShaderData& data() const override { return m_data; }
+	const gfx::ShaderData& data() const override { return m_data; }
 	u32 id() const { return m_id; }
 
 	void set(const char* name, bool value) const override { glUniform1i(glGetUniformLocation(m_id, name), (int)value); }
@@ -191,7 +191,7 @@ public:
 	void set(const char* name, const Mat4x4& value) const override { glUniformMatrix4fv(glGetUniformLocation(m_id, name), 1, GL_FALSE, value.value_ptr()); }
 };
 
-Ref<Shader> Renderer::create_shader(const ShaderData& data)
+Ref<gfx::Shader> Renderer::create_shader(const gfx::ShaderData& data)
 {
 	return create_ref<OpenGLShader>(data);
 }
@@ -200,12 +200,12 @@ Ref<Shader> Renderer::create_shader(const ShaderData& data)
 /* FRAMEBUFFER STUFF                                     */
 /*********************************************************/
 
-class OpenGLFramebuffer : public Framebuffer
+class OpenGLFramebuffer : public gfx::Framebuffer
 {
 public:
 };
 
-Ref<Framebuffer> Renderer::create_framebuffer()
+Ref<gfx::Framebuffer> Renderer::create_framebuffer()
 {
 	return create_ref<OpenGLFramebuffer>();
 }
@@ -214,10 +214,10 @@ Ref<Framebuffer> Renderer::create_framebuffer()
 /* MESH STUFF                                            */
 /*********************************************************/
 
-class OpenGLMesh : public Mesh
+class OpenGLMesh : public gfx::Mesh
 {
 	u32 m_id;
-	VertexFormat m_format;
+	gfx::VertexFormat m_format;
 	
 	u32 m_vertex_buffer;
 	u64 m_vertex_count;
@@ -245,7 +245,7 @@ public:
 		glDeleteBuffers(1, &m_index_buffer);
 	}
 
-	void vertex_data(const void* vertices, u64 count, const VertexFormat& format) override
+	void vertex_data(const void* vertices, u64 count, const gfx::VertexFormat& format) override
 	{
 		m_format = format;
 		m_vertex_count = count;
@@ -259,15 +259,15 @@ public:
 
 			for (int i = 0; i < format.attrib_count; i++)
 			{
-				VertexAttrib attrib = format.attribs[i];
+				gfx::VertexAttrib attrib = format.attribs[i];
 				int stride = format.stride;
 
 				int size = 0;
 
-				if      (attrib == VertexAttrib::FLOAT)  size = 1;
-				else if (attrib == VertexAttrib::FLOAT2) size = 2;
-				else if (attrib == VertexAttrib::FLOAT3) size = 3;
-				else if (attrib == VertexAttrib::FLOAT4) size = 4;
+				if      (attrib == gfx::VertexAttrib::FLOAT)  size = 1;
+				else if (attrib == gfx::VertexAttrib::FLOAT2) size = 2;
+				else if (attrib == gfx::VertexAttrib::FLOAT3) size = 3;
+				else if (attrib == gfx::VertexAttrib::FLOAT4) size = 4;
 
 				glVertexAttribPointer(i, size, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(pointer * sizeof(float)));
 				glEnableVertexAttribArray(i);
@@ -292,11 +292,11 @@ public:
 
 	u64 vertex_count() const override { return m_vertex_count; }
 	u64 index_count() const override { return m_index_count; }
-	VertexFormat format() const override { return m_format; }
+	gfx::VertexFormat format() const override { return m_format; }
 	u32 id() const { return m_id; }
 };
 
-Ref<Mesh> Renderer::create_mesh()
+Ref<gfx::Mesh> Renderer::create_mesh()
 {
 	return create_ref<OpenGLMesh>();
 }
@@ -342,10 +342,10 @@ void Renderer::render(const RenderPass& pass)
 {
 	OpenGLShader* shader = (OpenGLShader*)pass.material->shader().get();
 	OpenGLTexture* texture = (OpenGLTexture*)pass.material->texture().get();
-	const TextureSampler& sampler = pass.material->sampler();
+	const gfx::TextureSampler& sampler = pass.material->sampler();
 
 	OpenGLMesh* mesh = (OpenGLMesh*)pass.mesh.get();
-	const VertexFormat& vfmt = mesh->format();
+	const gfx::VertexFormat& vfmt = mesh->format();
 
 	shader->use();
 
@@ -353,43 +353,43 @@ void Renderer::render(const RenderPass& pass)
 	{
 		texture->bind();
 
-		String textureuniform = shader->get_uniform_data(UniformFlags::MAIN_TEXTURE).name;
+		String textureuniform = shader->get_uniform_data(gfx::UniformFlags::MAIN_TEXTURE).name;
 		shader->set(textureuniform, 0);
 
 		int wrap_x, wrap_y, filter;
 
 		switch (sampler.filter)
 		{
-			case TextureFilter::NONE:
-			case TextureFilter::LINEAR:
+			case gfx::TextureFilter::NONE:
+			case gfx::TextureFilter::LINEAR:
 				filter = GL_LINEAR;
 				break;
 
-			case TextureFilter::NEAREST:
+			case gfx::TextureFilter::NEAREST:
 				filter = GL_NEAREST;
 				break;
 		}
 
 		switch (sampler.wrap_x)
 		{
-			case TextureWrap::NONE:
-			case TextureWrap::CLAMP:
+			case gfx::TextureWrap::NONE:
+			case gfx::TextureWrap::CLAMP:
 				wrap_x = GL_CLAMP;
 				break;
 
-			case TextureWrap::REPEAT:
+			case gfx::TextureWrap::REPEAT:
 				wrap_x = GL_REPEAT;
 				break;
 		}
 		
 		switch (sampler.wrap_y)
 		{
-			case TextureWrap::NONE:
-			case TextureWrap::CLAMP:
+			case gfx::TextureWrap::NONE:
+			case gfx::TextureWrap::CLAMP:
 				wrap_y = GL_CLAMP;
 				break;
 
-			case TextureWrap::REPEAT:
+			case gfx::TextureWrap::REPEAT:
 				wrap_y = GL_REPEAT;
 				break;
 		}

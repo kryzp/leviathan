@@ -2,7 +2,7 @@
 #include <lev/math/calc.h>
 #include <lev/math/vec2.h>
 
-using namespace Lev;
+using namespace lev;
 
 Polygon::Polygon()
 {

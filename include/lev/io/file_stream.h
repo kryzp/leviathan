@@ -2,7 +2,7 @@
 
 #include <lev/io/stream.h>
 
-namespace Lev
+namespace lev::io
 {
 	class FileStream : public Stream
 	{

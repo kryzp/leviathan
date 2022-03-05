@@ -3,7 +3,7 @@
 #include <lev/core/util.h>
 #include <lev/math/calc.h>
 
-namespace Lev
+namespace lev
 {
 	template <int Size>
 	class Str

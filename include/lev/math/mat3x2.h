@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Lev
+namespace lev
 {
 	struct Vec2;
 	struct Mat4x4;

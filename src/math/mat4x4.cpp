@@ -3,7 +3,7 @@
 #include <lev/math/calc.h>
 #include <iostream>
 
-using namespace Lev;
+using namespace lev;
 
 Mat4x4::Mat4x4()
 	: m11(0), m12(0), m13(0), m14(0)

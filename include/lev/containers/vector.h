@@ -6,16 +6,17 @@
 
 #include <lev/core/util.h>
 
-namespace Lev
+namespace lev
 {
 	template <typename T>
 	class Vector
 	{
     public:
         Vector();
-        Vector(const Vector& other);
         Vector(std::initializer_list<T> data);
         Vector(int initial_capacity);
+        Vector(const Vector& other);
+        Vector& operator = (const Vector& other);
         ~Vector();
 
         void allocate(int capacity);
@@ -60,30 +61,16 @@ namespace Lev
         , m_size(0)
     {
     }
-
-    template <typename T>
-    Vector<T>::Vector(const Vector<T>& other)
-        : Vector()
-    {
-        if (other.m_size > 0)
-        {
-            allocate(other.m_size);
-            m_size = m_count = other.size();
-
-            for (int i = 0; i < m_size; i++)
-                m_buf[i] = other[i];
-        }
-    }
     
     template <typename T>
     Vector<T>::Vector(std::initializer_list<T> data)
         : Vector()
     {
         allocate(data.size());
-        m_size = m_count = data.size();
+        m_count = data.size();
 
         for (int i = 0; i < m_size; i++)
-            m_buf[i] = data.begin()[i];
+            new (m_buf + i) T(data.begin()[i]);
     }
 
     template <typename T>
@@ -91,10 +78,41 @@ namespace Lev
         : Vector()
     {
         allocate(initial_capacity);
-        m_size = m_count = initial_capacity;
+        m_count = initial_capacity;
 
         for (int i = 0; i < m_size; i++)
             new (m_buf + i) T();
+    }
+    
+    template <typename T>
+    Vector<T>::Vector(const Vector& other)
+        : Vector()
+    {
+        if (other.m_size > 0)
+        {
+            allocate(other.m_size);
+            clear();
+            m_count = other.size();
+
+            for (int i = 0; i < other.m_size; i++)
+                new (m_buf + i) T(other.m_buf[i]);
+        }
+    }
+
+    template <typename T>
+    Vector<T>& Vector<T>::operator = (const Vector& other)
+    {
+        if (other.m_size > 0)
+        {
+            allocate(other.m_size);
+            clear();
+            m_count = other.size();
+
+            for (int i = 0; i < other.m_size; i++)
+                new (m_buf + i) T(other.m_buf[i]);
+        }
+
+        return *this;
     }
 
     template <typename T>
@@ -139,7 +157,8 @@ namespace Lev
                 m_buf[i].~T();
             }
 
-		    ::operator delete (m_buf, sizeof(T) * m_size);
+            if (m_buf)
+		        ::operator delete (m_buf, sizeof(T) * m_size);
 
             m_buf = new_buf;
             m_size = newsize;

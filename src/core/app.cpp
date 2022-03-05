@@ -7,7 +7,7 @@
 #include <backend/renderer.h>
 #include <backend/input.h>
 
-using namespace Lev;
+using namespace lev;
 
 namespace
 {

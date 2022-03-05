@@ -4,7 +4,7 @@
 #include <lev/graphics/texture.h>
 #include <lev/graphics/shader.h>
 
-namespace Lev
+namespace lev::gfx
 {
 	class Material
 	{

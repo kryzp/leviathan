@@ -6,7 +6,7 @@
 #include <lev/math/transform.h>
 #include <lev/containers/vector.h>
 
-namespace Lev
+namespace lev::phys
 {
 	class Collider;
 

@@ -2,7 +2,7 @@
 #include <lev/math/calc.h>
 #include <lev/math/pair.h>
 
-using namespace Lev;
+using namespace lev;
 
 Vec2::Vec2()
 {

@@ -13,7 +13,7 @@ So, multiplication means doing 2x2 matrix multiplication then also applying
 that 'other' matrix to the position vector!
 */
 
-using namespace Lev;
+using namespace lev;
 
 Mat3x2::Mat3x2()
 	: m11(1), m12(0)
@@ -74,7 +74,7 @@ Mat3x2 Mat3x2::inverse() const
 	);
 }
 
-Mat3x2 Lev::Mat3x2::create_skew(const Vec2& amount)
+Mat3x2 Mat3x2::create_skew(const Vec2& amount)
 {
 	return Mat3x2(
 		1, amount.y,

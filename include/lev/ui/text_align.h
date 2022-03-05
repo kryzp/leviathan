@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Lev
+namespace lev::ui
 {
 	enum class TextAlign
 	{

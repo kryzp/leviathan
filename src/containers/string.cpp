@@ -1,6 +1,6 @@
 #include <lev/containers/string.h>
 #include <string.h>
 
-using namespace Lev;
+using namespace lev;
 
 

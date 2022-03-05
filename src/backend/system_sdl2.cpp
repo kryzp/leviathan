@@ -11,7 +11,7 @@
 #include <third_party/glad/glad.h>
 #include <SDL.h>
 
-using namespace Lev;
+using namespace lev;
 
 namespace
 {

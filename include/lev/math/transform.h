@@ -5,7 +5,7 @@
 
 #include <functional>
 
-namespace Lev
+namespace lev
 {
     class Transform
     {

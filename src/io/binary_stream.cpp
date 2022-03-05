@@ -1,3 +1,4 @@
 #include <lev/io/binary_stream.h>
 
-using namespace Lev;
+using namespace lev;
+using namespace lev::io;

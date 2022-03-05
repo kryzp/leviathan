@@ -1,7 +1,7 @@
 #include <lev/math/quad.h>
 #include <lev/math/rect.h>
 
-using namespace Lev;
+using namespace lev;
 
 Quad::Quad()
 {

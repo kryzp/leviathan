@@ -8,7 +8,7 @@
 #include <lev/math/colour.h>
 #include <lev/containers/vector.h>
 
-namespace Lev
+namespace lev::gfx
 {
 	class SpriteBatch
 	{

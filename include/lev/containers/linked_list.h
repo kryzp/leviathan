@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Lev
+namespace lev
 {
 	template <typename T>
 	class LinkedList
@@ -49,7 +49,7 @@ namespace Lev
 	}
 
 	template <typename T>
-	inline typename LinkedList<T>::Node* LinkedList<T>::add(T item)
+	typename LinkedList<T>::Node* LinkedList<T>::add(T item)
 	{
 		Node* node = new Node();
 		node->data = item;
@@ -74,7 +74,7 @@ namespace Lev
 	}
 
 	template <typename T>
-	inline void Lev::LinkedList<T>::remove(Node* node)
+	void LinkedList<T>::remove(Node* node)
 	{
 		if (!node)
 			return;
@@ -98,13 +98,13 @@ namespace Lev
 	}
 
 	template <typename T>
-	inline void Lev::LinkedList<T>::remove(T item)
+	void LinkedList<T>::remove(T item)
 	{
 		remove(find(item));
 	}
 
 	template <typename T>
-	inline typename LinkedList<T>::Node* Lev::LinkedList<T>::find(T item) const
+	typename LinkedList<T>::Node* LinkedList<T>::find(T item) const
 	{
 		for (auto* node = first; node != nullptr; node = node->next)
 			if (node->data == item)
