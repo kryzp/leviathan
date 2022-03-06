@@ -21,7 +21,16 @@
 
 #endif
 
-#define LEV_ARRAY_LENGTH(arr) (sizeof((arr)) / sizeof((*arr)))
+#define LEV_SINGLETON_CLASS(_classname) \
+public: \
+	static _classname& inst() \
+	{ \
+		static _classname instance; \
+		return instance; \
+	} \
+private:
+
+#define LEV_ARRAY_LENGTH(_arr) (sizeof((_arr)) / sizeof((*_arr)))
 
 #define LEV_BYTES(x)     (x)
 #define LEV_KILOBYTES(x) (LEV_BYTES(x) * 1024LL)

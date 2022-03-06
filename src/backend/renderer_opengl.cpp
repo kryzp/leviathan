@@ -6,6 +6,8 @@
 #include <third_party/glad/glad.h>
 #include <iostream>
 
+// im sorry about all the repetitive if/switch statements please avert your eyes
+
 using namespace lev;
 
 namespace
@@ -50,7 +52,7 @@ public:
 
 		bind(0);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_data.width, m_data.height, 0, fmt, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, fmt, m_data.width, m_data.height, 0, fmt, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 
@@ -92,6 +94,14 @@ public:
 
 		glActiveTexture(active);
 		glBindTexture(GL_TEXTURE_2D, m_id);
+	}
+
+	void update_sampler(gfx::TextureSampler& sampler)
+	{
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (sampler.wrap_x == gfx::TextureWrap::CLAMP) ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (sampler.wrap_y == gfx::TextureWrap::CLAMP) ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sampler.filter == gfx::TextureFilter::LINEAR) ? GL_LINEAR : GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sampler.filter == gfx::TextureFilter::LINEAR) ? GL_LINEAR : GL_NEAREST);
 	}
 
 	const gfx::TextureData& data() const override { return m_data; }
@@ -305,6 +315,47 @@ Ref<gfx::Mesh> Renderer::create_mesh()
 /* MAIN STUFF                                            */
 /*********************************************************/
 
+int get_gl_blend_func(gfx::BlendFunction func)
+{
+	switch (func)
+	{
+		case gfx::BlendFunction::ADD:				return GL_FUNC_ADD;
+		case gfx::BlendFunction::SUBTRACT:			return GL_FUNC_SUBTRACT;
+		case gfx::BlendFunction::REVERSE_SUBTRACT:	return GL_FUNC_REVERSE_SUBTRACT;
+		case gfx::BlendFunction::MIN:				return GL_MIN;
+		case gfx::BlendFunction::MAX:				return GL_MAX;
+	}
+
+	return GL_FUNC_ADD;
+}
+
+int get_gl_blend_factor(gfx::BlendFactor factor)
+{
+	switch (factor)
+	{
+		case gfx::BlendFactor::ZERO:						return GL_ZERO;
+		case gfx::BlendFactor::ONE:							return GL_ONE;
+		case gfx::BlendFactor::SRC_COLOUR:					return GL_SRC_COLOR;
+		case gfx::BlendFactor::SRC1_COLOUR:					return GL_SRC1_COLOR;
+		case gfx::BlendFactor::ONE_MINUS_SRC_COLOUR:		return GL_ONE_MINUS_SRC_COLOR;
+		case gfx::BlendFactor::ONE_MINUS_SRC1_COLOUR:		return GL_ONE_MINUS_SRC1_COLOR;
+		case gfx::BlendFactor::DST_COLOUR:					return GL_DST_COLOR;
+		case gfx::BlendFactor::ONE_MINUS_DST_COLOUR:		return GL_ONE_MINUS_DST_COLOR;
+		case gfx::BlendFactor::SRC_ALPHA:					return GL_SRC_ALPHA;
+		case gfx::BlendFactor::SRC1_ALPHA:					return GL_SRC1_ALPHA;
+		case gfx::BlendFactor::ONE_MINUS_SRC_ALPHA:			return GL_ONE_MINUS_SRC_ALPHA;
+		case gfx::BlendFactor::ONE_MINUS_SRC1_ALPHA:		return GL_ONE_MINUS_SRC1_ALPHA;
+		case gfx::BlendFactor::DST_ALPHA:					return GL_DST_ALPHA;
+		case gfx::BlendFactor::ONE_MINUS_DST_ALPHA:			return GL_ONE_MINUS_DST_ALPHA;
+		case gfx::BlendFactor::CONSTANT_COLOUR:				return GL_CONSTANT_COLOR;
+		case gfx::BlendFactor::ONE_MINUS_CONSTANT_COLOUR:	return GL_ONE_MINUS_CONSTANT_COLOR;
+		case gfx::BlendFactor::CONSTANT_ALPHA:				return GL_CONSTANT_ALPHA;
+		case gfx::BlendFactor::ONE_MINUS_CONSTANT_ALPHA:	return GL_ONE_MINUS_CONSTANT_ALPHA;
+	}
+
+	return GL_ZERO;
+}
+
 bool Renderer::init()
 {
 	g_context = System::gl_context_create();
@@ -316,8 +367,10 @@ bool Renderer::init()
 		return false;
 	}
 
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_CULL_FACE);
+	//glDisable(GL_DEPTH_TEST);
+	//glDisable(GL_CULL_FACE);
+
+	glEnable(GL_BLEND);
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -340,68 +393,34 @@ void Renderer::after_render()
 
 void Renderer::render(const RenderPass& pass)
 {
-	OpenGLShader* shader = (OpenGLShader*)pass.material->shader().get();
-	OpenGLTexture* texture = (OpenGLTexture*)pass.material->texture().get();
-	const gfx::TextureSampler& sampler = pass.material->sampler();
+	// utility to make code more readable
+	auto shader = (OpenGLShader*)pass.material->shader().get();
+	auto texture = (OpenGLTexture*)pass.material->texture().get();
+	auto& sampler = pass.material->sampler();
+	auto mesh = (OpenGLMesh*)pass.mesh.get();
+	auto vfmt = mesh->format();
+	auto& blend = pass.blend;
 
-	OpenGLMesh* mesh = (OpenGLMesh*)pass.mesh.get();
-	const gfx::VertexFormat& vfmt = mesh->format();
-
+	// use the shader
 	shader->use();
 
+	// if we're using a texture then setup the stuff for it
 	if (texture)
 	{
 		texture->bind();
+		texture->update_sampler(sampler);
 
 		String textureuniform = shader->get_uniform_data(gfx::UniformFlags::MAIN_TEXTURE).name;
 		shader->set(textureuniform, 0);
-
-		int wrap_x, wrap_y, filter;
-
-		switch (sampler.filter)
-		{
-			case gfx::TextureFilter::NONE:
-			case gfx::TextureFilter::LINEAR:
-				filter = GL_LINEAR;
-				break;
-
-			case gfx::TextureFilter::NEAREST:
-				filter = GL_NEAREST;
-				break;
-		}
-
-		switch (sampler.wrap_x)
-		{
-			case gfx::TextureWrap::NONE:
-			case gfx::TextureWrap::CLAMP:
-				wrap_x = GL_CLAMP;
-				break;
-
-			case gfx::TextureWrap::REPEAT:
-				wrap_x = GL_REPEAT;
-				break;
-		}
-		
-		switch (sampler.wrap_y)
-		{
-			case gfx::TextureWrap::NONE:
-			case gfx::TextureWrap::CLAMP:
-				wrap_y = GL_CLAMP;
-				break;
-
-			case gfx::TextureWrap::REPEAT:
-				wrap_y = GL_REPEAT;
-				break;
-		}
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_x);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_y);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
 	}
 
+	// setup blend
+	glBlendEquation(get_gl_blend_func(blend.func));
+	glBlendFunc(get_gl_blend_factor(blend.factor_src), get_gl_blend_factor(blend.factor_dst));
+
+	// draw los triangoles
 	glBindVertexArray(mesh->id());
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, pass.mesh->index_count(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 }
 

@@ -11,32 +11,27 @@ Material::~Material()
 {
 }
 
-void Material::shader(const Ref<Shader>& shader)
-{
-	m_shader = shader;
-}
-
-Ref<Shader> Material::shader() const
+Ref<Shader>& Material::shader()
 {
 	return m_shader;
 }
 
-void Material::texture(const Ref<Texture>& texture)
+const Ref<Shader>& Material::shader() const
 {
-	m_texture = texture;
+	return m_shader;
 }
 
-Ref<Texture> Material::texture() const
+Ref<Texture>& Material::texture()
 {
 	return m_texture;
 }
 
-void Material::sampler(const TextureSampler& sampler)
+const Ref<Texture>& Material::texture() const
 {
-	m_sampler = sampler;
+	return m_texture;
 }
 
-TextureSampler Material::sampler() const
+TextureSampler& Material::sampler()
 {
 	return m_sampler;
 }

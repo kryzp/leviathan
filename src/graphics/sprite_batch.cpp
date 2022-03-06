@@ -16,7 +16,7 @@ SpriteBatch::~SpriteBatch()
 
 void SpriteBatch::render(const Mat4x4& proj)
 {
-	String projectionname = current_shader()->get_uniform_data(UniformFlags::PROJECTION).name;
+	String projectionname = m_shader_stack.back()->get_uniform_data(UniformFlags::PROJECTION).name;
 	m_shader_stack.back()->set(projectionname, proj);
 
 	for (auto& b : m_batches)
@@ -33,24 +33,24 @@ void SpriteBatch::render_batch(const RenderBatch& b)
 	Ref<Material> material = create_ref<Material>();
 	Ref<Mesh> mesh = Renderer::create_mesh();
 
-	material->shader(current_shader());
+	material->shader() = m_shader_stack.back();
 
 	if (b.texture)
 	{
 		width = b.texture->data().width;
 		height = b.texture->data().height;
 
-		material->texture(b.texture);
-		material->sampler(b.sampler);
+		material->texture() = b.texture;
+		material->sampler() = b.sampler;
 	}
 
 	Vertex vertices[] = {
 		// todo: make colours controllable somehow
 		// todo: also very temporary while i get stuff working
-		{ .pos = Vec2(0.0f,  0.0f),   .texcoord = Vec2(0.0f, 0.0f), .col = Colour::WHITE },
-		{ .pos = Vec2(0.0f,  height), .texcoord = Vec2(0.0f, 1.0f), .col = Colour::WHITE },
-		{ .pos = Vec2(width, height), .texcoord = Vec2(1.0f, 1.0f), .col = Colour::WHITE },
-		{ .pos = Vec2(width, 0.0f),   .texcoord = Vec2(1.0f, 0.0f), .col = Colour::WHITE }
+		{ .pos = Vec2(0.0f,  0.0f),   .col = Colour::WHITE, .texcoord = Vec2(0.0f, 0.0f) },
+		{ .pos = Vec2(0.0f,  height), .col = Colour::WHITE, .texcoord = Vec2(0.0f, 1.0f) },
+		{ .pos = Vec2(width, height), .col = Colour::WHITE, .texcoord = Vec2(1.0f, 1.0f) },
+		{ .pos = Vec2(width, 0.0f),   .col = Colour::WHITE, .texcoord = Vec2(1.0f, 0.0f) }
 	};
 
 	u32 indices[] = {
@@ -90,6 +90,11 @@ void SpriteBatch::render_batch(const RenderBatch& b)
 	});
 
 	Renderer::render({
+		.blend = { // todo: temp
+			.func = BlendFunction::ADD,
+			.factor_src = BlendFactor::SRC_ALPHA,
+			.factor_dst = BlendFactor::ONE_MINUS_SRC_ALPHA
+		},
 		.mesh = mesh,
 		.material = material
 	});
@@ -105,7 +110,11 @@ void SpriteBatch::render_texture(const Ref<Texture>& tex)
 {
 	RenderBatch b = {
 		.texture = tex,
-		.sampler = TextureSampler(TextureFilter::NEAREST, TextureWrap::CLAMP, TextureWrap::CLAMP),
+		.sampler = {
+			.filter = TextureFilter::NEAREST,
+			.wrap_x = TextureWrap::CLAMP,
+			.wrap_y = TextureWrap::CLAMP
+		},
 		.matrix = m_transform_matrix
 	};
 
@@ -125,6 +134,16 @@ Mat3x2 SpriteBatch::pop_matrix()
 	return val;
 }
 
+void SpriteBatch::push_blend(const BlendMode& blend)
+{
+	m_blend_stack.push_back(blend);
+}
+
+BlendMode SpriteBatch::pop_blend()
+{
+	return m_blend_stack.pop_back();
+}
+
 void SpriteBatch::push_shader(const Ref<Shader>& shader)
 {
 	m_shader_stack.push_back(shader);
@@ -133,9 +152,4 @@ void SpriteBatch::push_shader(const Ref<Shader>& shader)
 Ref<Shader> SpriteBatch::pop_shader()
 {
 	return m_shader_stack.pop_back();
-}
-
-const Ref<Shader>& SpriteBatch::current_shader() const
-{
-	return m_shader_stack.back();
 }

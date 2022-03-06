@@ -2,6 +2,7 @@
 
 #include <lev/graphics/texture.h>
 #include <lev/graphics/shader.h>
+#include <lev/graphics/blend.h>
 #include <lev/math/mat3x2.h>
 #include <lev/math/mat4x4.h>
 #include <lev/math/vec2.h>
@@ -19,9 +20,11 @@ namespace lev::gfx
 		void push_matrix(const Mat3x2& mat);
 		Mat3x2 pop_matrix();
 
+		void push_blend(const BlendMode& blend);
+		BlendMode pop_blend();
+
 		void push_shader(const Ref<Shader>& shader);
 		Ref<Shader> pop_shader();
-		const Ref<Shader>& current_shader() const;
 
 		void render(const Mat4x4& proj);
 
@@ -41,6 +44,7 @@ namespace lev::gfx
 			Ref<Texture> texture;
 			TextureSampler sampler;
 			Mat3x2 matrix;
+			BlendMode blend;
 		};
 
 		void render_batch(const RenderBatch& b);
@@ -49,6 +53,7 @@ namespace lev::gfx
 		Mat3x2 m_transform_matrix;
 
 		Vector<Ref<Shader>> m_shader_stack;
+		Vector<BlendMode> m_blend_stack;
 
 		Vector<RenderBatch> m_batches;
 	};

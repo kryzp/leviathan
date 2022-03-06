@@ -23,6 +23,7 @@ namespace lev
         void resize(int new_count);
         void erase(int index, int amount = 1);
         void expand(int amount = 1);
+        void setto(int value);
 
         T& front();
         const T& front() const;
@@ -198,6 +199,12 @@ namespace lev
 
         for (int i = 0; i < amount; i++)
             new (m_buf + m_count + i) T();
+    }
+
+    template <typename T>
+    void Vector<T>::setto(int value)
+    {
+        memset(m_buf, value, sizeof(T) * m_size);
     }
 
     template <typename T>

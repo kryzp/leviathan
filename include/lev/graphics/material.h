@@ -12,14 +12,13 @@ namespace lev::gfx
 		Material();
 		~Material();
 
-		void shader(const Ref<Shader>& shader);
-		Ref<Shader> shader() const;
+		Ref<Shader>& shader();
+		const Ref<Shader>& shader() const;
 
-		void texture(const Ref<Texture>& texture);
-		Ref<Texture> texture() const;
+		Ref<Texture>& texture();
+		const Ref<Texture>& texture() const;
 		
-		void sampler(const TextureSampler& sampler);
-		TextureSampler sampler() const;
+		TextureSampler& sampler();
 
 	private:
 		Ref<Texture> m_texture;

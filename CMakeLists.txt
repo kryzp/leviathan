@@ -81,6 +81,6 @@ if (SDL2_ENABLED)
 	target_link_libraries(${PROJECT_NAME} PUBLIC ${SDL2_LIBRARIES})
 endif()
 
-add_executable(lv_test testing/src/main.cpp)
+add_executable(lv_test testing/src/test_entity.cpp)
 target_include_directories(lv_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/public)
 target_link_libraries(lv_test PUBLIC ${PROJECT_NAME})

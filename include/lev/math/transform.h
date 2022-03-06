@@ -13,27 +13,26 @@ namespace lev
         Transform();
         Transform(const Transform& other);
 
-        Vec2 origin() const;
-        void origin(const Vec2& v);
-        void origin(float x, float y);
-        void offset(const Vec2& v);
+        Transform offset(const Vec2& amount);
 
-        Vec2 position_with_origin() const;
+        Vec2 origin() const;
+        Transform& origin(const Vec2& v);
+        Transform& origin(float x, float y);
 
         Vec2 position() const;
-        void position(const Vec2& v);
-        void position(float x, float y);
-        void move(const Vec2& v);
-        void movex(float x);
-        void movey(float y);
+        Transform& position(const Vec2& v);
+        Transform& position(float x, float y);
+        Transform& move(const Vec2& v);
+        Transform& movex(float x);
+        Transform& movey(float y);
 
         Vec2 scale() const;
-        void scale(const Vec2& v);
-        void scale(float x, float y);
+        Transform& scale(const Vec2& v);
+        Transform& scale(float x, float y);
 
         float rotation() const;
-        void rotation(float r);
-        void rotate(float r);
+        Transform& rotation(float r);
+        Transform& rotate(float r);
 
         float rotation_rad() const;
         float rotation_deg() const;

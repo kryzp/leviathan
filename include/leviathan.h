@@ -7,6 +7,5 @@
 #include <lev/input/input.h>
 #include <lev/math/math_all.h>
 #include <lev/io/io_all.h>
-#include <lev/entity/entity.h>
 #include <lev/physics/physics_all.h>
 #include <lev/ui/ui_all.h>

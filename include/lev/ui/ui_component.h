@@ -25,7 +25,6 @@ namespace lev::ui
 		template <typename T, typename... Args>
 		T* add(const UIConstraints& constraints, Args&&... args);
 
-		//void add(Ref<UIComponent> component, const UIConstraints& constraints);
 		void clear();
 
 		RectI bounding_box() const;

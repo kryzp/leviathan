@@ -10,12 +10,10 @@ namespace lev::gfx
 {
 	enum class VertexAttrib
 	{
-		NONE,
 		FLOAT,
 		FLOAT2,
 		FLOAT3,
-		FLOAT4,
-		MAX
+		FLOAT4
 	};
 
 	struct VertexFormat

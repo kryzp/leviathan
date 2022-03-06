@@ -9,24 +9,19 @@ namespace lev::gfx
 	enum class TextureFormat
 	{
 		RGB,
-		RGBA,
-		MAX
+		RGBA
 	};
 
 	enum class TextureFilter
 	{
-		NONE,
 		NEAREST,
-		LINEAR,
-		MAX
+		LINEAR
 	};
 
 	enum class TextureWrap
 	{
-		NONE,
 		CLAMP,
-		REPEAT,
-		MAX
+		REPEAT
 	};
 
 	struct TextureData
@@ -57,34 +52,6 @@ namespace lev::gfx
 		TextureFilter filter;
 		TextureWrap wrap_x;
 		TextureWrap wrap_y;
-
-		TextureSampler()
-			: filter(TextureFilter::NEAREST)
-			, wrap_x(TextureWrap::CLAMP)
-			, wrap_y(TextureWrap::CLAMP)
-		{
-		}
-
-		TextureSampler(TextureFilter filter, TextureWrap wrap_x, TextureWrap wrap_y)
-			: filter(filter)
-			, wrap_x(wrap_x)
-			, wrap_y(wrap_y)
-		{
-		}
-
-		bool operator == (const TextureSampler& other) const
-		{
-			return (
-				(this->filter == other.filter) &&
-				(this->wrap_x == other.wrap_x) &&
-				(this->wrap_y == other.wrap_y)
-			);
-		}
-
-		bool operator != (const TextureSampler& other) const
-		{
-			return !(*this == other);
-		}
 	};
 
 	struct TextureRegion

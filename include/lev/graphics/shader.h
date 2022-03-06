@@ -15,7 +15,6 @@ namespace lev::gfx
 
 	enum class UniformFlags
 	{
-		NONE,
 		PROJECTION,
 		MAIN_TEXTURE
 	};

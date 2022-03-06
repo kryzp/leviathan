@@ -37,7 +37,11 @@ namespace lev
 		Vec2 bottom_left() const;
 		Vec2 bottom_right() const;
 
-		friend std::ostream& operator << (std::ostream& os, const Rect& r);
+		friend std::ostream& operator << (std::ostream& os, const Rect& r)
+		{
+			std::cout << "{ " << r.x << ", " << r.y << ", " << r.w << ", " << r.h << " }" << std::endl;
+			return os;
+		}
 	};
 
 	template <typename T> const Rect<T> Rect<T>::ZERO = Rect<T>(0, 0, 0, 0);
@@ -107,11 +111,4 @@ namespace lev
 	template <typename T> Vec2 Rect<T>::top_right()    const { return Vec2(right(), top()); }
 	template <typename T> Vec2 Rect<T>::bottom_left()  const { return Vec2(left(),  bottom()); }
 	template <typename T> Vec2 Rect<T>::bottom_right() const { return Vec2(right(), bottom()); }
-
-	template <typename T>
-	inline std::ostream& operator << (std::ostream& os, const Rect<T>& r)
-	{
-		std::cout << "{ " << r.x << ", " << r.y << ", " << r.w << ", " << r.h << " }" << std::endl;
-		return os;
-	}
 }

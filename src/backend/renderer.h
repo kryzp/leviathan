@@ -3,6 +3,7 @@
 #include <lev/core/app.h>
 #include <lev/core/util.h>
 
+#include <lev/graphics/blend.h>
 #include <lev/graphics/shader.h>
 #include <lev/graphics/texture.h>
 #include <lev/graphics/mesh.h>
@@ -13,6 +14,7 @@ namespace lev
 {
 	struct RenderPass
 	{
+		gfx::BlendMode blend;
 		Ref<gfx::Mesh> mesh;
 		Ref<gfx::Material> material;
 	};

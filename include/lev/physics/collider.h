@@ -30,13 +30,15 @@ namespace lev::phys
 		void make_polygon(const Polygon& polygon);
 		void make_rect(const RectF& rect);
 
-		Collider get_offset(const Vec2& offset) const;
+		Collider offset(const Vec2& offset) const;
 
 		RectF get_world_bounds();
 
 		bool overlaps(Collider& other, Vec2* pushout);
 
+		Transform* parent_transform;
 		Transform transform;
+
 		Polygon polygon;
 		Polygon world_polygon;
 

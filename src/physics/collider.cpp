@@ -11,6 +11,8 @@ Collider::Collider()
 	, world_polygon()
 	, m_world_bounds(RectF::ZERO)
 	, m_axis()
+	, transform()
+	, parent_transform(nullptr)
 {
 }
 
@@ -19,22 +21,26 @@ Collider::Collider(const Collider& other)
 	polygon = other.polygon;
 	world_polygon = other.world_polygon;
 	m_world_bounds = other.m_world_bounds;
-	m_axis = other.m_axis; // note: havent checked but this might be copying the reference so this could corrupt if 'other' goes out of scope
+	m_axis = other.m_axis;
 	transform = other.transform;
+	parent_transform = other.parent_transform;
 }
 
 Collider::Collider(const Polygon& polygon)
-	: m_axis(polygon.vertices.size())
+	: Collider()
 {
+	m_axis = Vector<Vec2>(polygon.vertices.size());
 	make_polygon(polygon);
 }
 
 Collider::Collider(const RectF& rect)
+	: Collider()
 {
 	make_rect(rect);
 }
 
 Collider::Collider(float x, float y, float w, float h)
+	: Collider()
 {
 	make_rect(RectF(x, y, w, h));
 }
@@ -61,10 +67,10 @@ void Collider::make_rect(const RectF& rect)
 	transform.move(Vec2(rect.x, rect.y));
 }
 
-Collider Collider::get_offset(const Vec2& offset) const
+Collider Collider::offset(const Vec2& amount) const
 {
 	Collider collider = Collider(*this);
-	collider.transform.move(offset);
+	collider.transform.move(amount);
 	return collider;
 }
 
@@ -88,7 +94,10 @@ bool Collider::overlaps(Collider& other, Vec2* pushout)
 void Collider::update_world_bounds()
 {
 	int vert_count = polygon.vertices.size();
+
 	Mat3x2 mat = transform.matrix();
+	if (parent_transform)
+		mat = parent_transform->matrix() * mat;
 
 	// update axis and points
 	{
@@ -104,15 +113,14 @@ void Collider::update_world_bounds()
 
 			world_polygon.vertices[i] = Vec2::transform(polygon.vertices[i], mat);
 
-			m_axis[i] = (next_vert - curr_vert).normalized();
-			m_axis[i] = m_axis[i].perpendicular();
+			m_axis[i] = (next_vert - curr_vert).normalized().perpendicular();
 		}
 	}
 
 	// update world bounds
 	{
 		float minx = std::numeric_limits<float>::max();
-		float maxx = std::numeric_limits<float>::lowest(); // i present: asshole design. for some ungodly reason ::min() doesn't return the lowest value, it returns the smallest value. FOR 1 HOUR I HAVE SAT HERE FIXING THIS STUPID BUG BECAUSE THE C++ LIBRARY IS INCAPABLE OF NAMING THINGS. WHY ISNT THIS min() AND THEN A SEPERATE FUNCTION smallest() !!!!! WHY C++ LIBRARY??? WHY WOULD YOU DO THAT????
+		float maxx = std::numeric_limits<float>::lowest();
 		float miny = std::numeric_limits<float>::max();
 		float maxy = std::numeric_limits<float>::lowest();
 

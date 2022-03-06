@@ -44,27 +44,6 @@ void UIComponent::render(gfx::SpriteBatch& b)
 	}
 }
 
-/*
-void UIComponent::add(Ref<UIComponent> component, const UIConstraints& constraints)
-{
-	component->parent = this;
-	component->constraints = constraints;
-	component->constraints.constrain(*component);
-	component->init();
-	m_components.push_back(component);
-}
-*/
-
-void UIComponent::clear()
-{
-	m_components.clear();
-}
-
-RectI UIComponent::bounding_box() const
-{
-	return RectI(x(), y(), width(), height());
-}
-
 bool UIComponent::mouse_hovering_over(bool include_children)
 {
 	Vec2 mouse_pos = Input::mouse_screen_pos();
@@ -96,6 +75,9 @@ bool UIComponent::mouse_clicked()
 {
 	return Input::pressed(MouseButton::LEFT); // todo: temp
 }
+
+void UIComponent::clear() { m_components.clear(); }
+RectI UIComponent::bounding_box() const { return m_rect; }
 
 Vec2 UIComponent::position() const { return Vec2(x(), y()); }
 Vec2 UIComponent::size() const { return Vec2(width(), height()); }
