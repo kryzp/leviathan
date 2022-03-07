@@ -9,20 +9,8 @@ namespace lev::gfx
 	class Material
 	{
 	public:
-		Material();
-		~Material();
-
-		Ref<Shader>& shader();
-		const Ref<Shader>& shader() const;
-
-		Ref<Texture>& texture();
-		const Ref<Texture>& texture() const;
-		
-		TextureSampler& sampler();
-
-	private:
-		Ref<Texture> m_texture;
-		TextureSampler m_sampler;
-		Ref<Shader> m_shader;
+		Ref<Texture> texture;
+		TextureSampler sampler;
+		Ref<Shader> shader;
 	};
 }

@@ -22,6 +22,13 @@ Mat3x2::Mat3x2()
 {
 }
 
+Mat3x2::Mat3x2(const Mat3x2& other)
+	: m11(other.m11), m12(other.m12)
+	, m21(other.m21), m22(other.m22)
+	, m31(other.m31), m32(other.m32)
+{
+}
+
 Mat3x2::Mat3x2(float initial)
 	: m11(initial), m12(0)
 	, m21(0), m22(initial)
@@ -52,7 +59,7 @@ const float* Mat3x2::value_ptr() const
 
 float Mat3x2::scaling_factor() const
 {
-	return Calc::sqrt(m11*m11 + m12*m12);
+	return (Calc::sqrt(m11*m11 + m12*m12) + Calc::sqrt(m21*m21 + m22*m22)) / 2.0f;
 }
 
 float Mat3x2::determinant() const

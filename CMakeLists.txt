@@ -41,6 +41,7 @@ add_library(${PROJECT_NAME}
 	src/math/vec2.cpp
 	src/math/polygon.cpp
 	src/math/transform.cpp
+	src/math/timer.cpp
 
 	src/physics/collider.cpp
 	
@@ -60,8 +61,8 @@ target_include_directories(${PROJECT_NAME}
 
 set(OPENGL_ENABLED true CACHE BOOL "Use OpenGL as the renderer implementation")
 set(SDL2_ENABLED true CACHE BOOL "Use SDL2 as the system implementation")
-set(SDL2_INCLUDE_DIRS "D:/_DEV/libs/SDL2-2.0.16/include/") # disgusting
-set(SDL2_LIBRARIES "D:/_DEV/libs/SDL2-2.0.16/lib/x64/SDL2.lib" "D:/_DEV/libs/SDL2-2.0.16/lib/x64/SDL2main.lib") # disgusting - the sequel
+set(SDL2_INCLUDE_DIRS "D:/_DEV/libs/SDL2-2.0.20/include/") # disgusting
+set(SDL2_LIBRARIES "D:/_DEV/libs/SDL2-2.0.20/lib/x64/SDL2.lib" "D:/_DEV/libs/SDL2-2.0.20/lib/x64/SDL2main.lib") # disgusting - the sequel
 
 set(DEBUG_MODE true)
 
@@ -81,6 +82,6 @@ if (SDL2_ENABLED)
 	target_link_libraries(${PROJECT_NAME} PUBLIC ${SDL2_LIBRARIES})
 endif()
 
-add_executable(lv_test testing/src/test_entity.cpp)
+add_executable(lv_test testing/src/test_framebuffer.cpp)
 target_include_directories(lv_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/public)
 target_link_libraries(lv_test PUBLIC ${PROJECT_NAME})

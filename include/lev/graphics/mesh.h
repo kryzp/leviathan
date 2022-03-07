@@ -19,14 +19,14 @@ namespace lev::gfx
 	struct VertexFormat
 	{
 		int attrib_count;
-		VertexAttrib attribs[8];
+		VertexAttrib attribs[8]; // note: too small?
 		int stride;
 	};
 
 	class Mesh : public NonCopyable, public NonMovable
 	{
 	public:
-		~Mesh() = default;
+		static Ref<Mesh> create();
 
 		virtual void vertex_data(const void* vertices, u64 count, const VertexFormat& format) = 0;
 		virtual void index_data(const u32* indices, u64 count) = 0;

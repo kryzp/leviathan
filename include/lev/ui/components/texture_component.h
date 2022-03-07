@@ -25,8 +25,7 @@ namespace lev::ui
 		{
 			UIComponent::render(b);
 
-			auto data = texture.texture->data();
-			auto texsize = Vec2(data.width, data.height);
+			auto texsize = Vec2(texture.texture->width(), texture.texture->height());
 
 			b.push_matrix(Mat3x2::create_transform(
 				position(),

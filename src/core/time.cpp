@@ -2,4 +2,7 @@
 
 using namespace lev;
 
-u64 Time::ticks = 0;
+float Time::seconds = 0.0f;
+float Time::milliseconds = 0.0f;
+float Time::delta = 0.0f;
+u64 Time::frames = 0;

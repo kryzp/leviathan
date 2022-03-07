@@ -6,10 +6,13 @@
 
 namespace lev::gfx
 {
+	class Texture;
+
 	enum class TextureFormat
 	{
 		RGB,
-		RGBA
+		RGBA,
+		DEPTH_STENCIL
 	};
 
 	enum class TextureFilter
@@ -28,23 +31,7 @@ namespace lev::gfx
 	{
 		int width;
 		int height;
-
 		TextureFormat format;
-	};
-
-	class Texture
-	{
-	public:
-		Texture();
-		virtual ~Texture();
-
-		virtual void generate(const byte* data) = 0;
-
-		virtual const TextureData& data() const = 0;
-
-		static Ref<Texture> create(const char* path);
-		static Ref<Texture> create(const Image& image);
-		static Ref<Texture> create(int width, int height, const byte* data, TextureFormat format);
 	};
 
 	struct TextureSampler
@@ -58,5 +45,21 @@ namespace lev::gfx
 	{
 		Ref<Texture> texture;
 		RectI source;
+	};
+
+	class Texture
+	{
+	public:
+		Texture();
+		virtual ~Texture();
+
+		static Ref<Texture> create(const char* path);
+		static Ref<Texture> create(const Image& image);
+		static Ref<Texture> create(int width, int height, TextureFormat format, const byte* data = nullptr);
+
+		virtual void generate(const byte* data) = 0;
+		virtual int width() const = 0;
+		virtual int height() const = 0;
+		virtual TextureFormat format() const = 0;
 	};
 }

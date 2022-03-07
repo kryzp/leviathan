@@ -28,6 +28,7 @@ namespace lev
 		};
 
 		Mat3x2();
+		Mat3x2(const Mat3x2& other);
 		Mat3x2(float initial);
 		Mat3x2(
 			float m11, float m12,

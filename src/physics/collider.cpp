@@ -7,23 +7,23 @@ using namespace lev;
 using namespace lev::phys;
 
 Collider::Collider()
-	: polygon()
+	: parent(nullptr)
+	, transform()
+	, polygon()
 	, world_polygon()
 	, m_world_bounds(RectF::ZERO)
 	, m_axis()
-	, transform()
-	, parent_transform(nullptr)
 {
 }
 
 Collider::Collider(const Collider& other)
 {
-	polygon = other.polygon;
-	world_polygon = other.world_polygon;
-	m_world_bounds = other.m_world_bounds;
-	m_axis = other.m_axis;
-	transform = other.transform;
-	parent_transform = other.parent_transform;
+	this->polygon        = other.polygon;
+	this->world_polygon  = other.world_polygon;
+	this->m_world_bounds = other.m_world_bounds;
+	this->m_axis         = other.m_axis;
+	this->transform      = other.transform;
+	this->parent         = other.parent;
 }
 
 Collider::Collider(const Polygon& polygon)
@@ -96,8 +96,8 @@ void Collider::update_world_bounds()
 	int vert_count = polygon.vertices.size();
 
 	Mat3x2 mat = transform.matrix();
-	if (parent_transform)
-		mat = parent_transform->matrix() * mat;
+	if (parent)
+		mat = parent->matrix() * mat;
 
 	// update axis and points
 	{

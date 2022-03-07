@@ -1,4 +1,3 @@
-#include <backend/input.h>
 #include <lev/input/input.h>
 
 using namespace lev;
@@ -26,7 +25,45 @@ void Input::update()
 	g_prev_kb = g_kb;
 	g_prev_mouse = g_mouse;
 
-	// retrieve input
+	for (int i = 0; i < (int)Key::MAX; i++)
+		g_kb.pressed[i] = g_kb.released[i] = false;
+	memset(g_kb.text, 0, sizeof(char) * Input::MAX_TEXT_INPUT);
+
+	for (int i = 0; i < (int)MouseButton::MAX; i++)
+		g_mouse.released[i] = g_mouse.pressed[i] = false;
+	g_mouse.wheel = Float2::ZERO;
+}
+
+void Input::on_mouse_move(float x, float y)
+{
+}
+
+void Input::on_mouse_screen_move(float x, float y)
+{
+}
+
+void Input::on_mouse_down(MouseButton button)
+{
+}
+
+void Input::on_mouse_up(MouseButton button)
+{
+}
+
+void Input::on_mouse_wheel(Float2 wheel)
+{
+}
+
+void Input::on_key_down(Key key)
+{
+}
+
+void Input::on_key_up(Key key)
+{
+}
+
+void Input::on_text_utf8(const char* text)
+{
 }
 
 bool Input::down(VirtualKey vkey)

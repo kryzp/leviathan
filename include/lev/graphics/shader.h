@@ -15,6 +15,7 @@ namespace lev::gfx
 
 	enum class UniformFlags
 	{
+		NONE,
 		PROJECTION,
 		MAIN_TEXTURE
 	};
@@ -42,7 +43,6 @@ namespace lev::gfx
 	{
 		Str<512> vertex_source;
 		Str<512> fragment_source;
-		Vector<UniformData> uniforms;
 	};
 
 	class Shader
@@ -51,8 +51,9 @@ namespace lev::gfx
 		Shader();
 		virtual ~Shader();
 
+		static Ref<Shader> create(const char* vertex, const char* fragment, bool is_source = false);
+
 		virtual void use() const = 0;
-		virtual const ShaderData& data() const = 0;
 
 		virtual void set(const char* name, bool value) const = 0;
 		virtual void set(const char* name, int value) const = 0;
@@ -61,9 +62,8 @@ namespace lev::gfx
 		virtual void set(const char* name, const Mat4x4& value) const = 0;
 
 		virtual void assign_uniform(const char* name, UniformType type, UniformFlags flags) = 0;
-		
-		const UniformData& get_uniform_data(UniformFlags flags) const;
+		virtual const Vector<UniformData>& uniforms() const = 0;
 
-		static Ref<Shader> create(const char* vertex, const char* fragment);
+		const char* uniform_name(UniformFlags flags) const;
 	};
 }

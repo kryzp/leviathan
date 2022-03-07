@@ -19,6 +19,8 @@ namespace lev
 		int draw_width();
 		int draw_height();
 
+		unsigned long long ticks();
+
 		void* gl_context_create();
 		void gl_context_make_current(void* context);
 		void gl_context_destroy(void* context);

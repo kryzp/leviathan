@@ -242,15 +242,14 @@ namespace lev
 		bool down[(int)Key::MAX];
 		bool released[(int)Key::MAX];
 		bool pressed[(int)Key::MAX];
-
 		char text[Input::MAX_TEXT_INPUT];
 	};
 
 	struct MouseState
 	{
 		bool down[(int)MouseButton::MAX];
-		bool released[(int)MouseButton::MAX];
 		bool pressed[(int)MouseButton::MAX];
+		bool released[(int)MouseButton::MAX];
 
 		Vec2 screen_position;
 		Vec2 draw_position;
@@ -267,6 +266,10 @@ namespace lev
 
 	namespace Input
 	{
+		bool init();
+		void destroy();
+		void update();
+
 		bool down(VirtualKey vkey);
 		bool down(MouseButton mb);
 		bool down(Key key);
@@ -290,5 +293,16 @@ namespace lev
 		Vec2 mouse_position();
 		Float2 mouse_wheel();
 		Float2 mouse_wheel_change();
+
+		void on_mouse_move(float x, float y);
+		void on_mouse_screen_move(float x, float y);
+		
+		void on_mouse_down(MouseButton button);
+		void on_mouse_up(MouseButton button);
+		void on_mouse_wheel(Float2 wheel);
+		
+		void on_key_down(Key key);
+		void on_key_up(Key key);
+		void on_text_utf8(const char* text);
 	}
 }

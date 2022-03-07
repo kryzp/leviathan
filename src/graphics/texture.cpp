@@ -19,10 +19,10 @@ Ref<Texture> Texture::create(const char* path)
 
 Ref<Texture> Texture::create(const Image& image)
 {
-	return create(image.width(), image.height(), image.data(), TextureFormat::RGBA);
+	return create(image.width(), image.height(), TextureFormat::RGBA, image.data());
 }
 
-Ref<Texture> Texture::create(int width, int height, const byte* data, TextureFormat format)
+Ref<Texture> Texture::create(int width, int height, TextureFormat format, const byte* data)
 {
 	TextureData tex = {
 		.width = width,
@@ -31,7 +31,9 @@ Ref<Texture> Texture::create(int width, int height, const byte* data, TextureFor
 	};
 
 	Ref<Texture> result = Renderer::create_texture(tex);
-	result->generate(data);
+
+	if (data)
+		result->generate(data);
 
 	return result;
 }

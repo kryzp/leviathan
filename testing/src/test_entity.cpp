@@ -3,10 +3,8 @@
 #include <iostream>
 
 // yes i know im using too much OOP and i could just use functions instead of singletons just let me have this ok doing ::inst() is fun >:(
-// this is how i like to do entity systems nowadays, except if i were to do it properly i'd probably have some better resource management system
-// pointers take up like no memory so it doesnt matter at all that theyre in the base class
-// atleast compared to the amount of space graphics rendering takes up
-// by no means am i actually knowledgable enough to talk about entity systems its just that i find this 'structure' to work nicest
+// by no means is this *actually* a good entity system, it's just thrown together to demonstrate what it might look like
+// ive made lots of shortcuts and horrible horribleness so do not take this for good code
 
 using namespace lev;
 
@@ -29,8 +27,12 @@ public:
 	Entity();
 	virtual ~Entity() = default;
 
-	virtual bool is_player() { return false; }
+	virtual void update() { }
 
+	bool operator == (const Entity& other) const;
+	bool operator != (const Entity& other) const;
+
+	u32 id;
 	Transform transform;
 	Physics* physics;
 	Sprite* sprite;
@@ -43,6 +45,9 @@ Entity::Entity()
 {
 }
 
+bool Entity::operator == (const Entity& other) const { return this->id == other.id; }
+bool Entity::operator != (const Entity& other) const { return !(*this == other); }
+
 class Player : public Entity
 {
 public:
@@ -52,10 +57,10 @@ public:
 		transform.origin(128, 128);
 
 		physics = new Physics();
-		physics->velocity = Vec2(0.5f, 0.0f);
+		physics->velocity = Vec2::ZERO;
 		physics->angular_velocity = 0.0f;
 		physics->collider = RectF(0, 0, 256, 256);
-		physics->collider.parent_transform = &transform;
+		physics->collider.parent = &transform;
 
 		sprite = new Sprite();
 		sprite->offset = Vec2::ZERO;
@@ -71,7 +76,13 @@ public:
 		delete sprite;
 	}
 
-	bool is_player() override { return true; }
+	void update() override
+	{
+		if (Input::down(Key::W)) { physics->velocity = Vec2( 0.0f, -1.0f); } // up
+		if (Input::down(Key::S)) { physics->velocity = Vec2( 0.0f,  1.0f); } // down
+		if (Input::down(Key::A)) { physics->velocity = Vec2(-1.0f,  0.0f); } // left
+		if (Input::down(Key::D)) { physics->velocity = Vec2( 1.0f,  0.0f); } // right
+	}
 };
 
 class Block : public Entity
@@ -86,7 +97,7 @@ public:
 		physics->velocity = Vec2::ZERO;
 		physics->angular_velocity = 0.0f;
 		physics->collider = RectF(0, 0, 256, 256);
-		physics->collider.parent_transform = &transform;
+		physics->collider.parent = &transform;
 
 		sprite = new Sprite();
 		sprite->offset = Vec2::ZERO;
@@ -113,15 +124,28 @@ public:
 
 void PhysicsSystem::update(const Vector<Entity*>& entities)
 {
-	for (auto& entity : entities)
+	for (auto& entity1 : entities)
 	{
-		if (!entity->physics)
+		if (!entity1->physics)
 			continue;
 
-		entity->transform.move(entity->physics->velocity);
-		entity->transform.rotate(entity->physics->angular_velocity);
+		entity1->transform.move(entity1->physics->velocity);
+		entity1->transform.rotate(entity1->physics->angular_velocity);
 		
-		// todo: solve collisions with collider class
+		for (auto& entity2 : entities)
+		{
+			if (entity1 == entity2)
+				continue;
+
+			auto& c1 = entity1->physics->collider;
+			auto& c2 = entity2->physics->collider;
+
+			Vec2 pushout = Vec2::ZERO;
+			bool overlaps = c1.overlaps(c2, &pushout);
+
+			if (overlaps)
+				entity1->transform.move(-pushout);
+		}
 	}
 }
 
@@ -136,21 +160,11 @@ public:
 
 private:
 	gfx::SpriteBatch m_batch;
-	Ref<gfx::Shader> m_shader;
 };
 
 RenderSystem::RenderSystem()
-	: m_batch()
 {
-	m_shader = gfx::Shader::create(
-		"D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\vertex.vert",
-		"D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\fragment.frag"
-	);
-
-	m_shader->assign_uniform("u_projection", gfx::UniformType::MAT4X4, gfx::UniformFlags::PROJECTION);
-	m_shader->assign_uniform("u_texture", gfx::UniformType::SAMPLER2D, gfx::UniformFlags::MAIN_TEXTURE);
-
-	m_batch.push_shader(m_shader);
+	m_batch.initialize();
 }
 
 void RenderSystem::render(const Vector<Entity*>& entities)
@@ -181,12 +195,14 @@ void init()
 {
 	auto block = new Block();
 	{
+		block->id = 1;
 		block->transform.position(350, 0);
 	}
 	g_entities.push_back(block);
 
 	auto player = new Player();
 	{
+		block->id = 2;
 		player->transform.position(-350, 0);
 	}
 	g_entities.push_back(player);
@@ -200,11 +216,16 @@ void destroy()
 
 void update()
 {
+	for (auto& entity : g_entities)
+		entity->update();
+
 	PhysicsSystem::inst().update(g_entities);
 }
 
 void render()
 {
+	App::clear(Colour(0, 190, 170));
+
 	RenderSystem::inst().render(g_entities);
 }
 

@@ -35,8 +35,13 @@ namespace lev::gfx
 
 	struct BlendMode
 	{
-		BlendFunction func;
-		BlendFactor factor_src;
-		BlendFactor factor_dst;
+		BlendFunction func_rgb;
+		BlendFunction func_alpha;
+		
+		BlendFactor factor_src_rgb;
+		BlendFactor factor_dst_rgb;
+
+		BlendFactor factor_src_alpha;
+		BlendFactor factor_dst_alpha;
 	};
 }

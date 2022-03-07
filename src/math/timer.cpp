@@ -1,0 +1,68 @@
+#include <lev/math/timer.h>
+#include <backend/system.h>
+
+using namespace lev;
+
+Timer::Timer()
+	: m_start_ticks(0)
+	, m_started(System::ticks())
+	, m_paused_ticks(0)
+	, m_paused(false)
+{
+}
+
+void Timer::start()
+{
+}
+
+void Timer::stop()
+{
+}
+
+void Timer::pause()
+{
+	if (!m_started || m_paused)
+		return;
+
+	m_paused = true;
+	m_paused_ticks = System::ticks() - m_start_ticks;
+	m_start_ticks = 0;
+}
+
+void Timer::unpause()
+{
+	if (!m_started || !m_paused)
+		return;
+
+	m_paused = false;
+	m_start_ticks = System::ticks() - m_paused_ticks;
+	m_paused_ticks = 0;
+}
+
+u64 Timer::milliseconds() const
+{
+	if (m_started)
+	{
+		if (m_paused)
+			return m_paused_ticks;
+
+		return System::ticks() - m_start_ticks;
+	}
+
+	return 0;
+}
+
+u64 Timer::seconds() const
+{
+	return milliseconds() / 1000.0f;
+}
+
+bool Timer::started() const
+{
+	return m_started;
+}
+
+bool Timer::paused() const
+{
+	return m_paused;
+}

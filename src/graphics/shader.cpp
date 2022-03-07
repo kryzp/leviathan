@@ -16,9 +16,16 @@ Shader::~Shader()
 {
 }
 
-Ref<Shader> Shader::create(const char* vertex, const char* fragment)
+Ref<Shader> Shader::create(const char* vertex, const char* fragment, bool is_source)
 {
 	ShaderData data;
+
+	if (is_source)
+	{
+		data.vertex_source = vertex;
+		data.fragment_source = fragment;
+	}
+	else
 	{
 		// todo: once filestream is finished use that instead of the std::ifstream
 
@@ -40,13 +47,13 @@ Ref<Shader> Shader::create(const char* vertex, const char* fragment)
 	return result;
 }
 
-const UniformData& Shader::get_uniform_data(UniformFlags flags) const
+const char* Shader::uniform_name(UniformFlags flags) const
 {
-	for (auto& uniform : data().uniforms)
+	for (auto& uniform : uniforms())
 	{
 		if (uniform.flags == flags)
-			return uniform;
+			return uniform.name;
 	}
 
-	return UniformData();
+	return nullptr;
 }

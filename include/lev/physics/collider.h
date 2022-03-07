@@ -36,7 +36,7 @@ namespace lev::phys
 
 		bool overlaps(Collider& other, Vec2* pushout);
 
-		Transform* parent_transform;
+		Transform* parent;
 		Transform transform;
 
 		Polygon polygon;

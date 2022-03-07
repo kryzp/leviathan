@@ -2,15 +2,9 @@
 
 namespace lev
 {
-	enum class LogType;
+	struct Colour;
 
-	struct ProcessConfig
-	{
-		// would control exactly how much
-		// ram the app would take up, whether
-		// it should allocate all of it at the
-		// start, etc...
-	};
+	enum class LogType;
 
 	struct AppConfig
 	{
@@ -45,5 +39,8 @@ namespace lev
 		int window_height();
 		int draw_width();
 		int draw_height();
+
+		float fps();
+		void clear(const Colour& colour);
 	}
 }

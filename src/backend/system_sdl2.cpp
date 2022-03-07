@@ -138,6 +138,11 @@ int System::draw_height()
 	return result;
 }
 
+u64 System::ticks()
+{
+	return SDL_GetTicks64();
+}
+
 void* System::gl_context_create()
 {
 #ifdef LEV_USE_OPENGL

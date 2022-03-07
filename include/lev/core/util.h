@@ -21,6 +21,14 @@
 
 #endif
 
+// should be placed at the top of the class
+// e.g:
+// class MySingleton {
+//     LEV_SINGLETON_CLASS(MySingleton)
+//
+//     public:
+//         // ....
+
 #define LEV_SINGLETON_CLASS(_classname) \
 public: \
 	static _classname& inst() \
@@ -100,8 +108,11 @@ namespace lev
 		const char* directory();
 	}
 
-	namespace Time
+	struct Time
 	{
-		extern u64 ticks;
-	}
+		static float seconds;
+		static float milliseconds;
+		static float delta;
+		static u64 frames;
+	};
 }

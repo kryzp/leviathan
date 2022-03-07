@@ -1,11 +1,14 @@
 #include <lev/core/app.h>
 #include <lev/core/util.h>
 
-#include <iostream>
+#include <lev/math/colour.h>
+#include <lev/math/timer.h>
+#include <lev/input/input.h>
 
 #include <backend/system.h>
 #include <backend/renderer.h>
-#include <backend/input.h>
+
+#include <iostream>
 
 using namespace lev;
 
@@ -88,14 +91,21 @@ bool App::init()
 
 void App::run()
 {
-	System::prepare();
-
+	// todo: calculate delta time
+	
 	while (g_running)
 	{
-		System::update();
+		// time
+		{
+			Time::frames++;
+
+			Time::milliseconds = System::ticks();
+			Time::seconds = (float)System::ticks() / 1000.0f;
+		}
 
 		// update
 		{
+			System::update();
 			Input::update();
 			
 			if (g_config.on_update)
@@ -112,9 +122,6 @@ void App::run()
 			Renderer::after_render();
 			System::present();
 		}
-
-		// update time
-		Time::ticks++;
 	}
 }
 
@@ -167,4 +174,15 @@ int App::draw_width()
 int App::draw_height()
 {
 	return System::draw_height();
+}
+
+float App::fps()
+{
+	static Timer fps_timer;
+	return Time::frames / Calc::max(1, fps_timer.seconds());
+}
+
+void App::clear(const Colour& colour)
+{
+	Renderer::clear(colour);
 }
