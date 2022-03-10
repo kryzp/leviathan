@@ -26,17 +26,18 @@ namespace lev
 
 	namespace App
 	{
-		void start(const AppConfig* cfg);
+		void start(const AppConfig& cfg);
 		bool init();
 		void destroy();
 		void run();
 
 		void exit();
 		bool is_running();
-		const AppConfig* config();
+		const AppConfig& config();
 
 		int window_width();
 		int window_height();
+
 		int draw_width();
 		int draw_height();
 

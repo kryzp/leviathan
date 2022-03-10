@@ -16,13 +16,13 @@ namespace lev
 		static const Colour MAGENTA;
 		static const Colour CYAN;
 
-		u8 r;
-		u8 g;
-		u8 b;
-		u8 a;
+		float r;
+		float g;
+		float b;
+		float a;
 
 		Colour();
-		Colour(u8 r, u8 g, u8 b, u8 a = 255);
+		Colour(float r, float g, float b, float a = 1.0f);
 
 		void premultiply();
 		Colour premultiplied() const;

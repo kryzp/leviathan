@@ -24,6 +24,8 @@ void Image::load(const char* path)
 {
 	int w, h, nrc;
 
+	stbi_set_flip_vertically_on_load(true);
+
 	m_data = stbi_load(path, &w, &h, &nrc, 0);
 	m_width = w;
 	m_height = h;

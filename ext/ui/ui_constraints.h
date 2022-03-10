@@ -28,7 +28,6 @@ namespace lev::ui
 
 		static UIConstraints create_fixed(int x, int y, int width, int height);
 
-		// todo: could this just be a Scope<UIConstraint>?
 		Ref<UIConstraint> x;
 		Ref<UIConstraint> y;
 		Ref<UIConstraint> width;

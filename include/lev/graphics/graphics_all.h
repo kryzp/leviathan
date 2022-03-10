@@ -1,3 +1,4 @@
+#include <lev/graphics/gfxutil.h>
 #include <lev/graphics/blend.h>
 #include <lev/graphics/framebuffer.h>
 #include <lev/graphics/image.h>

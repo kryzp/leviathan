@@ -5,14 +5,6 @@
 
 #ifdef LEV_DEBUG
 
-// writes to null memory crashing the program at that location
-// neat trick!
-// net gk!
-// nt23tr1%^ !
-// ntt fWk145
-// neatr 542SFGk?
-// nf y7&*(d$AIIKK^
-
 #define LEV_ASSERT(exp) do{if(!(exp)){*((volatile int*)0)=0;}}while(false)
 
 #else
@@ -27,7 +19,12 @@
 //     LEV_SINGLETON_CLASS(MySingleton)
 //
 //     public:
-//         // ....
+//         void do_the_thing();
+
+// then do:
+// LEV_INSTANCE(MySingleton).do_the_thing();
+
+#define LEV_INSTANCE(_classname) (_classname::inst())
 
 #define LEV_SINGLETON_CLASS(_classname) \
 public: \
@@ -114,5 +111,17 @@ namespace lev
 		static float milliseconds;
 		static float delta;
 		static u64 frames;
+	};
+
+	namespace MemUtil
+	{
+		void* alloc(size_t size);
+		void* alloc_zero(size_t size);
+		void* set(void* ptr, s32 val, size_t size);
+		void* set_zero(void* ptr, size_t size);
+		void* copy(void* dst, const void* src, size_t size);
+		void* move(void* dst, const void* src, size_t size);
+		void* chr(void* ptr, s32 val, size_t size);
+		int compare(const void* p1, const void* p2, size_t size);
 	};
 }

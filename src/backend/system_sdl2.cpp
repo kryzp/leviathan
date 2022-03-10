@@ -2,7 +2,10 @@
 
 #include <backend/system.h>
 #include <backend/renderer.h>
+
 #include <lev/core/app.h>
+#include <lev/input/input.h>
+
 #include <iostream>
 
 #define WIN32_LEAN_AND_MEAN
@@ -72,7 +75,7 @@ void System::destroy()
 	SDL_Quit();
 }
 
-void System::prepare()
+void System::postinit()
 {
 #ifdef LEV_USE_OPENGL
 	SDL_GL_SetSwapInterval(1);
@@ -84,8 +87,42 @@ void System::update()
 	SDL_Event e;
 	while (SDL_PollEvent(&e))
 	{
-		if (e.type == SDL_QUIT)
-			App::exit();
+		switch (e.type)
+		{
+			case SDL_QUIT:
+				App::exit();
+				break;
+
+			case SDL_MOUSEWHEEL:
+				Input::on_mouse_wheel(e.wheel.x, e.wheel.y);
+
+			case SDL_MOUSEMOTION:
+				Input::on_mouse_screen_move(e.motion.x, e.motion.y);
+				break;
+
+			case SDL_MOUSEBUTTONDOWN:
+				Input::on_mouse_down((MouseButton)e.button.button);
+				break;
+
+			case SDL_MOUSEBUTTONUP:
+				Input::on_mouse_up((MouseButton)e.button.button);
+				break;
+
+			case SDL_KEYDOWN:
+				Input::on_key_down((Key)e.key.keysym.scancode);
+				break;
+
+			case SDL_KEYUP:
+				Input::on_key_up((Key)e.key.keysym.scancode);
+				break;
+
+			case SDL_TEXTINPUT:
+                Input::on_text_utf8(e.text.text);
+				break;
+
+			default:
+				break;
+		}
 	}
 }
 
@@ -141,6 +178,41 @@ int System::draw_height()
 u64 System::ticks()
 {
 	return SDL_GetTicks64();
+}
+
+void* System::stream_from_file(const char* filepath, const char* mode)
+{
+    return SDL_RWFromFile(filepath, mode);
+}
+
+s64 System::stream_read(void* stream, void* ptr, s64 size)
+{
+    return SDL_RWread((SDL_RWops*)stream, ptr, sizeof(char), size);
+}
+
+s64 System::stream_write(void* stream, const void* ptr, s64 size)
+{
+    return SDL_RWwrite((SDL_RWops*)stream, ptr, sizeof(char), size);
+}
+
+s64 System::stream_seek(void* stream, s64 offset)
+{
+    return SDL_RWseek((SDL_RWops*)stream, offset, RW_SEEK_SET);
+}
+
+s64 System::stream_length(void* stream)
+{
+    return SDL_RWsize((SDL_RWops*)stream);
+}
+
+s64 System::stream_position(void* stream)
+{
+    return SDL_RWtell((SDL_RWops*)stream);
+}
+
+void System::stream_close(void* stream)
+{
+	SDL_RWclose((SDL_RWops*)stream);
 }
 
 void* System::gl_context_create()

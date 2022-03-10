@@ -35,11 +35,9 @@ AppConfig::AppConfig()
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void App::start(const AppConfig* cfg)
+void App::start(const AppConfig& cfg)
 {
-	LEV_ASSERT(cfg != nullptr);
-
-	g_config = *cfg;
+	g_config = cfg;
 
 	if (!init())
 	{
@@ -53,15 +51,12 @@ void App::start(const AppConfig* cfg)
 
 bool App::init()
 {
-#ifdef LEV_DEBUG
 	if (!Log::init())
 	{
 		// r/hmmm
 		Log::error("failed to initialize logging");
-
 		return false;
 	}
-#endif
 
 	if (!System::init(&g_config))
 	{
@@ -86,13 +81,15 @@ bool App::init()
 
 	g_running = true;
 
+	System::postinit();
+
 	return true;
 }
 
 void App::run()
 {
-	// todo: calculate delta time
-	
+	float prevseconds;
+
 	while (g_running)
 	{
 		// time
@@ -101,6 +98,9 @@ void App::run()
 
 			Time::milliseconds = System::ticks();
 			Time::seconds = (float)System::ticks() / 1000.0f;
+
+			Time::delta = Time::seconds - prevseconds;
+			prevseconds = Time::seconds;
 		}
 
 		// update
@@ -151,9 +151,9 @@ bool App::is_running()
 	return g_running;
 }
 
-const AppConfig* App::config()
+const AppConfig& App::config()
 {
-	return &g_config;
+	return g_config;
 }
 
 int App::window_width()

@@ -10,7 +10,7 @@ Colour::Colour()
 {
 }
 
-Colour::Colour(u8 r, u8 g, u8 b, u8 a)
+Colour::Colour(float r, float g, float b, float a)
 	: r(r)
 	, g(g)
 	, b(b)
@@ -20,17 +20,17 @@ Colour::Colour(u8 r, u8 g, u8 b, u8 a)
 
 void Colour::premultiply()
 {
-	r *= a / 255;
-	g *= a / 255;
-	b *= a / 255;
+	r *= a;
+	g *= a;
+	b *= a;
 }
 
 Colour Colour::premultiplied() const
 {
 	return Colour(
-		r * a / 255,
-		g * a / 255,
-		b * a / 255,
+		r * a,
+		g * a,
+		b * a,
 		a
 	);
 }
@@ -53,9 +53,9 @@ bool Colour::operator != (const Colour& other) const
 Colour Colour::operator - () const
 {
 	return Colour(
-		255 - r,
-		255 - g,
-		255 - b,
+		1.0f - r,
+		1.0f - g,
+		1.0f - b,
 		a
 	);
 }
@@ -76,12 +76,12 @@ Colour& Colour::operator *= (float mult)
 	return *this;
 }
 
-const Colour Colour::EMPTY   = Colour(0,   0,   0,   0  );
-const Colour Colour::WHITE   = Colour(255, 255, 255, 255);
-const Colour Colour::BLACK   = Colour(0,   0,   0,   255);
-const Colour Colour::RED     = Colour(255, 0,   0,   255);
-const Colour Colour::GREEN   = Colour(0,   255, 0,   255);
-const Colour Colour::BLUE    = Colour(0,   0,   255, 255);
-const Colour Colour::YELLOW  = Colour(255, 255, 0,   255);
-const Colour Colour::MAGENTA = Colour(255, 0,   255, 255);
-const Colour Colour::CYAN    = Colour(0,   255, 255, 255);
+const Colour Colour::EMPTY   = Colour(0, 0, 0, 0);
+const Colour Colour::WHITE   = Colour(1, 1, 1, 1);
+const Colour Colour::BLACK   = Colour(0, 0, 0, 1);
+const Colour Colour::RED     = Colour(1, 0, 0, 1);
+const Colour Colour::GREEN   = Colour(0, 1, 0, 1);
+const Colour Colour::BLUE    = Colour(0, 0, 1, 1);
+const Colour Colour::YELLOW  = Colour(1, 1, 0, 1);
+const Colour Colour::MAGENTA = Colour(1, 0, 1, 1);
+const Colour Colour::CYAN    = Colour(0, 1, 1, 1);

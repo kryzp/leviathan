@@ -1,6 +1,6 @@
-#include <lev/ui/ui_constraints.h>
-#include <lev/ui/ui_component.h>
-#include <lev/ui/constraints/pixel_constraint.h>
+#include "ui_constraints.h"
+#include "ui_component.h"
+#include "constraints/pixel_constraint.h"
 
 using namespace lev;
 using namespace lev::ui;

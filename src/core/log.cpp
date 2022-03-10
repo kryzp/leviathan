@@ -29,11 +29,15 @@ namespace
 
 bool Log::init()
 {
-    time_t raw_time = time(NULL);
-    long int time_seconds = (long)raw_time;
-    char time_seconds_char[16];
-    _itoa(time_seconds, time_seconds_char, 10);
-    full_file_path(g_curr_file, time_seconds_char);
+    if (g_directory)
+    {
+        time_t raw_time = time(NULL);
+        long int time_seconds = (long)raw_time;
+        char time_seconds_char[16];
+        _itoa(time_seconds, time_seconds_char, 10);
+        full_file_path(g_curr_file, time_seconds_char);
+    }
+
     return true;
 }
 
@@ -50,8 +54,8 @@ void Log::print(const char* fmt, ...)
     printf("%s\n", format);
     va_end(valist);
 
-    if (App::config()->on_log)
-        App::config()->on_log(format, LogType::NORMAL);
+    if (App::config().on_log)
+        App::config().on_log(format, LogType::NORMAL);
 }
 
 void Log::warn(const char* fmt, ...)
@@ -63,8 +67,8 @@ void Log::warn(const char* fmt, ...)
     printf("\033[0;33m[WARN] %s\033[0m\n", format);
     va_end(valist);
 
-    if (App::config()->on_log)
-        App::config()->on_log(format, LogType::WARN);
+    if (App::config().on_log)
+        App::config().on_log(format, LogType::WARN);
 }
 
 void Log::error(const char* fmt, ...)
@@ -76,12 +80,15 @@ void Log::error(const char* fmt, ...)
     printf("\033[0;31m[ERROR] %s\033[0m\n", format);
     va_end(valist);
 
-    if (App::config()->on_log)
-        App::config()->on_log(format, LogType::ERROR);
+    if (App::config().on_log)
+        App::config().on_log(format, LogType::ERROR);
 }
 
 void Log::file(const char *msg, ...)
 {
+    if (!g_directory)
+        return;
+
     FILE *f = fopen(g_curr_file, "a");
     
     va_list args;
@@ -95,8 +102,8 @@ void Log::file(const char *msg, ...)
         fprintf(f, "%s\n", format);
         fclose(f);
 
-        if (App::config()->on_log)
-            App::config()->on_log(format, LogType::FILE);
+        if (App::config().on_log)
+            App::config().on_log(format, LogType::FILE);
     }
     
     va_end(args);

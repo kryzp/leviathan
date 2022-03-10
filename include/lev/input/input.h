@@ -13,10 +13,13 @@ namespace lev
 	
 	enum class MouseButton
 	{
-		LEFT = 0,
-		MIDDLE = 1,
-		RIGHT = 2,
-		MAX
+		UNKNOWN = 0,
+		LEFT = 1,
+		MIDDLE = 2,
+		RIGHT = 3,
+		SIDE_BOTTOM = 4,
+		SIDE_TOP = 5,
+		MAX,
 	};
 
 	enum class Key
@@ -258,27 +261,18 @@ namespace lev
 		Float2 wheel;
 	};
 
-	struct VirtualKey
-	{
-		Vector<Key> keys;
-		Vector<MouseButton> mouse_buttons;
-	};
-
 	namespace Input
 	{
 		bool init();
 		void destroy();
 		void update();
 
-		bool down(VirtualKey vkey);
 		bool down(MouseButton mb);
 		bool down(Key key);
 		
-		bool released(VirtualKey vkey);
 		bool released(MouseButton mb);
 		bool released(Key key);
 		
-		bool pressed(VirtualKey vkey);
 		bool pressed(MouseButton mb);
 		bool pressed(Key key);
 
@@ -299,7 +293,7 @@ namespace lev
 		
 		void on_mouse_down(MouseButton button);
 		void on_mouse_up(MouseButton button);
-		void on_mouse_wheel(Float2 wheel);
+		void on_mouse_wheel(float x, float y);
 		
 		void on_key_down(Key key);
 		void on_key_up(Key key);

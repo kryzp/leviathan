@@ -166,7 +166,6 @@ Ref<gfx::Texture> Renderer::create_texture(const gfx::TextureData& data)
 class OpenGLShader : public gfx::Shader
 {
 	u32 m_id;
-	Vector<gfx::UniformData> m_uniforms;
 
 public:
 	OpenGLShader(const gfx::ShaderData& data)
@@ -226,17 +225,6 @@ public:
 		glUseProgram(m_id);
 	}
 
-	void assign_uniform(const char* name, gfx::UniformType type, gfx::UniformFlags flags) override
-	{
-		gfx::UniformData uniform;
-		uniform.name = name;
-		uniform.type = type;
-		uniform.flags = flags;
-
-		m_uniforms.push_back(uniform);
-	}
-
-	const Vector<gfx::UniformData>& uniforms() const override { return m_uniforms; }
 	u32 id() const { return m_id; }
 
 	void set(const char* name, bool value) const override { glUniform1i(glGetUniformLocation(m_id, name), (int)value); }
@@ -329,7 +317,6 @@ Ref<gfx::Framebuffer> Renderer::create_framebuffer(const gfx::FramebufferData& d
 class OpenGLMesh : public gfx::Mesh
 {
 	u32 m_id;
-	gfx::VertexFormat m_format;
 	
 	u32 m_vertex_buffer;
 	u64 m_vertex_count;
@@ -357,35 +344,23 @@ public:
 		glDeleteBuffers(1, &m_index_buffer);
 	}
 
-	void vertex_data(const void* vertices, u64 count, const gfx::VertexFormat& format) override
+	void vertex_data(const Vertex* vertices, u64 count) override
 	{
-		m_format = format;
-		m_vertex_count = count / format.stride;
+		m_vertex_count = count;
 
 		glBindVertexArray(m_id);
 		{
 			glBindBuffer(GL_ARRAY_BUFFER, m_vertex_buffer);
-			glBufferData(GL_ARRAY_BUFFER, count * sizeof(float), vertices, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, count * sizeof(Vertex), vertices, GL_DYNAMIC_DRAW);
 
-			int pointer = 0;
+			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(0 * sizeof(float)));
+			glEnableVertexAttribArray(0);
 
-			for (int i = 0; i < format.attrib_count; i++)
-			{
-				gfx::VertexAttrib attrib = format.attribs[i];
-				int stride = format.stride;
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(2 * sizeof(float)));
+			glEnableVertexAttribArray(1);
 
-				int size = 0;
-
-				if      (attrib == gfx::VertexAttrib::FLOAT)  size = 1;
-				else if (attrib == gfx::VertexAttrib::FLOAT2) size = 2;
-				else if (attrib == gfx::VertexAttrib::FLOAT3) size = 3;
-				else if (attrib == gfx::VertexAttrib::FLOAT4) size = 4;
-
-				glVertexAttribPointer(i, size, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(pointer * sizeof(float)));
-				glEnableVertexAttribArray(i);
-
-				pointer += size;
-			}
+			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(4 * sizeof(float)));
+			glEnableVertexAttribArray(2);
 		}
 		glBindVertexArray(0);
 	}
@@ -397,14 +372,13 @@ public:
 		glBindVertexArray(m_id);
 		{
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(u32), indices, GL_STATIC_DRAW);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(u32), indices, GL_DYNAMIC_DRAW);
 		}
 		glBindVertexArray(0);
 	}
 
 	u64 vertex_count() const override { return m_vertex_count; }
 	u64 index_count() const override { return m_index_count; }
-	gfx::VertexFormat format() const override { return m_format; }
 	u32 id() const { return m_id; }
 };
 
@@ -455,7 +429,6 @@ void Renderer::render(const RenderPass& pass)
 	auto target = (OpenGLFramebuffer*)pass.target.get();
 	auto& sampler = pass.material->sampler;
 	auto mesh = (OpenGLMesh*)pass.mesh.get();
-	auto vfmt = mesh->format();
 	auto& blend = pass.blend;
 	
 	if (target)
@@ -470,8 +443,7 @@ void Renderer::render(const RenderPass& pass)
 		texture->bind();
 		texture->update(sampler);
 
-		String textureuniform = shader->uniform_name(gfx::UniformFlags::MAIN_TEXTURE);
-		shader->set(textureuniform, 0);
+		shader->set(gfx::Shader::MAIN_TEXTURE, 0);
 	}
 
 	glBlendEquationSeparate(
@@ -485,7 +457,6 @@ void Renderer::render(const RenderPass& pass)
 		get_gl_blend_factor(blend.factor_src_alpha),
 		get_gl_blend_factor(blend.factor_dst_alpha)
 	);
-
 
 	glBindVertexArray(mesh->id());
 	glDrawElements(GL_TRIANGLES, pass.mesh->index_count(), GL_UNSIGNED_INT, 0);

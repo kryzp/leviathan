@@ -17,8 +17,6 @@ namespace lev::gfx
 		int attachment_count;
 	};
 
-	// todo: add support for renderbuffers
-
 	class Framebuffer : public NonCopyable, public NonMovable
 	{
 	public:

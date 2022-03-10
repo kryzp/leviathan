@@ -4,19 +4,27 @@
 using namespace lev;
 
 Timer::Timer()
-	: m_start_ticks(0)
-	, m_started(System::ticks())
-	, m_paused_ticks(0)
+	: m_started(System::ticks())
 	, m_paused(false)
+	, m_start_ticks(0)
+	, m_paused_ticks(0)
 {
 }
 
 void Timer::start()
 {
+	m_started = true;
+	m_paused = false;
+	m_start_ticks = System::ticks();
+	m_paused_ticks = 0;
 }
 
 void Timer::stop()
 {
+	m_started = false;
+	m_paused = false;
+	m_start_ticks = 0;
+	m_paused_ticks = 0;
 }
 
 void Timer::pause()
@@ -37,6 +45,12 @@ void Timer::unpause()
 	m_paused = false;
 	m_start_ticks = System::ticks() - m_paused_ticks;
 	m_paused_ticks = 0;
+}
+
+void Timer::restart()
+{
+	if (m_started)
+		start();
 }
 
 u64 Timer::milliseconds() const

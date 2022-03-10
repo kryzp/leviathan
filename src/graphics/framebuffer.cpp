@@ -6,7 +6,6 @@ using namespace lev::gfx;
 
 Ref<Framebuffer> Framebuffer::create(int width, int height)
 {
-	// todo: i dont think this needs explaining
 	static const TextureFormat fmt = TextureFormat::RGBA;
 	return create(width, height, &fmt, 1);
 }
@@ -17,7 +16,15 @@ Ref<Framebuffer> Framebuffer::create(int width, int height, const TextureFormat*
 	LEV_ASSERT(attachment_count > 0);
 	LEV_ASSERT(width > 0 && height > 0);
 
-	// todo: do a check to make sure there isn't more than one depth/stencil texture
+	int depthstencilcount = 0;
+
+	for (int i = 0; i < attachment_count; i++)
+	{
+		if (attachments[i] == TextureFormat::DEPTH_STENCIL)
+			depthstencilcount++;
+
+		LEV_ASSERT(depthstencilcount <= 1);
+	}
 
 	return Renderer::create_framebuffer({
 		.width = width,

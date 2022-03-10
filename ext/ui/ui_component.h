@@ -3,7 +3,8 @@
 #include <lev/core/util.h>
 #include <lev/containers/vector.h>
 #include <lev/math/rect.h>
-#include <lev/ui/ui_constraints.h>
+
+#include "ui_constraints.h"
 
 namespace lev::gfx { class SpriteBatch; }
 

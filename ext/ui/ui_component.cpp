@@ -1,4 +1,5 @@
-#include <lev/ui/ui_component.h>
+#include "ui_component.h"
+
 #include <lev/input/input.h>
 
 using namespace lev;

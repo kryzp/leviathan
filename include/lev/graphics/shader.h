@@ -8,18 +8,6 @@
 
 namespace lev::gfx
 {
-	// informs the backend on if it should use the uniforms in a specific way
-	// e.g: flag what uniform should be set by the sprite batch when rendering a texture
-	// e.g: flag what unifrom should be used as the projection matrix
-	// not sure if this is the best way to go about doing things buuuutttttt...
-
-	enum class UniformFlags
-	{
-		NONE,
-		PROJECTION,
-		MAIN_TEXTURE
-	};
-
 	enum class UniformType
 	{
         INTEGER,
@@ -36,7 +24,6 @@ namespace lev::gfx
 	{
 		String name;
 		UniformType type;
-		UniformFlags flags;
 	};
 
 	struct ShaderData
@@ -48,6 +35,9 @@ namespace lev::gfx
 	class Shader
 	{
 	public:
+		static constexpr const char* PROJECTION = "u_projection";
+		static constexpr const char* MAIN_TEXTURE = "u_texture";
+
 		Shader();
 		virtual ~Shader();
 
@@ -60,10 +50,5 @@ namespace lev::gfx
 		virtual void set(const char* name, float value) const = 0;
 		virtual void set(const char* name, const Mat3x2& value) const = 0;
 		virtual void set(const char* name, const Mat4x4& value) const = 0;
-
-		virtual void assign_uniform(const char* name, UniformType type, UniformFlags flags) = 0;
-		virtual const Vector<UniformData>& uniforms() const = 0;
-
-		const char* uniform_name(UniformFlags flags) const;
 	};
 }

@@ -1,5 +1,5 @@
 # Leviathan
-lightweight-ish game engine
+lightweight-ish game --engine-- framework. (similar to monogame if you've ever used it, albeit less optimized and missing some features)
 
 this has been incredibly helpful:
 -> https://learnopengl.com <-

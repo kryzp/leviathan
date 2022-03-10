@@ -49,7 +49,7 @@ namespace lev
 		, m_length(0)
 	{
 		m_buf = new char[Size+1];
-		memset(m_buf, 0, Size);
+		MemUtil::set_zero(m_buf, Size);
 		m_buf[Size] = '\0';
 	}
 
@@ -58,7 +58,7 @@ namespace lev
 		: m_length(strlen(str))
 	{
 		m_buf = new char[Size+1];
-		memcpy(m_buf, str, Size);
+		MemUtil::copy(m_buf, str, Size);
 		m_buf[m_length] = '\0';
 	}
 
@@ -67,7 +67,7 @@ namespace lev
 		: m_length(other.m_length)
 	{
 		m_buf = new char[Size+1];
-		memcpy(m_buf, other.m_buf, Size);
+		MemUtil::copy(m_buf, other.m_buf, Size);
 		m_buf[m_length] = '\0';
 	}
 
@@ -83,7 +83,7 @@ namespace lev
 
 		int arglen = strlen(str);
 
-		memcpy(
+		MemUtil::copy(
 			m_buf + m_length,
 			str,
 			arglen
@@ -116,7 +116,7 @@ namespace lev
 	{
 		return (
 			m_length == other.m_length &&
-			memcmp(m_buf, other.m_buf, m_length) == 0
+			MemUtil::compare(m_buf, other.m_buf, m_length) == 0
 		);
 	}
 

@@ -8,9 +8,11 @@ add_library(${PROJECT_NAME}
 	src/core/app.cpp
 	src/core/log.cpp
 	src/core/time.cpp
+	src/core/memutil.cpp
 	
 	src/containers/string.cpp
 
+	src/graphics/gfxutil.cpp
 	src/graphics/sprite_batch.cpp
 	src/graphics/framebuffer.cpp
 	src/graphics/image.cpp
@@ -27,9 +29,6 @@ add_library(${PROJECT_NAME}
 
 	src/input/input.cpp
 
-	src/ui/ui_component.cpp
-	src/ui/ui_constraints.cpp
-
 	src/math/calc.cpp
 	src/math/ease.cpp
 	src/math/circle.cpp
@@ -38,12 +37,11 @@ add_library(${PROJECT_NAME}
 	src/math/mat3x2.cpp
 	src/math/mat4x4.cpp
 	src/math/quad.cpp
+	src/math/triangle.cpp
 	src/math/vec2.cpp
 	src/math/polygon.cpp
 	src/math/transform.cpp
 	src/math/timer.cpp
-
-	src/physics/collider.cpp
 	
 	src/backend/system_sdl2.cpp
 	src/backend/renderer_opengl.cpp
@@ -82,6 +80,6 @@ if (SDL2_ENABLED)
 	target_link_libraries(${PROJECT_NAME} PUBLIC ${SDL2_LIBRARIES})
 endif()
 
-add_executable(lv_test testing/src/test_framebuffer.cpp)
+add_executable(lv_test testing/src/test_misc.cpp)
 target_include_directories(lv_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/public)
 target_link_libraries(lv_test PUBLIC ${PROJECT_NAME})

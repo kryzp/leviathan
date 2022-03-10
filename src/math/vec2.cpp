@@ -76,23 +76,23 @@ Vec2 Vec2::from_angle(float angle, float length)
 	);
 }
 
-bool Vec2::operator == (const Vec2& other) const { return x == other.x && y == other.y; }
+bool Vec2::operator == (const Vec2& other) const { return this->x == other.x && this->y == other.y; }
 bool Vec2::operator != (const Vec2& other) const { return !(*this == other); }
 
-Vec2 Vec2::operator + (const Vec2& other) const { return Vec2(x + other.x, y + other.y); }
-Vec2 Vec2::operator - (const Vec2& other) const { return Vec2(x - other.x, y - other.y); }
-Vec2 Vec2::operator - ()                  const { return Vec2(-x, -y); }
-Vec2 Vec2::operator * (const Vec2& other) const { return Vec2(x * other.x, y * other.y); }
-Vec2 Vec2::operator / (const Vec2& other) const { return Vec2(x / other.x, y / other.y); }
+Vec2 Vec2::operator + (const Vec2& other) const { return Vec2( this->x + other.x,  this->y + other.y); }
+Vec2 Vec2::operator - (const Vec2& other) const { return Vec2( this->x - other.x,  this->y - other.y); }
+Vec2 Vec2::operator - ()                  const { return Vec2(-this->x,           -this->y          ); }
+Vec2 Vec2::operator * (const Vec2& other) const { return Vec2( this->x * other.x,  this->y * other.y); }
+Vec2 Vec2::operator / (const Vec2& other) const { return Vec2( this->x / other.x,  this->y / other.y); }
 
-Vec2& Vec2::operator += (const Vec2& other) { x += other.x; y += other.y; return *this; }
-Vec2& Vec2::operator -= (const Vec2& other) { x -= other.x; y -= other.y; return *this; }
-Vec2& Vec2::operator *= (const Vec2& other) { x *= other.x; y *= other.y; return *this; }
-Vec2& Vec2::operator /= (const Vec2& other) { x /= other.x; y /= other.y; return *this; }
+Vec2& Vec2::operator += (const Vec2& other) { this->x += other.x; this->y += other.y; return *this; }
+Vec2& Vec2::operator -= (const Vec2& other) { this->x -= other.x; this->y -= other.y; return *this; }
+Vec2& Vec2::operator *= (const Vec2& other) { this->x *= other.x; this->y *= other.y; return *this; }
+Vec2& Vec2::operator /= (const Vec2& other) { this->x /= other.x; this->y /= other.y; return *this; }
 
-const Vec2 Vec2::ZERO  = Vec2(0, 0);
-const Vec2 Vec2::ONE   = Vec2(1, 1);
-const Vec2 Vec2::LEFT  = Vec2(-1, 0);
-const Vec2 Vec2::RIGHT = Vec2(1, 0);
-const Vec2 Vec2::UP    = Vec2(0, -1);
-const Vec2 Vec2::DOWN  = Vec2(0, 1);
+const Vec2 Vec2::ZERO  = Vec2( 0,  0);
+const Vec2 Vec2::ONE   = Vec2( 1,  1);
+const Vec2 Vec2::LEFT  = Vec2(-1,  0);
+const Vec2 Vec2::RIGHT = Vec2( 1,  0);
+const Vec2 Vec2::UP    = Vec2( 0, -1);
+const Vec2 Vec2::DOWN  = Vec2( 0,  1);

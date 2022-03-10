@@ -1,5 +1,5 @@
 #include <lev/graphics/sprite_batch.h>
-#include <lev/graphics/mesh.h>
+#include <lev/graphics/gfxutil.h>
 #include <lev/containers/string.h>
 #include <backend/renderer.h>
 
@@ -11,6 +11,7 @@ namespace
 }
 
 SpriteBatch::SpriteBatch()
+	: m_initialized(false)
 {
 }
 
@@ -30,26 +31,36 @@ void SpriteBatch::initialize()
 	};
 
 	m_default_shader = Shader::create(
-		"#version 330 core\nlayout (location = 0) in vec3 a_pos;\nlayout (location = 1) in vec3 a_colour;\nlayout (location = 2) in vec2 a_tex_coord;\nout vec3 in_colour;\nout vec2 tex_coord;\nuniform mat4 u_projection;\nvoid main() {\ngl_Position = u_projection * vec4(a_pos, 1.0);\nin_colour = a_colour;\ntex_coord = a_tex_coord;\n}",
-		"#version 330 core\nout vec4 frag_colour;\nin vec3 in_colour;\nin vec2 tex_coord;\nuniform sampler2D u_texture;\nvoid main() {\nfrag_colour = texture(u_texture, tex_coord) * vec4(in_colour, 1.0);\n}",
+		"#version 330 core\nlayout (location = 0) in vec2 a_pos;\nlayout (location = 1) in vec2 a_uv;\nlayout (location = 2) in vec3 a_colour;\nout vec3 in_colour;\nout vec2 in_uv;\nuniform mat4 u_projection;\nvoid main() {\ngl_Position = u_projection * vec4(a_pos, 0.0, 1.0);\nin_colour = a_colour;\nin_uv = a_uv;\n}",
+		"#version 330 core\nout vec4 frag_colour;\nin vec3 in_colour;\nin vec2 in_uv;\nuniform sampler2D u_texture;\nvoid main() {\nfrag_colour = texture(u_texture, in_uv) * vec4(in_colour, 1.0);\n}",
 		true
 	);
 
-	m_default_shader->assign_uniform("u_projection", gfx::UniformType::MAT4X4, gfx::UniformFlags::PROJECTION);
-	m_default_shader->assign_uniform("u_texture", gfx::UniformType::SAMPLER2D, gfx::UniformFlags::MAIN_TEXTURE);
+	m_initialized = true;
+}
+
+void SpriteBatch::render(const Ref<Framebuffer>& framebuffer)
+{
+	render(Mat4x4::create_orthographic(
+		framebuffer ? framebuffer->width() : App::draw_width(),
+		framebuffer ? framebuffer->height() : App::draw_height(),
+		0.0f, 10000.0f
+	), framebuffer);
 }
 
 void SpriteBatch::render(const Mat4x4& proj, const Ref<Framebuffer>& framebuffer)
 {
-	String projectionname = peek_shader()->uniform_name(UniformFlags::PROJECTION);
-	peek_shader()->set(projectionname, proj);
+	if (!m_initialized)
+		initialize();
 
-	RenderPass pass = {
-		.target = framebuffer
-	};
+	RenderPass pass;
+	pass.target = framebuffer;
 
 	for (auto& b : m_batches)
+	{
+		b.material->shader->set(Shader::PROJECTION, proj);
 		render_batch(pass, b);
+	}
 
 	m_batches.clear();
 }
@@ -58,92 +69,61 @@ void SpriteBatch::render_batch(RenderPass& pass, const RenderBatch& b)
 {
 	pass.blend = b.blend;
 	pass.material = b.material;
-
-	// temp: create a quad
-	Ref<Mesh> mesh = Mesh::create();
-	{
-		float width = 1.0f;
-		float height = 1.0f;
-
-		if (b.material->texture)
-		{
-			width = b.material->texture->width();
-			height = b.material->texture->height();
-		}
-
-		Vertex vertices[] = {
-			// todo: make colours controllable somehow
-			// todo: also very temporary while i get stuff working
-			{ .pos = Vec2(0.0f,  0.0f),   .col = Colour::WHITE, .texcoord = Vec2(0.0f, 0.0f) },
-			{ .pos = Vec2(width, 0.0f),   .col = Colour::WHITE, .texcoord = Vec2(1.0f, 0.0f) },
-			{ .pos = Vec2(width, height), .col = Colour::WHITE, .texcoord = Vec2(1.0f, 1.0f) },
-			{ .pos = Vec2(0.0f,  height), .col = Colour::WHITE, .texcoord = Vec2(0.0f, 1.0f) }
-		};
-
-		u32 indices[] = {
-			0, 1, 3,
-			1, 2, 3
-		};
-
-		f32 glvertices[32];
-
-		for (int i = 0; i < 4; i++)
-		{
-			Vertex vertex = vertices[i];
-
-			vertex.pos = Vec2::transform(vertex.pos, b.matrix);
-	
-			glvertices[i*8 + 0] = vertex.pos.x;
-			glvertices[i*8 + 1] = vertex.pos.y;
-			glvertices[i*8 + 2] = 0.0f;
-	
-			glvertices[i*8 + 3] = vertex.col.r / 255.0f;
-			glvertices[i*8 + 4] = vertex.col.g / 255.0f;
-			glvertices[i*8 + 5] = vertex.col.b / 255.0f;
-	
-			glvertices[i*8 + 6] = vertex.texcoord.x;
-			glvertices[i*8 + 7] = vertex.texcoord.y;
-		}
-
-		mesh->index_data(indices, 6);
-		mesh->vertex_data(glvertices, 32, {
-			.attrib_count = 3,
-			.attribs = {
-				VertexAttrib::FLOAT3, // position
-				VertexAttrib::FLOAT3, // colour
-				VertexAttrib::FLOAT2  // texture coordinates
-			},
-			.stride = 8
-		});
-	}
-
-	pass.mesh = mesh;
-
+	pass.mesh = b.mesh;
 	Renderer::render(pass);
 }
 
-void SpriteBatch::render_texture(const TextureRegion& tex)
+void SpriteBatch::texture(const Ref<Texture>& tex)
 {
-	// todo: temp
-	render_texture(tex.texture);
-}
+	if (!m_initialized)
+		initialize();
 
-void SpriteBatch::render_texture(const Ref<Texture>& tex)
-{
 	RenderBatch batch;
 	{
-		batch.material = create_ref<Material>();
-		batch.material->shader = peek_shader();
-		batch.material->texture = tex;
-		batch.material->sampler = {
-			.filter = TextureFilter::NEAREST,
-			.wrap_x = TextureWrap::CLAMP,
-			.wrap_y = TextureWrap::CLAMP
-		};
-		batch.blend = peek_blend();
-		batch.matrix = m_transform_matrix;
-	}
+		batch.mesh = Renderer::create_mesh();
+		{
+			Vertex vertices[4];
+			u32 indices[6];
 
+			float width = tex->width();
+			float height = tex->height();
+
+			Quad quad = Quad(
+				Vec2(0.0f,  0.0f),
+				Vec2(0.0f,  height),
+				Vec2(width, height),
+				Vec2(width, 0.0f)
+			);
+
+			Quad uv = Quad(
+				Vec2(0.0f, 1.0f),
+				Vec2(0.0f, 0.0f),
+				Vec2(1.0f, 0.0f),
+				Vec2(1.0f, 1.0f)
+			);
+
+			GfxUtil::quad(vertices, indices, quad, uv, Colour::WHITE);
+
+			for (int i = 0; i < 4; i++)
+				vertices[i].pos = Vec2::transform(vertices[i].pos, m_transform_matrix);
+
+			batch.mesh->vertex_data(vertices, 4);
+			batch.mesh->index_data(indices, 6);
+		}
+
+		batch.material = create_ref<Material>();
+		{
+			batch.material->shader = peek_shader();
+			batch.material->texture = tex;
+			batch.material->sampler = {
+				.filter = TextureFilter::NEAREST,
+				.wrap_x = TextureWrap::CLAMP,
+				.wrap_y = TextureWrap::CLAMP
+			};
+		}
+
+		batch.blend = peek_blend();
+	}
 	m_batches.push_back(batch);
 }
 

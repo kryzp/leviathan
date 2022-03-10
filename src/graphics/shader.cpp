@@ -1,9 +1,6 @@
 #include <lev/graphics/shader.h>
+#include <lev/io/file_stream.h>
 #include <backend/renderer.h>
-
-#include <iostream>
-#include <fstream>
-#include <sstream>
 
 using namespace lev;
 using namespace lev::gfx;
@@ -27,33 +24,16 @@ Ref<Shader> Shader::create(const char* vertex, const char* fragment, bool is_sou
 	}
 	else
 	{
-		// todo: once filestream is finished use that instead of the std::ifstream
+		char vtxfile[512] = {0};
+		char fmtfile[512] = {0};
 
-		std::stringstream buffer;
+		io::FileStream(vertex, "r").read_all(vtxfile);
+		io::FileStream(fragment, "r").read_all(fmtfile);
 
-		std::ifstream vertex_file(vertex);
-		std::ifstream fragment_file(fragment);
-		
-		buffer << vertex_file.rdbuf();
-		data.vertex_source = buffer.str().c_str();
-
-		buffer.str(std::string());
-
-		buffer << fragment_file.rdbuf();
-		data.fragment_source = buffer.str().c_str();
+		data.vertex_source = vtxfile;
+		data.fragment_source = fmtfile;
 	}
 
 	Ref<Shader> result = Renderer::create_shader(data);
 	return result;
-}
-
-const char* Shader::uniform_name(UniformFlags flags) const
-{
-	for (auto& uniform : uniforms())
-	{
-		if (uniform.flags == flags)
-			return uniform.name;
-	}
-
-	return nullptr;
 }

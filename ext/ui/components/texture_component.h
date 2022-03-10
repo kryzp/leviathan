@@ -2,7 +2,8 @@
 
 #include <lev/graphics/sprite_batch.h>
 #include <lev/graphics/texture.h>
-#include <lev/ui/ui_component.h>
+
+#include "../ui_component.h"
 
 namespace lev::ui
 {
@@ -34,7 +35,7 @@ namespace lev::ui
 				Vec2::ZERO
 			));
 
-			b.render_texture(texture);
+			b.render_texture(texture.texture);
 
 			b.pop_matrix();
 		}

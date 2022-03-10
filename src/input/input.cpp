@@ -1,4 +1,5 @@
 #include <lev/input/input.h>
+#include <lev/core/app.h>
 
 using namespace lev;
 
@@ -27,7 +28,7 @@ void Input::update()
 
 	for (int i = 0; i < (int)Key::MAX; i++)
 		g_kb.pressed[i] = g_kb.released[i] = false;
-	memset(g_kb.text, 0, sizeof(char) * Input::MAX_TEXT_INPUT);
+	MemUtil::set_zero(g_kb.text, sizeof(char) * Input::MAX_TEXT_INPUT);
 
 	for (int i = 0; i < (int)MouseButton::MAX; i++)
 		g_mouse.released[i] = g_mouse.pressed[i] = false;
@@ -36,51 +37,49 @@ void Input::update()
 
 void Input::on_mouse_move(float x, float y)
 {
+	g_mouse.position = Vec2(x, y);
+
+	g_mouse.draw_position = Vec2(
+		x/App::window_width() * App::draw_width(),
+		y/App::window_height() * App::draw_height()
+	);
 }
 
 void Input::on_mouse_screen_move(float x, float y)
 {
+	g_mouse.screen_position = Vec2(x, y);
 }
 
 void Input::on_mouse_down(MouseButton button)
 {
+	g_mouse.down[(int)button] = true;
 }
 
 void Input::on_mouse_up(MouseButton button)
 {
+	g_mouse.down[(int)button] = false;
+	g_mouse.released[(int)button] = true;
 }
 
-void Input::on_mouse_wheel(Float2 wheel)
+void Input::on_mouse_wheel(float x, float y)
 {
+	g_mouse.wheel = Float2(x, y);
 }
 
 void Input::on_key_down(Key key)
 {
+	g_kb.down[(int)key] = true;
 }
 
 void Input::on_key_up(Key key)
 {
+	g_kb.down[(int)key] = false;
+	g_kb.released[(int)key] = true;
 }
 
 void Input::on_text_utf8(const char* text)
 {
-}
-
-bool Input::down(VirtualKey vkey)
-{
-	for (auto& k : vkey.keys)
-	{
-		if (down(k))
-			return true;
-	}
-
-	for (auto& mb : vkey.mouse_buttons)
-	{
-		if (down(mb))
-			return true;
-	}
-
-	return false;
+	strncat(g_kb.text, text, sizeof(char) * Input::MAX_TEXT_INPUT);
 }
 
 bool Input::down(MouseButton mb)
@@ -93,23 +92,6 @@ bool Input::down(Key key)
 	return g_kb.down[(int)key];
 }
 
-bool Input::released(VirtualKey vkey)
-{
-	for (auto& k : vkey.keys)
-	{
-		if (released(k))
-			return true;
-	}
-
-	for (auto& mb : vkey.mouse_buttons)
-	{
-		if (released(mb))
-			return true;
-	}
-
-	return false;
-}
-
 bool Input::released(MouseButton mb)
 {
 	return g_mouse.released[(int)mb];
@@ -118,23 +100,6 @@ bool Input::released(MouseButton mb)
 bool Input::released(Key key)
 {
 	return g_mouse.released[(int)key];
-}
-
-bool Input::pressed(VirtualKey vkey)
-{
-	for (auto& k : vkey.keys)
-	{
-		if (pressed(k))
-			return true;
-	}
-
-	for (auto& mb : vkey.mouse_buttons)
-	{
-		if (pressed(mb))
-			return true;
-	}
-
-	return false;
 }
 
 bool Input::pressed(MouseButton mb)
