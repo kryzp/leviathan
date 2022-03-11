@@ -28,7 +28,7 @@ void Input::update()
 
 	for (int i = 0; i < (int)Key::MAX; i++)
 		g_kb.pressed[i] = g_kb.released[i] = false;
-	MemUtil::set_zero(g_kb.text, sizeof(char) * Input::MAX_TEXT_INPUT);
+	MemUtil::set_zero(g_kb.text, Input::MAX_TEXT_INPUT);
 
 	for (int i = 0; i < (int)MouseButton::MAX; i++)
 		g_mouse.released[i] = g_mouse.pressed[i] = false;
@@ -79,7 +79,7 @@ void Input::on_key_up(Key key)
 
 void Input::on_text_utf8(const char* text)
 {
-	strncat(g_kb.text, text, sizeof(char) * Input::MAX_TEXT_INPUT);
+	strncat(g_kb.text, text, Input::MAX_TEXT_INPUT);
 }
 
 bool Input::down(MouseButton mb)

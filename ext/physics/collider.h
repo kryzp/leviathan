@@ -9,6 +9,9 @@
 #include <limits>
 
 // basic 2d collider
+// all it does is detect/resolve intersections with other colliders.
+// theres no opposite force applied to the other body or anything.
+// just a pushout vector is returned with tells one collider how to react to stop colliding.
 
 namespace lev::phys
 {
@@ -38,7 +41,7 @@ namespace lev::phys
 
 		RectF get_world_bounds();
 
-		bool overlaps(Collider2D& other, Vec2* pushout);
+		bool overlaps(Collider2D& other, Vec2* pushout = nullptr);
 
 		Transform* parent;
 		Transform transform;
@@ -202,31 +205,39 @@ namespace lev::phys
 
 		for (int i = 0; i < a.m_axis.size(); i++)
 		{
-			Vec2 axis = a.m_axis[i];
+			auto axis = a.m_axis[i];
 			float amount = 0.0f;
 
 			if (!Polygon::axis_overlaps(a.world_polygon, b.world_polygon, axis, &amount))
 				return false;
+			
+			if (!pushout)
+				continue;
 
-			length = Calc::min(Calc::abs(amount), length);
-
-			if (pushout)
-				(*pushout) = axis * length;
+			if (Calc::abs(amount) < length)
+			{
+				(*pushout) = axis * amount;
+				length = Calc::abs(amount);
+			}
 		}
 
 		for (int i = 0; i < b.m_axis.size(); i++)
 		{
-			Vec2 axis = b.m_axis[i];
+			auto axis = b.m_axis[i];
 			float amount = 0.0f;
 
 			if (!Polygon::axis_overlaps(a.world_polygon, b.world_polygon, axis, &amount))
 				return false;
+			
+			if (!pushout)
+				continue;
 
-			length = Calc::min(Calc::abs(amount), length);
-
-			if (pushout)
-				(*pushout) = axis * length;
-	}
+			if (Calc::abs(amount) < length)
+			{
+				(*pushout) = axis * amount;
+				length = Calc::abs(amount);
+			}
+		}
 
 		return true;
 	}

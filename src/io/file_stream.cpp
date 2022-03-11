@@ -19,8 +19,3 @@ void FileStream::open(const char* filename, const char* mode)
 {
 	p_stream = System::stream_from_file(filename, mode);
 }
-
-void FileStream::read_all(char* buffer)
-{
-	read(buffer, length());
-}

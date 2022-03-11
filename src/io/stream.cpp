@@ -9,6 +9,11 @@ Stream::Stream()
 {
 }
 
+Stream::~Stream()
+{
+	close();
+}
+
 void Stream::read(void* buffer, s64 length)
 {
 	System::stream_read(p_stream, buffer, length);
@@ -37,4 +42,14 @@ s64 Stream::length()
 void Stream::close()
 {
 	System::stream_close(p_stream);
+}
+
+void* Stream::stream()
+{
+	return p_stream;
+}
+
+const void* Stream::stream() const
+{
+	return p_stream;
 }

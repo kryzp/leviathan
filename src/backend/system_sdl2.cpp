@@ -29,7 +29,7 @@ bool System::init(const AppConfig* cfg)
 
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) != 0)
 	{
-		std::cout << "failed to initialize sdl2" << std::endl;
+		Log::error("failed to initialize sdl2");
 		return false;
 	}
 
@@ -56,7 +56,7 @@ bool System::init(const AppConfig* cfg)
 	
 	if (!g_window)
 	{
-		std::cout << "failed to create window" << std::endl;
+		Log::error("failed to create window");
 		return false;
 	}
 
@@ -78,7 +78,10 @@ void System::destroy()
 void System::postinit()
 {
 #ifdef LEV_USE_OPENGL
-	SDL_GL_SetSwapInterval(1);
+	if (App::config().vsync)
+		SDL_GL_SetSwapInterval(1);
+	else
+		SDL_GL_SetSwapInterval(0);
 #endif
 }
 
@@ -183,6 +186,16 @@ u64 System::ticks()
 void* System::stream_from_file(const char* filepath, const char* mode)
 {
     return SDL_RWFromFile(filepath, mode);
+}
+
+void* System::stream_from_memory(void* memory, s64 size)
+{
+	return SDL_RWFromMem(memory, size);
+}
+
+void* System::stream_from_const_memory(const void* memory, s64 size)
+{
+	return SDL_RWFromConstMem(memory, size);
 }
 
 s64 System::stream_read(void* stream, void* ptr, s64 size)

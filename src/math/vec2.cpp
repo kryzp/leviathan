@@ -20,6 +20,35 @@ Vec2::Vec2(float x, float y)
 {
 }
 
+Vec2 Vec2::transform(const Vec2& vec, const Mat3x2& mat)
+{
+	return Vec2(
+		(vec.x * mat.m11) + (vec.y * mat.m21) + mat.m31,
+		(vec.x * mat.m12) + (vec.y * mat.m22) + mat.m32
+	);
+}
+
+float Vec2::dot(const Vec2& a, const Vec2& b)
+{
+	return (a.x * b.x) + (a.y * b.y);
+}
+
+Vec2 Vec2::from_angle(float angle, float length)
+{
+	return Vec2(
+		Calc::cos(angle) * length,
+		Calc::sin(angle) * length
+	);
+}
+
+Vec2 Vec2::lerp(const Vec2& from, const Vec2& to, float amount)
+{
+	return Vec2(
+		Calc::lerp(from.x, to.x, amount),
+		Calc::lerp(from.y, to.y, amount)
+	);
+}
+
 Float2 Vec2::to_float2() const
 {
 	return Float2(x, y);
@@ -53,27 +82,6 @@ Vec2 Vec2::normalized() const
 Vec2 Vec2::perpendicular() const
 {
 	return Vec2(-y, x);
-}
-
-Vec2 Vec2::transform(const Vec2& vec, const Mat3x2& mat)
-{
-	return Vec2(
-		(vec.x * mat.m11) + (vec.y * mat.m21) + mat.m31,
-		(vec.x * mat.m12) + (vec.y * mat.m22) + mat.m32
-	);
-}
-
-float Vec2::dot(const Vec2& a, const Vec2& b)
-{
-	return (a.x * b.x) + (a.y * b.y);
-}
-
-Vec2 Vec2::from_angle(float angle, float length)
-{
-	return Vec2(
-		Calc::cos(angle) * length,
-		Calc::sin(angle) * length
-	);
 }
 
 bool Vec2::operator == (const Vec2& other) const { return this->x == other.x && this->y == other.y; }

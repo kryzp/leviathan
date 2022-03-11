@@ -13,7 +13,7 @@ namespace lev
 		int height;
 		int target_framerate;
 		bool resizable;
-		// vsync option?
+		bool vsync;
 
 		void (*on_init)();
 		void (*on_destroy)();

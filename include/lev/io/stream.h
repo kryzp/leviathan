@@ -9,6 +9,7 @@ namespace lev::io
 	{
 	public:
 		Stream();
+		~Stream();
 
 		virtual void read(void* buffer, s64 length);
 		virtual void write(void* data, s64 length);
@@ -16,6 +17,9 @@ namespace lev::io
 		virtual s64 position();
 		virtual s64 length();
 		virtual void close();
+
+		void* stream();
+		const void* stream() const;
 
 	protected:
 		void* p_stream;

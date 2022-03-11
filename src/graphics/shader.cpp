@@ -19,19 +19,13 @@ Ref<Shader> Shader::create(const char* vertex, const char* fragment, bool is_sou
 
 	if (is_source)
 	{
-		data.vertex_source = vertex;
-		data.fragment_source = fragment;
+		MemUtil::copy(data.vertex_source, vertex, LEV_SHADER_CHAR_SIZE);
+		MemUtil::copy(data.fragment_source, fragment, LEV_SHADER_CHAR_SIZE);
 	}
 	else
 	{
-		char vtxfile[512] = {0};
-		char fmtfile[512] = {0};
-
-		io::FileStream(vertex, "r").read_all(vtxfile);
-		io::FileStream(fragment, "r").read_all(fmtfile);
-
-		data.vertex_source = vtxfile;
-		data.fragment_source = fmtfile;
+		io::FileStream(vertex, "r").read(data.vertex_source, LEV_SHADER_CHAR_SIZE);
+		io::FileStream(fragment, "r").read(data.fragment_source, LEV_SHADER_CHAR_SIZE);
 	}
 
 	Ref<Shader> result = Renderer::create_shader(data);

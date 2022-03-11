@@ -6,6 +6,9 @@
 #include <lev/math/mat3x2.h>
 #include <lev/math/mat4x4.h>
 
+// oh mama oh no 5kb of data!!!!
+#define LEV_SHADER_CHAR_SIZE LEV_KILOBYTES(5)
+
 namespace lev::gfx
 {
 	enum class UniformType
@@ -28,8 +31,8 @@ namespace lev::gfx
 
 	struct ShaderData
 	{
-		Str<512> vertex_source;
-		Str<512> fragment_source;
+		char vertex_source[LEV_SHADER_CHAR_SIZE] = {0};
+		char fragment_source[LEV_SHADER_CHAR_SIZE] = {0};
 	};
 
 	class Shader

@@ -25,6 +25,7 @@ AppConfig::AppConfig()
 	this->height = 720;
 	this->target_framerate = 60;
 	this->resizable = false;
+	this->vsync = true;
 
 	this->on_init = nullptr;
 	this->on_destroy = nullptr;

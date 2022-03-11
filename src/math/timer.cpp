@@ -4,10 +4,10 @@
 using namespace lev;
 
 Timer::Timer()
-	: m_started(System::ticks())
-	, m_paused(false)
-	, m_start_ticks(0)
+	: m_start_ticks(0)
+	, m_started(System::ticks())
 	, m_paused_ticks(0)
+	, m_paused(false)
 {
 }
 

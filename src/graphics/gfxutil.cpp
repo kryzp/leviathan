@@ -8,10 +8,10 @@ void GfxUtil::quad(Vertex* vtx, u32* indices, const Quad& quad, const Quad& uv, 
     colour.premultiply();
 
 	Vertex arrvtx[4] = {
-		{ .pos = quad.a, .col = { colour.r, colour.g, colour.b }, .uv = uv.a },
-		{ .pos = quad.b, .col = { colour.r, colour.g, colour.b }, .uv = uv.b },
-		{ .pos = quad.c, .col = { colour.r, colour.g, colour.b }, .uv = uv.c },
-		{ .pos = quad.d, .col = { colour.r, colour.g, colour.b }, .uv = uv.d }
+		{ .pos = quad.a, .uv = uv.a, .col = { colour.r, colour.g, colour.b } },
+		{ .pos = quad.b, .uv = uv.b, .col = { colour.r, colour.g, colour.b } },
+		{ .pos = quad.c, .uv = uv.c, .col = { colour.r, colour.g, colour.b } },
+		{ .pos = quad.d, .uv = uv.d, .col = { colour.r, colour.g, colour.b } }
     };
 
     static const u32 arrindices[6] = {
@@ -31,9 +31,9 @@ void GfxUtil::tri(Vertex* vtx, u32* indices, const Triangle& triangle, const Tri
     colour.premultiply();
 
 	Vertex arrvtx[3] = {
-		{ .pos = triangle.a, .col = { colour.r, colour.g, colour.b }, .uv = uv.a },
-		{ .pos = triangle.b, .col = { colour.r, colour.g, colour.b }, .uv = uv.b },
-		{ .pos = triangle.c, .col = { colour.r, colour.g, colour.b }, .uv = uv.c }
+		{ .pos = triangle.a, .uv = uv.a, .col = { colour.r, colour.g, colour.b } },
+		{ .pos = triangle.b, .uv = uv.b, .col = { colour.r, colour.g, colour.b } },
+		{ .pos = triangle.c, .uv = uv.c, .col = { colour.r, colour.g, colour.b } }
     };
 
     static const u32 arrindices[6] = {

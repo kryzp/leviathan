@@ -1,8 +1,6 @@
 #pragma once
 
 #include <lev/math/mat3x2.h>
-#include <lev/math/calc.h>
-
 #include <iostream>
 
 namespace lev
@@ -26,6 +24,11 @@ namespace lev
 		Vec2(float x);
 		Vec2(float x, float y);
 
+		static Vec2 transform(const Vec2& vec, const Mat3x2& mat);
+		static float dot(const Vec2& a, const Vec2& b);
+		static Vec2 from_angle(float angle, float length);
+		static Vec2 lerp(const Vec2& from, const Vec2& to, float amount);
+
 		Pair<float> to_float2() const;
 
 		float angle() const;
@@ -35,10 +38,6 @@ namespace lev
 
 		Vec2 normalized() const;
 		Vec2 perpendicular() const;
-
-		static Vec2 transform(const Vec2& vec, const Mat3x2& mat);
-		static float dot(const Vec2& a, const Vec2& b);
-		static Vec2 from_angle(float angle, float length);
 
 		bool operator == (const Vec2& other) const;
 		bool operator != (const Vec2& other) const;

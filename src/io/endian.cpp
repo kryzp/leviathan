@@ -6,10 +6,9 @@ using namespace lev::io;
 
 Endianness Endian::get_endianness()
 {
-	Endianness result = Endianness::LITTLE;
-	if (is_big_endian())
-		result = Endianness::BIG;
-	return result;
+	return is_big_endian() ?
+		Endianness::BIG :
+		Endianness::LITTLE;
 }
 
 bool Endian::is_endian(Endianness endian)

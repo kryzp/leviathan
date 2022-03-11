@@ -135,6 +135,7 @@ namespace lev
 		while (entry)
 		{
 			auto next = entry->next;
+			entry->value.~Value();
 			(*entry) = Entry();
 			entry = next;
 		}

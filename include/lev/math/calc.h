@@ -22,6 +22,7 @@ namespace lev
 		float min(float a, float b);
 		float clamp(float v, float mn, float mx);
 
+		float sign(float x);
 		float floor(float x);
 		float ceil(float x);
 

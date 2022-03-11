@@ -23,6 +23,8 @@ namespace lev
 		u64 ticks();
 
 		void* stream_from_file(const char* filepath, const char* mode);
+		void* stream_from_memory(void* memory, s64 size);
+		void* stream_from_const_memory(const void* memory, s64 size);
 		s64 stream_read(void* stream, void* ptr, s64 size);
 		s64 stream_write(void* stream, const void* ptr, s64 size);
 		s64 stream_seek(void* stream, s64 offset);

@@ -10,8 +10,6 @@ namespace lev::io
 	public:
 		FileStream();
 		FileStream(const char* filename, const char* mode);
-
 		void open(const char* filename, const char* mode);
-		void read_all(char* buffer);
 	};
 }

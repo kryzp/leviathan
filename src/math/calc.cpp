@@ -49,6 +49,16 @@ float Calc::clamp(float v, float mn, float mx)
 	return max(mn, min(mx, v));
 }
 
+float Calc::sign(float x)
+{
+	if (x < 0.0f)
+		return -1.0f;
+	else if (x > 0.0f)
+		return 1.0f;
+
+	return 0.0f;
+}
+
 float Calc::floor(float x)
 {
 	return ::floorf(x);

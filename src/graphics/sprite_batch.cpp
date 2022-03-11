@@ -31,8 +31,8 @@ void SpriteBatch::initialize()
 	};
 
 	m_default_shader = Shader::create(
-		"#version 330 core\nlayout (location = 0) in vec2 a_pos;\nlayout (location = 1) in vec2 a_uv;\nlayout (location = 2) in vec3 a_colour;\nout vec3 in_colour;\nout vec2 in_uv;\nuniform mat4 u_projection;\nvoid main() {\ngl_Position = u_projection * vec4(a_pos, 0.0, 1.0);\nin_colour = a_colour;\nin_uv = a_uv;\n}",
-		"#version 330 core\nout vec4 frag_colour;\nin vec3 in_colour;\nin vec2 in_uv;\nuniform sampler2D u_texture;\nvoid main() {\nfrag_colour = texture(u_texture, in_uv) * vec4(in_colour, 1.0);\n}",
+		"#version 330 core\nlayout (location = 0) in vec2 a_pos;\nlayout (location = 1) in vec2 a_uv;\nlayout (location = 2) in vec3 a_colour;\nout vec3 in_mod_colour;\nout vec2 in_uv;\nuniform mat4 u_projection;\nvoid main() {\ngl_Position = u_projection * vec4(a_pos, 0.0, 1.0);\nin_mod_colour = a_colour;\nin_uv = a_uv;\n}",
+		"#version 330 core\nout vec4 frag_colour;\nin vec3 in_mod_colour;\nin vec2 in_uv;\nuniform sampler2D u_texture;\nvoid main() {\nfrag_colour = texture(u_texture, in_uv) * vec4(in_mod_colour, 1.0);\n}",
 		true
 	);
 
