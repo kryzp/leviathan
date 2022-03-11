@@ -57,11 +57,6 @@ const float* Mat3x2::value_ptr() const
 	return elements;//&m11;
 }
 
-float Mat3x2::scaling_factor() const
-{
-	return (Calc::sqrt(m11*m11 + m12*m12) + Calc::sqrt(m21*m21 + m22*m22)) / 2.0f;
-}
-
 float Mat3x2::determinant() const
 {
 	return m11*m22 - m21*m12;

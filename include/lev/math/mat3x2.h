@@ -46,7 +46,6 @@ namespace lev
 		float* value_ptr();
 		const float* value_ptr() const;
 
-		float scaling_factor() const;
 		float determinant() const;
 		Mat3x2 inverse() const;
 
