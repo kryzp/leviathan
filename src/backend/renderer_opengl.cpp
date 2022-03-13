@@ -4,6 +4,9 @@
 #include <backend/renderer.h>
 #include <backend/system.h>
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include <third_party/glad/glad.h>
 
 using namespace lev;
@@ -16,6 +19,8 @@ namespace
 	{
 		switch (fmt)
 		{
+			case gfx::TextureFormat::R:				return GL_R;
+			case gfx::TextureFormat::RG:			return GL_RG;
 			case gfx::TextureFormat::RGB:			return GL_RGB;
 			case gfx::TextureFormat::RGBA:			return GL_RGBA;
 			case gfx::TextureFormat::DEPTH_STENCIL: return GL_DEPTH_STENCIL;
@@ -28,6 +33,8 @@ namespace
 	{
 		switch (fmt)
 		{
+			case gfx::TextureFormat::R:				return GL_R;
+			case gfx::TextureFormat::RG:			return GL_RG;
 			case gfx::TextureFormat::RGB:			return GL_RGB;
 			case gfx::TextureFormat::RGBA:			return GL_RGBA;
 			case gfx::TextureFormat::DEPTH_STENCIL:	return GL_DEPTH24_STENCIL8;
@@ -40,6 +47,8 @@ namespace
 	{
 		switch (fmt)
 		{
+			case gfx::TextureFormat::R:				return GL_UNSIGNED_BYTE;
+			case gfx::TextureFormat::RG:			return GL_UNSIGNED_BYTE;
 			case gfx::TextureFormat::RGB:			return GL_UNSIGNED_BYTE;
 			case gfx::TextureFormat::RGBA:			return GL_UNSIGNED_BYTE;
 			case gfx::TextureFormat::DEPTH_STENCIL:	return GL_UNSIGNED_INT_24_8;
@@ -48,42 +57,42 @@ namespace
 		LEV_ASSERT(false);
 	}
 
-	int get_gl_blend_func(gfx::BlendFunction func)
+	int get_gl_blend_equation(gfx::BlendEquation func)
 	{
 		switch (func)
 		{
-			case gfx::BlendFunction::ADD:				return GL_FUNC_ADD;
-			case gfx::BlendFunction::SUBTRACT:			return GL_FUNC_SUBTRACT;
-			case gfx::BlendFunction::REVERSE_SUBTRACT:	return GL_FUNC_REVERSE_SUBTRACT;
-			case gfx::BlendFunction::MIN:				return GL_MIN;
-			case gfx::BlendFunction::MAX:				return GL_MAX;
+			case gfx::BlendEquation::ADD:				return GL_FUNC_ADD;
+			case gfx::BlendEquation::SUBTRACT:			return GL_FUNC_SUBTRACT;
+			case gfx::BlendEquation::REVERSE_SUBTRACT:	return GL_FUNC_REVERSE_SUBTRACT;
+			case gfx::BlendEquation::MIN:				return GL_MIN;
+			case gfx::BlendEquation::MAX:				return GL_MAX;
 		}
 		
 		LEV_ASSERT(false);
 	}
 
-	int get_gl_blend_factor(gfx::BlendFactor factor)
+	int get_gl_blend_func(gfx::BlendFunc factor)
 	{
 		switch (factor)
 		{
-			case gfx::BlendFactor::ZERO:						return GL_ZERO;
-			case gfx::BlendFactor::ONE:							return GL_ONE;
-			case gfx::BlendFactor::SRC_COLOUR:					return GL_SRC_COLOR;
-			case gfx::BlendFactor::SRC1_COLOUR:					return GL_SRC1_COLOR;
-			case gfx::BlendFactor::ONE_MINUS_SRC_COLOUR:		return GL_ONE_MINUS_SRC_COLOR;
-			case gfx::BlendFactor::ONE_MINUS_SRC1_COLOUR:		return GL_ONE_MINUS_SRC1_COLOR;
-			case gfx::BlendFactor::DST_COLOUR:					return GL_DST_COLOR;
-			case gfx::BlendFactor::ONE_MINUS_DST_COLOUR:		return GL_ONE_MINUS_DST_COLOR;
-			case gfx::BlendFactor::SRC_ALPHA:					return GL_SRC_ALPHA;
-			case gfx::BlendFactor::SRC1_ALPHA:					return GL_SRC1_ALPHA;
-			case gfx::BlendFactor::ONE_MINUS_SRC_ALPHA:			return GL_ONE_MINUS_SRC_ALPHA;
-			case gfx::BlendFactor::ONE_MINUS_SRC1_ALPHA:		return GL_ONE_MINUS_SRC1_ALPHA;
-			case gfx::BlendFactor::DST_ALPHA:					return GL_DST_ALPHA;
-			case gfx::BlendFactor::ONE_MINUS_DST_ALPHA:			return GL_ONE_MINUS_DST_ALPHA;
-			case gfx::BlendFactor::CONSTANT_COLOUR:				return GL_CONSTANT_COLOR;
-			case gfx::BlendFactor::ONE_MINUS_CONSTANT_COLOUR:	return GL_ONE_MINUS_CONSTANT_COLOR;
-			case gfx::BlendFactor::CONSTANT_ALPHA:				return GL_CONSTANT_ALPHA;
-			case gfx::BlendFactor::ONE_MINUS_CONSTANT_ALPHA:	return GL_ONE_MINUS_CONSTANT_ALPHA;
+			case gfx::BlendFunc::ZERO:							return GL_ZERO;
+			case gfx::BlendFunc::ONE:							return GL_ONE;
+			case gfx::BlendFunc::SRC_COLOUR:					return GL_SRC_COLOR;
+			case gfx::BlendFunc::SRC1_COLOUR:					return GL_SRC1_COLOR;
+			case gfx::BlendFunc::ONE_MINUS_SRC_COLOUR:			return GL_ONE_MINUS_SRC_COLOR;
+			case gfx::BlendFunc::ONE_MINUS_SRC1_COLOUR:			return GL_ONE_MINUS_SRC1_COLOR;
+			case gfx::BlendFunc::DST_COLOUR:					return GL_DST_COLOR;
+			case gfx::BlendFunc::ONE_MINUS_DST_COLOUR:			return GL_ONE_MINUS_DST_COLOR;
+			case gfx::BlendFunc::SRC_ALPHA:						return GL_SRC_ALPHA;
+			case gfx::BlendFunc::SRC1_ALPHA:					return GL_SRC1_ALPHA;
+			case gfx::BlendFunc::ONE_MINUS_SRC_ALPHA:			return GL_ONE_MINUS_SRC_ALPHA;
+			case gfx::BlendFunc::ONE_MINUS_SRC1_ALPHA:			return GL_ONE_MINUS_SRC1_ALPHA;
+			case gfx::BlendFunc::DST_ALPHA:						return GL_DST_ALPHA;
+			case gfx::BlendFunc::ONE_MINUS_DST_ALPHA:			return GL_ONE_MINUS_DST_ALPHA;
+			case gfx::BlendFunc::CONSTANT_COLOUR:				return GL_CONSTANT_COLOR;
+			case gfx::BlendFunc::ONE_MINUS_CONSTANT_COLOUR:		return GL_ONE_MINUS_CONSTANT_COLOR;
+			case gfx::BlendFunc::CONSTANT_ALPHA:				return GL_CONSTANT_ALPHA;
+			case gfx::BlendFunc::ONE_MINUS_CONSTANT_ALPHA:		return GL_ONE_MINUS_CONSTANT_ALPHA;
 		}
 
 		LEV_ASSERT(false);
@@ -127,7 +136,7 @@ public:
 		glDeleteTextures(1, &m_id);
 	}
 
-	void bind(int i = 0) const
+	void bind(int i) const override
 	{
 		glActiveTexture(GL_TEXTURE0 + i);
 		glBindTexture(GL_TEXTURE_2D, m_id);
@@ -135,8 +144,6 @@ public:
 
 	void generate(const byte* data) override
 	{
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, m_id);
 		glTexImage2D(GL_TEXTURE_2D, 0, m_gl_internal_format, m_width, m_height, 0, m_gl_format, m_gl_type, data);
 	}
 
@@ -220,18 +227,24 @@ public:
 		glDeleteProgram(m_id);
 	}
 
-	void use() const override
+	Shader& use() override
 	{
 		glUseProgram(m_id);
+		return *this;
 	}
 
 	u32 id() const { return m_id; }
 
-	void set(const char* name, bool value) const override { glUniform1i(glGetUniformLocation(m_id, name), (int)value); }
-	void set(const char* name, int value) const override { glUniform1i(glGetUniformLocation(m_id, name), value); }
-	void set(const char* name, float value) const override { glUniform1f(glGetUniformLocation(m_id, name), value); }
-	void set(const char* name, const Mat3x2& value) const override { glUniformMatrix3x2fv(glGetUniformLocation(m_id, name), 1, GL_FALSE, value.value_ptr()); }
-	void set(const char* name, const Mat4x4& value) const override { glUniformMatrix4fv(glGetUniformLocation(m_id, name), 1, GL_FALSE, value.value_ptr()); }
+	Shader& set(const char* name, bool value)                    override { glUniform1i(glGetUniformLocation(m_id, name), value); return *this; }
+	Shader& set(const char* name, bool* values, int count)       override { glUniform1iv(glGetUniformLocation(m_id, name), count, (GLint*)values); return *this; }
+	Shader& set(const char* name, int value)                     override { glUniform1i(glGetUniformLocation(m_id, name), value); return *this; }
+	Shader& set(const char* name, int* values, int count)        override { glUniform1iv(glGetUniformLocation(m_id, name), count, values); return *this; }
+	Shader& set(const char* name, float value)                   override { glUniform1f(glGetUniformLocation(m_id, name), value); return *this; }
+	Shader& set(const char* name, float* values, int count)      override { glUniform1fv(glGetUniformLocation(m_id, name), count, values); return *this; }
+	Shader& set(const char* name, const Vec2& value)             override { glUniform2f(glGetUniformLocation(m_id, name), value.x, value.y); return *this; }
+	Shader& set(const char* name, const Vec2* values, int count) override { glUniform2fv(glGetUniformLocation(m_id, name), count, (GLfloat*)values); return *this; }
+	Shader& set(const char* name, const Mat3x2& value)           override { glUniformMatrix3x2fv(glGetUniformLocation(m_id, name), 1, GL_FALSE, value.value_ptr()); return *this; }
+	Shader& set(const char* name, const Mat4x4& value)           override { glUniformMatrix4fv(glGetUniformLocation(m_id, name), 1, GL_FALSE, value.value_ptr()); return *this; }
 };
 
 Ref<gfx::Shader> Renderer::create_shader(const gfx::ShaderData& data)
@@ -246,8 +259,10 @@ Ref<gfx::Shader> Renderer::create_shader(const gfx::ShaderData& data)
 class OpenGLFramebuffer : public gfx::Framebuffer
 {
 	u32 m_id;
+	
 	Vector<Ref<gfx::Texture>> m_attachments;
-	int m_attachment_count;
+	Vector<GLenum> m_gl_attachments;
+
 	int m_width;
 	int m_height;
 
@@ -266,9 +281,15 @@ public:
 			auto gltex = (OpenGLTexture*)tex.get();
 
 			if (data.attachments[i] == gfx::TextureFormat::DEPTH_STENCIL)
+			{
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, gltex->id(), 0);
+				m_gl_attachments.push_back(GL_DEPTH_STENCIL_ATTACHMENT);
+			}
 			else
+			{
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, gltex->id(), 0);
+				m_gl_attachments.push_back(GL_COLOR_ATTACHMENT0 + i);
+			}
 
 			m_attachments.push_back(tex);
 		}
@@ -284,22 +305,25 @@ public:
 		glBindFramebuffer(GL_FRAMEBUFFER, m_id);
 	}
 
-	void clear(const Colour& colour = Colour::BLACK) override
+	void clear(const Colour& colour = Colour::empty()) override
 	{
 		bind();
 
+		glViewport(0, 0, m_width, m_height);
+
 		glClearColor(
-			(float)colour.r / 255.0f,
-			(float)colour.g / 255.0f,
-			(float)colour.b / 255.0f,
-			(float)colour.a / 255.0f
+			colour.r,
+			colour.g,
+			colour.b,
+			colour.a
 		);
 
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
 	virtual const Vector<Ref<gfx::Texture>>& attachments() const override { return m_attachments; }
-	virtual int attachment_count() const override { return m_attachment_count; }
+	const Vector<GLenum>& gl_attachments() const { return m_gl_attachments; }
+	virtual int attachment_count() const override { return m_attachments.size(); }
 	virtual int width() const override { return m_width; }
 	virtual int height() const override { return m_height; }
 	u32 id() const { return m_id; }
@@ -424,38 +448,56 @@ void Renderer::after_render()
 
 void Renderer::render(const RenderPass& pass)
 {
-	auto shader = (OpenGLShader*)pass.material->shader.get();
-	auto texture = (OpenGLTexture*)pass.material->texture.get();
+	const static GLenum COLOUR_ATTACHMENT_0 = GL_COLOR_ATTACHMENT0;
+
+	auto shader = (OpenGLShader*)pass.material.shader.get();
 	auto target = (OpenGLFramebuffer*)pass.target.get();
-	auto& sampler = pass.material->sampler;
 	auto mesh = (OpenGLMesh*)pass.mesh.get();
 	auto& blend = pass.blend;
 	
 	if (target)
+	{
 		target->bind();
+		glDrawBuffers(target->gl_attachments().size(), target->gl_attachments().begin());
+		glViewport(0, 0, target->width(), target->height());
+	}
 	else
+	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glDrawBuffers(1, &COLOUR_ATTACHMENT_0);
+		glViewport(0, 0, App::draw_width(), App::draw_height());
+	}
 
 	shader->use();
 
-	if (texture)
+	for (int i = 0; i < pass.material.textures.size() > 0; i++)
 	{
-		texture->bind();
+		auto texture = (OpenGLTexture*)pass.material.textures[i].get();
+		auto sampler = pass.material.samplers[i];
+
+		texture->bind(i);
 		texture->update(sampler);
 
-		shader->set(gfx::Shader::MAIN_TEXTURE, 0);
+		// engineer gamig
+		char intstr[2];
+		_itoa(i, intstr, 10);
+		char name[16] = {0};
+		strncat(name, "u_texture_", 10);
+		strncat(name, intstr, 2);
+		
+		shader->set(name, i);
 	}
 
 	glBlendEquationSeparate(
-		get_gl_blend_func(blend.func_rgb),
-		get_gl_blend_func(blend.func_alpha)
+		get_gl_blend_equation(blend.equation_rgb),
+		get_gl_blend_equation(blend.equation_alpha)
 	);
 
 	glBlendFuncSeparate(
-		get_gl_blend_factor(blend.factor_src_rgb),
-		get_gl_blend_factor(blend.factor_dst_rgb),
-		get_gl_blend_factor(blend.factor_src_alpha),
-		get_gl_blend_factor(blend.factor_dst_alpha)
+		get_gl_blend_func(blend.func_src_rgb),
+		get_gl_blend_func(blend.func_dst_rgb),
+		get_gl_blend_func(blend.func_src_alpha),
+		get_gl_blend_func(blend.func_dst_alpha)
 	);
 
 	glBindVertexArray(mesh->id());
@@ -473,7 +515,7 @@ void Renderer::clear(float r, float g, float b, float a)
 
 void Renderer::clear(const Colour& colour)
 {
-	clear(colour.r / 255.0f, colour.g / 255.0f, colour.b / 255.0f, colour.a / 255.0f);
+	clear(colour.r, colour.g, colour.b, colour.a);
 }
 
 #endif

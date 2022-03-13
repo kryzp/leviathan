@@ -33,7 +33,9 @@ namespace lev
 
 		operator const char* () const;
 
+		bool operator == (const Str& str) const;
 		bool operator == (const char* str) const;
+		bool operator != (const Str& str) const;
 		bool operator != (const char* str) const;
 
 	private:
@@ -172,9 +174,21 @@ namespace lev
 	}
 
 	template <int Size>
+	bool Str<Size>::operator == (const Str<Size>& str) const
+	{
+		return this->equals(str);
+	}
+
+	template <int Size>
 	bool Str<Size>::operator == (const char* str) const
 	{
 		return this->equals(str);
+	}
+
+	template <int Size>
+	bool Str<Size>::operator != (const Str<Size>& str) const
+	{
+		return !(this->equals(str));
 	}
 
 	template <int Size>

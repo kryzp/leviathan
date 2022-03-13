@@ -13,6 +13,15 @@
 
 #endif
 
+template <class T>
+inline void __levutils_swap(T& x, T& y) {
+	T tmp = x;
+	x = y;
+	y = tmp;
+}
+
+#define LEV_SWAP(_x, _y) __levutils_swap((_x), (_y))
+
 // should be placed at the top of the class
 // e.g:
 // class MySingleton {

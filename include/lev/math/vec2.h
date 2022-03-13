@@ -5,31 +5,50 @@
 
 namespace lev
 {
-	template <typename T>
-	struct Pair;
-
 	struct Vec2
 	{
-		static const Vec2 ZERO;
-		static const Vec2 ONE;
-		static const Vec2 LEFT;
-		static const Vec2 RIGHT;
-		static const Vec2 UP;
-		static const Vec2 DOWN;
+		union
+		{
+			struct
+			{
+				float x;
+				float y;
+			};
 
-		float x;
-		float y;
+			struct
+			{
+				union
+				{
+					float w;
+					float width;
+				};
+
+				union
+				{
+					float h;
+					float height;
+				};
+			};
+
+			float coords[2];
+		};
 
 		Vec2();
 		Vec2(float x);
 		Vec2(float x, float y);
 
+		static const Vec2& zero();
+		static const Vec2& one();
+		static const Vec2& left();
+		static const Vec2& right();
+		static const Vec2& up();
+		static const Vec2& down();
+
 		static Vec2 transform(const Vec2& vec, const Mat3x2& mat);
 		static float dot(const Vec2& a, const Vec2& b);
 		static Vec2 from_angle(float angle, float length);
 		static Vec2 lerp(const Vec2& from, const Vec2& to, float amount);
-
-		Pair<float> to_float2() const;
+		static Vec2 spring(const Vec2& from, const Vec2& to, float amount, float dampening, Vec2& intermediate);
 
 		float angle() const;
 
@@ -55,6 +74,10 @@ namespace lev
 
 		friend std::ostream& operator << (std::ostream& os, const Vec2& v);
 	};
+
+	using Point2 = Vec2;
+	using Float2 = Vec2;
+	using Size2 = Vec2;
 
 	inline std::ostream& operator << (std::ostream& os, const Vec2& v)
 	{

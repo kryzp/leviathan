@@ -6,8 +6,6 @@ namespace lev
 
 	struct Mat4x4
 	{
-		static const Mat4x4 IDENTITY;
-
 		union
 		{
 			struct
@@ -41,6 +39,8 @@ namespace lev
 			float m31, float m32, float m33, float m34,
 			float m41, float m42, float m43, float m44
 		);
+
+		static const Mat4x4& identity();
 
 		static Mat4x4 from_mat3x2(const Mat3x2& mat);
 

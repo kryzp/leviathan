@@ -11,7 +11,7 @@ Stream::Stream()
 
 Stream::~Stream()
 {
-	close();
+	System::stream_close(p_stream);
 }
 
 void Stream::read(void* buffer, s64 length)

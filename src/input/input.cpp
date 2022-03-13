@@ -32,7 +32,7 @@ void Input::update()
 
 	for (int i = 0; i < (int)MouseButton::MAX; i++)
 		g_mouse.released[i] = g_mouse.pressed[i] = false;
-	g_mouse.wheel = Float2::ZERO;
+	g_mouse.wheel = Float2::zero();
 }
 
 void Input::on_mouse_move(float x, float y)
@@ -132,17 +132,17 @@ const char* Input::text()
 	return g_kb.text;
 }
 
-Vec2 Input::mouse_screen_pos()
+Point2 Input::mouse_screen_pos()
 {
 	return g_mouse.screen_position;
 }
 
-Vec2 Input::mouse_draw_pos()
+Point2 Input::mouse_draw_pos()
 {
 	return g_mouse.draw_position;
 }
 
-Vec2 Input::mouse_position()
+Point2 Input::mouse_position()
 {
 	return g_mouse.position;
 }

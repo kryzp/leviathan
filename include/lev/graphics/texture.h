@@ -10,6 +10,8 @@ namespace lev::gfx
 
 	enum class TextureFormat
 	{
+		R,
+		RG,
 		RGB,
 		RGBA,
 		DEPTH_STENCIL
@@ -39,6 +41,8 @@ namespace lev::gfx
 		TextureFilter filter;
 		TextureWrap wrap_x;
 		TextureWrap wrap_y;
+
+		static const TextureSampler& pixel();
 	};
 
 	struct TextureRegion
@@ -57,6 +61,7 @@ namespace lev::gfx
 		static Ref<Texture> create(const Image& image);
 		static Ref<Texture> create(int width, int height, TextureFormat format, const byte* data = nullptr);
 
+		virtual void bind(int i) const = 0;
 		virtual void generate(const byte* data) = 0;
 		virtual int width() const = 0;
 		virtual int height() const = 0;

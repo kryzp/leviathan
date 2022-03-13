@@ -1,5 +1,8 @@
 #pragma once
 
+#include <lev/math/vec2.h>
+#include <lev/math/colour.h>
+
 namespace lev
 {
 	struct Colour;
@@ -37,11 +40,13 @@ namespace lev
 
 		int window_width();
 		int window_height();
+		Size2 window_size();
 
 		int draw_width();
 		int draw_height();
+		Size2 draw_size();
 
 		float fps();
-		void clear(const Colour& colour);
+		void clear(const Colour& colour = Colour::empty());
 	}
 }

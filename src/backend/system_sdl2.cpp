@@ -100,7 +100,10 @@ void System::update()
 				Input::on_mouse_wheel(e.wheel.x, e.wheel.y);
 
 			case SDL_MOUSEMOTION:
-				Input::on_mouse_screen_move(e.motion.x, e.motion.y);
+				int spx, spy;
+				SDL_GetGlobalMouseState(&spx, &spy);
+				Input::on_mouse_screen_move(spx, spy);
+				Input::on_mouse_move(e.motion.x, e.motion.y);
 				break;
 
 			case SDL_MOUSEBUTTONDOWN:
@@ -136,6 +139,16 @@ void System::present()
 #endif
 
 	SDL_ShowWindow(g_window);
+}
+
+void System::set_window_position(int x, int y)
+{
+	SDL_SetWindowPosition(g_window, x, y);
+}
+
+void System::get_window_position(int* x, int* y)
+{
+	SDL_GetWindowPosition(g_window, x, y);
 }
 
 int System::window_width()

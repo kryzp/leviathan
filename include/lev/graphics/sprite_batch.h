@@ -1,5 +1,6 @@
 #pragma once
 
+// todo: probably get rid of all of these header files and put them in the .cpp file ...
 #include <lev/graphics/texture.h>
 #include <lev/graphics/shader.h>
 #include <lev/graphics/blend.h>
@@ -12,7 +13,9 @@
 #include <lev/math/colour.h>
 #include <lev/math/quad.h>
 #include <lev/math/triangle.h>
+#include <lev/containers/hash_map.h>
 #include <lev/containers/vector.h>
+#include <lev/containers/string.h>
 
 namespace lev { struct RenderPass; }
 
@@ -27,52 +30,38 @@ namespace lev::gfx
 		void render(const Ref<Framebuffer>& framebuffer = nullptr);
 		void render(const Mat4x4& proj, const Ref<Framebuffer>& framebuffer = nullptr);
 
-		void texture(const Ref<Texture>& tex);
+		void texture();
 
 		void push_matrix(const Mat3x2& mat);
 		Mat3x2 pop_matrix();
 		const Mat3x2& peek_matrix() const;
 
-		void push_blend(const BlendMode& blend);
-		BlendMode pop_blend();
-		const BlendMode& peek_blend() const;
-
-		void push_shader(const Ref<Shader>& shader);
-		Ref<Shader> pop_shader();
+		void push_material(const Material& material);
+		Material pop_material();
+		Material& peek_material();
 		Ref<Shader> peek_shader();
 
+		void push_blend(const BlendMode& blend);
+		BlendMode pop_blend();
+		BlendMode& peek_blend();
+
 	private:
-		void initialize();
-		bool m_initialized;
-
-		Ref<Shader> m_default_shader;
-		BlendMode m_default_blend;
-
 		struct RenderBatch
 		{
-			// note: i am making a compremise here
-			// by adding the mesh *here* it allows me to also make it possible
-			// to use an individual shader per texture, tradeoff being that
-			// i cannot do instanced rendering, which is much faster, but means
-			// you could only use one shader per batch render and it would be applied
-			// to the whole render instead of to a specific sprite.
-			// maybe ill have to change this in the future, seems fine for now. its a 2d engine
-			// it doesnt need to be omega-fast
-			// ...
-			// ok maybe for particles
 			Ref<Mesh> mesh;
-			Ref<Material> material;
+			Material material;
 			BlendMode blend;
 		};
 
+		Ref<Shader> m_default_shader;
+
+		void initialize();
 		void render_batch(RenderPass& pass, const RenderBatch& b);
 
 		Vector<Mat3x2> m_matrix_stack;
 		Mat3x2 m_transform_matrix;
-
-		Vector<Ref<Shader>> m_shader_stack;
 		Vector<BlendMode> m_blend_stack;
-
+		Vector<Material> m_material_stack;
 		Vector<RenderBatch> m_batches;
 	};
 }

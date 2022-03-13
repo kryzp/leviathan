@@ -4,10 +4,10 @@
 using namespace lev;
 
 Transform::Transform()
-	: m_matrix(Mat3x2::IDENTITY)
-	, m_origin(Vec2::ZERO)
-	, m_position(Vec2::ZERO)
-	, m_scale(Vec2::ONE)
+	: m_matrix(Mat3x2::identity())
+	, m_origin(Vec2::zero())
+	, m_position(Vec2::zero())
+	, m_scale(Vec2::one())
 	, m_rotation(0)
 	, m_dirty(false)
 {

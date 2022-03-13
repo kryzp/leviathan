@@ -16,8 +16,8 @@ that 'other' matrix to the position vector!
 using namespace lev;
 
 Mat3x2::Mat3x2()
-	: m11(1), m12(0)
-	, m21(0), m22(1)
+	: m11(0), m12(0)
+	, m21(0), m22(0)
 	, m31(0), m32(0)
 {
 }
@@ -31,8 +31,8 @@ Mat3x2::Mat3x2(const Mat3x2& other)
 
 Mat3x2::Mat3x2(float initial)
 	: m11(initial), m12(0)
-	, m21(0), m22(initial)
-	, m31(0), m32(0)
+	, m21(0),       m22(initial)
+	, m31(0),       m32(0)
 {
 }
 
@@ -123,7 +123,7 @@ Mat3x2 Mat3x2::create_translation(const Vec2& translation)
 
 Mat3x2 Mat3x2::create_transform(const Vec2& position, float rotation, const Vec2& scale, const Vec2& origin)
 {
-	Mat3x2 mat = Mat3x2::IDENTITY;
+	Mat3x2 mat = Mat3x2::identity();
 
 	if (origin.x != 0 || origin.y != 0)
 		mat *= create_translation(-origin);
@@ -194,8 +194,13 @@ Mat3x2& Mat3x2::operator *= (const Mat3x2& other)
 	return *this;
 }
 
-const Mat3x2 Mat3x2::IDENTITY = Mat3x2(
-	1, 0,
-	0, 1,
-	0, 0
-);
+const Mat3x2& Mat3x2::identity()
+{
+	static const Mat3x2 IDENTITY = Mat3x2(
+		1, 0,
+		0, 1,
+		0, 0
+	);
+
+	return IDENTITY;
+}

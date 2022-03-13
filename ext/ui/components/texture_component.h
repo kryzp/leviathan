@@ -32,7 +32,7 @@ namespace lev::ui
 				position(),
 				0.0f,
 				size() / texsize,
-				Vec2::ZERO
+				Vec2::zero()
 			));
 
 			b.render_texture(texture.texture);

@@ -36,19 +36,12 @@ Mat4x4::Mat4x4(
 
 Mat4x4 Mat4x4::create_orthographic(float width, float height, float near, float far)
 {
-	Mat4x4 result = Mat4x4::IDENTITY;
-
-	result.m11 = 2.0f / width;
-	result.m22 = -2.0f / height;
-	result.m33 = 1.0f / (near - far);
-	result.m43 = near / (near - far);
-
-	return result;
+	return create_orthographic_ext(0.0f, width, height, 0.0f, near, far);
 }
 
 Mat4x4 Mat4x4::create_orthographic_ext(float left, float right, float bottom, float top, float near, float far)
 {
-	Mat4x4 result = Mat4x4::IDENTITY;
+	Mat4x4 result = Mat4x4::identity();
 
 	result.m11 = 2.0f / (right - left);
 	result.m22 = 2.0f / (top - bottom);
@@ -194,9 +187,14 @@ Mat4x4& Mat4x4::operator *= (const Mat4x4& other)
 	return *this;
 }
 
-const Mat4x4 Mat4x4::IDENTITY = Mat4x4(
-	1, 0, 0, 0,
-	0, 1, 0, 0,
-	0, 0, 1, 0,
-	0, 0, 0, 1
-);
+const Mat4x4& Mat4x4::identity()
+{
+	static const Mat4x4 IDENTITY = Mat4x4(
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	);
+
+	return IDENTITY;
+}

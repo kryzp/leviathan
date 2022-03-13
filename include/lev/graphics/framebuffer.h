@@ -23,7 +23,7 @@ namespace lev::gfx
 		static Ref<Framebuffer> create(int width, int height);
 		static Ref<Framebuffer> create(int width, int height, const TextureFormat* attachments, int attachment_count);
 
-		virtual void clear(const Colour& colour = Colour::BLACK) = 0;
+		virtual void clear(const Colour& colour = Colour::empty()) = 0;
 		virtual const Vector<Ref<Texture>>& attachments() const = 0;
 		virtual int attachment_count() const = 0;
 		virtual int width() const = 0;

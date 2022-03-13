@@ -2,7 +2,6 @@
 
 #include <lev/containers/vector.h>
 #include <lev/math/vec2.h>
-#include <lev/math/pair.h>
 
 namespace lev
 {
@@ -254,9 +253,9 @@ namespace lev
 		bool pressed[(int)MouseButton::MAX];
 		bool released[(int)MouseButton::MAX];
 
-		Vec2 screen_position;
-		Vec2 draw_position;
-		Vec2 position;
+		Point2 screen_position;
+		Point2 draw_position;
+		Point2 position;
 		
 		Float2 wheel;
 	};
@@ -282,9 +281,9 @@ namespace lev
 
 		const char* text();
 
-		Vec2 mouse_screen_pos();
-		Vec2 mouse_draw_pos();
-		Vec2 mouse_position();
+		Point2 mouse_screen_pos();
+		Point2 mouse_draw_pos();
+		Point2 mouse_position();
 		Float2 mouse_wheel();
 		Float2 mouse_wheel_change();
 

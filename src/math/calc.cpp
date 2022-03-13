@@ -79,6 +79,12 @@ float Calc::lerp(float from, float to, float amount)
 	return from + ((to - from) * amount);
 }
 
+float Calc::spring(float from, float to, float bounciness, float tension, float& intermediate)
+{
+	intermediate = lerp(intermediate, (to - from) * tension, 1.0f / bounciness);
+	return intermediate;
+}
+
 float Calc::sin(float x)
 {
 	return ::sinf(x);

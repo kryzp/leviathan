@@ -10,8 +10,6 @@ namespace lev
 
 	struct Mat3x2
 	{
-		static const Mat3x2 IDENTITY;
-
 		union
 		{
 			struct
@@ -35,6 +33,8 @@ namespace lev
 			float m21, float m22,
 			float m31, float m32
 		);
+
+		static const Mat3x2& identity();
 
 		static Mat3x2 create_skew(const Vec2& amount);
 		static Mat3x2 create_scale(const Vec2& scale);

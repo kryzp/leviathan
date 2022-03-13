@@ -2,7 +2,7 @@
 
 namespace lev::gfx
 {
-	enum BlendFunction
+	enum BlendEquation
 	{
 		ADD,
 		SUBTRACT,
@@ -11,7 +11,7 @@ namespace lev::gfx
 		MAX
 	};
 
-	enum BlendFactor
+	enum BlendFunc
 	{
 		ZERO,
 		ONE,
@@ -35,13 +35,13 @@ namespace lev::gfx
 
 	struct BlendMode
 	{
-		BlendFunction func_rgb;
-		BlendFunction func_alpha;
+		BlendEquation equation_rgb;
+		BlendEquation equation_alpha;
 		
-		BlendFactor factor_src_rgb;
-		BlendFactor factor_dst_rgb;
+		BlendFunc func_src_rgb;
+		BlendFunc func_dst_rgb;
 
-		BlendFactor factor_src_alpha;
-		BlendFactor factor_dst_alpha;
+		BlendFunc func_src_alpha;
+		BlendFunc func_dst_alpha;
 	};
 }

@@ -4,8 +4,8 @@
 using namespace lev;
 
 Line::Line()
-	: a(Vec2::ZERO)
-	, b(Vec2::ZERO)
+	: a(Vec2::zero())
+	, b(Vec2::zero())
 {
 }
 

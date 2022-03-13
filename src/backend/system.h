@@ -14,6 +14,9 @@ namespace lev
 		void update();
 		void present();
 
+		void set_window_position(int x, int y);
+		void get_window_position(int* x, int* y);
+
 		int window_width();
 		int window_height();
 

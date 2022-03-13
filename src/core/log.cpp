@@ -15,15 +15,13 @@ using namespace lev;
 namespace
 {
     const char* g_directory;
-    char g_curr_file[128];
+    char g_curr_file[256];
 
-    static void full_file_path(char* dest, const char* name)
+    static void full_file_path(char* buffer, const char* name)
     {
-        char buf[128];
-        strcpy(buf, g_directory);
-        strcat(buf, name);
-        strcat(buf, FILE_EXT);
-        strcpy(dest, buf);
+        strncpy(buffer, g_directory, 200);
+        strncat(buffer, name, 40);
+        strncat(buffer, FILE_EXT, 16);
     }
 }
 

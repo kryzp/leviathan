@@ -3,9 +3,9 @@
 using namespace lev;
 
 Triangle::Triangle()
-	: a(Vec2::ZERO)
-	, b(Vec2::ZERO)
-	, c(Vec2::ZERO)
+	: a(Vec2::zero())
+	, b(Vec2::zero())
+	, c(Vec2::zero())
 {
 }
 

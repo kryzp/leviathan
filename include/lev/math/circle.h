@@ -6,15 +6,15 @@ namespace lev
 {
 	struct Circle
 	{
-		static const Circle ZERO;
-		static const Circle ONE;
-
 		Vec2 position;
 		float radius;
 
 		Circle();
 		Circle(float rad);
 		Circle(const Vec2& pos, float rad);
+
+		static const Circle& zero();
+		static const Circle& one();
 
 		float diameter() const;
 	};

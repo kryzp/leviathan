@@ -28,6 +28,7 @@ namespace lev
 
 		float approach(float from, float to, float amount);
 		float lerp(float from, float to, float amount);
+		float spring(float from, float to, float bounciness, float tension, float& intermediate);
 
 		float sin(float x);
 		float cos(float x);

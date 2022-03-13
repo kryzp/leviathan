@@ -9,17 +9,30 @@ namespace lev
 	template <typename T>
 	struct Rect
 	{
-		static const Rect ZERO;
-		static const Rect ONE;
-
 		T x;
 		T y;
-		T w;
-		T h;
+
+		union
+		{
+			struct
+			{
+				T w;
+				T h;
+			};
+
+			struct
+			{
+				T width;
+				T height;
+			};
+		};
 
 		Rect();
 		Rect(T w, T h);
 		Rect(T x, T y, T w, T h);
+
+		static const Rect& zero();
+		static const Rect& one();
 
 		bool contains(const Vec2& other) const;
 		bool intersects(const Rect& other) const;
@@ -43,9 +56,6 @@ namespace lev
 			return os;
 		}
 	};
-
-	template <typename T> const Rect<T> Rect<T>::ZERO = Rect<T>(0, 0, 0, 0);
-	template <typename T> const Rect<T> Rect<T>::ONE  = Rect<T>(0, 0, 1, 1);
 
 	using RectF = Rect<float>;
 	using RectI = Rect<int>;
@@ -100,15 +110,18 @@ namespace lev
 	}
 
 	template <typename T> Vec2 Rect<T>::position() const { return Vec2(x, y); }
-	template <typename T> Vec2 Rect<T>::size() const { return Vec2(w, h); }
+	template <typename T> Vec2 Rect<T>::size()     const { return Vec2(w, h); }
 
-	template <typename T> T Rect<T>::left()   const { return x; }
+	template <typename T> T Rect<T>::left()   const { return x;     }
 	template <typename T> T Rect<T>::right()  const { return x + w; }
-	template <typename T> T Rect<T>::top()    const { return y; }
+	template <typename T> T Rect<T>::top()    const { return y;     }
 	template <typename T> T Rect<T>::bottom() const { return y + h; }
 
-	template <typename T> Vec2 Rect<T>::top_left()     const { return Vec2(left(),  top()); }
-	template <typename T> Vec2 Rect<T>::top_right()    const { return Vec2(right(), top()); }
+	template <typename T> Vec2 Rect<T>::top_left()     const { return Vec2(left(),  top());    }
+	template <typename T> Vec2 Rect<T>::top_right()    const { return Vec2(right(), top());    }
 	template <typename T> Vec2 Rect<T>::bottom_left()  const { return Vec2(left(),  bottom()); }
 	template <typename T> Vec2 Rect<T>::bottom_right() const { return Vec2(right(), bottom()); }
+
+	template <typename T> const Rect<T>& Rect<T>::zero() { static const Rect ZERO = Rect(0, 0, 0, 0); return ZERO; }
+	template <typename T> const Rect<T>& Rect<T>::one()  { static const Rect ONE  = Rect(0, 0, 1, 1); return ONE;  }
 }

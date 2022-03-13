@@ -63,7 +63,7 @@ namespace lev::phys
 		, transform()
 		, polygon()
 		, world_polygon()
-		, m_world_bounds(RectF::ZERO)
+		, m_world_bounds(RectF::zero())
 		, m_axis()
 	{
 	}
@@ -81,7 +81,6 @@ namespace lev::phys
 	Collider2D::Collider2D(const Polygon& polygon)
 		: Collider2D()
 	{
-		m_axis = Vector<Vec2>(polygon.vertices.size());
 		make_polygon(polygon);
 	}
 
@@ -101,9 +100,7 @@ namespace lev::phys
 	{
 		this->polygon.vertices = poly.vertices;
 		this->world_polygon.vertices = poly.vertices;
-
-		for (int i = 0; i < poly.vertices.size(); i++)
-			this->m_axis.push_back(Vec2::ZERO);
+		this->m_axis = Vector<Vec2>(poly.vertices.size());
 	}
 
 	void Collider2D::make_rect(const RectF& rect)

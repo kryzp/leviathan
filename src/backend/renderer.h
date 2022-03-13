@@ -15,8 +15,8 @@ namespace lev
 	struct RenderPass
 	{
 		gfx::BlendMode blend;
+		gfx::Material material;
 		Ref<gfx::Mesh> mesh;
-		Ref<gfx::Material> material;
 		Ref<gfx::Framebuffer> target;
 	};
 
@@ -30,8 +30,8 @@ namespace lev
 		void before_render();
 		void after_render();
 
-		void clear(float r, float g, float b, float a = 1.0f);
-		void clear(const Colour& colour = Colour::BLACK);
+		void clear(float r, float g, float b, float a = 0.0f);
+		void clear(const Colour& colour = Colour::empty());
 
 		Ref<gfx::Texture> create_texture(const gfx::TextureData& data);
 		Ref<gfx::Shader> create_shader(const gfx::ShaderData& data);

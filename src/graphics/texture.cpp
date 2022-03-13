@@ -4,6 +4,19 @@
 using namespace lev;
 using namespace lev::gfx;
 
+const TextureSampler& TextureSampler::pixel()
+{
+	static const TextureSampler PIXEL = {
+		.filter = gfx::TextureFilter::NEAREST,
+		.wrap_x = gfx::TextureWrap::CLAMP,
+		.wrap_y = gfx::TextureWrap::CLAMP
+	};
+
+	return PIXEL;
+}
+
+////////////////////////////////////////////////////////////////////////////
+
 Texture::Texture()
 {
 }

@@ -89,7 +89,7 @@ bool App::init()
 
 void App::run()
 {
-	float prevseconds;
+	float prevseconds = 0.0f;
 
 	while (g_running)
 	{
@@ -167,6 +167,14 @@ int App::window_height()
 	return System::window_height();
 }
 
+Size2 App::window_size()
+{
+	return Size2(
+		System::window_width(),
+		System::window_height()
+	);
+}
+
 int App::draw_width()
 {
 	return System::draw_width();
@@ -175,6 +183,14 @@ int App::draw_width()
 int App::draw_height()
 {
 	return System::draw_height();
+}
+
+Size2 App::draw_size()
+{
+	return Size2(
+		System::draw_width(),
+		System::draw_height()
+	);
 }
 
 float App::fps()
