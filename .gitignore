@@ -36,6 +36,7 @@ bld/
 
 # stuff yes yes
 CMakeSettings.json
+.vscode/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
