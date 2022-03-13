@@ -15,6 +15,17 @@ const TextureSampler& TextureSampler::pixel()
 	return PIXEL;
 }
 
+const TextureSampler& TextureSampler::linear()
+{
+	static const TextureSampler LINEAR = {
+		.filter = gfx::TextureFilter::LINEAR,
+		.wrap_x = gfx::TextureWrap::CLAMP,
+		.wrap_y = gfx::TextureWrap::CLAMP
+	};
+
+	return LINEAR;
+}
+
 ////////////////////////////////////////////////////////////////////////////
 
 Texture::Texture()

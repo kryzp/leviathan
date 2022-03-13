@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include <lev/core/util.h>
+#include <lev/math/calc.h>
 
 namespace lev
 {

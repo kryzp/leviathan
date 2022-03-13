@@ -1,0 +1,6 @@
+* entity
+* asset management system
+* fonts / text rendering
+* sounds / music
+* lua???
+* debuggging console

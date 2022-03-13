@@ -105,15 +105,12 @@ namespace lev::phys
 
 	void Collider2D::make_rect(const RectF& rect)
 	{
-		Polygon rectpoly = Polygon({
-			Vec2(0, 0),
-			Vec2(rect.w, 0),
+		make_polygon(Polygon({
+			Vec2(rect.x, rect.y),
+			Vec2(rect.w, rect.y),
 			Vec2(rect.w, rect.h),
-			Vec2(0, rect.h)
-		});
-
-		make_polygon(rectpoly);
-		transform.move(Vec2(rect.x, rect.y));
+			Vec2(rect.x, rect.h)
+		}));
 	}
 
 	Collider2D Collider2D::offset(const Vec2& amount) const

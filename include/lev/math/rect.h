@@ -1,11 +1,10 @@
 #pragma once
 
 #include <iostream>
+#include <lev/math/vec2.h>
 
 namespace lev
 {
-	struct Vec2;
-
 	template <typename T>
 	struct Rect
 	{

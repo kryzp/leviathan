@@ -43,6 +43,7 @@ namespace lev::gfx
 		TextureWrap wrap_y;
 
 		static const TextureSampler& pixel();
+		static const TextureSampler& linear();
 	};
 
 	struct TextureRegion

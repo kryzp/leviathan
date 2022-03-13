@@ -32,9 +32,9 @@ void main() {
 	col.r = texture(u_texture_0, vec2(x + uv.x + 0.001, uv.y + 0.001)).r + 0.05;
 	col.g = texture(u_texture_0, vec2(x + uv.x + 0.000, uv.y - 0.002)).g + 0.05;
 	col.b = texture(u_texture_0, vec2(x + uv.x - 0.002, uv.y + 0.000)).b + 0.05;
-	col.r += 0.03 * texture(u_texture_0, (0.75 * vec2(x+0.025, -0.027)) + vec2(uv.x + 0.001, uv.y + 0.001)).r;
-	col.g += 0.02 * texture(u_texture_0, (0.75 * vec2(x+-0.022, -0.02)) + vec2(uv.x + 0.000, uv.y - 0.002)).g;
-	col.b += 0.03 * texture(u_texture_0, (0.75 * vec2(x+-0.02, -0.018)) + vec2(uv.x - 0.002, uv.y + 0.000)).b;
+	col.r += 0.03 * texture(u_texture_0, (0.75 * vec2(x + 0.025, -0.027)) + vec2(uv.x + 0.001, uv.y + 0.001)).r;
+	col.g += 0.02 * texture(u_texture_0, (0.75 * vec2(x - 0.022, -0.020)) + vec2(uv.x + 0.000, uv.y - 0.002)).g;
+	col.b += 0.03 * texture(u_texture_0, (0.75 * vec2(x - 0.020, -0.018)) + vec2(uv.x - 0.002, uv.y + 0.000)).b;
 
 	col = clamp((col * 0.6) + (col * col * 0.4), 0.0, 1.0);
 
@@ -59,9 +59,9 @@ void main() {
 
 	frag_colour = vec4(col.rgb, 1.0) * vec4(frag_mod_colour, 1.0);
 
-	float avg = (col.r + col.g + col.b) / 3.0;
-	if (avg >= 0.85)
-		bright_colour = vec4(col.rgb, 1.0);
-	else
-		bright_colour = vec4(0.0, 0.0, 0.0, 0.0);
+    float brightness = dot(col.rgb, vec3(0.2126, 0.7152, 0.0722));
+    if(brightness > 1.0)
+        bright_colour = vec4(col.rgb, 1.0);
+    else
+        bright_colour = vec4(0.0, 0.0, 0.0, 1.0);
 }
