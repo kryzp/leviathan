@@ -39,8 +39,10 @@ inline void __levutils_swap(T& x, T& y) {
 public: \
 	static _classname& inst() \
 	{ \
-		static _classname instance; \
-		return instance; \
+		static _classname* instance = nullptr; \
+		if (!instance) { instance = new _classname(); } \
+		LEV_ASSERT(instance); \
+		return *instance; \
 	} \
 private:
 
@@ -124,13 +126,29 @@ namespace lev
 
 	namespace MemUtil
 	{
-		void* alloc(size_t size);
-		void* alloc_zero(size_t size);
-		void* set(void* ptr, s32 val, size_t size);
-		void* set_zero(void* ptr, size_t size);
-		void* copy(void* dst, const void* src, size_t size);
-		void* move(void* dst, const void* src, size_t size);
-		void* chr(void* ptr, s32 val, size_t size);
-		int compare(const void* p1, const void* p2, size_t size);
+		void* alloc(u64 size);
+		void* alloc_zero(u64 size);
+		void* set(void* ptr, s32 val, u64 size);
+		void* set_zero(void* ptr, u64 size);
+		void* copy(void* dst, const void* src, u64 size);
+		void* move(void* dst, const void* src, u64 size);
+		void* chr(void* ptr, s32 val, u64 size);
+		int compare(const void* p1, const void* p2, u64 size);
+	};
+
+	class NonCopyable
+	{
+	public:
+		NonCopyable() = default;
+		NonCopyable& operator = (const NonCopyable&) = delete;
+		NonCopyable(const NonCopyable&) = delete;
+	};
+
+	class NonMovable
+	{
+	public:
+		NonMovable() = default;
+		NonMovable& operator = (NonCopyable&&) = delete;
+		NonMovable(NonCopyable&&) = delete;
 	};
 }

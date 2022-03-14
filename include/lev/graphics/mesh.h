@@ -1,8 +1,6 @@
 #pragma once
 
 #include <lev/core/util.h>
-#include <lev/core/non_copyable.h>
-#include <lev/core/non_movable.h>
 #include <lev/math/colour.h>
 #include <lev/math/vec2.h>
 #include <lev/graphics/gfxutil.h>

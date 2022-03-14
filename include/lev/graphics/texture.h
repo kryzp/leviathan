@@ -48,8 +48,8 @@ namespace lev::gfx
 
 	struct TextureRegion
 	{
-		Ref<Texture> texture;
-		RectI source;
+		RectI bounds;
+		Ref<Texture> source;
 	};
 
 	class Texture

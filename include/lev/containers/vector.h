@@ -15,16 +15,16 @@ namespace lev
     public:
         Vector();
         Vector(std::initializer_list<T> data);
-        Vector(int initial_capacity);
+        Vector(u64 initial_capacity);
         Vector(const Vector& other);
         Vector& operator = (const Vector& other);
         ~Vector();
 
-        void allocate(int capacity);
-        void resize(int new_count);
-        void erase(int index, int amount = 1);
-        void expand(int amount = 1);
-        void setto(int value);
+        void allocate(u64 capacity);
+        void resize(u64 new_count);
+        void erase(u64 index, u64 amount = 1);
+        void expand(u64 amount = 1);
+        void setto(u64 value);
 
         T& front();
         const T& front() const;
@@ -38,7 +38,7 @@ namespace lev
         T pop_back();
 
         void clear();
-        int size() const;
+        u64 size() const;
 
         T* begin();
         const T* begin() const;
@@ -52,8 +52,8 @@ namespace lev
 
     private:
         T* m_buf;
-        int m_count;
-        int m_size;
+        u64 m_count;
+        u64 m_size;
 	};
 
     template <typename T>
@@ -76,7 +76,7 @@ namespace lev
     }
 
     template <typename T>
-    Vector<T>::Vector(int initial_capacity)
+    Vector<T>::Vector(u64 initial_capacity)
         : Vector()
     {
         allocate(initial_capacity);
@@ -140,11 +140,11 @@ namespace lev
     }
 
     template <typename T>
-    void Vector<T>::allocate(int capacity)
+    void Vector<T>::allocate(u64 capacity)
     {
         if (capacity > m_size)
         {
-            int newsize = Calc::max(1, m_size);
+            auto newsize = Calc::max(1, m_size);
             
             while (newsize < capacity)
                 newsize *= 2;
@@ -168,7 +168,7 @@ namespace lev
     }
 
     template <typename T>
-    void Vector<T>::resize(int new_count)
+    void Vector<T>::resize(u64 new_count)
     {
         if (new_count < m_count)
             erase(new_count, m_count - new_count);
@@ -178,21 +178,21 @@ namespace lev
     }
 
     template <typename T>
-    void Vector<T>::erase(int index, int amount)
+    void Vector<T>::erase(u64 index, u64 amount)
     {
         LEV_ASSERT(amount > 0);
 
         for (int i = 0; i < m_count - amount; i++)
             m_buf[i] = std::move(m_buf[i+amount]);
 
-        for (int i = (m_count - amount); i < m_count; i++)
+        for (int i = m_count - amount; i < m_count; i++)
             m_buf[i].~T();
 
         m_count -= amount;
     }
 
     template <typename T>
-    void Vector<T>::expand(int amount)
+    void Vector<T>::expand(u64 amount)
     {
         LEV_ASSERT(amount > 0);
 
@@ -203,7 +203,7 @@ namespace lev
     }
 
     template <typename T>
-    void Vector<T>::setto(int value)
+    void Vector<T>::setto(u64 value)
     {
         MemUtil::set(m_buf, value, sizeof(T) * m_size);
     }
@@ -272,7 +272,7 @@ namespace lev
     }
 
     template <typename T>
-    int Vector<T>::size() const
+    u64 Vector<T>::size() const
     {
         return m_count;
     }

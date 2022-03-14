@@ -23,8 +23,7 @@ namespace lev
         Transform& position(const Vec2& v);
         Transform& position(float x, float y);
         Transform& move(const Vec2& v);
-        Transform& movex(float x);
-        Transform& movey(float y);
+        Transform& move(float x, float y);
 
         Vec2 scale() const;
         Transform& scale(const Vec2& v);

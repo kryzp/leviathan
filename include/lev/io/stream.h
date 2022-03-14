@@ -1,6 +1,5 @@
 #pragma once
 
-#include <lev/core/non_copyable.h>
 #include <lev/core/util.h>
 
 namespace lev::io

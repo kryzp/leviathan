@@ -94,14 +94,9 @@ Transform& Transform::move(const Vec2& v)
 	return position(m_position + v);
 }
 
-Transform& Transform::movex(float x)
+Transform& Transform::move(float x, float y)
 {
-	return position(m_position + Vec2(x, 0));
-}
-
-Transform& Transform::movey(float y)
-{
-	return position(m_position + Vec2(0, y));
+	return move(Vec2(x, y));
 }
 
 Vec2 Transform::scale() const
