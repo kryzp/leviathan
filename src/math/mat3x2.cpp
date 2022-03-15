@@ -71,9 +71,14 @@ Mat3x2 Mat3x2::inverse() const
 		-m12 * inv_det,
 		-m21 * inv_det,
 		 m11 * inv_det,
-		(m21*m32 - m31*m22) * inv_det,
-		(m31*m12 - m11*m32) * inv_det
+		(m21*m32 - m22*m31) * inv_det,
+		(m12*m31 - m11*m32) * inv_det
 	);
+}
+
+Vec2 Mat3x2::offset(const Mat3x2& mat)
+{
+	return Vec2(mat.m31, mat.m32);
 }
 
 Mat3x2 Mat3x2::create_skew(const Vec2& amount)

@@ -180,7 +180,7 @@ namespace lev
     template <typename T>
     void Vector<T>::erase(u64 index, u64 amount)
     {
-        LEV_ASSERT(amount > 0);
+        LEV_ASSERT(amount > 0, "Erase amount must be higher than 0");
 
         for (int i = 0; i < m_count - amount; i++)
             m_buf[i] = std::move(m_buf[i+amount]);
@@ -194,7 +194,7 @@ namespace lev
     template <typename T>
     void Vector<T>::expand(u64 amount)
     {
-        LEV_ASSERT(amount > 0);
+        LEV_ASSERT(amount > 0, "Expand amount must be higher than 0");
 
         allocate(m_count + amount);
 

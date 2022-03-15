@@ -99,7 +99,7 @@ void SpriteBatch::render_batch(RenderPass& pass, const RenderBatch& b)
 	Renderer::render(pass);
 }
 
-void SpriteBatch::texture()
+void SpriteBatch::quad()
 {
 	RenderBatch batch;
 

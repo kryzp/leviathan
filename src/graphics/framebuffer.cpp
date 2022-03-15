@@ -12,9 +12,9 @@ Ref<Framebuffer> Framebuffer::create(int width, int height)
 
 Ref<Framebuffer> Framebuffer::create(int width, int height, const TextureFormat* attachments, int attachment_count)
 {
-	LEV_ASSERT(attachments);
-	LEV_ASSERT(attachment_count > 0);
-	LEV_ASSERT(width > 0 && height > 0);
+	LEV_ASSERT(attachments, "Attachments must not be null");
+	LEV_ASSERT(attachment_count > 0, "Attachment count must be higher than 0");
+	LEV_ASSERT(width > 0 && height > 0, "Width and Height must be higher than 0");
 
 	int depthstencilcount = 0;
 
@@ -23,7 +23,7 @@ Ref<Framebuffer> Framebuffer::create(int width, int height, const TextureFormat*
 		if (attachments[i] == TextureFormat::DEPTH_STENCIL)
 			depthstencilcount++;
 
-		LEV_ASSERT(depthstencilcount <= 1);
+		LEV_ASSERT(depthstencilcount <= 1, "There must not be 2 or more depth stencil attachments");
 	}
 
 	return Renderer::create_framebuffer({

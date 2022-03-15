@@ -30,7 +30,7 @@ namespace lev::gfx
 		void render(const Ref<Framebuffer>& framebuffer = nullptr);
 		void render(const Mat4x4& proj, const Ref<Framebuffer>& framebuffer = nullptr);
 
-		void texture();
+		void quad();
 
 		void push_matrix(const Mat3x2& mat);
 		Mat3x2 pop_matrix();

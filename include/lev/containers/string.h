@@ -81,7 +81,7 @@ namespace lev
 	template <int Size>
 	void Str<Size>::append(const char* str)
 	{
-		LEV_ASSERT(strlen(str) + m_length <= Size);
+		LEV_ASSERT(strlen(str) + m_length <= Size, "The string being appended must fit into the string");
 
 		int arglen = strlen(str);
 

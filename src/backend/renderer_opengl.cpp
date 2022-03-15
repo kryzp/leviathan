@@ -25,8 +25,6 @@ namespace
 			case gfx::TextureFormat::RGBA:			return GL_RGBA;
 			case gfx::TextureFormat::DEPTH_STENCIL: return GL_DEPTH_STENCIL;
 		}
-
-		LEV_ASSERT(false);
 	}
 
 	int get_gl_texture_internal_fmt(gfx::TextureFormat fmt)
@@ -39,8 +37,6 @@ namespace
 			case gfx::TextureFormat::RGBA:			return GL_RGBA;
 			case gfx::TextureFormat::DEPTH_STENCIL:	return GL_DEPTH24_STENCIL8;
 		}
-
-		LEV_ASSERT(false);
 	}
 
 	int get_gl_texture_type(gfx::TextureFormat fmt)
@@ -53,8 +49,6 @@ namespace
 			case gfx::TextureFormat::RGBA:			return GL_UNSIGNED_BYTE;
 			case gfx::TextureFormat::DEPTH_STENCIL:	return GL_UNSIGNED_INT_24_8;
 		}
-
-		LEV_ASSERT(false);
 	}
 
 	int get_gl_blend_equation(gfx::BlendEquation func)
@@ -67,8 +61,6 @@ namespace
 			case gfx::BlendEquation::MIN:				return GL_MIN;
 			case gfx::BlendEquation::MAX:				return GL_MAX;
 		}
-		
-		LEV_ASSERT(false);
 	}
 
 	int get_gl_blend_func(gfx::BlendFunc factor)
@@ -94,8 +86,6 @@ namespace
 			case gfx::BlendFunc::CONSTANT_ALPHA:				return GL_CONSTANT_ALPHA;
 			case gfx::BlendFunc::ONE_MINUS_CONSTANT_ALPHA:		return GL_ONE_MINUS_CONSTANT_ALPHA;
 		}
-
-		LEV_ASSERT(false);
 	}
 }
 

@@ -11,7 +11,7 @@ using namespace lev;
 
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720
-#define BLUR_SCALE 1.0f
+#define BLUR_SCALE 4.0f
 
 gfx::SpriteBatch g_batch;
 Ref<gfx::Shader> g_shd_crt;
@@ -73,7 +73,7 @@ void update()
 	g_velocity = (Input::mouse_position() - g_transform.position()) * 0.25f;
 	g_transform.move(g_velocity);
 
-	g_curr_rotation += Calc::spring(g_curr_rotation, g_tgt_rotation, 25.0f, 0.5f, g_rot_intermediate);
+	g_curr_rotation += Calc::spring(g_curr_rotation, g_tgt_rotation, 10.0f, 0.5f, g_rot_intermediate);
 	g_transform.rotation(g_curr_rotation);
 
 	Vec2 pushout;
@@ -96,13 +96,13 @@ void render()
 		g_batch.push_material(mat);
 		{
 			g_batch.push_matrix(Mat3x2::create_transform(Vec2(1280/2, 720/2), 0.0f, Vec2::one(), Vec2(128, 128)));
-			g_batch.texture();
+			g_batch.quad();
 			g_batch.pop_matrix();
 			
 			g_batch.peek_material().textures[0] = g_tex;
 
 			g_batch.push_matrix(g_transform.matrix());
-			g_batch.texture();
+			g_batch.quad();
 			g_batch.pop_matrix();
 		}
 		g_batch.pop_material();
@@ -123,7 +123,7 @@ void render()
 		g_batch.push_material(mat);
 		{
 			g_batch.peek_shader()->use().set("u_time", Time::milliseconds/1000.0f);
-			g_batch.texture();
+			g_batch.quad();
 		}
 		g_batch.pop_material();
 
@@ -140,9 +140,10 @@ void render()
 		g_batch.push_material(mat);
 
 		g_fbf3Downscale->clear();
+
 		g_batch.push_matrix(Mat3x2::create_scale(1.0f/BLUR_SCALE));
 		{
-			g_batch.texture();
+			g_batch.quad();
 		}
 		g_batch.pop_matrix();
 		g_batch.render(g_fbf3Downscale);
@@ -153,7 +154,7 @@ void render()
 		g_fbf3V->clear();
 		{
 			g_batch.peek_shader()->use().set("u_horizontal", false);
-			g_batch.texture();
+			g_batch.quad();
 		}
 		g_batch.render(g_fbf3V);
 
@@ -163,7 +164,7 @@ void render()
 		g_fbf3H->clear();
 		{
 			g_batch.peek_shader()->use().set("u_horizontal", true);
-			g_batch.texture();
+			g_batch.quad();
 		}
 		g_batch.pop_matrix();
 

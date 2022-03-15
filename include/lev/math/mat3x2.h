@@ -36,6 +36,8 @@ namespace lev
 
 		static const Mat3x2& identity();
 
+		static Vec2 offset(const Mat3x2& mat);
+
 		static Mat3x2 create_skew(const Vec2& amount);
 		static Mat3x2 create_scale(const Vec2& scale);
 		static Mat3x2 create_scale(float scale);
