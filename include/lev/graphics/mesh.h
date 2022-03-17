@@ -10,6 +10,8 @@ namespace lev::gfx
 	class Mesh : public NonCopyable, public NonMovable
 	{
 	public:
+		~Mesh() = default;
+
 		static Ref<Mesh> create();
 
 		virtual void vertex_data(const Vertex* vertices, u64 count) = 0;

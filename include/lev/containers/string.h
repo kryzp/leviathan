@@ -14,6 +14,7 @@ namespace lev
 		Str(const Str& other);
 		~Str();
 
+		void clear();
 		void append(const char* str);
 
 		const char* c_str() const;
@@ -31,12 +32,10 @@ namespace lev
 		Str operator + (const char* str) const;
 		Str& operator += (const char* str);
 
-		operator const char* () const;
-
-		bool operator == (const Str& str) const;
 		bool operator == (const char* str) const;
-		bool operator != (const Str& str) const;
 		bool operator != (const char* str) const;
+
+		operator const char* () const;
 
 	private:
 		char* m_buf;
@@ -52,7 +51,7 @@ namespace lev
 	{
 		m_buf = new char[Size+1];
 		MemUtil::set_zero(m_buf, Size);
-		m_buf[Size] = '\0';
+		m_buf[m_length] = '\0';
 	}
 
 	template <int Size>
@@ -76,6 +75,24 @@ namespace lev
 	template <int Size>
 	Str<Size>::~Str()
 	{
+		clear();
+
+		if (m_buf)
+			MemUtil::free(m_buf);
+
+		m_buf = nullptr;
+	}
+
+	template <int Size>
+	void Str<Size>::clear()
+	{
+		m_length = 0;
+		
+		if (m_buf)
+			MemUtil::set_zero(m_buf, Size);
+
+		// idk if this is necessary since set_sero() call but whatever
+		m_buf[0] = '\0';
 	}
 
 	template <int Size>
@@ -174,21 +191,9 @@ namespace lev
 	}
 
 	template <int Size>
-	bool Str<Size>::operator == (const Str<Size>& str) const
-	{
-		return this->equals(str);
-	}
-
-	template <int Size>
 	bool Str<Size>::operator == (const char* str) const
 	{
 		return this->equals(str);
-	}
-
-	template <int Size>
-	bool Str<Size>::operator != (const Str<Size>& str) const
-	{
-		return !(this->equals(str));
 	}
 
 	template <int Size>

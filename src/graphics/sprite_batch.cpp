@@ -19,8 +19,16 @@ namespace
 }
 
 SpriteBatch::SpriteBatch()
-	: m_transform_matrix(Mat3x2::identity())
+	: m_initialized(false)
+	, m_transform_matrix(Mat3x2::identity())
 {
+	m_blend_stack.push_back(g_default_blend);
+
+	gfx::Material mat;
+	mat.textures = { nullptr };
+	mat.samplers = { gfx::TextureSampler::pixel() };
+	m_material_stack.push_back(mat);
+
 }
 
 SpriteBatch::~SpriteBatch()
@@ -29,12 +37,13 @@ SpriteBatch::~SpriteBatch()
 
 void SpriteBatch::initialize()
 {
+#ifdef LEV_USE_OPENGL
 	const char* vertex =
 		"#version 330 core\n"
 		"layout (location = 0) in vec2 a_pos;\n"
 		"layout (location = 1) in vec2 a_uv;\n"
-		"layout (location = 2) in vec3 a_colour;\n"
-		"out vec3 frag_mod_colour;\n"
+		"layout (location = 2) in vec4 a_colour;\n"
+		"out vec4 frag_mod_colour;\n"
 		"out vec2 frag_coord;\n"
 		"uniform mat4 u_projection;\n"
 		"void main() {\n"
@@ -47,13 +56,17 @@ void SpriteBatch::initialize()
 		"#version 330 core\n"
 		"out vec4 frag_colour;\n"
 		"in vec2 frag_coord;\n"
-		"in vec3 frag_mod_colour;\n"
+		"in vec4 frag_mod_colour;\n"
 		"uniform sampler2D u_texture_0;\n"
 		"void main() {\n"
-		"	frag_colour = texture(u_texture_0, frag_coord) * vec4(frag_mod_colour, 1.0);\n"
+		"	frag_colour = texture(u_texture_0, frag_coord) * frag_mod_colour;\n"
 		"}";
+#endif
 
 	m_default_shader = Shader::create(vertex, fragment, true);
+	m_material_stack.front().shader = m_default_shader;
+
+	m_initialized = true;
 }
 
 void SpriteBatch::render(const Ref<Framebuffer>& framebuffer)
@@ -67,7 +80,7 @@ void SpriteBatch::render(const Ref<Framebuffer>& framebuffer)
 
 void SpriteBatch::render(const Mat4x4& proj, const Ref<Framebuffer>& framebuffer)
 {
-	if (!m_default_shader)
+	if (!m_initialized)
 		initialize();
 
 	RenderPass pass;
@@ -99,45 +112,110 @@ void SpriteBatch::render_batch(RenderPass& pass, const RenderBatch& b)
 	Renderer::render(pass);
 }
 
-void SpriteBatch::quad()
+void SpriteBatch::push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx, u64 idxcount)
 {
 	RenderBatch batch;
-
 	batch.material = peek_material();
 	batch.blend = peek_blend();
 
 	batch.mesh = Renderer::create_mesh();
-	{
-		Vertex vertices[4];
-		u32 indices[6];
 
-		float width = batch.material.textures[0]->width();
-		float height = batch.material.textures[0]->height();
+	// engineer gamingeing (pt2 i think?)
+	Vertex* transformed = (Vertex*)MemUtil::alloc(sizeof(Vertex) * vtxcount);
+	MemUtil::copy(transformed, vtx, sizeof(Vertex) * vtxcount);
 
-		Quad quad = Quad(
-			Vec2(0.0f,  0.0f),
-			Vec2(0.0f,  height),
-			Vec2(width, height),
-			Vec2(width, 0.0f)
-		);
+	for (int i = 0; i < vtxcount; i++)
+		transformed[i].pos = Vec2::transform(transformed[i].pos, m_transform_matrix);
 
-		Quad uv = Quad(
-			Vec2(0.0f, 1.0f),
-			Vec2(0.0f, 0.0f),
-			Vec2(1.0f, 0.0f),
-			Vec2(1.0f, 1.0f)
-		);
+	batch.mesh->vertex_data(transformed, vtxcount);
+	batch.mesh->index_data(idx, idxcount);
 
-		GfxUtil::quad(vertices, indices, quad, uv, Colour::white());
-
-		for (int i = 0; i < 4; i++)
-			vertices[i].pos = Vec2::transform(vertices[i].pos, m_transform_matrix);
-
-		batch.mesh->vertex_data(vertices, 4);
-		batch.mesh->index_data(indices, 6);
-	}
+	MemUtil::free(transformed);
 
 	m_batches.push_back(batch);
+}
+
+void SpriteBatch::push_quad(const Colour& colour)
+{
+	Vertex vertices[4];
+	u32 indices[6];
+
+	GfxUtil::quad(
+		vertices, indices,
+		0.0f, 0.0f,
+		peek_texture()->width(), peek_texture()->height(),
+		colour
+	);
+
+	push_vertices(vertices, 4, indices, 6);
+}
+
+void SpriteBatch::push_quad(const Quad& quad, const Colour& colour)
+{
+	Vertex vertices[4];
+	u32 indices[6];
+
+	GfxUtil::quad(vertices, indices, quad, colour);
+
+	push_vertices(vertices, 4, indices, 6);
+}
+
+void SpriteBatch::push_triangle(const Triangle& tri, const Colour& colour)
+{
+	Vertex vertices[3];
+	u32 indices[3];
+
+	GfxUtil::tri(vertices, indices, tri, colour);
+
+	push_vertices(vertices, 3, indices, 6);
+}
+
+void SpriteBatch::push_texture(const Ref<Texture>& tex, const TextureSampler& sampler, const Colour& colour)
+{
+	set_texture(tex, sampler, 0);
+
+	Vertex vertices[4];
+	u32 indices[6];
+
+	GfxUtil::quad(
+		vertices, indices,
+		0.0f, 0.0f,
+		tex->width(), tex->height(),
+		colour
+	);
+
+	push_vertices(vertices, 4, indices, 6);
+}
+
+void SpriteBatch::set_texture(const Ref<Texture>& tex, const TextureSampler& sampler, int idx)
+{
+	m_material_stack.back().textures[idx] = tex;
+	m_material_stack.back().samplers[idx] = sampler;
+}
+
+Ref<Texture> SpriteBatch::peek_texture(int idx)
+{
+	return peek_material().textures[idx];
+}
+
+const TextureSampler& SpriteBatch::peek_sampler(int idx)
+{
+	return peek_material().samplers[idx];
+}
+
+void SpriteBatch::set_shader(const Ref<Shader>& shader)
+{
+	m_material_stack.back().shader = shader;
+}
+
+void SpriteBatch::reset_shader()
+{
+	set_shader(nullptr);
+}
+
+Ref<Shader> SpriteBatch::peek_shader()
+{
+	return peek_material().shader;
 }
 
 void SpriteBatch::push_matrix(const Mat3x2& matrix)
@@ -165,22 +243,15 @@ void SpriteBatch::push_material(const Material& material)
 
 Material SpriteBatch::pop_material()
 {
-	return m_material_stack.pop_back();
-}
+	if (m_material_stack.size() > 1)
+		return m_material_stack.pop_back();
 
-Material& SpriteBatch::peek_material()
-{
 	return m_material_stack.back();
 }
 
-Ref<Shader> SpriteBatch::peek_shader()
+const Material& SpriteBatch::peek_material()
 {
-	auto shd = peek_material().shader;
-
-	if (shd)
-		return shd;
-	else
-		return m_default_shader;
+	return m_material_stack.back();
 }
 
 void SpriteBatch::push_blend(const BlendMode& blend)
@@ -190,13 +261,13 @@ void SpriteBatch::push_blend(const BlendMode& blend)
 
 BlendMode SpriteBatch::pop_blend()
 {
-	return m_blend_stack.pop_back();
+	if (m_blend_stack.size() > 1)
+		return m_blend_stack.pop_back();
+
+	return m_blend_stack.back();
 }
 
-BlendMode& SpriteBatch::peek_blend()
+const BlendMode& SpriteBatch::peek_blend()
 {
-	if (m_blend_stack.size() <= 0)
-		return g_default_blend;
-
 	return m_blend_stack.back();
 }

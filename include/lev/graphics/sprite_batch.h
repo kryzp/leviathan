@@ -6,21 +6,19 @@
 #include <lev/graphics/blend.h>
 #include <lev/graphics/material.h>
 #include <lev/graphics/mesh.h>
-#include <lev/graphics/framebuffer.h>
 #include <lev/math/mat3x2.h>
-#include <lev/math/mat4x4.h>
 #include <lev/math/vec2.h>
 #include <lev/math/colour.h>
 #include <lev/math/quad.h>
 #include <lev/math/triangle.h>
-#include <lev/containers/hash_map.h>
 #include <lev/containers/vector.h>
-#include <lev/containers/string.h>
 
-namespace lev { struct RenderPass; }
+namespace lev { struct Mat4x4; struct RenderPass; }
 
 namespace lev::gfx
 {
+	class Framebuffer;
+
 	class SpriteBatch
 	{
 	public:
@@ -30,7 +28,19 @@ namespace lev::gfx
 		void render(const Ref<Framebuffer>& framebuffer = nullptr);
 		void render(const Mat4x4& proj, const Ref<Framebuffer>& framebuffer = nullptr);
 
-		void quad();
+		void push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx, u64 idxcount);
+		void push_quad(const Colour& colour = Colour::white());
+		void push_quad(const Quad& quad, const Colour& colour = Colour::white());
+		void push_triangle(const Triangle& tri, const Colour& colour = Colour::white());
+		void push_texture(const Ref<Texture>& tex, const TextureSampler& sampler = TextureSampler::pixel(), const Colour& colour = Colour::white());
+
+		void set_texture(const Ref<Texture>& tex, const TextureSampler& sampler = TextureSampler::pixel(), int idx = 0);
+		Ref<Texture> peek_texture(int idx = 0);
+		const TextureSampler& peek_sampler(int idx = 0);
+
+		void set_shader(const Ref<Shader>& shader);
+		void reset_shader();
+		Ref<Shader> peek_shader();
 
 		void push_matrix(const Mat3x2& mat);
 		Mat3x2 pop_matrix();
@@ -38,12 +48,11 @@ namespace lev::gfx
 
 		void push_material(const Material& material);
 		Material pop_material();
-		Material& peek_material();
-		Ref<Shader> peek_shader();
+		const Material& peek_material();
 
 		void push_blend(const BlendMode& blend);
 		BlendMode pop_blend();
-		BlendMode& peek_blend();
+		const BlendMode& peek_blend();
 
 	private:
 		struct RenderBatch
@@ -56,6 +65,8 @@ namespace lev::gfx
 		Ref<Shader> m_default_shader;
 
 		void initialize();
+		bool m_initialized;
+
 		void render_batch(RenderPass& pass, const RenderBatch& b);
 
 		Vector<Mat3x2> m_matrix_stack;

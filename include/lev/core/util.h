@@ -137,6 +137,7 @@ namespace lev
 		void* copy(void* dst, const void* src, u64 size);
 		void* move(void* dst, const void* src, u64 size);
 		void* chr(void* ptr, s32 val, u64 size);
+		void free(void* ptr);
 		int compare(const void* p1, const void* p2, u64 size);
 	};
 

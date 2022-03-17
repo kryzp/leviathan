@@ -34,9 +34,14 @@ void* MemUtil::move(void* dst, const void* src, u64 size)
 	return memmove(dst, src, size);
 }
 
-void* MemUtil::chr(void* ptr, i32 val, u64 size)
+void* MemUtil::chr(void* ptr, s32 val, u64 size)
 {
 	return memchr(ptr, val, size);
+}
+
+void MemUtil::free(void* ptr)
+{
+	::free(ptr);
 }
 
 int MemUtil::compare(const void* p1, const void* p2, u64 size)

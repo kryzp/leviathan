@@ -4,6 +4,8 @@
 #include <backend/renderer.h>
 #include <backend/system.h>
 
+#include <lev/containers/string.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -373,7 +375,7 @@ public:
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(2 * sizeof(float)));
 			glEnableVertexAttribArray(1);
 
-			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(4 * sizeof(float)));
+			glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(4 * sizeof(float)));
 			glEnableVertexAttribArray(2);
 		}
 		glBindVertexArray(0);
@@ -386,7 +388,7 @@ public:
 		glBindVertexArray(m_id);
 		{
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(u32), indices, GL_DYNAMIC_DRAW);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(u32), indices, GL_DYNAMIC_DRAW);
 		}
 		glBindVertexArray(0);
 	}
@@ -471,11 +473,7 @@ void Renderer::render(const RenderPass& pass)
 		// engineer gamig
 		char intstr[2];
 		_itoa(i, intstr, 10);
-		char name[16] = {0};
-		strncat(name, "u_texture_", 10);
-		strncat(name, intstr, 2);
-		
-		shader->set(name, i);
+		shader->set((String("u_texture_") + intstr).c_str(), i);
 	}
 
 	glBlendEquationSeparate(

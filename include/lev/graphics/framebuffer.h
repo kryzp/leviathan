@@ -18,6 +18,8 @@ namespace lev::gfx
 	class Framebuffer : public NonCopyable, public NonMovable
 	{
 	public:
+		~Framebuffer() = default;
+
 		static Ref<Framebuffer> create(int width, int height);
 		static Ref<Framebuffer> create(int width, int height, const TextureFormat* attachments, int attachment_count);
 

@@ -12,19 +12,13 @@ namespace lev
 	{
 		Vec2 pos;
 		Vec2 uv;
-
-		struct
-		{
-			float r;
-			float g;
-			float b;
-		}
-		col;
+		Colour col;
 	};
 
 	namespace GfxUtil
 	{
-		void quad(Vertex* vtx, u32* indices, const Quad& quad, const Quad& uv, Colour colour);
-		void tri(Vertex* vtx, u32* indices, const Triangle& triangle, const Triangle& uv, Colour colour);
+		void quad(Vertex* vtx, u32* indices, const Quad& quad, Colour colour);
+		void quad(Vertex* vtx, u32* indices, float x, float y, float width, float height, Colour colour);
+		void tri(Vertex* vtx, u32* indices, const Triangle& triangle, Colour colour);
 	}
 };
