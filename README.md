@@ -5,10 +5,10 @@ this has been incredibly helpful:
 -> https://learnopengl.com <-
 
 feature overview:
-![](https://github.com/kryzp/Leviathan/tree/master/features/pain.png)
-![](https://github.com/kryzp/Leviathan/tree/master/features/burh.png)
-![](https://github.com/kryzp/Leviathan/tree/master/features/yes3.png)
-![](https://github.com/kryzp/Leviathan/tree/master/features/the_berg.png)
+![](https://github.com/kryzp/leviathan/blob/features/pain.png?raw=true)
+![](https://github.com/kryzp/leviathan/blob/features/yes3.png?raw=true)
+![](https://github.com/kryzp/leviathan/blob/features/burh.png?raw=true)
+![](https://github.com/kryzp/leviathan/blob/features/the_berg.jpg?raw=true)
 
 this isn't really meant to be used on its own, i encourage you to *heavily* modify this when using it in your own projects
 
