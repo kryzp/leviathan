@@ -7,7 +7,7 @@
 
 // looks hacky but basically i just dereference oob memory and try writing to it, causing a crash
 #define LEV_ASSERT(_exp, _msg) if(!(_exp)){Log::error("ASSERTION: " _msg);*((volatile int*)0)=0;}
-#define LEV_ERROR(_msg) do{Log::error("ASSERTION: " _msg);*((volatile int*)0)=0;}while(false)
+#define LEV_ERROR(_msg) do{Log::error("ERROR: " _msg);*((volatile int*)0)=0;}while(false)
 
 #else
 
