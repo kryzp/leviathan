@@ -1,4 +1,5 @@
 #include <lev/math/colour.h>
+#include <lev/math/calc.h>
 
 using namespace lev;
 
@@ -38,6 +39,54 @@ u32 Colour::pack(const Colour& colour)
 		g << 16 |
 		b << 8  |
 		a << 0;
+}
+
+Colour Colour::from_hsv(float hue, float sat, float val, float alpha)
+{
+	float C = sat * val;
+	float X = C * (1 - Calc::abs(Calc::mod(hue / 60.0f, 2) - 1));
+	float m = C - X;
+
+	float r, g, b;
+
+	if (0 <= hue && hue < 60)
+	{
+		r = C;
+		g = X;
+		b = 0.0f;
+	}
+	else if (60 <= hue && hue < 120)
+	{
+		r = X;
+		g = C;
+		b = 0.0f;
+	}
+	else if (120 <= hue && hue < 180)
+	{
+		r = 0.0f;
+		g = C;
+		b = X;
+	}
+	else if (180 <= hue && hue < 240)
+	{
+		r = 0.0f;
+		g = X;
+		b = C;
+	}
+	else if (240 <= hue && hue < 300)
+	{
+		r = X;
+		g = 0.0f;
+		b = C;
+	}
+	else if (300 <= hue && hue < 360)
+	{
+		r = C;
+		g = 0.0f;
+		b = X;
+	}
+
+	return Colour(r, g, b, alpha);
 }
 
 Colour Colour::from_u8(u8 r, u8 g, u8 b, u8 a)

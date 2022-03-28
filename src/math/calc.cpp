@@ -9,6 +9,11 @@ float Calc::abs(float x)
 	return ::fabsf(x);
 }
 
+float Calc::mod(float x, float y)
+{
+	return ::fmodf(x, y);
+}
+
 float Calc::sqrt(float x)
 {
 	return ::sqrtf(x);

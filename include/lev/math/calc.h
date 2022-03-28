@@ -11,6 +11,7 @@ namespace lev
 		constexpr float DEG2RAD = PI / 180.0f;
 
 		float abs(float x);
+		float mod(float x, float y);
 		float sqrt(float x);
 		float invsqrt(float x);
 

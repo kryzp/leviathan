@@ -277,7 +277,14 @@ void SpriteBatch::push_texture(const TextureRegion& tex, const Colour& colour)
 // no newlines, or anything
 // but ive spent so long on the git now that i'll do this later
 
-void SpriteBatch::push_string(const char* str, const Ref<Font>& font, const Colour& colour)//int extra_spacing=0?
+/*
+* BIG NOTE:
+* CUSTOME SHADERS *DO NOT WORK* FOR FONTS SINCE THEY NEED THEIR OWN SHADERS
+* THIS WILL PROBABLY BE FIXED WHEN INSTANCED RENDERING IS IMPLEMENTED
+* FOR NOW YOU CAN FIX THIS BY RENDERING THE TEXT TO A FRAMEBUFFER - THEN APPLYING THE SHADER TO THE FRAMEBUFFER
+*/
+
+void SpriteBatch::push_string(const char* str, const Ref<Font>& font, const Colour& colour)
 {
 	push_string(str, font, [&](FontCharacter c, int idx) { return Vec2F::zero(); }, colour);
 }

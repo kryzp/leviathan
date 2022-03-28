@@ -12,9 +12,14 @@ SpriteBatch g_batch;
 Ref<Font> g_font;
 std::string g_text;
 
+Colour modulate_colour()
+{
+	return Colour::from_hsv(Calc::mod(Time::seconds * 256.0f, 360.0f), 1.0f, 1.0f);
+}
+
 void init()
 {
-	g_font = create_ref<Font>(60, "D:\\_PROJECTS\\leviathan\\testing\\res\\fonts\\arial.ttf");
+	g_font = create_ref<Font>(60, "D:\\_PROJECTS\\leviathan\\testing\\res\\fonts\\nokiafc22.ttf");
 }
 
 void render()
@@ -27,7 +32,18 @@ void render()
 	App::clear(0xFFBB23FF);
 	{
 		g_batch.push_matrix(Mat3x2::create_translation(Input::mouse_position()));
-		g_batch.push_string(g_text.c_str(), g_font, [&](FontCharacter c, int idx) { return Vec2F(Calc::sin(Time::seconds * 2 + idx*100) * 100.0f, Calc::sin(Time::seconds + idx*50) * 50.0f); });
+
+		g_batch.push_string(
+			g_text.c_str(),
+			g_font,
+			[&](FontCharacter c, int idx) {
+				return Vec2F(
+					Calc::cos(Time::seconds * 2 + idx*100) * 50.0f,
+					Calc::sin(Time::seconds + idx*50) * 50.0f);
+			},
+			modulate_colour()
+		);
+
 		g_batch.pop_matrix();
 	}
 	g_batch.render();
@@ -49,20 +65,3 @@ int main(void)
 
 	return 0;
 }
-
-/*
-#include "../../ext/stupid/int128.h"
-
-using namespace lev;
-
-int main(void)
-{
-	stp::i128 integer0 = "";
-	stp::i128 integer1 = "";
-	stp::i128 integer2 = stp::i128::add(integer0, integer1);
-
-	integer2.print();
-
-	return 0;
-}
-*/
