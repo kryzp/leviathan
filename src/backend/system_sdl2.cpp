@@ -98,6 +98,7 @@ void System::update()
 
 			case SDL_MOUSEWHEEL:
 				Input::on_mouse_wheel(e.wheel.x, e.wheel.y);
+				break;
 
 			case SDL_MOUSEMOTION:
 				int spx, spy;
@@ -226,7 +227,7 @@ s64 System::stream_seek(void* stream, s64 offset)
     return SDL_RWseek((SDL_RWops*)stream, offset, RW_SEEK_SET);
 }
 
-s64 System::stream_length(void* stream)
+s64 System::stream_size(void* stream)
 {
     return SDL_RWsize((SDL_RWops*)stream);
 }

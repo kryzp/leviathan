@@ -1,20 +1,26 @@
 #pragma once
 
 #include <lev/core/util.h>
-#include <lev/containers/vector.h>
 #include <lev/graphics/texture.h>
 #include <lev/graphics/shader.h>
 
-namespace lev::gfx
+#define LEV_MAT_TEXTURES 30
+
+namespace lev
 {
 	class Material
 	{
 	public:
 		Material();
-		Material(const Ref<Shader>& shader, const Vector<Ref<Texture>>& textures, const Vector<TextureSampler>& samplers);
+		Material(
+			const Ref<Shader>& shd,
+			const Ref<Texture>* tex,
+			const TextureSampler* sampl,
+			int tex_count
+		);
 
-		Vector<Ref<Texture>> textures;
-		Vector<TextureSampler> samplers;
 		Ref<Shader> shader;
+		Ref<Texture> textures[LEV_MAT_TEXTURES];
+		TextureSampler samplers[LEV_MAT_TEXTURES];
 	};
 }

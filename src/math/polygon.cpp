@@ -8,12 +8,12 @@ Polygon::Polygon()
 {
 }
 
-Polygon::Polygon(const Vector<Vec2>& vs)
+Polygon::Polygon(const Vector<Vec2F>& vs)
 	: vertices(vs)
 {
 }
 
-bool Polygon::axis_overlaps(const Polygon& a, const Polygon& b, const Vec2& axis, float* amount)
+bool Polygon::axis_overlaps(const Polygon& a, const Polygon& b, const Vec2F& axis, float* amount)
 {
 	float min_a = 0.0f, max_a = 0.0f;
 	float min_b = 0.0f, max_b = 0.0f;
@@ -32,26 +32,26 @@ bool Polygon::axis_overlaps(const Polygon& a, const Polygon& b, const Vec2& axis
 	);
 }
 
-void Polygon::project(const Vec2& axis, float* min, float* max) const
+void Polygon::project(const Vec2F& axis, float* min, float* max) const
 {
-	float dot = Vec2::dot(vertices[0], axis);
+	float dot = Vec2F::dot(vertices[0], axis);
 	(*min) = dot;
 	(*max) = dot;
 
 	for (int i = 1; i < vertices.size(); i++)
 	{
-		dot = Vec2::dot(vertices[i], axis);
+		dot = Vec2F::dot(vertices[i], axis);
 		(*min) = Calc::min(dot, *min);
 		(*max) = Calc::max(dot, *max);
 	}
 }
 
-void Polygon::foreach_point(const std::function<void(int, const Vec2&, const Vec2&)>& on_vertex)
+void Polygon::foreach_point(const std::function<void(int, const Vec2F&, const Vec2F&)>& fn)
 {
 	for (int i = 0; i < vertices.size(); i++)
 	{
-		Vec2 curr = vertices[i];
-		Vec2 next = vertices[((i+1) >= vertices.size()) ? 0 : (i+1)];
-		on_vertex(i, curr, next);
+		Vec2F curr = vertices[i];
+		Vec2F next = vertices[((i+1) >= vertices.size()) ? 0 : (i+1)];
+		fn(i, curr, next);
 	}
 }

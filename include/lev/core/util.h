@@ -6,11 +6,13 @@
 #ifdef LEV_DEBUG
 
 // looks hacky but basically i just dereference oob memory and try writing to it, causing a crash
-#define LEV_ASSERT(_exp, _msg) do{if(!(_exp)){Log::error("ASSERTION: " _msg);*((volatile int*)0)=0;}}while(false)
+#define LEV_ASSERT(_exp, _msg) if(!(_exp)){Log::error("ASSERTION: " _msg);*((volatile int*)0)=0;}
+#define LEV_ERROR(_msg) do{Log::error("ASSERTION: " _msg);*((volatile int*)0)=0;}while(false)
 
 #else
 
-#define LEV_ASSERT(_exp)
+#define LEV_ASSERT(_exp, _msg)
+#define LEV_ERROR(_msg)
 
 #endif
 
@@ -22,6 +24,9 @@ inline void __levutils_swap(T& x, T& y) {
 }
 
 #define LEV_SWAP(_x, _y) __levutils_swap((_x), (_y))
+
+// todo: replace with singleton to inherit from?
+// class MySingleton : public lev::Singleton<MySingleton> { ... }
 
 // should be placed at the top of the class
 // e.g:
@@ -130,16 +135,24 @@ namespace lev
 
 	namespace MemUtil
 	{
-		void* alloc(u64 size);
-		void* alloc_zero(u64 size);
 		void* set(void* ptr, s32 val, u64 size);
-		void* set_zero(void* ptr, u64 size);
+		void* clear(void* ptr, u64 size);
 		void* copy(void* dst, const void* src, u64 size);
 		void* move(void* dst, const void* src, u64 size);
 		void* chr(void* ptr, s32 val, u64 size);
-		void free(void* ptr);
 		int compare(const void* p1, const void* p2, u64 size);
-	};
+	}
+
+	namespace StrUtil
+	{
+		u64 length(const char* str);
+		char* cncat(char* dst, const char* src, u64 size);
+		char* copy(char* dst, const char* src, u64 size);
+		int compare(const char* str1, const char* str2);
+		u64 spn(const char* str, const char* control);
+		void fromint(char* buf, s32 value, int radix);
+		void fromint64(char* buf, s64 value, int radix);
+	}
 
 	class NonCopyable
 	{

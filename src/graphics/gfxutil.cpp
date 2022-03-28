@@ -3,16 +3,11 @@
 
 using namespace lev;
 
-void GfxUtil::quad(Vertex* vtx, u32* indices, const Quad& quad, Colour colour)
+// todo: i dont like the way this looks pretty sus
+
+void GfxUtil::quad(Vertex* vtx, u32* indices, const Quad& quad, const Quad& uv, Colour colour)
 {
     colour.premultiply();
-
-    static const Quad uv = Quad(
-        Vec2(0.0f, 1.0f),
-        Vec2(0.0f, 0.0f),
-        Vec2(1.0f, 0.0f),
-        Vec2(1.0f, 1.0f)
-    );
 
 	Vertex arrvtx[4] = {
 		{ .pos = quad.a, .uv = uv.a, .col = colour },
@@ -33,34 +28,9 @@ void GfxUtil::quad(Vertex* vtx, u32* indices, const Quad& quad, Colour colour)
         MemUtil::copy(indices, arrindices, sizeof(arrindices));
 }
 
-void GfxUtil::quad(Vertex* vtx, u32* indices, float x, float y, float width, float height, Colour colour)
-{
-    Quad quad = Quad(
-        Vec2(x, y),
-        Vec2(x, height),
-        Vec2(width, height),
-        Vec2(width, y)
-    );
-
-    static const Quad uv = Quad(
-        Vec2(0.0f, 1.0f),
-        Vec2(0.0f, 0.0f),
-        Vec2(1.0f, 0.0f),
-        Vec2(1.0f, 1.0f)
-    );
-
-    GfxUtil::quad(vtx, indices, quad, colour);
-}
-
-void GfxUtil::tri(Vertex* vtx, u32* indices, const Triangle& triangle, Colour colour)
+void GfxUtil::tri(Vertex* vtx, u32* indices, const Triangle& triangle, const Triangle& uv, Colour colour)
 {
     colour.premultiply();
-
-    static const Triangle uv = Triangle(
-        Vec2(0.5f, 1.0f),
-        Vec2(0.0f, 0.0f),
-        Vec2(1.0f, 0.0f)
-    );
 
 	Vertex arrvtx[3] = {
 		{ .pos = triangle.a, .uv = uv.a, .col = colour },

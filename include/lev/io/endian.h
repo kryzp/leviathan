@@ -1,6 +1,6 @@
 #pragma once
 
-namespace lev::io
+namespace lev
 {
 	enum class Endianness
 	{

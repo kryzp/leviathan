@@ -7,3 +7,4 @@
 #include <lev/graphics/shader.h>
 #include <lev/graphics/sprite_batch.h>
 #include <lev/graphics/texture.h>
+#include <lev/graphics/font.h>

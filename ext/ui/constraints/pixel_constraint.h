@@ -2,7 +2,7 @@
 
 #include "../ui_constraints.h"
 
-namespace lev::ui
+namespace lev
 {
 	class PixelConstraint : public UIConstraint
 	{

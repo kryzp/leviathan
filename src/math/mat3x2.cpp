@@ -1,6 +1,7 @@
 #include <lev/math/mat3x2.h>
 #include <lev/math/mat4x4.h>
 #include <lev/math/vec2.h>
+#include <lev/math/vec2.h>
 #include <lev/math/calc.h>
 
 // nice spelling of 'transformation' alan :/
@@ -76,12 +77,12 @@ Mat3x2 Mat3x2::inverse() const
 	);
 }
 
-Vec2 Mat3x2::offset(const Mat3x2& mat)
+Vec2F Mat3x2::offset(const Mat3x2& mat)
 {
-	return Vec2(mat.m31, mat.m32);
+	return Vec2F(mat.m31, mat.m32);
 }
 
-Mat3x2 Mat3x2::create_skew(const Vec2& amount)
+Mat3x2 Mat3x2::create_skew(const Vec2F& amount)
 {
 	return Mat3x2(
 		1, amount.y,
@@ -90,7 +91,7 @@ Mat3x2 Mat3x2::create_skew(const Vec2& amount)
 	);
 }
 
-Mat3x2 Mat3x2::create_scale(const Vec2& scale)
+Mat3x2 Mat3x2::create_scale(const Vec2F& scale)
 {
 	return Mat3x2(
 		scale.x, 0,
@@ -117,7 +118,7 @@ Mat3x2 Mat3x2::create_rotation(float rotation)
 	);
 }
 
-Mat3x2 Mat3x2::create_translation(const Vec2& translation)
+Mat3x2 Mat3x2::create_translation(const Vec2F& translation)
 {
 	return Mat3x2(
 		1, 0,
@@ -126,7 +127,7 @@ Mat3x2 Mat3x2::create_translation(const Vec2& translation)
 	);
 }
 
-Mat3x2 Mat3x2::create_transform(const Vec2& position, float rotation, const Vec2& scale, const Vec2& origin)
+Mat3x2 Mat3x2::create_transform(const Vec2F& position, float rotation, const Vec2F& scale, const Vec2F& origin)
 {
 	Mat3x2 mat = Mat3x2::identity();
 

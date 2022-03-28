@@ -6,12 +6,12 @@ namespace lev
 {
 	struct Line
 	{
-		Vec2 a;
-		Vec2 b;
+		Vec2F a;
+		Vec2F b;
 
 		Line();
-		Line(const Vec2& a, const Vec2& b);
-		Line(const Vec2& pos, float angle, float len);
+		Line(const Vec2F& a, const Vec2F& b);
+		Line(const Vec2F& pos, float angle, float len);
 
 		float length() const;
 		float length_squared() const;

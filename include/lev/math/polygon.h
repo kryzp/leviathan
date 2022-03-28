@@ -2,23 +2,21 @@
 
 #include <lev/containers/vector.h>
 #include <functional>
+#include <lev/math/vec2.h>
 
 namespace lev
 {
-	struct Vec2;
-
 	struct Polygon
 	{
-		Vector<Vec2> vertices;
+		Vector<Vec2F> vertices;
 		
 		Polygon();
-		Polygon(const Vector<Vec2>& vs);
+		Polygon(const Vector<Vec2F>& vs);
 
-		static bool axis_overlaps(const Polygon& a, const Polygon& b, const Vec2& axis, float* amount);
+		static bool axis_overlaps(const Polygon& a, const Polygon& b, const Vec2F& axis, float* amount);
 
-		void project(const Vec2& axis, float* min, float* max) const;
+		void project(const Vec2F& axis, float* min, float* max) const;
 
-		//void foreach_point(void (*on_vertex)(int, const Vec2&, const Vec2&));
-		void foreach_point(const std::function<void(int, const Vec2&, const Vec2&)>& on_vertex);
+		void foreach_point(const std::function<void(int, const Vec2F&, const Vec2F&)>& fn);
 	};
 }

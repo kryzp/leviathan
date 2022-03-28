@@ -1,16 +1,14 @@
 #pragma once
 
 #include <lev/core/util.h>
-#include <lev/math/colour.h>
-#include <lev/math/vec2.h>
 #include <lev/graphics/gfxutil.h>
 
-namespace lev::gfx
+namespace lev
 {
 	class Mesh : public NonCopyable, public NonMovable
 	{
 	public:
-		~Mesh() = default;
+		virtual ~Mesh() = default;
 
 		static Ref<Mesh> create();
 

@@ -18,24 +18,6 @@ namespace
 	AppConfig g_config;
 }
 
-AppConfig::AppConfig()
-{
-	this->name = nullptr;
-	this->width = 1280;
-	this->height = 720;
-	this->target_framerate = 60;
-	this->resizable = false;
-	this->vsync = true;
-
-	this->on_init = nullptr;
-	this->on_destroy = nullptr;
-	this->on_update = nullptr;
-	this->on_render = nullptr;
-	this->on_log = nullptr;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////
-
 void App::start(const AppConfig& cfg)
 {
 	g_config = cfg;
@@ -106,8 +88,8 @@ void App::run()
 
 		// update
 		{
-			System::update();
 			Input::update();
+			System::update();
 			
 			if (g_config.on_update)
 				g_config.on_update();

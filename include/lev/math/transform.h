@@ -13,20 +13,20 @@ namespace lev
         Transform();
         Transform(const Transform& other);
 
-        Transform offset(const Vec2& amount);
+        Transform offset(const Vec2F& amount);
 
-        Vec2 origin() const;
-        Transform& origin(const Vec2& v);
+        Vec2F origin() const;
+        Transform& origin(const Vec2F& v);
         Transform& origin(float x, float y);
 
-        Vec2 position() const;
-        Transform& position(const Vec2& v);
+        Vec2F position() const;
+        Transform& position(const Vec2F& v);
         Transform& position(float x, float y);
-        Transform& move(const Vec2& v);
+        Transform& move(const Vec2F& v);
         Transform& move(float x, float y);
 
-        Vec2 scale() const;
-        Transform& scale(const Vec2& v);
+        Vec2F scale() const;
+        Transform& scale(const Vec2F& v);
         Transform& scale(float x, float y);
 
         float rotation() const;
@@ -42,9 +42,9 @@ namespace lev
 
     private:
         Mat3x2 m_matrix;
-        Vec2 m_origin;
-        Vec2 m_position;
-        Vec2 m_scale;
+        Vec2F m_origin;
+        Vec2F m_position;
+        Vec2F m_scale;
         float m_rotation;
         bool m_dirty;
     };

@@ -2,14 +2,13 @@
 
 #include <lev/core/util.h>
 #include <lev/containers/vector.h>
-#include <lev/containers/string.h>
 #include <lev/math/mat3x2.h>
 #include <lev/math/mat4x4.h>
 #include <lev/graphics/texture.h>
 
 #define LEV_SHADER_CHAR_SIZE LEV_KILOBYTES(5)
 
-namespace lev::gfx
+namespace lev
 {
 	struct ShaderData
 	{
@@ -36,9 +35,10 @@ namespace lev::gfx
 		virtual Shader& set(const char* name, int* values, int count)			= 0;
 		virtual Shader& set(const char* name, float value)						= 0;
 		virtual Shader& set(const char* name, float* values, int count)			= 0;
-		virtual Shader& set(const char* name, const Vec2& value)				= 0;
-		virtual Shader& set(const char* name, const Vec2* values, int count)	= 0;
-		// TODO vec3 class need to do this anways
+		// todo Vec2I
+		virtual Shader& set(const char* name, const Vec2F& value)				= 0;
+		virtual Shader& set(const char* name, const Vec2F* values, int count)	= 0;
+		// todo Vec3[FI]
 		virtual Shader& set(const char* name, const Mat3x2& value)				= 0;
 		virtual Shader& set(const char* name, const Mat4x4& value)				= 0;
 	};

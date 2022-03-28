@@ -11,20 +11,18 @@ namespace lev
 
 	struct AppConfig
 	{
-		const char* name;
-		int width;
-		int height;
-		int target_framerate;
-		bool resizable;
-		bool vsync;
+		const char* name = nullptr;
+		int width = 1280;
+		int height = 720;
+		int target_framerate = 60;
+		bool resizable = false;
+		bool vsync = true;
 
-		void (*on_init)();
-		void (*on_destroy)();
-		void (*on_update)();
-		void (*on_render)();
-		void (*on_log)(const char*, LogType);
-
-		AppConfig();
+		void (*on_init)() = nullptr;
+		void (*on_destroy)() = nullptr;
+		void (*on_update)() = nullptr;
+		void (*on_render)() = nullptr;
+		void (*on_log)(const char*, LogType) = nullptr;
 	};
 
 	namespace App

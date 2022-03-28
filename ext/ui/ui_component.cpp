@@ -3,7 +3,6 @@
 #include <lev/input/input.h>
 
 using namespace lev;
-using namespace lev::ui;
 
 UIComponent::UIComponent()
 	: parent(nullptr)
@@ -47,7 +46,7 @@ void UIComponent::render(gfx::SpriteBatch& b)
 
 bool UIComponent::mouse_hovering_over(bool include_children)
 {
-	Vec2 mouse_pos = Input::mouse_screen_pos();
+	Vec2F mouse_pos = Input::mouse_screen_pos();
 	RectI mouse_rect = RectI(mouse_pos.x, mouse_pos.y, 1, 1);
 
 	bool hovering = mouse_rect.intersects(bounding_box());
@@ -80,8 +79,8 @@ bool UIComponent::mouse_clicked()
 void UIComponent::clear() { m_components.clear(); }
 RectI UIComponent::bounding_box() const { return m_rect; }
 
-Vec2 UIComponent::position() const { return Vec2(x(), y()); }
-Vec2 UIComponent::size() const { return Vec2(width(), height()); }
+Vec2F UIComponent::position() const { return Vec2F(x(), y()); }
+Vec2F UIComponent::size() const { return Vec2F(width(), height()); }
 
 int UIComponent::x() const { return m_rect.x; }
 void UIComponent::x(int x) { m_rect.x = x + ((parent) ? parent->x() : 0); }

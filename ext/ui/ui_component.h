@@ -6,10 +6,10 @@
 
 #include "ui_constraints.h"
 
-namespace lev::gfx { class SpriteBatch; }
-
-namespace lev::ui
+namespace lev
 {
+	class SpriteBatch;
+
 	class UIComponent
 	{
 	public:
@@ -18,7 +18,7 @@ namespace lev::ui
 
 		virtual void init();
 		virtual void update();
-		virtual void render(gfx::SpriteBatch& b);
+		virtual void render(SpriteBatch& b);
 
 		virtual bool mouse_hovering_over(bool include_children = true);
 		virtual bool mouse_clicked_over(bool include_children = true);
@@ -30,8 +30,8 @@ namespace lev::ui
 
 		RectI bounding_box() const;
 
-		Vec2 position() const;
-		Vec2 size() const;
+		Vec2F position() const;
+		Vec2F size() const;
 
 		int x() const;
 		void x(int x);

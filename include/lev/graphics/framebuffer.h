@@ -5,7 +5,7 @@
 #include <lev/graphics/texture.h>
 #include <lev/math/colour.h>
 
-namespace lev::gfx
+namespace lev
 {
 	struct FramebufferData
 	{
@@ -18,7 +18,7 @@ namespace lev::gfx
 	class Framebuffer : public NonCopyable, public NonMovable
 	{
 	public:
-		~Framebuffer() = default;
+		virtual ~Framebuffer() = default;
 
 		static Ref<Framebuffer> create(int width, int height);
 		static Ref<Framebuffer> create(int width, int height, const TextureFormat* attachments, int attachment_count);

@@ -9,13 +9,13 @@ add_library(${PROJECT_NAME}
 	src/core/log.cpp
 	src/core/time.cpp
 	src/core/memutil.cpp
+	src/core/strutil.cpp
 	
-	src/containers/string.cpp
-
 	src/graphics/gfxutil.cpp
 	src/graphics/sprite_batch.cpp
 	src/graphics/framebuffer.cpp
 	src/graphics/image.cpp
+	src/graphics/font.cpp
 	src/graphics/mesh.cpp
 	src/graphics/material.cpp
 	src/graphics/texture.cpp
@@ -25,7 +25,6 @@ add_library(${PROJECT_NAME}
 	src/io/stream.cpp
 	src/io/file_stream.cpp
 	src/io/memory_stream.cpp
-	src/io/binary_stream.cpp
 
 	src/input/input.cpp
 
@@ -38,7 +37,6 @@ add_library(${PROJECT_NAME}
 	src/math/mat4x4.cpp
 	src/math/quad.cpp
 	src/math/triangle.cpp
-	src/math/vec2.cpp
 	src/math/polygon.cpp
 	src/math/transform.cpp
 	src/math/timer.cpp

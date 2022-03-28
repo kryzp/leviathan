@@ -2,7 +2,6 @@
 #include <backend/renderer.h>
 
 using namespace lev;
-using namespace lev::gfx;
 
 Ref<Framebuffer> Framebuffer::create(int width, int height)
 {
@@ -23,7 +22,7 @@ Ref<Framebuffer> Framebuffer::create(int width, int height, const TextureFormat*
 		if (attachments[i] == TextureFormat::DEPTH_STENCIL)
 			depthstencilcount++;
 
-		LEV_ASSERT(depthstencilcount <= 1, "There must not be 2 or more depth stencil attachments");
+		LEV_ASSERT(depthstencilcount < 2, "There must not be 2 or more depth stencil attachments");
 	}
 
 	return Renderer::create_framebuffer({

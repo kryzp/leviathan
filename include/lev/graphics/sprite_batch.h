@@ -1,23 +1,27 @@
 #pragma once
 
-// todo: probably get rid of all of these header files and put them in the .cpp file ...
-#include <lev/graphics/texture.h>
-#include <lev/graphics/shader.h>
 #include <lev/graphics/blend.h>
 #include <lev/graphics/material.h>
-#include <lev/graphics/mesh.h>
 #include <lev/math/mat3x2.h>
 #include <lev/math/vec2.h>
 #include <lev/math/colour.h>
-#include <lev/math/quad.h>
-#include <lev/math/triangle.h>
 #include <lev/containers/vector.h>
 
-namespace lev { struct Mat4x4; struct RenderPass; }
+#include <functional>
 
-namespace lev::gfx
+namespace lev
 {
+	// todo: different sprite sort / rendering modes (front to back, back to front, immediate, etc...)
+
+	struct Mat4x4;
+	struct RenderPass;
 	class Framebuffer;
+	class Font;
+	class Mesh;
+	struct Quad;
+	struct Triangle;
+	struct Vertex;
+	struct FontCharacter;
 
 	class SpriteBatch
 	{
@@ -29,18 +33,27 @@ namespace lev::gfx
 		void render(const Mat4x4& proj, const Ref<Framebuffer>& framebuffer = nullptr);
 
 		void push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx, u64 idxcount);
-		void push_quad(const Colour& colour = Colour::white());
 		void push_quad(const Quad& quad, const Colour& colour = Colour::white());
 		void push_triangle(const Triangle& tri, const Colour& colour = Colour::white());
-		void push_texture(const Ref<Texture>& tex, const TextureSampler& sampler = TextureSampler::pixel(), const Colour& colour = Colour::white());
+		void push_texture(const TextureRegion& tex, const Colour& colour = Colour::white());
+		void push_texture(const Ref<Texture>& tex, const Colour& colour = Colour::white());
+		void push_string(const char* str, const Ref<Font>& font, const Colour& colour = Colour::white());
+		void push_string(const char* str, const Ref<Font>& font, const std::function<Vec2F(FontCharacter,int)>& offsetfn, const Colour& colour = Colour::white());
 
-		void set_texture(const Ref<Texture>& tex, const TextureSampler& sampler = TextureSampler::pixel(), int idx = 0);
+		void set_texture(const Ref<Texture>& tex, int idx = 0);
+		void set_sampler(const TextureSampler& sampler, int idx = 0);
+		void reset_texture(int idx = 0);
+
 		Ref<Texture> peek_texture(int idx = 0);
 		const TextureSampler& peek_sampler(int idx = 0);
 
 		void set_shader(const Ref<Shader>& shader);
 		void reset_shader();
+		void push_shader(const Ref<Shader>& shader);
+		void pop_shader();
 		Ref<Shader> peek_shader();
+
+		// todo: layers
 
 		void push_matrix(const Mat3x2& mat);
 		Mat3x2 pop_matrix();
@@ -62,7 +75,7 @@ namespace lev::gfx
 			BlendMode blend;
 		};
 
-		Ref<Shader> m_default_shader;
+		Ref<Shader> m_font_shader;
 
 		void initialize();
 		bool m_initialized;
@@ -71,8 +84,10 @@ namespace lev::gfx
 
 		Vector<Mat3x2> m_matrix_stack;
 		Mat3x2 m_transform_matrix;
+
 		Vector<BlendMode> m_blend_stack;
 		Vector<Material> m_material_stack;
+		
 		Vector<RenderBatch> m_batches;
 	};
 }

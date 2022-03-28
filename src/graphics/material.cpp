@@ -1,18 +1,23 @@
 #include <lev/graphics/material.h>
+#include <lev/core/util.h>
 
 using namespace lev;
-using namespace lev::gfx;
 
 Material::Material()
-	: textures()
-	, samplers()
-	, shader(nullptr)
+	: shader(nullptr)
 {
+	MemUtil::clear(textures, sizeof(Ref<Texture>) * LEV_MAT_TEXTURES);
+	MemUtil::clear(samplers, sizeof(TextureSampler) * LEV_MAT_TEXTURES);
 }
 
-Material::Material(const Ref<Shader>& shader, const Vector<Ref<Texture>>& textures, const Vector<TextureSampler>& samplers)
-	: textures(textures)
-	, samplers(samplers)
-	, shader(shader)
+Material::Material(
+	const Ref<Shader>& shd,
+	const Ref<Texture>* tex,
+	const TextureSampler* sampl,
+	int tex_count
+)
+	: shader(shd)
 {
+	MemUtil::copy(this->textures, tex, sizeof(Ref<Texture>) * tex_count);
+	MemUtil::copy(this->samplers, sampl, sizeof(TextureSampler) * tex_count);
 }

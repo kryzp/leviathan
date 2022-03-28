@@ -1,31 +1,41 @@
 #pragma once
 
 #include <lev/core/util.h>
+#include <lev/math/colour.h>
+#include <lev/math/rect.h>
 
-namespace lev::gfx
+#include <functional>
+
+namespace lev
 {
 	class Image
 	{
 	public:
 		Image();
 		Image(const char* path);
+		Image(int width, int height);
 		~Image();
 
 		void load(const char* path);
-		void free() const;
+		void free();
 
-		const byte* data() const;
+		void pixels(const Colour* data);
+		void pixels(const Colour* data, u64 pixel_count);
+		void pixels(const Colour* data, u64 offset, u64 pixel_count);
+		Colour* pixels();
+		const Colour* pixels() const;
 
 		int width() const;
 		int height() const;
 		int nr_channels() const;
 		
 	private:
-		byte* m_data = nullptr;
+		Colour* m_pixels;
 
-		int m_width = 0;
-		int m_height = 0;
-		int m_nr_channels = 0;
+		int m_width;
+		int m_height;
+		int m_nr_channels;
 
+		bool m_stbi_management;
 	};
 };

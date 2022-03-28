@@ -1,6 +1,6 @@
 #pragma once
 
-namespace lev::gfx
+namespace lev
 {
 	enum BlendEquation
 	{

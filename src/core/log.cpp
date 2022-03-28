@@ -19,9 +19,10 @@ namespace
 
     static void full_file_path(char* buffer, const char* name)
     {
-        strncpy(buffer, g_directory, 200);
-        strncat(buffer, name, 40);
-        strncat(buffer, FILE_EXT, 16);
+        StrUtil::copy(buffer, g_directory, 231);
+        StrUtil::copy(buffer, name, 16);
+        StrUtil::copy(buffer, FILE_EXT, 8);
+        g_curr_file[232] = '\0';
     }
 }
 
@@ -31,9 +32,9 @@ bool Log::init()
     {
         time_t raw_time = time(NULL);
         long int time_seconds = (long)raw_time;
-        char time_seconds_char[16];
-        _itoa(time_seconds, time_seconds_char, 10);
-        full_file_path(g_curr_file, time_seconds_char);
+        char time_seconds_str[16];
+        StrUtil::fromint(time_seconds_str, time_seconds, 10);
+        full_file_path(g_curr_file, time_seconds_str);
     }
 
     return true;

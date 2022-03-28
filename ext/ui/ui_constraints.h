@@ -2,7 +2,7 @@
 
 #include <lev/core/util.h>
 
-namespace lev::ui
+namespace lev
 {
 	class UIComponent;
 

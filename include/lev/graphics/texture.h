@@ -4,13 +4,13 @@
 #include <lev/math/rect.h>
 #include <lev/graphics/image.h>
 
-namespace lev::gfx
+namespace lev
 {
 	class Texture;
 
 	enum class TextureFormat
 	{
-		R,
+		RED,
 		RG,
 		RGB,
 		RGBA,
@@ -48,8 +48,8 @@ namespace lev::gfx
 
 	struct TextureRegion
 	{
-		RectI bounds;
 		Ref<Texture> source;
+		RectI bounds;
 	};
 
 	class Texture
@@ -60,7 +60,7 @@ namespace lev::gfx
 
 		static Ref<Texture> create(const char* path);
 		static Ref<Texture> create(const Image& image);
-		static Ref<Texture> create(int width, int height, TextureFormat format, const byte* data = nullptr);
+		static Ref<Texture> create(int width, int height, TextureFormat format, const byte* data);
 
 		virtual void bind(int i) const = 0;
 		virtual void generate(const byte* data) = 0;

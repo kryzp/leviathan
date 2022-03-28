@@ -7,7 +7,7 @@ Quad::Quad()
 {
 }
 
-Quad::Quad(const Vec2& a, const Vec2& b, const Vec2& c, const Vec2& d)
+Quad::Quad(const Vec2F& a, const Vec2F& b, const Vec2F& c, const Vec2F& d)
 	: a(a)
 	, b(b)
 	, c(c)
@@ -15,10 +15,17 @@ Quad::Quad(const Vec2& a, const Vec2& b, const Vec2& c, const Vec2& d)
 {
 }
 
+/*
+[1]----[4]
+ |      |
+ |      |
+[2]----[3]
+*/
+
 Quad::Quad(const RectF& rect)
 	: a(rect.top_left())
-	, b(rect.top_right())
-	, c(rect.bottom_left())
-	, d(rect.bottom_right())
+	, b(rect.bottom_left())
+	, c(rect.bottom_right())
+	, d(rect.top_right())
 {
 }

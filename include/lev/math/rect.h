@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include <lev/math/vec2.h>
 
 namespace lev
@@ -33,27 +32,21 @@ namespace lev
 		static const Rect& zero();
 		static const Rect& one();
 
-		bool contains(const Vec2& other) const;
+		bool contains(const Vec2<T>& other) const;
 		bool intersects(const Rect& other) const;
 
-		Vec2 position() const;
-		Vec2 size() const;
+		Vec2<T> position() const;
+		Vec2<T> size() const;
 
 		T left() const;
 		T right() const;
 		T top() const;
 		T bottom() const;
 
-		Vec2 top_left() const;
-		Vec2 top_right() const;
-		Vec2 bottom_left() const;
-		Vec2 bottom_right() const;
-
-		friend std::ostream& operator << (std::ostream& os, const Rect& r)
-		{
-			std::cout << "{ " << r.x << ", " << r.y << ", " << r.w << ", " << r.h << " }" << std::endl;
-			return os;
-		}
+		Vec2<T> top_left() const;
+		Vec2<T> top_right() const;
+		Vec2<T> bottom_left() const;
+		Vec2<T> bottom_right() const;
 	};
 
 	using RectF = Rect<float>;
@@ -87,7 +80,7 @@ namespace lev
 	}
 
 	template <typename T>
-	bool Rect<T>::contains(const Vec2& other) const
+	bool Rect<T>::contains(const Vec2<T>& other) const
 	{
 		return (
 			this->left() < other.x &&
@@ -108,18 +101,18 @@ namespace lev
 		);
 	}
 
-	template <typename T> Vec2 Rect<T>::position() const { return Vec2(x, y); }
-	template <typename T> Vec2 Rect<T>::size()     const { return Vec2(w, h); }
+	template <typename T> Vec2<T> Rect<T>::position() const { return Vec2(x, y); }
+	template <typename T> Vec2<T> Rect<T>::size()     const { return Vec2(w, h); }
 
 	template <typename T> T Rect<T>::left()   const { return x;     }
 	template <typename T> T Rect<T>::right()  const { return x + w; }
 	template <typename T> T Rect<T>::top()    const { return y;     }
 	template <typename T> T Rect<T>::bottom() const { return y + h; }
 
-	template <typename T> Vec2 Rect<T>::top_left()     const { return Vec2(left(),  top());    }
-	template <typename T> Vec2 Rect<T>::top_right()    const { return Vec2(right(), top());    }
-	template <typename T> Vec2 Rect<T>::bottom_left()  const { return Vec2(left(),  bottom()); }
-	template <typename T> Vec2 Rect<T>::bottom_right() const { return Vec2(right(), bottom()); }
+	template <typename T> Vec2<T> Rect<T>::top_left()     const { return Vec2(left(),  top());    }
+	template <typename T> Vec2<T> Rect<T>::top_right()    const { return Vec2(right(), top());    }
+	template <typename T> Vec2<T> Rect<T>::bottom_left()  const { return Vec2(left(),  bottom()); }
+	template <typename T> Vec2<T> Rect<T>::bottom_right() const { return Vec2(right(), bottom()); }
 
 	template <typename T> const Rect<T>& Rect<T>::zero() { static const Rect ZERO = Rect(0, 0, 0, 0); return ZERO; }
 	template <typename T> const Rect<T>& Rect<T>::one()  { static const Rect ONE  = Rect(0, 0, 1, 1); return ONE;  }

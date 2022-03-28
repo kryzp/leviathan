@@ -59,6 +59,11 @@ float Calc::sign(float x)
 	return 0.0f;
 }
 
+float Calc::round(float x)
+{
+	return ::roundf(x);
+}
+
 float Calc::floor(float x)
 {
 	return ::floorf(x);

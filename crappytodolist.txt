@@ -1,6 +1,15 @@
-* entity
-* asset management system
+roughly in order of importance
+
 * fonts / text rendering
+* convert to c++ style casts because im sad
+* 'Array' and 'Bitset' implementations in /containers/
+* add much more asseritions where theyre needed
+* asset management system
+* entity component thing
+* spritebatch instanced rendering
+* convert app to a virtual class you can inherit from
+* get rid of some of the Ref<T> and see if you can replace them with raw pointers
 * sounds / music
 * lua???
 * debuggging console
+* string class (just using std::string for now)

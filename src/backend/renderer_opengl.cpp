@@ -4,8 +4,7 @@
 #include <backend/renderer.h>
 #include <backend/system.h>
 
-#include <lev/containers/string.h>
-
+#include <string>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -17,96 +16,96 @@ namespace
 {
 	void* g_context;
 
-	int get_gl_texture_fmt(gfx::TextureFormat fmt)
+	int get_gl_texture_fmt(TextureFormat fmt)
 	{
 		switch (fmt)
 		{
-			case gfx::TextureFormat::R:				return GL_R;
-			case gfx::TextureFormat::RG:			return GL_RG;
-			case gfx::TextureFormat::RGB:			return GL_RGB;
-			case gfx::TextureFormat::RGBA:			return GL_RGBA;
-			case gfx::TextureFormat::DEPTH_STENCIL: return GL_DEPTH_STENCIL;
+			case TextureFormat::RED:			return GL_RED;
+			case TextureFormat::RG:				return GL_RG;
+			case TextureFormat::RGB:			return GL_RGB;
+			case TextureFormat::RGBA:			return GL_RGBA;
+			case TextureFormat::DEPTH_STENCIL:	return GL_DEPTH_STENCIL;
 		}
 	}
 
-	int get_gl_texture_internal_fmt(gfx::TextureFormat fmt)
+	int get_gl_texture_internal_fmt(TextureFormat fmt)
 	{
 		switch (fmt)
 		{
-			case gfx::TextureFormat::R:				return GL_R;
-			case gfx::TextureFormat::RG:			return GL_RG;
-			case gfx::TextureFormat::RGB:			return GL_RGB;
-			case gfx::TextureFormat::RGBA:			return GL_RGBA;
-			case gfx::TextureFormat::DEPTH_STENCIL:	return GL_DEPTH24_STENCIL8;
+			case TextureFormat::RED:			return GL_RED;
+			case TextureFormat::RG:				return GL_RG;
+			case TextureFormat::RGB:			return GL_RGB;
+			case TextureFormat::RGBA:			return GL_RGBA;
+			case TextureFormat::DEPTH_STENCIL:	return GL_DEPTH24_STENCIL8;
 		}
 	}
 
-	int get_gl_texture_type(gfx::TextureFormat fmt)
+	int get_gl_texture_type(TextureFormat fmt)
 	{
 		switch (fmt)
 		{
-			case gfx::TextureFormat::R:				return GL_UNSIGNED_BYTE;
-			case gfx::TextureFormat::RG:			return GL_UNSIGNED_BYTE;
-			case gfx::TextureFormat::RGB:			return GL_UNSIGNED_BYTE;
-			case gfx::TextureFormat::RGBA:			return GL_UNSIGNED_BYTE;
-			case gfx::TextureFormat::DEPTH_STENCIL:	return GL_UNSIGNED_INT_24_8;
+			case TextureFormat::RED:			return GL_UNSIGNED_BYTE;
+			case TextureFormat::RG:				return GL_UNSIGNED_BYTE;
+			case TextureFormat::RGB:			return GL_UNSIGNED_BYTE;
+			case TextureFormat::RGBA:			return GL_UNSIGNED_BYTE;
+			case TextureFormat::DEPTH_STENCIL:	return GL_UNSIGNED_INT_24_8;
 		}
 	}
 
-	int get_gl_blend_equation(gfx::BlendEquation func)
+	int get_gl_blend_equation(BlendEquation func)
 	{
 		switch (func)
 		{
-			case gfx::BlendEquation::ADD:				return GL_FUNC_ADD;
-			case gfx::BlendEquation::SUBTRACT:			return GL_FUNC_SUBTRACT;
-			case gfx::BlendEquation::REVERSE_SUBTRACT:	return GL_FUNC_REVERSE_SUBTRACT;
-			case gfx::BlendEquation::MIN:				return GL_MIN;
-			case gfx::BlendEquation::MAX:				return GL_MAX;
+			case BlendEquation::ADD:				return GL_FUNC_ADD;
+			case BlendEquation::SUBTRACT:			return GL_FUNC_SUBTRACT;
+			case BlendEquation::REVERSE_SUBTRACT:	return GL_FUNC_REVERSE_SUBTRACT;
+			case BlendEquation::MIN:				return GL_MIN;
+			case BlendEquation::MAX:				return GL_MAX;
 		}
 	}
 
-	int get_gl_blend_func(gfx::BlendFunc factor)
+	int get_gl_blend_func(BlendFunc factor)
 	{
 		switch (factor)
 		{
-			case gfx::BlendFunc::ZERO:							return GL_ZERO;
-			case gfx::BlendFunc::ONE:							return GL_ONE;
-			case gfx::BlendFunc::SRC_COLOUR:					return GL_SRC_COLOR;
-			case gfx::BlendFunc::SRC1_COLOUR:					return GL_SRC1_COLOR;
-			case gfx::BlendFunc::ONE_MINUS_SRC_COLOUR:			return GL_ONE_MINUS_SRC_COLOR;
-			case gfx::BlendFunc::ONE_MINUS_SRC1_COLOUR:			return GL_ONE_MINUS_SRC1_COLOR;
-			case gfx::BlendFunc::DST_COLOUR:					return GL_DST_COLOR;
-			case gfx::BlendFunc::ONE_MINUS_DST_COLOUR:			return GL_ONE_MINUS_DST_COLOR;
-			case gfx::BlendFunc::SRC_ALPHA:						return GL_SRC_ALPHA;
-			case gfx::BlendFunc::SRC1_ALPHA:					return GL_SRC1_ALPHA;
-			case gfx::BlendFunc::ONE_MINUS_SRC_ALPHA:			return GL_ONE_MINUS_SRC_ALPHA;
-			case gfx::BlendFunc::ONE_MINUS_SRC1_ALPHA:			return GL_ONE_MINUS_SRC1_ALPHA;
-			case gfx::BlendFunc::DST_ALPHA:						return GL_DST_ALPHA;
-			case gfx::BlendFunc::ONE_MINUS_DST_ALPHA:			return GL_ONE_MINUS_DST_ALPHA;
-			case gfx::BlendFunc::CONSTANT_COLOUR:				return GL_CONSTANT_COLOR;
-			case gfx::BlendFunc::ONE_MINUS_CONSTANT_COLOUR:		return GL_ONE_MINUS_CONSTANT_COLOR;
-			case gfx::BlendFunc::CONSTANT_ALPHA:				return GL_CONSTANT_ALPHA;
-			case gfx::BlendFunc::ONE_MINUS_CONSTANT_ALPHA:		return GL_ONE_MINUS_CONSTANT_ALPHA;
+			case BlendFunc::ZERO:						return GL_ZERO;
+			case BlendFunc::ONE:						return GL_ONE;
+			case BlendFunc::SRC_COLOUR:					return GL_SRC_COLOR;
+			case BlendFunc::SRC1_COLOUR:				return GL_SRC1_COLOR;
+			case BlendFunc::ONE_MINUS_SRC_COLOUR:		return GL_ONE_MINUS_SRC_COLOR;
+			case BlendFunc::ONE_MINUS_SRC1_COLOUR:		return GL_ONE_MINUS_SRC1_COLOR;
+			case BlendFunc::DST_COLOUR:					return GL_DST_COLOR;
+			case BlendFunc::ONE_MINUS_DST_COLOUR:		return GL_ONE_MINUS_DST_COLOR;
+			case BlendFunc::SRC_ALPHA:					return GL_SRC_ALPHA;
+			case BlendFunc::SRC1_ALPHA:					return GL_SRC1_ALPHA;
+			case BlendFunc::ONE_MINUS_SRC_ALPHA:		return GL_ONE_MINUS_SRC_ALPHA;
+			case BlendFunc::ONE_MINUS_SRC1_ALPHA:		return GL_ONE_MINUS_SRC1_ALPHA;
+			case BlendFunc::DST_ALPHA:					return GL_DST_ALPHA;
+			case BlendFunc::ONE_MINUS_DST_ALPHA:		return GL_ONE_MINUS_DST_ALPHA;
+			case BlendFunc::CONSTANT_COLOUR:			return GL_CONSTANT_COLOR;
+			case BlendFunc::ONE_MINUS_CONSTANT_COLOUR:	return GL_ONE_MINUS_CONSTANT_COLOR;
+			case BlendFunc::CONSTANT_ALPHA:				return GL_CONSTANT_ALPHA;
+			case BlendFunc::ONE_MINUS_CONSTANT_ALPHA:	return GL_ONE_MINUS_CONSTANT_ALPHA;
 		}
 	}
 }
 
 /*********************************************************/
-/* TEXTURE STUFF                                         */
+/* TEXTURE                                               */
 /*********************************************************/
 
-class OpenGLTexture : public gfx::Texture
+class OpenGLTexture : public Texture
 {
 	u32 m_id;
 	int m_width;
 	int m_height;
-	gfx::TextureFormat m_format;
+	TextureFormat m_format;
 	int m_gl_format;
 	int m_gl_internal_format;
 	int m_gl_type;
 
 public:
-	OpenGLTexture(const gfx::TextureData& data)
+	OpenGLTexture(const TextureData& data)
 		: Texture()
 		, m_id(0)
 		, m_width(data.width)
@@ -118,7 +117,6 @@ public:
 		m_gl_type = get_gl_texture_type(m_format);
 
 		glGenTextures(1, &m_id);
-		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, m_id);
 		glTexImage2D(GL_TEXTURE_2D, 0, m_gl_internal_format, m_width, m_height, 0, m_gl_format, m_gl_type, nullptr);
 	}
@@ -139,35 +137,35 @@ public:
 		glTexImage2D(GL_TEXTURE_2D, 0, m_gl_internal_format, m_width, m_height, 0, m_gl_format, m_gl_type, data);
 	}
 
-	void update(const gfx::TextureSampler& sampler)
+	void update(const TextureSampler& sampler)
 	{
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (sampler.wrap_x == gfx::TextureWrap::CLAMP) ? GL_CLAMP_TO_EDGE : GL_REPEAT); // can we just take a moment to appreciate how nicely the spacing lines up here oh my god
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (sampler.wrap_y == gfx::TextureWrap::CLAMP) ? GL_CLAMP_TO_EDGE : GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sampler.filter == gfx::TextureFilter::LINEAR) ? GL_LINEAR : GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sampler.filter == gfx::TextureFilter::LINEAR) ? GL_LINEAR : GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (sampler.wrap_x == TextureWrap::CLAMP) ? GL_CLAMP_TO_EDGE : GL_REPEAT); // can we just take a moment to appreciate how nicely the spacing lines up here oh my god
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (sampler.wrap_y == TextureWrap::CLAMP) ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sampler.filter == TextureFilter::LINEAR) ? GL_LINEAR : GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sampler.filter == TextureFilter::LINEAR) ? GL_LINEAR : GL_NEAREST);
 	}
 
 	int width() const override { return m_width; }
 	int height() const override { return m_height; }
-	gfx::TextureFormat format() const override { return m_format; }
+	TextureFormat format() const override { return m_format; }
 	u32 id() const { return m_id; }
 };
 
-Ref<gfx::Texture> Renderer::create_texture(const gfx::TextureData& data)
+Ref<Texture> Renderer::create_texture(const TextureData& data)
 {
 	return create_ref<OpenGLTexture>(data);
 }
 
 /*********************************************************/
-/* SHADER STUFF                                          */
+/* SHADER                                                */
 /*********************************************************/
 
-class OpenGLShader : public gfx::Shader
+class OpenGLShader : public Shader
 {
 	u32 m_id;
 
 public:
-	OpenGLShader(const gfx::ShaderData& data)
+	OpenGLShader(const ShaderData& data)
 		: Shader()
 		, m_id(0)
 	{
@@ -227,39 +225,41 @@ public:
 
 	u32 id() const { return m_id; }
 
-	Shader& set(const char* name, bool value)                    override { glUniform1i(glGetUniformLocation(m_id, name), value); return *this; }
-	Shader& set(const char* name, bool* values, int count)       override { glUniform1iv(glGetUniformLocation(m_id, name), count, (GLint*)values); return *this; }
-	Shader& set(const char* name, int value)                     override { glUniform1i(glGetUniformLocation(m_id, name), value); return *this; }
-	Shader& set(const char* name, int* values, int count)        override { glUniform1iv(glGetUniformLocation(m_id, name), count, values); return *this; }
-	Shader& set(const char* name, float value)                   override { glUniform1f(glGetUniformLocation(m_id, name), value); return *this; }
-	Shader& set(const char* name, float* values, int count)      override { glUniform1fv(glGetUniformLocation(m_id, name), count, values); return *this; }
-	Shader& set(const char* name, const Vec2& value)             override { glUniform2f(glGetUniformLocation(m_id, name), value.x, value.y); return *this; }
-	Shader& set(const char* name, const Vec2* values, int count) override { glUniform2fv(glGetUniformLocation(m_id, name), count, (GLfloat*)values); return *this; }
-	Shader& set(const char* name, const Mat3x2& value)           override { glUniformMatrix3x2fv(glGetUniformLocation(m_id, name), 1, GL_FALSE, value.value_ptr()); return *this; }
-	Shader& set(const char* name, const Mat4x4& value)           override { glUniformMatrix4fv(glGetUniformLocation(m_id, name), 1, GL_FALSE, value.value_ptr()); return *this; }
+	Shader& set(const char* name, bool value)						override { glUniform1i			(glGetUniformLocation(m_id, name), value							); return *this; }
+	Shader& set(const char* name, bool* values, int count)			override { glUniform1iv			(glGetUniformLocation(m_id, name), count, (GLint*)values			); return *this; }
+	Shader& set(const char* name, int value)						override { glUniform1i			(glGetUniformLocation(m_id, name), value							); return *this; }
+	Shader& set(const char* name, int* values, int count)			override { glUniform1iv			(glGetUniformLocation(m_id, name), count, (GLint*)values			); return *this; }
+	Shader& set(const char* name, float value)						override { glUniform1f			(glGetUniformLocation(m_id, name), value							); return *this; }
+	Shader& set(const char* name, float* values, int count)			override { glUniform1fv			(glGetUniformLocation(m_id, name), count, values					); return *this; }
+	// todo Vec2I
+	Shader& set(const char* name, const Vec2F& value)				override { glUniform2f			(glGetUniformLocation(m_id, name), value.x, value.y					); return *this; }
+	Shader& set(const char* name, const Vec2F* values, int count)	override { glUniform2fv			(glGetUniformLocation(m_id, name), count, (GLfloat*)values			); return *this; }
+	// todo Vec3[FI]
+	Shader& set(const char* name, const Mat3x2& value)				override { glUniformMatrix3x2fv	(glGetUniformLocation(m_id, name), 1, GL_FALSE, value.value_ptr()	); return *this; }
+	Shader& set(const char* name, const Mat4x4& value)				override { glUniformMatrix4fv	(glGetUniformLocation(m_id, name), 1, GL_FALSE, value.value_ptr()	); return *this; }
 };
 
-Ref<gfx::Shader> Renderer::create_shader(const gfx::ShaderData& data)
+Ref<Shader> Renderer::create_shader(const ShaderData& data)
 {
 	return create_ref<OpenGLShader>(data);
 }
 
 /*********************************************************/
-/* FRAMEBUFFER STUFF                                     */
+/* FRAMEBUFFER                                           */
 /*********************************************************/
 
-class OpenGLFramebuffer : public gfx::Framebuffer
+class OpenGLFramebuffer : public Framebuffer
 {
 	u32 m_id;
 	
-	Vector<Ref<gfx::Texture>> m_attachments;
+	Vector<Ref<Texture>> m_attachments;
 	Vector<GLenum> m_gl_attachments;
 
 	int m_width;
 	int m_height;
 
 public:
-	OpenGLFramebuffer(const gfx::FramebufferData& data)
+	OpenGLFramebuffer(const FramebufferData& data)
 		: m_id(0)
 		, m_width(data.width)
 		, m_height(data.height)
@@ -269,10 +269,10 @@ public:
 
 		for (int i = 0; i < data.attachment_count; i++)
 		{
-			auto tex = gfx::Texture::create(m_width, m_height, data.attachments[i]);
+			auto tex = Texture::create(m_width, m_height, data.attachments[i], nullptr);
 			auto gltex = (OpenGLTexture*)tex.get();
 
-			if (data.attachments[i] == gfx::TextureFormat::DEPTH_STENCIL)
+			if (data.attachments[i] == TextureFormat::DEPTH_STENCIL)
 			{
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, gltex->id(), 0);
 				m_gl_attachments.push_back(GL_DEPTH_STENCIL_ATTACHMENT);
@@ -313,7 +313,7 @@ public:
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
-	virtual const Vector<Ref<gfx::Texture>>& attachments() const override { return m_attachments; }
+	virtual const Vector<Ref<Texture>>& attachments() const override { return m_attachments; }
 	const Vector<GLenum>& gl_attachments() const { return m_gl_attachments; }
 	virtual int attachment_count() const override { return m_attachments.size(); }
 	virtual int width() const override { return m_width; }
@@ -321,16 +321,16 @@ public:
 	u32 id() const { return m_id; }
 };
 
-Ref<gfx::Framebuffer> Renderer::create_framebuffer(const gfx::FramebufferData& data)
+Ref<Framebuffer> Renderer::create_framebuffer(const FramebufferData& data)
 {
 	return create_ref<OpenGLFramebuffer>(data);
 }
 
 /*********************************************************/
-/* MESH STUFF                                            */
+/* MESH                                                  */
 /*********************************************************/
 
-class OpenGLMesh : public gfx::Mesh
+class OpenGLMesh : public Mesh
 {
 	u32 m_id;
 	
@@ -398,13 +398,13 @@ public:
 	u32 id() const { return m_id; }
 };
 
-Ref<gfx::Mesh> Renderer::create_mesh()
+Ref<Mesh> Renderer::create_mesh()
 {
 	return create_ref<OpenGLMesh>();
 }
 
 /*********************************************************/
-/* MAIN STUFF                                            */
+/* MAIN                                                  */
 /*********************************************************/
 
 bool Renderer::init()
@@ -462,18 +462,22 @@ void Renderer::render(const RenderPass& pass)
 
 	shader->use();
 
-	for (int i = 0; i < pass.material.textures.size() > 0; i++)
+	for (int i = 0; i < LEV_MAT_TEXTURES; i++)
 	{
 		auto texture = (OpenGLTexture*)pass.material.textures[i].get();
 		auto sampler = pass.material.samplers[i];
 
-		texture->bind(i);
-		texture->update(sampler);
+		if (texture)
+		{
+			texture->bind(i);
+			texture->update(sampler);
 
-		// engineer gamig
-		char intstr[2];
-		_itoa(i, intstr, 10);
-		shader->set((String("u_texture_") + intstr).c_str(), i);
+			char istr[2];
+			StrUtil::fromint(istr, i, 10);
+			std::string uniform = "u_texture_";
+			uniform.append(istr);
+			shader->set(uniform.c_str(), i);
+		}
 	}
 
 	glBlendEquationSeparate(

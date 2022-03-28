@@ -3,7 +3,6 @@
 #include "constraints/pixel_constraint.h"
 
 using namespace lev;
-using namespace lev::ui;
 
 UIConstraints::UIConstraints()
 	: x(nullptr)

@@ -5,9 +5,9 @@ using namespace lev;
 
 Transform::Transform()
 	: m_matrix(Mat3x2::identity())
-	, m_origin(Vec2::zero())
-	, m_position(Vec2::zero())
-	, m_scale(Vec2::one())
+	, m_origin(Vec2F::zero())
+	, m_position(Vec2F::zero())
+	, m_scale(Vec2F::one())
 	, m_rotation(0)
 	, m_dirty(false)
 {
@@ -34,19 +34,19 @@ Mat3x2 Transform::matrix()
 	return m_matrix;
 }
 
-Transform Transform::offset(const Vec2& amount)
+Transform Transform::offset(const Vec2F& amount)
 {
 	Transform copy = *this;
 	copy.m_position += amount;
 	return copy;
 }
 
-Vec2 Transform::origin() const
+Vec2F Transform::origin() const
 {
 	return m_origin;
 }
 
-Transform& Transform::origin(const Vec2& v)
+Transform& Transform::origin(const Vec2F& v)
 {
 	if (v != m_origin)
 	{
@@ -62,15 +62,15 @@ Transform& Transform::origin(const Vec2& v)
 
 Transform& Transform::origin(float x, float y)
 {
-	return origin(Vec2(x, y));
+	return origin(Vec2F(x, y));
 }
 
-Vec2 Transform::position() const
+Vec2F Transform::position() const
 {
 	return m_position;
 }
 
-Transform& Transform::position(const Vec2& v)
+Transform& Transform::position(const Vec2F& v)
 {
 	if (v != m_position)
 	{
@@ -86,25 +86,25 @@ Transform& Transform::position(const Vec2& v)
 
 Transform& Transform::position(float x, float y)
 {
-	return position(Vec2(x, y));
+	return position(Vec2F(x, y));
 }
 
-Transform& Transform::move(const Vec2& v)
+Transform& Transform::move(const Vec2F& v)
 {
 	return position(m_position + v);
 }
 
 Transform& Transform::move(float x, float y)
 {
-	return move(Vec2(x, y));
+	return move(Vec2F(x, y));
 }
 
-Vec2 Transform::scale() const
+Vec2F Transform::scale() const
 {
 	return m_scale;
 }
 
-Transform& Transform::scale(const Vec2& v)
+Transform& Transform::scale(const Vec2F& v)
 {
 	if (v != m_scale)
 	{
@@ -120,7 +120,7 @@ Transform& Transform::scale(const Vec2& v)
 
 Transform& Transform::scale(float x, float y)
 {
-	return scale(Vec2(x, y));
+	return scale(Vec2F(x, y));
 }
 
 float Transform::rotation() const

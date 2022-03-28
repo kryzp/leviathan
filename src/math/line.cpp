@@ -4,20 +4,20 @@
 using namespace lev;
 
 Line::Line()
-	: a(Vec2::zero())
-	, b(Vec2::zero())
+	: a(Vec2F::zero())
+	, b(Vec2F::zero())
 {
 }
 
-Line::Line(const Vec2& a, const Vec2& b)
+Line::Line(const Vec2F& a, const Vec2F& b)
 	: a(a)
 	, b(b)
 {
 }
 
-Line::Line(const Vec2& pos, float angle, float len)
+Line::Line(const Vec2F& pos, float angle, float len)
 	: a(pos)
-	, b(pos + Vec2(Calc::cos(angle) * len, Calc::sin(angle) * len))
+	, b(pos + Vec2F(Calc::cos(angle) * len, Calc::sin(angle) * len))
 {
 }
 

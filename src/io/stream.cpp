@@ -2,7 +2,6 @@
 #include <backend/system.h>
 
 using namespace lev;
-using namespace lev::io;
 
 Stream::Stream()
 	: p_stream(nullptr)
@@ -14,19 +13,28 @@ Stream::~Stream()
 	System::stream_close(p_stream);
 }
 
-void Stream::read(void* buffer, s64 length)
+Stream& Stream::read(void* buffer, s64 length)
 {
 	System::stream_read(p_stream, buffer, length);
+	return *this;
 }
 
-void Stream::write(void* data, s64 length)
+Stream& Stream::write(void* data, s64 length)
 {
 	System::stream_write(p_stream, data, length);
+	return *this;
 }
 
-void Stream::seek(s64 offset)
+Stream& Stream::seek(s64 offset)
 {
 	System::stream_seek(p_stream, offset);
+	return *this;
+}
+
+Stream& Stream::close()
+{
+	System::stream_close(p_stream);
+	return *this;
 }
 
 s64 Stream::position()
@@ -34,14 +42,9 @@ s64 Stream::position()
 	return System::stream_position(p_stream);
 }
 
-s64 Stream::length()
+s64 Stream::size()
 {
-	return System::stream_length(p_stream);
-}
-
-void Stream::close()
-{
-	System::stream_close(p_stream);
+	return System::stream_size(p_stream);
 }
 
 void* Stream::stream()

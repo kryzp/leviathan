@@ -2,14 +2,13 @@
 #include <backend/renderer.h>
 
 using namespace lev;
-using namespace lev::gfx;
 
 const TextureSampler& TextureSampler::pixel()
 {
 	static const TextureSampler PIXEL = {
-		.filter = gfx::TextureFilter::NEAREST,
-		.wrap_x = gfx::TextureWrap::CLAMP,
-		.wrap_y = gfx::TextureWrap::CLAMP
+		.filter = TextureFilter::NEAREST,
+		.wrap_x = TextureWrap::CLAMP,
+		.wrap_y = TextureWrap::CLAMP
 	};
 
 	return PIXEL;
@@ -18,9 +17,9 @@ const TextureSampler& TextureSampler::pixel()
 const TextureSampler& TextureSampler::linear()
 {
 	static const TextureSampler LINEAR = {
-		.filter = gfx::TextureFilter::LINEAR,
-		.wrap_x = gfx::TextureWrap::CLAMP,
-		.wrap_y = gfx::TextureWrap::CLAMP
+		.filter = TextureFilter::LINEAR,
+		.wrap_x = TextureWrap::CLAMP,
+		.wrap_y = TextureWrap::CLAMP
 	};
 
 	return LINEAR;
@@ -43,7 +42,7 @@ Ref<Texture> Texture::create(const char* path)
 
 Ref<Texture> Texture::create(const Image& image)
 {
-	return create(image.width(), image.height(), TextureFormat::RGBA, image.data());
+	return create(image.width(), image.height(), TextureFormat::RGBA, (const byte*)image.pixels());
 }
 
 Ref<Texture> Texture::create(int width, int height, TextureFormat format, const byte* data)

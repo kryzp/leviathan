@@ -2,7 +2,7 @@
 
 namespace lev
 {
-	struct Vec2;
+	template <typename T> struct Vec2;
 	struct Mat4x4;
 
 	// special matrix used for 2D transformations
@@ -36,14 +36,14 @@ namespace lev
 
 		static const Mat3x2& identity();
 
-		static Vec2 offset(const Mat3x2& mat);
+		static Vec2<float> offset(const Mat3x2& mat);
 
-		static Mat3x2 create_skew(const Vec2& amount);
-		static Mat3x2 create_scale(const Vec2& scale);
+		static Mat3x2 create_skew(const Vec2<float>& amount);
+		static Mat3x2 create_scale(const Vec2<float>& scale);
 		static Mat3x2 create_scale(float scale);
 		static Mat3x2 create_rotation(float rotation);
-		static Mat3x2 create_translation(const Vec2& translation);
-		static Mat3x2 create_transform(const Vec2& position, float rotation, const Vec2& scale, const Vec2& origin);
+		static Mat3x2 create_translation(const Vec2<float>& translation);
+		static Mat3x2 create_transform(const Vec2<float>& position, float rotation, const Vec2<float>& scale, const Vec2<float>& origin);
 
 		float* value_ptr();
 		const float* value_ptr() const;

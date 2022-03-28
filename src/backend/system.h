@@ -31,7 +31,7 @@ namespace lev
 		s64 stream_read(void* stream, void* ptr, s64 size);
 		s64 stream_write(void* stream, const void* ptr, s64 size);
 		s64 stream_seek(void* stream, s64 offset);
-		s64 stream_length(void* stream);
+		s64 stream_size(void* stream);
 		s64 stream_position(void* stream);
 		void stream_close(void* stream);
 

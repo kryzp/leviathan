@@ -3,7 +3,6 @@
 #include <backend/renderer.h>
 
 using namespace lev;
-using namespace lev::gfx;
 
 Shader::Shader()
 {
@@ -15,6 +14,9 @@ Shader::~Shader()
 
 Ref<Shader> Shader::create(const char* vertex, const char* fragment, bool is_source)
 {
+	LEV_ASSERT(vertex, "Vertex shader must not be nullptr");
+	LEV_ASSERT(fragment, "Fragment shader must not be nullptr");
+
 	ShaderData data;
 
 	if (is_source)
@@ -24,8 +26,8 @@ Ref<Shader> Shader::create(const char* vertex, const char* fragment, bool is_sou
 	}
 	else
 	{
-		io::FileStream(vertex, "r").read(data.vertex_source, LEV_SHADER_CHAR_SIZE);
-		io::FileStream(fragment, "r").read(data.fragment_source, LEV_SHADER_CHAR_SIZE);
+		FileStream(vertex, "r").read(data.vertex_source, LEV_SHADER_CHAR_SIZE).close();
+		FileStream(fragment, "r").read(data.fragment_source, LEV_SHADER_CHAR_SIZE).close();
 	}
 
 	Ref<Shader> result = Renderer::create_shader(data);

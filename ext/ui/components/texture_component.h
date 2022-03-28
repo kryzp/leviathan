@@ -5,7 +5,7 @@
 
 #include "../ui_component.h"
 
-namespace lev::ui
+namespace lev
 {
 	class UITextureComponent : public UIComponent
 	{
@@ -32,7 +32,7 @@ namespace lev::ui
 				position(),
 				0.0f,
 				size() / texsize,
-				Vec2::zero()
+				Vec2F::zero()
 			));
 
 			b.render_texture(texture.texture);

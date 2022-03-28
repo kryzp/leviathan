@@ -13,14 +13,14 @@
 // theres no opposite force applied to the other body or anything.
 // just a pushout vector is returned with tells one collider how to react to stop colliding.
 
-namespace lev::phys
+namespace lev
 {
 	class Collider2D;
 
 	struct Hit
 	{
 		Collider2D* other;
-		Vec2 pushout;
+		Vec2F pushout;
 		bool solid;
 	};
 
@@ -37,11 +37,11 @@ namespace lev::phys
 		void make_polygon(const Polygon& polygon);
 		void make_rect(const RectF& rect);
 
-		Collider2D offset(const Vec2& offset) const;
+		Collider2D offset(const Vec2F& offset) const;
 
 		RectF get_world_bounds();
 
-		bool overlaps(Collider2D& other, Vec2* pushout = nullptr);
+		bool overlaps(Collider2D& other, Vec2F* pushout = nullptr);
 
 		Transform* parent;
 		Transform transform;
@@ -50,12 +50,12 @@ namespace lev::phys
 		Polygon world_polygon;
 
 	private:
-		static bool poly_to_poly(Collider2D& a, Collider2D& b, Vec2* pushout);
+		static bool poly_to_poly(Collider2D& a, Collider2D& b, Vec2F* pushout);
 
 		void update_world_bounds();
 
 		RectF m_world_bounds;
-		Vector<Vec2> m_axis;
+		Vector<Vec2F> m_axis;
 	};
 
 	Collider2D::Collider2D()
@@ -100,20 +100,20 @@ namespace lev::phys
 	{
 		this->polygon.vertices = poly.vertices;
 		this->world_polygon.vertices = poly.vertices;
-		this->m_axis = Vector<Vec2>(poly.vertices.size());
+		this->m_axis = Vector<Vec2F>(poly.vertices.size());
 	}
 
 	void Collider2D::make_rect(const RectF& rect)
 	{
 		make_polygon(Polygon({
-			Vec2(rect.x, rect.y),
-			Vec2(rect.w, rect.y),
-			Vec2(rect.w, rect.h),
-			Vec2(rect.x, rect.h)
+			Vec2F(rect.x, rect.y),
+			Vec2F(rect.w, rect.y),
+			Vec2F(rect.w, rect.h),
+			Vec2F(rect.x, rect.h)
 		}));
 	}
 
-	Collider2D Collider2D::offset(const Vec2& amount) const
+	Collider2D Collider2D::offset(const Vec2F& amount) const
 	{
 		Collider2D collider = *this;
 		collider.transform.move(amount);
@@ -126,9 +126,9 @@ namespace lev::phys
 		return m_world_bounds;
 	}
 
-	bool Collider2D::overlaps(Collider2D& other, Vec2* pushout)
+	bool Collider2D::overlaps(Collider2D& other, Vec2F* pushout)
 	{
-		Vec2 push;
+		Vec2F push;
 		bool result = Collider2D::poly_to_poly(*this, other, &push);
 
 		if (pushout)
@@ -145,19 +145,19 @@ namespace lev::phys
 		if (parent)
 			mat = parent->matrix() * mat;
 
-		// update axis and points
+		// update world polygon
 		{
-			Vec2 first_vert = world_polygon.vertices[0];
+			Vec2F first_vert = world_polygon.vertices[0];
 
 			for (int i = 0; i < vert_count; i++)
 			{
-				Vec2 curr_vert = world_polygon.vertices[i];
-				Vec2 next_vert = first_vert;
+				Vec2F curr_vert = world_polygon.vertices[i];
+				Vec2F next_vert = first_vert;
 
 				if ((i+1) < vert_count)
 					next_vert = world_polygon.vertices[i+1];
 
-				world_polygon.vertices[i] = Vec2::transform(polygon.vertices[i], mat);
+				world_polygon.vertices[i] = Vec2F::transform(polygon.vertices[i], mat);
 
 				m_axis[i] = (next_vert - curr_vert).normalized().perpendicular();
 			}
@@ -187,7 +187,7 @@ namespace lev::phys
 		}
 	}
 
-	bool Collider2D::poly_to_poly(Collider2D& a, Collider2D& b, Vec2* pushout)
+	bool Collider2D::poly_to_poly(Collider2D& a, Collider2D& b, Vec2F* pushout)
 	{
 		a.update_world_bounds();
 		b.update_world_bounds();

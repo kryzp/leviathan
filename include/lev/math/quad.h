@@ -7,13 +7,13 @@ namespace lev
 {
 	struct Quad
 	{
-		Vec2 a;
-		Vec2 b;
-		Vec2 c;
-		Vec2 d;
+		Vec2F a;
+		Vec2F b;
+		Vec2F c;
+		Vec2F d;
 
 		Quad();
-		Quad(const Vec2& a, const Vec2& b, const Vec2& c, const Vec2& d);
+		Quad(const Vec2F& a, const Vec2F& b, const Vec2F& c, const Vec2F& d);
 		Quad(const RectF& rect);
 	};
 }

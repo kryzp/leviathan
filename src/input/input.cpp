@@ -6,10 +6,10 @@ using namespace lev;
 namespace
 {
 	KeyboardState g_kb;
-	KeyboardState g_prev_kb;
+	KeyboardState g_kb_prev;
 
 	MouseState g_mouse;
-	MouseState g_prev_mouse;
+	MouseState g_mouse_prev;
 }
 
 bool Input::init()
@@ -23,31 +23,27 @@ void Input::destroy()
 
 void Input::update()
 {
-	g_prev_kb = g_kb;
-	g_prev_mouse = g_mouse;
+	g_kb_prev = g_kb;
+	g_mouse_prev = g_mouse;
 
-	for (int i = 0; i < (int)Key::MAX; i++)
-		g_kb.pressed[i] = g_kb.released[i] = false;
-	MemUtil::set_zero(g_kb.text, Input::MAX_TEXT_INPUT);
+	MemUtil::clear(g_kb.text, Input::MAX_TEXT_INPUT);
 
-	for (int i = 0; i < (int)MouseButton::MAX; i++)
-		g_mouse.released[i] = g_mouse.pressed[i] = false;
 	g_mouse.wheel = Float2::zero();
 }
 
 void Input::on_mouse_move(float x, float y)
 {
-	g_mouse.position = Vec2(x, y);
+	g_mouse.position = Vec2F(x, y);
 
-	g_mouse.draw_position = Vec2(
-		x/App::window_width() * App::draw_width(),
-		y/App::window_height() * App::draw_height()
+	g_mouse.draw_position = Vec2F(
+		(x / App::window_width()) * App::draw_width(),
+		(y / App::window_height()) * App::draw_height()
 	);
 }
 
 void Input::on_mouse_screen_move(float x, float y)
 {
-	g_mouse.screen_position = Vec2(x, y);
+	g_mouse.screen_position = Vec2F(x, y);
 }
 
 void Input::on_mouse_down(MouseButton button)
@@ -58,7 +54,6 @@ void Input::on_mouse_down(MouseButton button)
 void Input::on_mouse_up(MouseButton button)
 {
 	g_mouse.down[(int)button] = false;
-	g_mouse.released[(int)button] = true;
 }
 
 void Input::on_mouse_wheel(float x, float y)
@@ -74,12 +69,11 @@ void Input::on_key_down(Key key)
 void Input::on_key_up(Key key)
 {
 	g_kb.down[(int)key] = false;
-	g_kb.released[(int)key] = true;
 }
 
 void Input::on_text_utf8(const char* text)
 {
-	strncat(g_kb.text, text, Input::MAX_TEXT_INPUT);
+	StrUtil::cncat(g_kb.text, text, Input::MAX_TEXT_INPUT);
 }
 
 bool Input::down(MouseButton mb)
@@ -94,37 +88,37 @@ bool Input::down(Key key)
 
 bool Input::released(MouseButton mb)
 {
-	return g_mouse.released[(int)mb];
+	return !g_mouse.down[(int)mb] && g_mouse_prev.down[(int)mb];
 }
 
 bool Input::released(Key key)
 {
-	return g_mouse.released[(int)key];
+	return !g_kb.down[(int)key] && g_kb_prev.down[(int)key];
 }
 
 bool Input::pressed(MouseButton mb)
 {
-	return g_mouse.pressed[(int)mb];
+	return g_mouse.down[(int)mb] && !g_mouse_prev.down[(int)mb];
 }
 
 bool Input::pressed(Key key)
 {
-	return g_kb.pressed[(int)key];
+	return g_kb.down[(int)key] && !g_kb_prev.down[(int)key];
 }
 
 bool Input::ctrl()
 {
-	return g_kb.down[(int)Key::LEFT_CONTROL] || g_kb.down[(int)Key::RIGHT_CONTROL];
+	return down(Key::LEFT_CONTROL) || down(Key::RIGHT_CONTROL);
 }
 
 bool Input::shift()
 {
-	return g_kb.down[(int)Key::LEFT_SHIFT] || g_kb.down[(int)Key::RIGHT_SHIFT];
+	return down(Key::LEFT_SHIFT) || down(Key::RIGHT_SHIFT);
 }
 
 bool Input::alt()
 {
-	return g_kb.down[(int)Key::LEFT_ALT] || g_kb.down[(int)Key::RIGHT_ALT];
+	return down(Key::LEFT_ALT) || down(Key::RIGHT_ALT);
 }
 
 const char* Input::text()
@@ -132,17 +126,17 @@ const char* Input::text()
 	return g_kb.text;
 }
 
-Point2 Input::mouse_screen_pos()
+Vec2F Input::mouse_screen_pos()
 {
 	return g_mouse.screen_position;
 }
 
-Point2 Input::mouse_draw_pos()
+Vec2F Input::mouse_draw_pos()
 {
 	return g_mouse.draw_position;
 }
 
-Point2 Input::mouse_position()
+Vec2F Input::mouse_position()
 {
 	return g_mouse.position;
 }
@@ -154,5 +148,5 @@ Float2 Input::mouse_wheel()
 
 Float2 Input::mouse_wheel_change()
 {
-	return g_prev_mouse.wheel - g_mouse.wheel;
+	return g_mouse_prev.wheel - g_mouse.wheel;
 }
