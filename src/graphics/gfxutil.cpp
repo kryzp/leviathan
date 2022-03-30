@@ -3,8 +3,6 @@
 
 using namespace lev;
 
-// todo: i dont like the way this looks pretty sus
-
 void GfxUtil::quad(Vertex* vtx, u32* indices, const Quad& quad, const Quad& uv, Colour colour)
 {
     colour.premultiply();

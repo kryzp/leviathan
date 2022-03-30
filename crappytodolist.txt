@@ -1,15 +1,29 @@
 roughly in order of importance
+==============================
 
-* fonts / text rendering
-* convert to c++ style casts because im sad
-* 'Array' and 'Bitset' implementations in /containers/
-* add much more asseritions where theyre needed
-* asset management system
 * entity component thing
-* spritebatch instanced rendering
-* convert app to a virtual class you can inherit from
+
+* asset management system
+ - textures
+ - fonts
+ - sounds
+ - custom import classes you can create (::ext?)
+   - e.g: TiledMapImporter : lev::AssetImporter<TiledMap> { public: TiledMap load(const char* file) override; } ...
+
+* add much more asseritions where theyre needed
+
+* theres no fixed framerate currently lol actually make that a thing
+
 * get rid of some of the Ref<T> and see if you can replace them with raw pointers
+
+* spritebatch instanced rendering
+
 * sounds / music
-* lua???
-* debuggging console
+
+* quaternion implementation
+
 * string class (just using std::string for now)
+
+* debuggging console
+
+* lua???

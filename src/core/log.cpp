@@ -16,25 +16,20 @@ namespace
 {
     const char* g_directory;
     char g_curr_file[256];
-
-    static void full_file_path(char* buffer, const char* name)
-    {
-        StrUtil::copy(buffer, g_directory, 231);
-        StrUtil::copy(buffer, name, 16);
-        StrUtil::copy(buffer, FILE_EXT, 8);
-        g_curr_file[232] = '\0';
-    }
 }
 
 bool Log::init()
 {
     if (g_directory)
     {
-        time_t raw_time = time(NULL);
-        long int time_seconds = (long)raw_time;
+        u64 time_seconds = static_cast<long>(time(NULL));
         char time_seconds_str[16];
+
         StrUtil::fromint(time_seconds_str, time_seconds, 10);
-        full_file_path(g_curr_file, time_seconds_str);
+        StrUtil::copy(g_curr_file, g_directory, 231);
+        StrUtil::copy(g_curr_file, time_seconds_str, 16);
+        StrUtil::copy(g_curr_file, FILE_EXT, 8);
+        g_curr_file[255] = '\0';
     }
 
     return true;

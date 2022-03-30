@@ -5,22 +5,22 @@ using namespace lev;
 
 const TextureSampler& TextureSampler::pixel()
 {
-	static const TextureSampler PIXEL = {
-		.filter = TextureFilter::NEAREST,
-		.wrap_x = TextureWrap::CLAMP,
-		.wrap_y = TextureWrap::CLAMP
-	};
+	static const TextureSampler PIXEL(
+		TextureFilter::NEAREST,
+		TextureWrap::CLAMP,
+		TextureWrap::CLAMP
+	);
 
 	return PIXEL;
 }
 
 const TextureSampler& TextureSampler::linear()
 {
-	static const TextureSampler LINEAR = {
-		.filter = TextureFilter::LINEAR,
-		.wrap_x = TextureWrap::CLAMP,
-		.wrap_y = TextureWrap::CLAMP
-	};
+	static const TextureSampler LINEAR(
+		TextureFilter::LINEAR,
+		TextureWrap::CLAMP,
+		TextureWrap::CLAMP
+	);
 
 	return LINEAR;
 }
@@ -47,13 +47,9 @@ Ref<Texture> Texture::create(const Image& image)
 
 Ref<Texture> Texture::create(int width, int height, TextureFormat format, const byte* data)
 {
-	TextureData tex = {
-		.width = width,
-		.height = height,
-		.format = format
-	};
+	LEV_ASSERT(width > 0 && height > 0, "Width and Height must be greater than 0");
 
-	Ref<Texture> result = Renderer::create_texture(tex);
+	Ref<Texture> result = Renderer::create_texture(TextureData(width, height, format));
 
 	if (data)
 		result->generate(data);

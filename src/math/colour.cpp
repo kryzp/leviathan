@@ -20,19 +20,19 @@ Colour::Colour(float r, float g, float b, float a)
 }
 
 Colour::Colour(u32 packed)
-	: r((u8)(packed >> 24) / 255.0f)
-	, g((u8)(packed >> 16) / 255.0f)
-	, b((u8)(packed >> 8) / 255.0f)
-	, a((u8)(packed >> 0) / 255.0f)
+	: r(static_cast<u8>(packed >> 24) / 255.0f)
+	, g(static_cast<u8>(packed >> 16) / 255.0f)
+	, b(static_cast<u8>(packed >> 8) / 255.0f)
+	, a(static_cast<u8>(packed >> 0) / 255.0f)
 {
 }
 
 u32 Colour::pack(const Colour& colour)
 {
-	u8 r = (u8)(colour.r * 255);
-	u8 g = (u8)(colour.g * 255);
-	u8 b = (u8)(colour.b * 255);
-	u8 a = (u8)(colour.a * 255);
+	u8 r = static_cast<u8>(colour.r * 255.0f);
+	u8 g = static_cast<u8>(colour.g * 255.0f);
+	u8 b = static_cast<u8>(colour.b * 255.0f);
+	u8 a = static_cast<u8>(colour.a * 255.0f);
 
 	return
 		r << 24 |
@@ -45,9 +45,9 @@ Colour Colour::from_hsv(float hue, float sat, float val, float alpha)
 {
 	float C = sat * val;
 	float X = C * (1 - Calc::abs(Calc::mod(hue / 60.0f, 2) - 1));
-	float m = C - X;
 
 	float r, g, b;
+	r = g = b = 0.0f;
 
 	if (0 <= hue && hue < 60)
 	{
@@ -92,10 +92,10 @@ Colour Colour::from_hsv(float hue, float sat, float val, float alpha)
 Colour Colour::from_u8(u8 r, u8 g, u8 b, u8 a)
 {
 	return Colour(
-		(float)r / 255.0f,
-		(float)g / 255.0f,
-		(float)b / 255.0f,
-		(float)a / 255.0f
+		static_cast<float>(r) / 255.0f,
+		static_cast<float>(g) / 255.0f,
+		static_cast<float>(b) / 255.0f,
+		static_cast<float>(a) / 255.0f
 	);
 }
 
@@ -144,10 +144,10 @@ Colour Colour::operator - () const
 Colour Colour::operator * (float mult) const
 {
 	return Colour(
-		(u8)((float)r * mult),
-		(u8)((float)g * mult),
-		(u8)((float)b * mult),
-		(u8)((float)a * mult)
+		(u8)(static_cast<float>(r) * mult),
+		(u8)(static_cast<float>(g) * mult),
+		(u8)(static_cast<float>(b) * mult),
+		(u8)(static_cast<float>(a) * mult)
 	);
 }
 

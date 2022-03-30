@@ -2,6 +2,8 @@
 
 #include <lev/core/util.h>
 #include <lev/containers/vector.h>
+#include <lev/math/vec2.h>
+#include <lev/math/vec3.h>
 #include <lev/math/mat3x2.h>
 #include <lev/math/mat4x4.h>
 #include <lev/graphics/texture.h>
@@ -35,10 +37,14 @@ namespace lev
 		virtual Shader& set(const char* name, int* values, int count)			= 0;
 		virtual Shader& set(const char* name, float value)						= 0;
 		virtual Shader& set(const char* name, float* values, int count)			= 0;
-		// todo Vec2I
+		virtual Shader& set(const char* name, const Vec2I& value)				= 0;
+		virtual Shader& set(const char* name, const Vec2I* values, int count)	= 0;
 		virtual Shader& set(const char* name, const Vec2F& value)				= 0;
 		virtual Shader& set(const char* name, const Vec2F* values, int count)	= 0;
-		// todo Vec3[FI]
+		virtual Shader& set(const char* name, const Vec3I& value)				= 0;
+		virtual Shader& set(const char* name, const Vec3I* values, int count)	= 0;
+		virtual Shader& set(const char* name, const Vec3F& value)				= 0;
+		virtual Shader& set(const char* name, const Vec3F* values, int count)	= 0;
 		virtual Shader& set(const char* name, const Mat3x2& value)				= 0;
 		virtual Shader& set(const char* name, const Mat4x4& value)				= 0;
 	};

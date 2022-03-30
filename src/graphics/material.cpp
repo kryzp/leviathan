@@ -6,8 +6,8 @@ using namespace lev;
 Material::Material()
 	: shader(nullptr)
 {
-	MemUtil::clear(textures, sizeof(Ref<Texture>) * LEV_MAT_TEXTURES);
-	MemUtil::clear(samplers, sizeof(TextureSampler) * LEV_MAT_TEXTURES);
+	MemUtil::set(textures, 0, sizeof(Ref<Texture>) * LEV_MAT_TEXTURES);
+	MemUtil::set(samplers, 0, sizeof(TextureSampler) * LEV_MAT_TEXTURES);
 }
 
 Material::Material(

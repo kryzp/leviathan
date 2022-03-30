@@ -1,6 +1,7 @@
 #pragma once
 
 #include <lev/core/util.h>
+#include <functional>
 
 namespace lev
 {
@@ -12,10 +13,10 @@ namespace lev
 		UIConstraint() = default;
 		virtual ~UIConstraint() = default;
 
-		virtual int constrain_x(UIComponent& component) = 0;
-		virtual int constrain_y(UIComponent& component) = 0;
-		virtual int constrain_width(UIComponent& component) = 0;
-		virtual int constrain_height(UIComponent& component) = 0;
+		virtual int constrain_x(const UIComponent& component) = 0;
+		virtual int constrain_y(const UIComponent& component) = 0;
+		virtual int constrain_width(const UIComponent& component) = 0;
+		virtual int constrain_height(const UIComponent& component) = 0;
 	};
 
 	class UIConstraints

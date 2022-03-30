@@ -18,5 +18,5 @@ bool Endian::is_endian(Endianness endian)
 	);
 }
 
-bool Endian::is_little_endian() { return *((u16*)"AB") == 0x4241; }
-bool Endian::is_big_endian() { return *((u16*)"AB") == 0x4142; }
+bool Endian::is_little_endian()	{ return *(reinterpret_cast<const u16*>("AB")) == 0x4241; }
+bool Endian::is_big_endian()	{ return *(reinterpret_cast<const u16*>("AB")) == 0x4142; }

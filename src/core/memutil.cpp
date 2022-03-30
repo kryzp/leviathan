@@ -7,11 +7,6 @@ void* MemUtil::set(void* ptr, s32 val, u64 size)
 	return ::memset(ptr, val, size);
 }
 
-void* MemUtil::clear(void* ptr, u64 size)
-{
-	return ::memset(ptr, 0, size);
-}
-
 void* MemUtil::copy(void* dst, const void* src, u64 size)
 {
 	return ::memcpy(dst, src, size);
@@ -30,4 +25,13 @@ void* MemUtil::chr(void* ptr, s32 val, u64 size)
 int MemUtil::compare(const void* p1, const void* p2, u64 size)
 {
 	return ::memcmp(p1, p2, size);
+}
+
+bool MemUtil::vcompare(void* ptr, byte val, u64 size)
+{
+	byte* mem = (byte*)ptr;
+    return (
+		(*mem) == val &&
+		memcmp(mem, mem + 1, size - 1) == 0
+	);
 }

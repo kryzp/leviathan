@@ -36,7 +36,27 @@ float Calc::exp(float x)
 
 float Calc::sigmoid(float x)
 {
-	return 1.0f - 1.0f/(1 + exp(x));
+	return 1.0f - 1.0f/(1 + Calc::exp(x));
+}
+
+float Calc::log(float x, float b)
+{
+	return ::logf(x) / ::logf(b);
+}
+
+float Calc::log2(float x)
+{
+	return ::log2f(x);
+}
+
+float Calc::log10(float x)
+{
+	return ::log10f(x);
+}
+
+float Calc::ln(float x)
+{
+	return ::logf(x);
 }
 
 float Calc::max(float a, float b)
@@ -51,7 +71,7 @@ float Calc::min(float a, float b)
 
 float Calc::clamp(float v, float mn, float mx)
 {
-	return max(mn, min(mx, v));
+	return Calc::max(mn, Calc::min(mx, v));
 }
 
 float Calc::sign(float x)
@@ -79,9 +99,15 @@ float Calc::ceil(float x)
 	return ::ceilf(x);
 }
 
+bool Calc::within_epsilon(float lhs, float rhs, float epsilon)
+{
+	float delta = rhs - lhs;
+	return ::fabsf(delta) <= epsilon;
+}
+
 float Calc::approach(float from, float to, float amount)
 {
-	return (to > from) ? min(from + amount, to) : max(from - amount, to);
+	return (to > from) ? Calc::min(from + amount, to) : Calc::max(from - amount, to);
 }
 
 float Calc::lerp(float from, float to, float amount)
@@ -91,7 +117,7 @@ float Calc::lerp(float from, float to, float amount)
 
 float Calc::spring(float from, float to, float bounciness, float tension, float& intermediate)
 {
-	intermediate = lerp(intermediate, (to - from) * tension, 1.0f / bounciness);
+	intermediate = Calc::lerp(intermediate, (to - from) * tension, 1.0f / bounciness);
 	return intermediate;
 }
 

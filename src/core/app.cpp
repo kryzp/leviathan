@@ -80,7 +80,7 @@ void App::run()
 			Time::frames++;
 
 			Time::milliseconds = System::ticks();
-			Time::seconds = (float)System::ticks() / 1000.0f;
+			Time::seconds = Time::milliseconds / 1000.0f;
 
 			Time::delta = Time::seconds - prevseconds;
 			prevseconds = Time::seconds;

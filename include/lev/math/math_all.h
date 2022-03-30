@@ -12,3 +12,5 @@
 #include <lev/math/timer.h>
 #include <lev/math/transform.h>
 #include <lev/math/vec2.h>
+#include <lev/math/vec3.h>
+#include <lev/math/quaternion.h>

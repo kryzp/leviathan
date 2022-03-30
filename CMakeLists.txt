@@ -40,7 +40,13 @@ add_library(${PROJECT_NAME}
 	src/math/polygon.cpp
 	src/math/transform.cpp
 	src/math/timer.cpp
+	src/math/quaternion.cpp
 	
+	src/physics/collider.cpp
+
+	src/ui/ui_component.cpp
+	src/ui/ui_constraints.cpp
+
 	src/backend/system_sdl2.cpp
 	src/backend/renderer_opengl.cpp
 	src/third_party/glad/glad.c

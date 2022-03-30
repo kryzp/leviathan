@@ -1,5 +1,4 @@
-#include "ui_component.h"
-
+#include <lev/ui/ui_component.h>
 #include <lev/input/input.h>
 
 using namespace lev;
@@ -33,7 +32,7 @@ void UIComponent::update()
 	}
 }
 
-void UIComponent::render(gfx::SpriteBatch& b)
+void UIComponent::render(SpriteBatch& b)
 {
 	for (auto& component : m_components)
 	{
@@ -73,7 +72,7 @@ bool UIComponent::mouse_clicked_over(bool include_children)
 
 bool UIComponent::mouse_clicked()
 {
-	return Input::pressed(MouseButton::LEFT); // todo: temp
+	return Input::pressed(MB_LEFT); // todo: temp
 }
 
 void UIComponent::clear() { m_components.clear(); }

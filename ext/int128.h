@@ -1,3 +1,7 @@
+
+// this is bad do not use your house will explode
+
+#if 0
 #pragma once
 
 #include <lev/core/util.h>
@@ -16,7 +20,7 @@ Onto which I can then just do simple binary math
 NOTE: INDEXING GOES FROM RIGHT TO LEFT
 */
 
-namespace lev::stp // tempted to call this lev::std
+namespace lev::ext
 {
 	class Int128
 	{
@@ -145,3 +149,4 @@ namespace lev::stp // tempted to call this lev::std
 		std::cout << "lol no" << std::endl;
 	}
 }
+#endif

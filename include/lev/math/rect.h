@@ -26,11 +26,18 @@ namespace lev
 		};
 
 		Rect();
+		Rect(T value);
 		Rect(T w, T h);
 		Rect(T x, T y, T w, T h);
-
-		static const Rect& zero();
-		static const Rect& one();
+		
+		template <typename Y>
+		Rect(const Rect<Y>& other)
+			: x(other.x)
+			, y(other.y)
+			, w(other.w)
+			, h(other.h)
+		{
+		}
 
 		bool contains(const Vec2<T>& other) const;
 		bool intersects(const Rect& other) const;
@@ -47,6 +54,24 @@ namespace lev
 		Vec2<T> top_right() const;
 		Vec2<T> bottom_left() const;
 		Vec2<T> bottom_right() const;
+
+		bool operator == (const Rect& other) const;
+		bool operator != (const Rect& other) const;
+
+		Rect operator + (const Rect& other) const;
+		Rect operator - (const Rect& other) const;
+		Rect operator * (const Rect& other) const;
+		Rect operator / (const Rect& other) const;
+		
+		Rect operator - () const;
+
+		Rect& operator += (const Rect& other);
+		Rect& operator -= (const Rect& other);
+		Rect& operator *= (const Rect& other);
+		Rect& operator /= (const Rect& other);
+
+		static const Rect& zero();
+		static const Rect& one();
 	};
 
 	using RectF = Rect<float>;
@@ -58,6 +83,15 @@ namespace lev
 		, y(0)
 		, w(0)
 		, h(0)
+	{
+	}
+
+	template <typename T>
+	Rect<T>::Rect(T value)
+		: x(value)
+		, y(value)
+		, w(value)
+		, h(value)
 	{
 	}
 
@@ -100,6 +134,21 @@ namespace lev
 			this->bottom() > other.top()
 		);
 	}
+
+	template <typename T> bool Rect<T>::operator == (const Rect& other) const { return this->x == other.x && this->y == other.y && this->w == other.w && this->h == other.y; }
+	template <typename T> bool Rect<T>::operator != (const Rect& other) const { return !(*this == other); }
+
+	template <typename T> Rect<T> Rect<T>::operator + (const Rect& other) const { return Rect(this->x + other.x, this->y + other.y, this->w + other.w; this->h + other.h; }
+	template <typename T> Rect<T> Rect<T>::operator - (const Rect& other) const { return Rect(this->x - other.x, this->y - other.y, this->w - other.w; this->h - other.h; }
+	template <typename T> Rect<T> Rect<T>::operator * (const Rect& other) const { return Rect(this->x * other.x, this->y * other.y, this->w * other.w; this->h * other.h; }
+	template <typename T> Rect<T> Rect<T>::operator / (const Rect& other) const { return Rect(this->x / other.x, this->y / other.y, this->w / other.w; this->h / other.h; }
+		
+	template <typename T> Rect<T> Rect<T>::operator - () const { return Rect(-this->x, -this->y, -this->w, -this->h); }
+
+	template <typename T> Rect<T>& Rect<T>::operator += (const Rect& other) { this->x += other.x; this->y += other.y; this->w += other.w; this->h += other.h; return *this; }
+	template <typename T> Rect<T>& Rect<T>::operator -= (const Rect& other) { this->x -= other.x; this->y -= other.y; this->w -= other.w; this->h -= other.h; return *this; }
+	template <typename T> Rect<T>& Rect<T>::operator *= (const Rect& other) { this->x *= other.x; this->y *= other.y; this->w *= other.w; this->h *= other.h; return *this; }
+	template <typename T> Rect<T>& Rect<T>::operator /= (const Rect& other) { this->x /= other.x; this->y /= other.y; this->w /= other.w; this->h /= other.h; return *this; }
 
 	template <typename T> Vec2<T> Rect<T>::position() const { return Vec2(x, y); }
 	template <typename T> Vec2<T> Rect<T>::size()     const { return Vec2(w, h); }

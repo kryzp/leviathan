@@ -9,13 +9,11 @@
 using namespace lev;
 
 #define LEV_FONT_ATLAS_SIZE (LEV_FONT_ATLAS_W*LEV_FONT_ATLAS_H)
+#define M_INTERNAL_INFO ((stbtt_fontinfo*)m_internal_info)
 
 TextureRegion FontAtlas::region(const RectI& rect) const
 {
-	return TextureRegion {
-		.source = texture,
-		.bounds = rect
-	};
+	return TextureRegion(texture, rect);
 }
 
 ///////////////////////////////////////////////////
@@ -51,15 +49,15 @@ void Font::load(float size, const char* path)
 	fs.read(ttf_buffer, fs.size()).close();
 
 	m_internal_info = new stbtt_fontinfo();
-	if (!stbtt_InitFont((stbtt_fontinfo*)m_internal_info, ttf_buffer, stbtt_GetFontOffsetForIndex(ttf_buffer, 0)))
+	if (!stbtt_InitFont(M_INTERNAL_INFO, ttf_buffer, stbtt_GetFontOffsetForIndex(ttf_buffer, 0)))
 		LEV_ERROR("Failed to create font");
 
 	m_info.size = size;
 
-	stbtt_GetFontVMetrics((stbtt_fontinfo*)m_internal_info, &m_info.ascent, &m_info.descent, &m_info.line_gap);
+	stbtt_GetFontVMetrics(M_INTERNAL_INFO, &m_info.ascent, &m_info.descent, &m_info.line_gap);
 
 	int x0, y0, x1, y1;
-	stbtt_GetFontBoundingBox((stbtt_fontinfo*)m_internal_info, &x0, &y0, &x1, &y1);
+	stbtt_GetFontBoundingBox(M_INTERNAL_INFO, &x0, &y0, &x1, &y1);
 	{
 		m_info.bbox.x = x0;
 		m_info.bbox.y = y0;
@@ -68,11 +66,11 @@ void Font::load(float size, const char* path)
 	}
 
 	// store kerning data
-	m_kerning_count = stbtt_GetKerningTableLength((stbtt_fontinfo*)m_internal_info);
+	m_kerning_count = stbtt_GetKerningTableLength(M_INTERNAL_INFO);
 	m_kerning = new FontKerning[m_kerning_count];
 	{
 		stbtt_kerningentry* kerning_tables = new stbtt_kerningentry[m_kerning_count];
-		stbtt_GetKerningTable((stbtt_fontinfo*)m_internal_info, kerning_tables, m_kerning_count);
+		stbtt_GetKerningTable(M_INTERNAL_INFO, kerning_tables, m_kerning_count);
 
 		for (int i = 0; i < m_kerning_count; i++)
 		{
@@ -124,11 +122,10 @@ void Font::load(float size, const char* path)
 	delete[] ttf_buffer;
 }
 
-
 void Font::free()
 {
 	if (m_internal_info)
-		delete (stbtt_fontinfo*)m_internal_info;
+		delete M_INTERNAL_INFO;
 
 	if (m_kerning)
 		delete[] m_kerning;

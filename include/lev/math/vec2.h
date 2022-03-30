@@ -41,11 +41,19 @@ namespace lev
 			};
 
 			T coords[2];
+			T data[2];
 		};
 
 		Vec2();
 		Vec2(T x);
 		Vec2(T x, T y);
+		
+		template <typename Y>
+		Vec2(const Vec2<Y>& other)
+			: x(other.x)
+			, y(other.y)
+		{
+		}
 
 		static const Vec2& zero();
 		static const Vec2& one();
@@ -58,7 +66,7 @@ namespace lev
 		static float dot(const Vec2& a, const Vec2& b);
 		static Vec2 from_angle(float angle, float length);
 		static Vec2 lerp(const Vec2& from, const Vec2& to, float amount);
-		static Vec2 spring(const Vec2& from, const Vec2& to, float amount, float dampening, Vec2& intermediate);
+		static Vec2 spring(const Vec2& from, const Vec2& to, float bounciness, float tension, Vec2& intermediate);
 
 		float angle() const;
 
@@ -73,9 +81,10 @@ namespace lev
 
 		Vec2 operator + (const Vec2& other) const;
 		Vec2 operator - (const Vec2& other) const;
-		Vec2 operator - () const;
 		Vec2 operator * (const Vec2& other) const;
 		Vec2 operator / (const Vec2& other) const;
+
+		Vec2 operator - () const;
 
 		Vec2& operator += (const Vec2& other);
 		Vec2& operator -= (const Vec2& other);
@@ -83,16 +92,18 @@ namespace lev
 		Vec2& operator /= (const Vec2& other);
 	};
 
-	using Vec2F = Vec2<float>;
-	using Vec2I = Vec2<int>;
+	using Vec2F		= Vec2<float>;
+	using Vec2I		= Vec2<int>;
 
-	using Float2 = Vec2<float>;
-	using Size2 = Vec2<float>;
-	using Int2 = Vec2<int>;
-	using Point2 = Vec2<int>;
+	using Float2	= Vec2<float>;
+	using Size2		= Vec2<float>;
+	using Int2		= Vec2<int>;
+	using Point2	= Vec2<int>;
 
 	template <typename T>
 	Vec2<T>::Vec2()
+		: x(0)
+		, y(0)
 	{
 	}
 	
@@ -144,10 +155,10 @@ namespace lev
 	}
 	
 	template <typename T>
-	Vec2<T> Vec2<T>::spring(const Vec2& from, const Vec2& to, float amount, float dampening, Vec2& intermediate)
+	Vec2<T> Vec2<T>::spring(const Vec2& from, const Vec2& to, float bounciness, float tension, Vec2& intermediate)
 	{
-		intermediate.x = Calc::spring(from.x, to.x, amount, dampening, intermediate.x);
-		intermediate.y = Calc::spring(from.y, to.y, amount, dampening, intermediate.y);
+		intermediate.x = Calc::spring(from.x, to.x, bounciness, tension, intermediate.x);
+		intermediate.y = Calc::spring(from.y, to.y, bounciness, tension, intermediate.y);
 		return intermediate;
 	}
 	
@@ -200,10 +211,10 @@ namespace lev
 	template <typename T> Vec2<T>& Vec2<T>::operator *= (const Vec2& other) { this->x *= other.x; this->y *= other.y; return *this; }
 	template <typename T> Vec2<T>& Vec2<T>::operator /= (const Vec2& other) { this->x /= other.x; this->y /= other.y; return *this; }
 
-	template <typename T> const Vec2<T>& Vec2<T>::zero()  { static const Vec2 ZERO  = Vec2( 0,  0); return ZERO;  }
-	template <typename T> const Vec2<T>& Vec2<T>::one()   { static const Vec2 ONE   = Vec2( 1,  1); return ONE;   }
-	template <typename T> const Vec2<T>& Vec2<T>::left()  { static const Vec2 LEFT  = Vec2(-1,  0); return LEFT;  }
-	template <typename T> const Vec2<T>& Vec2<T>::right() { static const Vec2 RIGHT = Vec2( 1,  0); return RIGHT; }
-	template <typename T> const Vec2<T>& Vec2<T>::up()    { static const Vec2 UP    = Vec2( 0, -1); return UP;    }
-	template <typename T> const Vec2<T>& Vec2<T>::down()  { static const Vec2 DOWN  = Vec2( 0,  1); return DOWN;  }
+	template <typename T> const Vec2<T>& Vec2<T>::zero()	{ static const Vec2 ZERO	= Vec2( 0,  0); return ZERO;	}
+	template <typename T> const Vec2<T>& Vec2<T>::one()		{ static const Vec2 ONE		= Vec2( 1,  1); return ONE;		}
+	template <typename T> const Vec2<T>& Vec2<T>::left()	{ static const Vec2 LEFT	= Vec2(-1,  0); return LEFT;	}
+	template <typename T> const Vec2<T>& Vec2<T>::right()	{ static const Vec2 RIGHT	= Vec2( 1,  0); return RIGHT;	}
+	template <typename T> const Vec2<T>& Vec2<T>::up()		{ static const Vec2 UP		= Vec2( 0, -1); return UP;		}
+	template <typename T> const Vec2<T>& Vec2<T>::down()	{ static const Vec2 DOWN	= Vec2( 0,  1); return DOWN;	}
 }

@@ -3,6 +3,8 @@
 #include <lev/math/vec2.h>
 #include <lev/math/colour.h>
 
+#include <functional>
+
 namespace lev
 {
 	struct Colour;
@@ -18,11 +20,11 @@ namespace lev
 		bool resizable = false;
 		bool vsync = true;
 
-		void (*on_init)() = nullptr;
-		void (*on_destroy)() = nullptr;
-		void (*on_update)() = nullptr;
-		void (*on_render)() = nullptr;
-		void (*on_log)(const char*, LogType) = nullptr;
+		std::function<void(void)> on_init = nullptr;
+		std::function<void(void)> on_destroy = nullptr;
+		std::function<void(void)> on_update = nullptr;
+		std::function<void(void)> on_render = nullptr;
+		std::function<void(const char*, LogType)> on_log = nullptr;
 	};
 
 	namespace App

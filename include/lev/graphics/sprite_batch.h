@@ -23,6 +23,13 @@ namespace lev
 	struct Vertex;
 	struct FontCharacter;
 
+	enum class TextAlign
+	{
+		LEFT,
+		CENTRE,
+		RIGHT
+	};
+
 	class SpriteBatch
 	{
 	public:
@@ -37,8 +44,8 @@ namespace lev
 		void push_triangle(const Triangle& tri, const Colour& colour = Colour::white());
 		void push_texture(const TextureRegion& tex, const Colour& colour = Colour::white());
 		void push_texture(const Ref<Texture>& tex, const Colour& colour = Colour::white());
-		void push_string(const char* str, const Ref<Font>& font, const Colour& colour = Colour::white());
-		void push_string(const char* str, const Ref<Font>& font, const std::function<Vec2F(FontCharacter,int)>& offsetfn, const Colour& colour = Colour::white());
+		void push_text(const char* str, const Ref<Font>& font, TextAlign align = TextAlign::LEFT, const Colour& colour = Colour::white());
+		void push_text(const char* str, const Ref<Font>& font, const std::function<Vec2F(FontCharacter,int)>& offsetfn, TextAlign align = TextAlign::LEFT, const Colour& colour = Colour::white());
 
 		void set_texture(const Ref<Texture>& tex, int idx = 0);
 		void set_sampler(const TextureSampler& sampler, int idx = 0);

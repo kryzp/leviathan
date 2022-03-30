@@ -108,19 +108,19 @@ void System::update()
 				break;
 
 			case SDL_MOUSEBUTTONDOWN:
-				Input::on_mouse_down((MouseButton)e.button.button);
+				Input::on_mouse_down(static_cast<MouseButton>(e.button.button));
 				break;
 
 			case SDL_MOUSEBUTTONUP:
-				Input::on_mouse_up((MouseButton)e.button.button);
+				Input::on_mouse_up(static_cast<MouseButton>(e.button.button));
 				break;
 
 			case SDL_KEYDOWN:
-				Input::on_key_down((Key)e.key.keysym.scancode);
+				Input::on_key_down(static_cast<Key>(e.key.keysym.scancode));
 				break;
 
 			case SDL_KEYUP:
-				Input::on_key_up((Key)e.key.keysym.scancode);
+				Input::on_key_up(static_cast<Key>(e.key.keysym.scancode));
 				break;
 
 			case SDL_TEXTINPUT:

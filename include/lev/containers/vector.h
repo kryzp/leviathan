@@ -17,7 +17,6 @@ namespace lev
         Vector(std::initializer_list<T> data);
         Vector(u64 initial_capacity);
         Vector(const Vector& other);
-        Vector& operator = (const Vector& other);
         ~Vector();
 
         void allocate(u64 capacity);
@@ -44,11 +43,11 @@ namespace lev
         const T* begin() const;
         T* end();
         const T* end() const;
-        T* at(int i);
-        const T* at(int i) const;
+        T* at(u64 idx);
+        const T* at(u64 idx) const;
 
-        T& operator [] (int i);
-        const T& operator [] (int i) const;
+        T& operator [] (u64 idx);
+        const T& operator [] (u64 idx) const;
 
     private:
         T* m_buf;
@@ -71,7 +70,7 @@ namespace lev
         allocate(data.size());
         m_count = data.size();
 
-        for (int i = 0; i < m_size; i++)
+        for (u64 i = 0; i < m_size; i++)
             new (m_buf + i) T(data.begin()[i]);
     }
 
@@ -82,7 +81,7 @@ namespace lev
         allocate(initial_capacity);
         m_count = initial_capacity;
 
-        for (int i = 0; i < m_size; i++)
+        for (u64 i = 0; i < m_size; i++)
             new (m_buf + i) T();
     }
     
@@ -99,22 +98,6 @@ namespace lev
             for (int i = 0; i < other.m_size; i++)
                 new (m_buf + i) T(other.m_buf[i]);
         }
-    }
-
-    template <typename T>
-    Vector<T>& Vector<T>::operator = (const Vector& other)
-    {
-        if (other.m_size > 0)
-        {
-            allocate(other.m_size);
-            clear();
-            m_count = other.size();
-
-            for (int i = 0; i < other.m_size; i++)
-                new (m_buf + i) T(other.m_buf[i]);
-        }
-
-        return *this;
     }
 
     template <typename T>
@@ -144,7 +127,8 @@ namespace lev
     {
         if (capacity > m_size)
         {
-            auto newsize = Calc::max(1, m_size);
+            // 8 is just a nice number since vectors this small likely will have lots of rapid push/pop action
+            u64 newsize = Calc::max(8, m_size);
             
             while (newsize < capacity)
                 newsize *= 2;
@@ -302,26 +286,26 @@ namespace lev
     }
 
     template <typename T>
-    T* Vector<T>::at(int i)
+    T* Vector<T>::at(u64 idx)
     {
-        return m_buf + i;
+        return m_buf + idx;
     }
 
     template <typename T>
-    const T* Vector<T>::at(int i) const
+    const T* Vector<T>::at(u64 idx) const
     {
-        return m_buf + i;
+        return m_buf + idx;
     }
 
     template<typename T>
-    T& Vector<T>::operator [] (int i)
+    T& Vector<T>::operator [] (u64 idx)
     {
-        return m_buf[i];
+        return m_buf[idx];
     }
 
     template<typename T>
-    const T& Vector<T>::operator [] (int i) const
+    const T& Vector<T>::operator [] (u64 idx) const
     {
-        return m_buf[i];
+        return m_buf[idx];
     }
 }

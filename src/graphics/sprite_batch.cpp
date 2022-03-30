@@ -204,6 +204,35 @@ void SpriteBatch::push_triangle(const Triangle& tri, const Colour& colour)
 	push_vertices(vertices, 3, indices, 6);
 }
 
+void SpriteBatch::push_texture(const TextureRegion& tex, const Colour& colour)
+{
+	set_texture(tex.source);
+
+	Vertex vertices[4];
+	u32 indices[6];
+
+	Float2 texsize = Float2(tex.source->width(), tex.source->height());
+
+	GfxUtil::quad(
+		vertices, indices,
+		Quad(RectF(
+			0.0f,
+			0.0f,
+			tex.bounds.w,
+			tex.bounds.h
+		)),
+		Quad(
+			Vec2F(tex.bounds.left(), tex.bounds.top()) / texsize,
+			Vec2F(tex.bounds.left(), tex.bounds.bottom()) / texsize,
+			Vec2F(tex.bounds.right(), tex.bounds.bottom()) / texsize,
+			Vec2F(tex.bounds.right(), tex.bounds.top()) / texsize
+		),
+		colour
+	);
+
+	push_vertices(vertices, 4, indices, 6);
+}
+
 void SpriteBatch::push_texture(const Ref<Texture>& tex, const Colour& colour)
 {
 	set_texture(tex);
@@ -231,65 +260,23 @@ void SpriteBatch::push_texture(const Ref<Texture>& tex, const Colour& colour)
 	push_vertices(vertices, 4, indices, 6);
 }
 
-
-void SpriteBatch::push_texture(const TextureRegion& tex, const Colour& colour)
-{
-	set_texture(tex.source);
-
-	Vertex vertices[4];
-	u32 indices[6];
-
-	// ( f l o a t )
-
-	GfxUtil::quad(
-		vertices, indices,
-		Quad(RectF(
-			0.0f,
-			0.0f,
-			tex.bounds.w,
-			tex.bounds.h
-		)),
-		Quad(
-			Vec2F(
-				(float)tex.bounds.left() / (float)tex.source->width(),
-				(float)tex.bounds.top() / (float)tex.source->height()
-			),
-			Vec2F(
-				(float)tex.bounds.left() / (float)tex.source->width(),
-				(float)tex.bounds.bottom() / (float)tex.source->height()
-			),
-			Vec2F(
-				(float)tex.bounds.right() / (float)tex.source->width(),
-				(float)tex.bounds.bottom() / (float)tex.source->height()
-			),
-			Vec2F(
-				(float)tex.bounds.right() / (float)tex.source->width(),
-				(float)tex.bounds.top() / (float)tex.source->height()
-			)
-		),
-		colour
-	);
-
-	push_vertices(vertices, 4, indices, 6);
-}
-
 // this clearly is super basic
 // no newlines, or anything
 // but ive spent so long on the git now that i'll do this later
 
 /*
 * BIG NOTE:
-* CUSTOME SHADERS *DO NOT WORK* FOR FONTS SINCE THEY NEED THEIR OWN SHADERS
+* CUSTOM SHADERS *DO NOT WORK* FOR FONTS SINCE THEY NEED THEIR OWN SHADERS
 * THIS WILL PROBABLY BE FIXED WHEN INSTANCED RENDERING IS IMPLEMENTED
 * FOR NOW YOU CAN FIX THIS BY RENDERING THE TEXT TO A FRAMEBUFFER - THEN APPLYING THE SHADER TO THE FRAMEBUFFER
 */
 
-void SpriteBatch::push_string(const char* str, const Ref<Font>& font, const Colour& colour)
+void SpriteBatch::push_text(const char* str, const Ref<Font>& font, TextAlign align, const Colour& colour)
 {
-	push_string(str, font, [&](FontCharacter c, int idx) { return Vec2F::zero(); }, colour);
+	push_text(str, font, [&](FontCharacter c, int idx) { return Vec2F::zero(); }, align, colour);
 }
 
-void SpriteBatch::push_string(const char* str, const Ref<Font>& font, const std::function<Vec2F(FontCharacter,int)>& offsetfn, const Colour& colour)
+void SpriteBatch::push_text(const char* str, const Ref<Font>& font, const std::function<Vec2F(FontCharacter,int)>& offsetfn, TextAlign align, const Colour& colour)
 {
 	push_shader(m_font_shader); // engineer gamig 4
 

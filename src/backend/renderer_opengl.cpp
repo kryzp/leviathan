@@ -231,10 +231,14 @@ public:
 	Shader& set(const char* name, int* values, int count)			override { glUniform1iv			(glGetUniformLocation(m_id, name), count, (GLint*)values			); return *this; }
 	Shader& set(const char* name, float value)						override { glUniform1f			(glGetUniformLocation(m_id, name), value							); return *this; }
 	Shader& set(const char* name, float* values, int count)			override { glUniform1fv			(glGetUniformLocation(m_id, name), count, values					); return *this; }
-	// todo Vec2I
+	Shader& set(const char* name, const Vec2I& value)				override { glUniform2i			(glGetUniformLocation(m_id, name), value.x, value.y					); return *this; }
+	Shader& set(const char* name, const Vec2I* values, int count)	override { glUniform2iv			(glGetUniformLocation(m_id, name), count, (GLint*)values			); return *this; }
 	Shader& set(const char* name, const Vec2F& value)				override { glUniform2f			(glGetUniformLocation(m_id, name), value.x, value.y					); return *this; }
 	Shader& set(const char* name, const Vec2F* values, int count)	override { glUniform2fv			(glGetUniformLocation(m_id, name), count, (GLfloat*)values			); return *this; }
-	// todo Vec3[FI]
+	Shader& set(const char* name, const Vec3I& value)				override { glUniform3i			(glGetUniformLocation(m_id, name), value.x, value.y, value.z		); return *this; }
+	Shader& set(const char* name, const Vec3I* values, int count)	override { glUniform3iv			(glGetUniformLocation(m_id, name), count, (GLint*)values			); return *this; }
+	Shader& set(const char* name, const Vec3F& value)				override { glUniform3f			(glGetUniformLocation(m_id, name), value.x, value.y, value.z		); return *this; }
+	Shader& set(const char* name, const Vec3F* values, int count)	override { glUniform3fv			(glGetUniformLocation(m_id, name), count, (GLfloat*)values			); return *this; }
 	Shader& set(const char* name, const Mat3x2& value)				override { glUniformMatrix3x2fv	(glGetUniformLocation(m_id, name), 1, GL_FALSE, value.value_ptr()	); return *this; }
 	Shader& set(const char* name, const Mat4x4& value)				override { glUniformMatrix4fv	(glGetUniformLocation(m_id, name), 1, GL_FALSE, value.value_ptr()	); return *this; }
 };

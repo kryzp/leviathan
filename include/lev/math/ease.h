@@ -6,7 +6,6 @@ namespace lev
 	{
 		float linear(float t);
 		
-		// (this ones the best)
 		float elastic_in(float t);
 		float elastic_out(float t);
 		float elastic_in_out(float t);

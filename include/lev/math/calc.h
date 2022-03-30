@@ -1,5 +1,7 @@
 #pragma once
 
+#include <limits>
+
 namespace lev
 {
 	namespace Calc
@@ -18,6 +20,10 @@ namespace lev
 		float pow(float x, float e);
 		float exp(float x);
 		float sigmoid(float x);
+		float log(float x, float b);
+		float log2(float x);
+		float log10(float x);
+		float ln(float x);
 
 		float max(float a, float b);
 		float min(float a, float b);
@@ -27,6 +33,7 @@ namespace lev
 		float round(float x);
 		float floor(float x);
 		float ceil(float x);
+		bool within_epsilon(float lhs, float rhs, float epsilon = std::numeric_limits<float>::epsilon());
 
 		float approach(float from, float to, float amount);
 		float lerp(float from, float to, float amount);

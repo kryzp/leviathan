@@ -7,7 +7,7 @@
 
 // looks hacky but basically i just dereference oob memory and try writing to it, causing a crash
 #define LEV_ASSERT(_exp, _msg) if(!(_exp)){Log::error("ASSERTION: " _msg);*((volatile int*)0)=0;}
-#define LEV_ERROR(_msg) do{Log::error("ERROR: " _msg);*((volatile int*)0)=0;}while(false)
+#define LEV_ERROR(_msg) {Log::error("ERROR: " _msg);*((volatile int*)0)=0;}
 
 #else
 
@@ -47,7 +47,7 @@ public: \
 	{ \
 		static _classname* instance = nullptr; \
 		if (!instance) { instance = new _classname(); } \
-		LEV_ASSERT(instance); \
+		LEV_ASSERT(instance, "Instance should not be nullptr. How tf did that even happen are you using a potato to store memory????"); \
 		return *instance; \
 	} \
 private:
@@ -136,11 +136,11 @@ namespace lev
 	namespace MemUtil
 	{
 		void* set(void* ptr, s32 val, u64 size);
-		void* clear(void* ptr, u64 size);
 		void* copy(void* dst, const void* src, u64 size);
 		void* move(void* dst, const void* src, u64 size);
 		void* chr(void* ptr, s32 val, u64 size);
 		int compare(const void* p1, const void* p2, u64 size);
+		bool vcompare(void* ptr, byte val, u64 size);
 	}
 
 	namespace StrUtil
