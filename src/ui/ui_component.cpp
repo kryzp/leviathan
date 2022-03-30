@@ -45,7 +45,7 @@ void UIComponent::render(SpriteBatch& b)
 
 bool UIComponent::mouse_hovering_over(bool include_children)
 {
-	Vec2F mouse_pos = Input::mouse_screen_pos();
+	Vec2F mouse_pos = Input::mouse_draw_pos();
 	RectI mouse_rect = RectI(mouse_pos.x, mouse_pos.y, 1, 1);
 
 	bool hovering = mouse_rect.intersects(bounding_box());

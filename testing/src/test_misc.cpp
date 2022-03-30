@@ -1,5 +1,5 @@
 #include <leviathan.h>
-#include <lev/ui/components/texture_component.h>
+#include <lev/ui/components/c_clickable_texture.h>
 
 int main(void)
 {
@@ -18,11 +18,12 @@ int main(void)
 
 		conf.on_init = [&]() -> void {
 			tex = lev::Texture::create("D:\\_PROJECTS\\leviathan\\testing\\res\\textures\\p0.png");
+			auto texrgn = lev::TextureRegion(tex, lev::RectF(0.0f, 0.0f, 256.0f, 256.0f));
+			auto constraints = lev::UIConstraints::create_fixed(10, 10, 256, 256);
 
-			uimain.add<lev::UITextureComponent>(
-				lev::UIConstraints::create_fixed(10, 10, 256, 256),
-				lev::TextureRegion(tex, lev::RectF(0.0f, 0.0f, 256.0f, 256.0f))
-			);
+			uimain.add<lev::UIClickableTexture>(constraints, texrgn, [&]() {
+				lev::Log::print("e");
+			});
 		};
 
 		conf.on_update = [&]() -> void {

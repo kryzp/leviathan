@@ -7,12 +7,12 @@
 
 namespace lev
 {
-	class UITextureComponent : public UIComponent
+	class UITexture : public UIComponent
 	{
 	public:
 		TextureRegion texture;
 
-		UITextureComponent(const TextureRegion& tex)
+		UITexture(const TextureRegion& tex)
 			: UIComponent()
 			, texture(tex)
 		{
