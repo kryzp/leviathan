@@ -2,6 +2,7 @@ roughly in order of importance
 ==============================
 
 * entity component thing
+ - merge ui system into entity system (ui nodes)
 
 * asset management system
  - textures

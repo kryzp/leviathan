@@ -2,10 +2,10 @@
 
 namespace lev
 {
-	enum class Endianness
+	enum Endianness
 	{
-		LITTLE,
-		BIG
+		ENDIANNESS_LITTLE,
+		ENDIANNESS_BIG
 	};
 
 	namespace Endian

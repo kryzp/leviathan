@@ -15,10 +15,10 @@ using namespace lev;
 namespace
 {
 	bool g_running = false;
-	AppConfig g_config;
+	Config g_config;
 }
 
-void App::start(const AppConfig& cfg)
+void App::start(const Config& cfg)
 {
 	g_config = cfg;
 
@@ -34,12 +34,14 @@ void App::start(const AppConfig& cfg)
 
 bool App::init()
 {
+#ifdef LEV_DEBUG
 	if (!Log::init())
 	{
 		// r/hmmm
 		Log::error("failed to initialize logging");
 		return false;
 	}
+#endif
 
 	if (!System::init(&g_config))
 	{
@@ -71,19 +73,20 @@ bool App::init()
 
 void App::run()
 {
-	float prevseconds = 0.0f;
-
 	while (g_running)
 	{
 		// time
 		{
 			Time::frames++;
 
+			Time::prev_milliseconds = Time::milliseconds;
+			Time::prev_seconds = Time::seconds;
+
 			Time::milliseconds = System::ticks();
 			Time::seconds = Time::milliseconds / 1000.0f;
 
-			Time::delta = Time::seconds - prevseconds;
-			prevseconds = Time::seconds;
+			Time::delta = Time::milliseconds - Time::prev_milliseconds;
+			Time::delta = Time::seconds - Time::prev_seconds;
 		}
 
 		// update
@@ -134,7 +137,7 @@ bool App::is_running()
 	return g_running;
 }
 
-const AppConfig& App::config()
+const Config& App::config()
 {
 	return g_config;
 }
@@ -177,8 +180,8 @@ Size2 App::draw_size()
 
 float App::fps()
 {
-	static Timer fps_timer;
-	return Time::frames / Calc::max(1, fps_timer.seconds());
+	// todo
+	return 0.0f;
 }
 
 void App::clear(const Colour& colour)

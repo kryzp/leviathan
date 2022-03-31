@@ -21,7 +21,7 @@ namespace
 	SDL_Window* g_window;
 }
 
-bool System::init(const AppConfig* cfg)
+bool System::init(const Config* cfg)
 {
 #if _WIN32
 	SetProcessDPIAware();
@@ -108,19 +108,19 @@ void System::update()
 				break;
 
 			case SDL_MOUSEBUTTONDOWN:
-				Input::on_mouse_down(static_cast<MouseButton>(e.button.button));
+				Input::on_mouse_down(e.button.button);
 				break;
 
 			case SDL_MOUSEBUTTONUP:
-				Input::on_mouse_up(static_cast<MouseButton>(e.button.button));
+				Input::on_mouse_up(e.button.button);
 				break;
 
 			case SDL_KEYDOWN:
-				Input::on_key_down(static_cast<Key>(e.key.keysym.scancode));
+				Input::on_key_down(e.key.keysym.scancode);
 				break;
 
 			case SDL_KEYUP:
-				Input::on_key_up(static_cast<Key>(e.key.keysym.scancode));
+				Input::on_key_up(e.key.keysym.scancode);
 				break;
 
 			case SDL_TEXTINPUT:

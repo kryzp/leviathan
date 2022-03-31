@@ -8,25 +8,25 @@ namespace lev
 {
 	class Texture;
 
-	enum class TextureFormat
+	enum TextureFormat
 	{
-		RED,
-		RG,
-		RGB,
-		RGBA,
-		DEPTH_STENCIL
+		TEXTURE_FORMAT_RED,
+		TEXTURE_FORMAT_RG,
+		TEXTURE_FORMAT_RGB,
+		TEXTURE_FORMAT_RGBA,
+		TEXTURE_FORMAT_DEPTH_STENCIL
 	};
 
-	enum class TextureFilter
+	enum TextureFilter
 	{
-		NEAREST,
-		LINEAR
+		TEXTURE_FILTER_NEAREST,
+		TEXTURE_FILTER_LINEAR
 	};
 
-	enum class TextureWrap
+	enum TextureWrap
 	{
-		CLAMP,
-		REPEAT
+		TEXTURE_WRAP_CLAMP,
+		TEXTURE_WRAP_REPEAT
 	};
 
 	struct TextureData
@@ -38,7 +38,7 @@ namespace lev
 		TextureData()
 			: width(0)
 			, height(0)
-			, format(TextureFormat::RGBA)
+			, format(TEXTURE_FORMAT_RGBA)
 		{
 		}
 
@@ -57,9 +57,9 @@ namespace lev
 		TextureWrap wrap_y;
 
 		TextureSampler()
-			: filter(TextureFilter::NEAREST)
-			, wrap_x(TextureWrap::CLAMP)
-			, wrap_y(TextureWrap::CLAMP)
+			: filter(TEXTURE_FILTER_NEAREST)
+			, wrap_x(TEXTURE_WRAP_CLAMP)
+			, wrap_y(TEXTURE_WRAP_CLAMP)
 		{
 		}
 
@@ -77,9 +77,9 @@ namespace lev
 	struct TextureRegion
 	{
 		Ref<Texture> source;
-		RectF bounds;
+		RectI bounds;
 
-		TextureRegion(const Ref<Texture>& source, const RectF& bounds)
+		TextureRegion(const Ref<Texture>& source, const RectI& bounds)
 			: source(source)
 			, bounds(bounds)
 		{

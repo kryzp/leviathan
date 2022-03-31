@@ -9,9 +9,9 @@ namespace lev
 {
 	struct Colour;
 
-	enum class LogType;
+	enum LogType;
 
-	struct AppConfig
+	struct Config
 	{
 		const char* name = nullptr;
 		int width = 1280;
@@ -29,14 +29,14 @@ namespace lev
 
 	namespace App
 	{
-		void start(const AppConfig& cfg);
+		void start(const Config& cfg);
 		bool init();
 		void destroy();
 		void run();
 
 		void exit();
 		bool is_running();
-		const AppConfig& config();
+		const Config& config();
 
 		int window_width();
 		int window_height();

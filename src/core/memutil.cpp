@@ -2,7 +2,7 @@
 
 using namespace lev;
 
-void* MemUtil::set(void* ptr, s32 val, u64 size)
+void* MemUtil::set(void* ptr, byte val, u64 size)
 {
 	return ::memset(ptr, val, size);
 }
@@ -17,7 +17,7 @@ void* MemUtil::move(void* dst, const void* src, u64 size)
 	return ::memmove(dst, src, size);
 }
 
-void* MemUtil::chr(void* ptr, s32 val, u64 size)
+void* MemUtil::chr(void* ptr, byte val, u64 size)
 {
 	return ::memchr(ptr, val, size);
 }

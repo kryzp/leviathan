@@ -2,8 +2,14 @@
 
 #include <lev/graphics/blend.h>
 #include <lev/graphics/material.h>
+#include <lev/graphics/font.h>
+#include <lev/graphics/mesh.h>
+#include <lev/graphics/framebuffer.h>
 #include <lev/math/mat3x2.h>
+#include <lev/math/mat4x4.h>
 #include <lev/math/vec2.h>
+#include <lev/math/triangle.h>
+#include <lev/math/quad.h>
 #include <lev/math/colour.h>
 #include <lev/containers/vector.h>
 
@@ -13,21 +19,13 @@ namespace lev
 {
 	// todo: different sprite sort / rendering modes (front to back, back to front, immediate, etc...)
 
-	struct Mat4x4;
 	struct RenderPass;
-	class Framebuffer;
-	class Font;
-	class Mesh;
-	struct Quad;
-	struct Triangle;
-	struct Vertex;
-	struct FontCharacter;
 
-	enum class TextAlign
+	enum TextAlign
 	{
-		LEFT,
-		CENTRE,
-		RIGHT
+		TEXT_ALIGN_LEFT,
+		TEXT_ALIGN_CENTRE,
+		TEXT_ALIGN_RIGHT
 	};
 
 	class SpriteBatch
@@ -44,8 +42,8 @@ namespace lev
 		void push_triangle(const Triangle& tri, const Colour& colour = Colour::white());
 		void push_texture(const TextureRegion& tex, const Colour& colour = Colour::white());
 		void push_texture(const Ref<Texture>& tex, const Colour& colour = Colour::white());
-		void push_text(const char* str, const Ref<Font>& font, TextAlign align = TextAlign::LEFT, const Colour& colour = Colour::white());
-		void push_text(const char* str, const Ref<Font>& font, const std::function<Vec2F(FontCharacter,int)>& offsetfn, TextAlign align = TextAlign::LEFT, const Colour& colour = Colour::white());
+		void push_text(const char* str, const Ref<Font>& font, TextAlign align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white());
+		void push_text(const char* str, const Ref<Font>& font, const std::function<Vec2F(Font::Character,int)>& offsetfn, TextAlign align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white());
 
 		void set_texture(const Ref<Texture>& tex, int idx = 0);
 		void set_sampler(const TextureSampler& sampler, int idx = 0);

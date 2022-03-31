@@ -6,9 +6,9 @@ using namespace lev;
 const TextureSampler& TextureSampler::pixel()
 {
 	static const TextureSampler PIXEL(
-		TextureFilter::NEAREST,
-		TextureWrap::CLAMP,
-		TextureWrap::CLAMP
+		TEXTURE_FILTER_NEAREST,
+		TEXTURE_WRAP_CLAMP,
+		TEXTURE_WRAP_CLAMP
 	);
 
 	return PIXEL;
@@ -17,9 +17,9 @@ const TextureSampler& TextureSampler::pixel()
 const TextureSampler& TextureSampler::linear()
 {
 	static const TextureSampler LINEAR(
-		TextureFilter::LINEAR,
-		TextureWrap::CLAMP,
-		TextureWrap::CLAMP
+		TEXTURE_FILTER_LINEAR,
+		TEXTURE_WRAP_CLAMP,
+		TEXTURE_WRAP_CLAMP
 	);
 
 	return LINEAR;
@@ -42,7 +42,7 @@ Ref<Texture> Texture::create(const char* path)
 
 Ref<Texture> Texture::create(const Image& image)
 {
-	return create(image.width(), image.height(), TextureFormat::RGBA, (const byte*)image.pixels());
+	return create(image.width(), image.height(), TEXTURE_FORMAT_RGBA, (const byte*)image.pixels());
 }
 
 Ref<Texture> Texture::create(int width, int height, TextureFormat format, const byte* data)

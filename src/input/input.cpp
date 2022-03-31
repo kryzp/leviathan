@@ -46,12 +46,12 @@ void Input::on_mouse_screen_move(float x, float y)
 	g_mouse.screen_position = Vec2F(x, y);
 }
 
-void Input::on_mouse_down(MouseButton button)
+void Input::on_mouse_down(int button)
 {
 	g_mouse.down[button] = true;
 }
 
-void Input::on_mouse_up(MouseButton button)
+void Input::on_mouse_up(int button)
 {
 	g_mouse.down[button] = false;
 }
@@ -61,12 +61,12 @@ void Input::on_mouse_wheel(float x, float y)
 	g_mouse.wheel = Float2(x, y);
 }
 
-void Input::on_key_down(Key key)
+void Input::on_key_down(int key)
 {
 	g_kb.down[key] = true;
 }
 
-void Input::on_key_up(Key key)
+void Input::on_key_up(int key)
 {
 	g_kb.down[key] = false;
 }
@@ -76,49 +76,49 @@ void Input::on_text_utf8(const char* text)
 	StrUtil::cncat(g_kb.text, text, Input::MAX_TEXT_INPUT);
 }
 
-bool Input::down(MouseButton mb)
+bool Input::down_mb(int mb)
 {
 	return g_mouse.down[mb];
 }
 
-bool Input::down(Key key)
+bool Input::down_key(int key)
 {
 	return g_kb.down[key];
 }
 
-bool Input::released(MouseButton mb)
+bool Input::released_mb(int mb)
 {
 	return !g_mouse.down[mb] && g_mouse_prev.down[mb];
 }
 
-bool Input::released(Key key)
+bool Input::released_key(int key)
 {
 	return !g_kb.down[key] && g_kb_prev.down[key];
 }
 
-bool Input::pressed(MouseButton mb)
+bool Input::pressed_mb(int mb)
 {
 	return g_mouse.down[mb] && !g_mouse_prev.down[mb];
 }
 
-bool Input::pressed(Key key)
+bool Input::pressed_key(int key)
 {
 	return g_kb.down[key] && !g_kb_prev.down[key];
 }
 
 bool Input::ctrl()
 {
-	return down(KEY_LEFT_CONTROL) || down(KEY_RIGHT_CONTROL);
+	return down_key(KEY_LEFT_CONTROL) || down_key(KEY_RIGHT_CONTROL);
 }
 
 bool Input::shift()
 {
-	return down(KEY_LEFT_SHIFT) || down(KEY_RIGHT_SHIFT);
+	return down_key(KEY_LEFT_SHIFT) || down_key(KEY_RIGHT_SHIFT);
 }
 
 bool Input::alt()
 {
-	return down(KEY_LEFT_ALT) || down(KEY_RIGHT_ALT);
+	return down_key(KEY_LEFT_ALT) || down_key(KEY_RIGHT_ALT);
 }
 
 const char* Input::text()

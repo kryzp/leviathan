@@ -6,15 +6,15 @@ using namespace lev;
 Endianness Endian::get_endianness()
 {
 	return is_big_endian() ?
-		Endianness::BIG :
-		Endianness::LITTLE;
+		ENDIANNESS_BIG :
+		ENDIANNESS_LITTLE;
 }
 
 bool Endian::is_endian(Endianness endian)
 {
 	return (
-		(endian == Endianness::LITTLE && is_little_endian()) ||
-		(endian == Endianness::BIG && is_big_endian())
+		(endian == ENDIANNESS_LITTLE && is_little_endian()) ||
+		(endian == ENDIANNESS_BIG && is_big_endian())
 	);
 }
 

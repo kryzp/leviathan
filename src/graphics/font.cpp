@@ -11,7 +11,7 @@ using namespace lev;
 #define LEV_FONT_ATLAS_SIZE (LEV_FONT_ATLAS_W*LEV_FONT_ATLAS_H)
 #define M_INTERNAL_INFO ((stbtt_fontinfo*)m_internal_info)
 
-TextureRegion FontAtlas::region(const RectI& rect) const
+TextureRegion Font::Atlas::region(const RectI& rect) const
 {
 	return TextureRegion(texture, rect);
 }
@@ -67,7 +67,7 @@ void Font::load(float size, const char* path)
 
 	// store kerning data
 	m_kerning_count = stbtt_GetKerningTableLength(M_INTERNAL_INFO);
-	m_kerning = new FontKerning[m_kerning_count];
+	m_kerning = new Kerning[m_kerning_count];
 	{
 		stbtt_kerningentry* kerning_tables = new stbtt_kerningentry[m_kerning_count];
 		stbtt_GetKerningTable(M_INTERNAL_INFO, kerning_tables, m_kerning_count);
@@ -100,9 +100,9 @@ void Font::load(float size, const char* path)
 
 		stbtt_PackEnd(&pack_context);
 
-		m_atlas.texture = Texture::create(LEV_FONT_ATLAS_W, LEV_FONT_ATLAS_H, TextureFormat::RED, bitmap);
+		m_atlas.texture = Texture::create(LEV_FONT_ATLAS_W, LEV_FONT_ATLAS_H, TEXTURE_FORMAT_RED, bitmap);
 
-		m_characters = new FontCharacter[LEV_FONT_CHARCOUNT];
+		m_characters = new Character[LEV_FONT_CHARCOUNT];
 
 		for (int i = 0; i < LEV_FONT_CHARCOUNT; i++)
 		{
@@ -147,17 +147,17 @@ int Font::kern_advance(int curr, int next) const
 	return 0;
 }
 
-const FontInfo& Font::info() const
+const Font::Info& Font::info() const
 {
 	return m_info;
 }
 
-const FontAtlas& Font::atlas() const
+const Font::Atlas& Font::atlas() const
 {
 	return m_atlas;
 }
 
-const FontCharacter& Font::character(int idx) const
+const Font::Character& Font::character(int idx) const
 {
 	LEV_ASSERT(idx >= 0 && idx < LEV_FONT_CHARCOUNT, "Index must be within bounds of the character array [0 -> 255]");
 	return m_characters[idx];

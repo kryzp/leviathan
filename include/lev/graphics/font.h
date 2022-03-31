@@ -14,43 +14,43 @@ namespace lev
     class Texture;
 	struct TextureRegion;
 
-	struct FontInfo
-	{
-		float size;
-		int ascent;
-		int descent;
-		int line_gap;
-		RectI bbox;
-	};
-
-	struct FontKerning
-	{
-		int advance;
-		int glyph0;
-		int glyph1;
-	};
-
-	struct FontCharacter
-	{
-		int codepoint;
-		RectI bbox;
-		float advance_x;
-		Vec2F draw_offset;
-		Vec2F draw_offset2;
-	};
-
-	struct FontAtlas
-	{
-		Ref<Texture> texture;
-		TextureRegion region(const RectI& rect) const;
-	};
-
 	// ONLY SUPPORTS TRUETYPE FONTS
 	// todo: use some kind of enum class to denote which how to load the font
 
 	class Font
 	{
 	public:
+		struct Info
+		{
+			float size;
+			int ascent;
+			int descent;
+			int line_gap;
+			RectI bbox;
+		};
+
+		struct Kerning
+		{
+			int advance;
+			int glyph0;
+			int glyph1;
+		};
+
+		struct Character
+		{
+			int codepoint;
+			RectI bbox;
+			float advance_x;
+			Vec2F draw_offset;
+			Vec2F draw_offset2;
+		};
+
+		struct Atlas
+		{
+			Ref<Texture> texture;
+			TextureRegion region(const RectI& rect) const;
+		};
+
 		Font();
 		Font(float size, const char* path);
 		~Font();
@@ -60,18 +60,18 @@ namespace lev
 
         int kern_advance(int curr, int next) const;
 
-		const FontInfo& info() const;
-		const FontAtlas& atlas() const;
-		const FontCharacter& character(int idx) const;
+		const Info& info() const;
+		const Atlas& atlas() const;
+		const Character& character(int idx) const;
 
 	private:
-		FontInfo m_info;
+		Info m_info;
 		void* m_internal_info;
 
-		FontKerning* m_kerning;
+		Kerning* m_kerning;
 		int m_kerning_count;
 
-		FontCharacter* m_characters;
-		FontAtlas m_atlas;
+		Character* m_characters;
+		Atlas m_atlas;
 	};
 }

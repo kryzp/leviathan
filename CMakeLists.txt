@@ -41,11 +41,12 @@ add_library(${PROJECT_NAME}
 	src/math/transform.cpp
 	src/math/timer.cpp
 	src/math/quaternion.cpp
+
+	src/node/node.cpp
+	src/node/gui/gui_component.cpp
+	src/node/gui/gui_constraints.cpp
 	
 	src/physics/collider.cpp
-
-	src/ui/ui_component.cpp
-	src/ui/ui_constraints.cpp
 
 	src/backend/system_sdl2.cpp
 	src/backend/renderer_opengl.cpp

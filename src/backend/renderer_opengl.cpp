@@ -20,11 +20,11 @@ namespace
 	{
 		switch (fmt)
 		{
-			case TextureFormat::RED:			return GL_RED;
-			case TextureFormat::RG:				return GL_RG;
-			case TextureFormat::RGB:			return GL_RGB;
-			case TextureFormat::RGBA:			return GL_RGBA;
-			case TextureFormat::DEPTH_STENCIL:	return GL_DEPTH_STENCIL;
+			case TEXTURE_FORMAT_RED:			return GL_RED;
+			case TEXTURE_FORMAT_RG:				return GL_RG;
+			case TEXTURE_FORMAT_RGB:			return GL_RGB;
+			case TEXTURE_FORMAT_RGBA:			return GL_RGBA;
+			case TEXTURE_FORMAT_DEPTH_STENCIL:	return GL_DEPTH_STENCIL;
 		}
 	}
 
@@ -32,11 +32,11 @@ namespace
 	{
 		switch (fmt)
 		{
-			case TextureFormat::RED:			return GL_RED;
-			case TextureFormat::RG:				return GL_RG;
-			case TextureFormat::RGB:			return GL_RGB;
-			case TextureFormat::RGBA:			return GL_RGBA;
-			case TextureFormat::DEPTH_STENCIL:	return GL_DEPTH24_STENCIL8;
+			case TEXTURE_FORMAT_RED:			return GL_RED;
+			case TEXTURE_FORMAT_RG:				return GL_RG;
+			case TEXTURE_FORMAT_RGB:			return GL_RGB;
+			case TEXTURE_FORMAT_RGBA:			return GL_RGBA;
+			case TEXTURE_FORMAT_DEPTH_STENCIL:	return GL_DEPTH24_STENCIL8;
 		}
 	}
 
@@ -44,11 +44,11 @@ namespace
 	{
 		switch (fmt)
 		{
-			case TextureFormat::RED:			return GL_UNSIGNED_BYTE;
-			case TextureFormat::RG:				return GL_UNSIGNED_BYTE;
-			case TextureFormat::RGB:			return GL_UNSIGNED_BYTE;
-			case TextureFormat::RGBA:			return GL_UNSIGNED_BYTE;
-			case TextureFormat::DEPTH_STENCIL:	return GL_UNSIGNED_INT_24_8;
+			case TEXTURE_FORMAT_RED:			return GL_UNSIGNED_BYTE;
+			case TEXTURE_FORMAT_RG:				return GL_UNSIGNED_BYTE;
+			case TEXTURE_FORMAT_RGB:			return GL_UNSIGNED_BYTE;
+			case TEXTURE_FORMAT_RGBA:			return GL_UNSIGNED_BYTE;
+			case TEXTURE_FORMAT_DEPTH_STENCIL:	return GL_UNSIGNED_INT_24_8;
 		}
 	}
 
@@ -56,11 +56,11 @@ namespace
 	{
 		switch (func)
 		{
-			case BlendEquation::ADD:				return GL_FUNC_ADD;
-			case BlendEquation::SUBTRACT:			return GL_FUNC_SUBTRACT;
-			case BlendEquation::REVERSE_SUBTRACT:	return GL_FUNC_REVERSE_SUBTRACT;
-			case BlendEquation::MIN:				return GL_MIN;
-			case BlendEquation::MAX:				return GL_MAX;
+			case BLEND_EQUATION_ADD:				return GL_FUNC_ADD;
+			case BLEND_EQUATION_SUBTRACT:			return GL_FUNC_SUBTRACT;
+			case BLEND_EQUATION_REVERSE_SUBTRACT:	return GL_FUNC_REVERSE_SUBTRACT;
+			case BLEND_EQUATION_MIN:				return GL_MIN;
+			case BLEND_EQUATION_MAX:				return GL_MAX;
 		}
 	}
 
@@ -68,24 +68,24 @@ namespace
 	{
 		switch (factor)
 		{
-			case BlendFunc::ZERO:						return GL_ZERO;
-			case BlendFunc::ONE:						return GL_ONE;
-			case BlendFunc::SRC_COLOUR:					return GL_SRC_COLOR;
-			case BlendFunc::SRC1_COLOUR:				return GL_SRC1_COLOR;
-			case BlendFunc::ONE_MINUS_SRC_COLOUR:		return GL_ONE_MINUS_SRC_COLOR;
-			case BlendFunc::ONE_MINUS_SRC1_COLOUR:		return GL_ONE_MINUS_SRC1_COLOR;
-			case BlendFunc::DST_COLOUR:					return GL_DST_COLOR;
-			case BlendFunc::ONE_MINUS_DST_COLOUR:		return GL_ONE_MINUS_DST_COLOR;
-			case BlendFunc::SRC_ALPHA:					return GL_SRC_ALPHA;
-			case BlendFunc::SRC1_ALPHA:					return GL_SRC1_ALPHA;
-			case BlendFunc::ONE_MINUS_SRC_ALPHA:		return GL_ONE_MINUS_SRC_ALPHA;
-			case BlendFunc::ONE_MINUS_SRC1_ALPHA:		return GL_ONE_MINUS_SRC1_ALPHA;
-			case BlendFunc::DST_ALPHA:					return GL_DST_ALPHA;
-			case BlendFunc::ONE_MINUS_DST_ALPHA:		return GL_ONE_MINUS_DST_ALPHA;
-			case BlendFunc::CONSTANT_COLOUR:			return GL_CONSTANT_COLOR;
-			case BlendFunc::ONE_MINUS_CONSTANT_COLOUR:	return GL_ONE_MINUS_CONSTANT_COLOR;
-			case BlendFunc::CONSTANT_ALPHA:				return GL_CONSTANT_ALPHA;
-			case BlendFunc::ONE_MINUS_CONSTANT_ALPHA:	return GL_ONE_MINUS_CONSTANT_ALPHA;
+			case BLEND_FUNC_ZERO:						return GL_ZERO;
+			case BLEND_FUNC_ONE:						return GL_ONE;
+			case BLEND_FUNC_SRC_COLOUR:					return GL_SRC_COLOR;
+			case BLEND_FUNC_SRC1_COLOUR:				return GL_SRC1_COLOR;
+			case BLEND_FUNC_ONE_MINUS_SRC_COLOUR:		return GL_ONE_MINUS_SRC_COLOR;
+			case BLEND_FUNC_ONE_MINUS_SRC1_COLOUR:		return GL_ONE_MINUS_SRC1_COLOR;
+			case BLEND_FUNC_DST_COLOUR:					return GL_DST_COLOR;
+			case BLEND_FUNC_ONE_MINUS_DST_COLOUR:		return GL_ONE_MINUS_DST_COLOR;
+			case BLEND_FUNC_SRC_ALPHA:					return GL_SRC_ALPHA;
+			case BLEND_FUNC_SRC1_ALPHA:					return GL_SRC1_ALPHA;
+			case BLEND_FUNC_ONE_MINUS_SRC_ALPHA:		return GL_ONE_MINUS_SRC_ALPHA;
+			case BLEND_FUNC_ONE_MINUS_SRC1_ALPHA:		return GL_ONE_MINUS_SRC1_ALPHA;
+			case BLEND_FUNC_DST_ALPHA:					return GL_DST_ALPHA;
+			case BLEND_FUNC_ONE_MINUS_DST_ALPHA:		return GL_ONE_MINUS_DST_ALPHA;
+			case BLEND_FUNC_CONSTANT_COLOUR:			return GL_CONSTANT_COLOR;
+			case BLEND_FUNC_ONE_MINUS_CONSTANT_COLOUR:	return GL_ONE_MINUS_CONSTANT_COLOR;
+			case BLEND_FUNC_CONSTANT_ALPHA:				return GL_CONSTANT_ALPHA;
+			case BLEND_FUNC_ONE_MINUS_CONSTANT_ALPHA:	return GL_ONE_MINUS_CONSTANT_ALPHA;
 		}
 	}
 }
@@ -139,10 +139,10 @@ public:
 
 	void update(const TextureSampler& sampler)
 	{
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (sampler.wrap_x == TextureWrap::CLAMP) ? GL_CLAMP_TO_EDGE : GL_REPEAT); // can we just take a moment to appreciate how nicely the spacing lines up here oh my god
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (sampler.wrap_y == TextureWrap::CLAMP) ? GL_CLAMP_TO_EDGE : GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sampler.filter == TextureFilter::LINEAR) ? GL_LINEAR : GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sampler.filter == TextureFilter::LINEAR) ? GL_LINEAR : GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (sampler.wrap_x == TEXTURE_WRAP_CLAMP) ? GL_CLAMP_TO_EDGE : GL_REPEAT); // can we just take a moment to appreciate how nicely the spacing lines up here oh my god
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (sampler.wrap_y == TEXTURE_WRAP_CLAMP) ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sampler.filter == TEXTURE_FILTER_LINEAR) ? GL_LINEAR : GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sampler.filter == TEXTURE_FILTER_LINEAR) ? GL_LINEAR : GL_NEAREST);
 	}
 
 	int width() const override { return m_width; }
@@ -276,7 +276,7 @@ public:
 			auto tex = Texture::create(m_width, m_height, data.attachments[i], nullptr);
 			auto gltex = (OpenGLTexture*)tex.get();
 
-			if (data.attachments[i] == TextureFormat::DEPTH_STENCIL)
+			if (data.attachments[i] == TEXTURE_FORMAT_DEPTH_STENCIL)
 			{
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, gltex->id(), 0);
 				m_gl_attachments.push_back(GL_DEPTH_STENCIL_ATTACHMENT);

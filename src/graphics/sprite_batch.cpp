@@ -9,12 +9,12 @@ using namespace lev;
 namespace
 {
 	BlendMode g_default_blend = {
-		.equation_rgb   = BlendEquation::ADD,
-		.equation_alpha = BlendEquation::ADD,
-		.func_src_rgb   = BlendFunc::SRC_ALPHA,
-		.func_dst_rgb   = BlendFunc::ONE_MINUS_SRC_ALPHA,
-		.func_src_alpha = BlendFunc::ONE,
-		.func_dst_alpha = BlendFunc::ONE
+		.equation_rgb   = BLEND_EQUATION_ADD,
+		.equation_alpha = BLEND_EQUATION_ADD,
+		.func_src_rgb   = BLEND_FUNC_SRC_ALPHA,
+		.func_dst_rgb   = BLEND_FUNC_ONE_MINUS_SRC_ALPHA,
+		.func_src_alpha = BLEND_FUNC_ONE,
+		.func_dst_alpha = BLEND_FUNC_ONE
 	};
 }
 
@@ -273,10 +273,10 @@ void SpriteBatch::push_texture(const Ref<Texture>& tex, const Colour& colour)
 
 void SpriteBatch::push_text(const char* str, const Ref<Font>& font, TextAlign align, const Colour& colour)
 {
-	push_text(str, font, [&](FontCharacter c, int idx) { return Vec2F::zero(); }, align, colour);
+	push_text(str, font, [&](Font::Character c, int idx) { return Vec2F::zero(); }, align, colour);
 }
 
-void SpriteBatch::push_text(const char* str, const Ref<Font>& font, const std::function<Vec2F(FontCharacter,int)>& offsetfn, TextAlign align, const Colour& colour)
+void SpriteBatch::push_text(const char* str, const Ref<Font>& font, const std::function<Vec2F(Font::Character,int)>& offsetfn, TextAlign align, const Colour& colour)
 {
 	push_shader(m_font_shader); // engineer gamig 4
 

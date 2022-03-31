@@ -4,11 +4,11 @@
 
 namespace lev
 {
-	struct AppConfig;
+	struct Config;
 
 	namespace System
 	{
-		bool init(const AppConfig* cfg);
+		bool init(const Config* cfg);
 		void destroy();
 		void postinit();
 		void update();

@@ -262,14 +262,14 @@ namespace lev
 		void destroy();
 		void update();
 
-		bool down(MouseButton mb);
-		bool down(Key key);
+		bool down_mb(int mb);
+		bool down_key(int key);
 		
-		bool released(MouseButton mb);
-		bool released(Key key);
+		bool released_mb(int mb);
+		bool released_key(int key);
 		
-		bool pressed(MouseButton mb);
-		bool pressed(Key key);
+		bool pressed_mb(int mb);
+		bool pressed_key(int key);
 
 		bool ctrl();
 		bool shift();
@@ -286,12 +286,12 @@ namespace lev
 		void on_mouse_move(float x, float y);
 		void on_mouse_screen_move(float x, float y);
 		
-		void on_mouse_down(MouseButton button);
-		void on_mouse_up(MouseButton button);
+		void on_mouse_down(int button);
+		void on_mouse_up(int button);
 		void on_mouse_wheel(float x, float y);
 		
-		void on_key_down(Key key);
-		void on_key_up(Key key);
+		void on_key_down(int key);
+		void on_key_up(int key);
 		void on_text_utf8(const char* text);
 	}
 }

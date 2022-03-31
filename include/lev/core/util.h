@@ -101,12 +101,12 @@ namespace lev
 	template <typename T, typename... Args>
 	constexpr Ref<T> create_ref(Args&&... args) { return std::make_shared<T>(std::forward<Args>(args)...); }
 
-	enum class LogType
+	enum LogType
 	{
-		NORMAL,
-		WARN,
-		ERROR,
-		FILE
+		LOG_TYPE_NORMAL,
+		LOG_TYPE_WARN,
+		LOG_TYPE_ERROR,
+		LOG_TYPE_FILE
 	};
 
 	namespace Log
@@ -128,17 +128,20 @@ namespace lev
 	struct Time
 	{
 		static float seconds;
+		static float prev_seconds;
 		static float milliseconds;
+		static float prev_milliseconds;
 		static float delta;
+		static float deltams;
 		static u64 frames;
 	};
 
 	namespace MemUtil
 	{
-		void* set(void* ptr, s32 val, u64 size);
+		void* set(void* ptr, byte val, u64 size);
 		void* copy(void* dst, const void* src, u64 size);
 		void* move(void* dst, const void* src, u64 size);
-		void* chr(void* ptr, s32 val, u64 size);
+		void* chr(void* ptr, byte val, u64 size);
 		int compare(const void* p1, const void* p2, u64 size);
 		bool vcompare(void* ptr, byte val, u64 size);
 	}

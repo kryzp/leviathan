@@ -23,7 +23,7 @@ namespace lev
         void resize(u64 new_count);
         void erase(u64 index, u64 amount = 1);
         void expand(u64 amount = 1);
-        void setto(u64 value);
+        void fill(byte value);
 
         T& front();
         const T& front() const;
@@ -187,7 +187,7 @@ namespace lev
     }
 
     template <typename T>
-    void Vector<T>::setto(u64 value)
+    void Vector<T>::fill(byte value)
     {
         MemUtil::set(m_buf, value, sizeof(T) * m_size);
     }
