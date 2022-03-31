@@ -19,7 +19,6 @@ namespace lev
 		Node* add(T item);
 		void remove(Node* node);
 		void remove(T item);
-
 		Node* find(T item) const;
 
 		Node* first;

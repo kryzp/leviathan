@@ -5,61 +5,61 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_library(${PROJECT_NAME}
 
-	src/core/app.cpp
-	src/core/log.cpp
-	src/core/time.cpp
-	src/core/memutil.cpp
-	src/core/strutil.cpp
+	public/lev/core/app.cpp
+	public/lev/core/log.cpp
+	public/lev/core/time.cpp
+	public/lev/core/memutil.cpp
+	public/lev/core/strutil.cpp
 	
-	src/graphics/gfxutil.cpp
-	src/graphics/sprite_batch.cpp
-	src/graphics/framebuffer.cpp
-	src/graphics/image.cpp
-	src/graphics/font.cpp
-	src/graphics/mesh.cpp
-	src/graphics/material.cpp
-	src/graphics/texture.cpp
-	src/graphics/shader.cpp
+	public/lev/graphics/gfxutil.cpp
+	public/lev/graphics/sprite_batch.cpp
+	public/lev/graphics/framebuffer.cpp
+	public/lev/graphics/image.cpp
+	public/lev/graphics/font.cpp
+	public/lev/graphics/mesh.cpp
+	public/lev/graphics/material.cpp
+	public/lev/graphics/texture.cpp
+	public/lev/graphics/shader.cpp
 
-	src/io/endian.cpp
-	src/io/stream.cpp
-	src/io/file_stream.cpp
-	src/io/memory_stream.cpp
+	public/lev/io/endian.cpp
+	public/lev/io/stream.cpp
+	public/lev/io/file_stream.cpp
+	public/lev/io/memory_stream.cpp
 
-	src/input/input.cpp
+	public/lev/input/input.cpp
 
-	src/math/calc.cpp
-	src/math/ease.cpp
-	src/math/circle.cpp
-	src/math/colour.cpp
-	src/math/line.cpp
-	src/math/mat3x2.cpp
-	src/math/mat4x4.cpp
-	src/math/quad.cpp
-	src/math/triangle.cpp
-	src/math/polygon.cpp
-	src/math/transform.cpp
-	src/math/timer.cpp
-	src/math/quaternion.cpp
+	public/lev/math/calc.cpp
+	public/lev/math/ease.cpp
+	public/lev/math/circle.cpp
+	public/lev/math/colour.cpp
+	public/lev/math/line.cpp
+	public/lev/math/mat3x2.cpp
+	public/lev/math/mat4x4.cpp
+	public/lev/math/quad.cpp
+	public/lev/math/triangle.cpp
+	public/lev/math/polygon.cpp
+	public/lev/math/transform.cpp
+	public/lev/math/timer.cpp
+	public/lev/math/quaternion.cpp
 
-	src/node/node.cpp
-	src/node/gui/gui_component.cpp
-	src/node/gui/gui_constraints.cpp
+	public/lev/node/node.cpp
+	public/lev/node/gui/gui_component.cpp
+	public/lev/node/gui/gui_constraints.cpp
 	
-	src/physics/collider.cpp
+	public/lev/physics/collider.cpp
 
-	src/backend/system_sdl2.cpp
-	src/backend/renderer_opengl.cpp
-	src/third_party/glad/glad.c
+	private/backend/system_sdl2.cpp
+	private/backend/renderer_opengl.cpp
+	private/third_party/glad/glad.c
 )
 
 target_include_directories(${PROJECT_NAME}
 	
 	PUBLIC
-	${CMAKE_CURRENT_SOURCE_DIR}/include
+	${CMAKE_CURRENT_SOURCE_DIR}/public
 	
 	PRIVATE
-	${CMAKE_CURRENT_SOURCE_DIR}/src
+	${CMAKE_CURRENT_SOURCE_DIR}/private
 )
 
 set(OPENGL_ENABLED true CACHE BOOL "Use OpenGL as the renderer implementation")

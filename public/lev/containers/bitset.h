@@ -85,6 +85,8 @@ namespace lev
 	template <u64 Size>
 	u64 Bitset<Size>::on_count() const
 	{
+		// popcount???
+
 		u64 total = 0;
 		for (int i = 0; i < Size; i++)
 		{
