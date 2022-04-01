@@ -35,6 +35,8 @@ namespace lev
 
 		void update() override
 		{
+			GUIComponent::update();
+
 			if (mouse_clicked_over())
 			{
 				ClickData data;
@@ -46,6 +48,7 @@ namespace lev
 		void render(SpriteBatch& b) override
 		{
 			GUIComponent::render(b);
+
 			b.push_matrix(Mat3x2::create_transform(position(), 0.0f, size() / texture.source->size(), Vec2F::zero()));
 			b.push_texture(texture);
 			b.pop_matrix();

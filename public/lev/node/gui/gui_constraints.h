@@ -27,6 +27,7 @@ namespace lev
 		void constrain(GUIComponent& component);
 
 		static GUIConstraints create_fixed(int x, int y, int width, int height);
+		static GUIConstraints create_mousepos(int width, int height);
 
 		Ref<GUIConstraint> x;
 		Ref<GUIConstraint> y;

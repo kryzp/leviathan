@@ -24,6 +24,8 @@ void GUIComponent::init()
 
 void GUIComponent::update()
 {
+	this->constraints.constrain(*this);
+
 	for (auto& component : m_components)
 	{
 		if (!component->enabled)

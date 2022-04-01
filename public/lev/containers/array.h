@@ -100,4 +100,16 @@ namespace lev
 	{
 		return m_buf;
 	}
+	
+	template <typename T, u64 Size>
+    T& Array<T, Size>::operator [] (u64 idx)
+	{
+		return m_buf[idx];
+	}
+	
+	template <typename T, u64 Size>
+    const T& Array<T, Size>::operator [] (u64 idx) const
+	{
+		return m_buf[idx];
+	}
 }

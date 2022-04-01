@@ -1,6 +1,8 @@
 #include <lev/node/gui/gui_constraints.h>
 #include <lev/node/gui/gui_component.h>
+
 #include <lev/node/gui/constraints/pixel_constraint.h>
+#include <lev/node/gui/constraints/mousepos_constraint.h>
 
 using namespace lev;
 
@@ -22,6 +24,18 @@ GUIConstraints GUIConstraints::create_fixed(int x, int y, int width, int height)
 	{
 		constraints.x      = create_ref<PixelConstraint>(x);
 		constraints.y      = create_ref<PixelConstraint>(y);
+		constraints.width  = create_ref<PixelConstraint>(width);
+		constraints.height = create_ref<PixelConstraint>(height);
+	}
+	return constraints;
+}
+
+GUIConstraints GUIConstraints::create_mousepos(int width, int height)
+{
+	GUIConstraints constraints;
+	{
+		constraints.x      = create_ref<MousePosConstraint>();
+		constraints.y      = create_ref<MousePosConstraint>();
 		constraints.width  = create_ref<PixelConstraint>(width);
 		constraints.height = create_ref<PixelConstraint>(height);
 	}

@@ -1,9 +1,6 @@
 roughly in order of importance
 ==============================
 
-* entity component thing
- - merge ui system into entity system (ui nodes)
-
 * asset management system
  - textures
  - fonts
@@ -28,3 +25,5 @@ roughly in order of importance
 * debuggging console
 
 * lua???
+
+* quads are like upside down lol makes it hard to work with

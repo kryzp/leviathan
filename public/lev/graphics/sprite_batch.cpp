@@ -6,6 +6,11 @@
 
 using namespace lev;
 
+#define FRAGMODE_ALL (Colour(1.0f, 0.0f, 0.0f, 0.0f))
+#define FRAGMODE_ALPHA (Colour(0.0f, 1.0f, 0.0f, 0.0f))
+#define FRAGMODE_RED (Colour(0.0f, 0.0f, 1.0f, 0.0f))
+#define FRAGMODE_SILHOUETTE (Colour(0.0f, 0.0f, 0.0f, 1.0f))
+
 namespace
 {
 	BlendMode g_default_blend = {
@@ -44,13 +49,16 @@ void SpriteBatch::initialize()
 			"layout (location = 0) in vec2 a_pos;\n"
 			"layout (location = 1) in vec2 a_uv;\n"
 			"layout (location = 2) in vec4 a_colour;\n"
-			"out vec4 frag_mod_colour;\n"
+			"layout (location = 3) in vec4 a_mode;\n"
 			"out vec2 frag_coord;\n"
+			"out vec4 frag_mod_colour;\n"
+			"out vec4 frag_mode;\n"
 			"uniform mat4 u_projection;\n"
 			"void main() {\n"
 			"	gl_Position = u_projection * vec4(a_pos, 0.0, 1.0);\n"
 			"	frag_mod_colour = a_colour;\n"
 			"	frag_coord = a_uv;\n"
+			"	frag_mode = a_mode;\n"
 			"}";
 
 		const char* fragment =
@@ -58,45 +66,18 @@ void SpriteBatch::initialize()
 			"out vec4 frag_colour;\n"
 			"in vec2 frag_coord;\n"
 			"in vec4 frag_mod_colour;\n"
+			"in vec4 frag_mode;\n"
 			"uniform sampler2D u_texture_0;\n"
 			"void main() {\n"
-			"	frag_colour = texture(u_texture_0, frag_coord) * frag_mod_colour;\n"
+			"	vec4 texcol = texture(u_texture_0, frag_coord);\n"
+			"	frag_colour = frag_mode.r * texcol   * frag_mod_colour + "
+			"                 frag_mode.g * texcol.a * frag_mod_colour + "
+			"                 frag_mode.b * texcol.r * frag_mod_colour + "
+			"                 frag_mode.a * frag_mod_colour;\n"
 			"}";
 #endif
 
 		m_material_stack[0].shader = Shader::create(vertex, fragment, true);
-	}
-
-	// font shader
-	{
-#ifdef LEV_USE_OPENGL
-		const char* vertex =
-			"#version 330 core\n"
-			"layout (location = 0) in vec2 a_pos;\n"
-			"layout (location = 1) in vec2 a_uv;\n"
-			"layout (location = 2) in vec4 a_colour;\n"
-			"out vec4 frag_mod_colour;\n"
-			"out vec2 frag_coord;\n"
-			"uniform mat4 u_projection;\n"
-			"void main() {\n"
-			"	gl_Position = u_projection * vec4(a_pos, 0.0, 1.0);\n"
-			"	frag_mod_colour = a_colour;\n"
-			"	frag_coord = a_uv;\n"
-			"}";
-
-		const char* fragment =
-			"#version 330 core\n"
-			"out vec4 frag_colour;\n"
-			"in vec2 frag_coord;\n"
-			"in vec4 frag_mod_colour;\n"
-			"uniform sampler2D u_texture_0;\n"
-			"void main() {\n"
-			"	vec4 colour = texture(u_texture_0, frag_coord);\n"
-			"	frag_colour = vec4(colour.r, colour.r, colour.r, colour.r) * frag_mod_colour;\n"
-			"}";
-
-		m_font_shader = Shader::create(vertex, fragment, true);
-#endif
 	}
 
 	m_initialized = true;
@@ -165,7 +146,7 @@ void SpriteBatch::push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx,
 	m_batches.push_back(batch);
 }
 
-void SpriteBatch::push_quad(const Quad& quad, const Colour& colour)
+void SpriteBatch::push_quad(const Quad& quad, const Colour& colour, const Colour& mode)
 {
 	Vertex vertices[4];
 	u32 indices[6];
@@ -179,13 +160,14 @@ void SpriteBatch::push_quad(const Quad& quad, const Colour& colour)
 			Vec2F(1.0f, 1.0f),
 			Vec2F(1.0f, 0.0f)
 		),
-		colour
+		colour,
+		mode
 	);
 
 	push_vertices(vertices, 4, indices, 6);
 }
 
-void SpriteBatch::push_triangle(const Triangle& tri, const Colour& colour)
+void SpriteBatch::push_triangle(const Triangle& tri, const Colour& colour, const Colour& mode)
 {
 	Vertex vertices[3];
 	u32 indices[3];
@@ -198,20 +180,21 @@ void SpriteBatch::push_triangle(const Triangle& tri, const Colour& colour)
 			Vec2F(0.5f, 1.0f),
 			Vec2F(1.0f, 0.0f)
 		),
-		colour
+		colour,
+		mode
 	);
 
-	push_vertices(vertices, 3, indices, 6);
+	push_vertices(vertices, 3, indices, 3);
 }
 
-void SpriteBatch::push_texture(const TextureRegion& tex, const Colour& colour)
+void SpriteBatch::push_texture(const TextureRegion& tex, const Colour& colour, const Colour& mode)
 {
 	set_texture(tex.source);
 
 	Vertex vertices[4];
 	u32 indices[6];
 
-	Float2 texsize = Float2(tex.source->width(), tex.source->height());
+	Float2 texsize = tex.source->size();
 
 	GfxUtil::quad(
 		vertices, indices,
@@ -227,13 +210,14 @@ void SpriteBatch::push_texture(const TextureRegion& tex, const Colour& colour)
 			Vec2F(tex.bounds.right(), tex.bounds.bottom()) / texsize,
 			Vec2F(tex.bounds.right(), tex.bounds.top()) / texsize
 		),
-		colour
+		colour,
+		mode
 	);
 
 	push_vertices(vertices, 4, indices, 6);
 }
 
-void SpriteBatch::push_texture(const Ref<Texture>& tex, const Colour& colour)
+void SpriteBatch::push_texture(const Ref<Texture>& tex, const Colour& colour, const Colour& mode)
 {
 	set_texture(tex);
 
@@ -254,55 +238,73 @@ void SpriteBatch::push_texture(const Ref<Texture>& tex, const Colour& colour)
 			Vec2F(1.0f, 1.0f),
 			Vec2F(1.0f, 0.0f)
 		),
-		colour
+		colour,
+		mode
 	);
 
 	push_vertices(vertices, 4, indices, 6);
 }
 
-// this clearly is super basic
-// no newlines, or anything
-// but ive spent so long on the git now that i'll do this later
+// todo make the font rendering not suck lol
 
-/*
-* BIG NOTE:
-* CUSTOM SHADERS *DO NOT WORK* FOR FONTS SINCE THEY NEED THEIR OWN SHADERS
-* THIS WILL PROBABLY BE FIXED WHEN INSTANCED RENDERING IS IMPLEMENTED
-* FOR NOW YOU CAN FIX THIS BY RENDERING THE TEXT TO A FRAMEBUFFER - THEN APPLYING THE SHADER TO THE FRAMEBUFFER
-*/
-
-void SpriteBatch::push_text(const char* str, const Ref<Font>& font, TextAlign align, const Colour& colour)
+void SpriteBatch::push_text(const char* str, const Font& font, TextAlign align, const Colour& colour)
 {
-	push_text(str, font, [&](Font::Character c, int idx) { return Vec2F::zero(); }, align, colour);
+	push_text(str, font, [&](Font::Character c, int idx) -> lev::Vec2F { return Vec2F::zero(); }, align, colour);
 }
 
-void SpriteBatch::push_text(const char* str, const Ref<Font>& font, const std::function<Vec2F(Font::Character,int)>& offsetfn, TextAlign align, const Colour& colour)
+void SpriteBatch::push_text(const char* str, const Font& font, const std::function<Vec2F(Font::Character,int)>& offsetfn, TextAlign align, const Colour& colour)
 {
-	push_shader(m_font_shader); // engineer gamig 4
-
-	const auto& atlas = font->atlas();
-	const auto& info = font->info();
+	const auto& atlas = font.atlas();
+	const auto& info = font.info();
 
 	int cursorx = 0;
 	for (int i = 0; i < StrUtil::length(str); i++)
 	{
-		auto c = font->character(str[i]);
+		auto c = font.character(str[i]);
 
 		push_matrix(Mat3x2::create_translation(
 			Vec2F(cursorx + c.draw_offset.x, c.draw_offset.y) +
 			offsetfn(c, i)
 		));
 
-		push_texture(atlas.region(c.bbox), colour);
+		push_texture(atlas.region(c.bbox), colour, FRAGMODE_RED);
 
 		pop_matrix();
 
 		cursorx +=
 			c.advance_x +
-			font->kern_advance(str[i], str[i+1]);
+			font.kern_advance(str[i], str[i+1]);
 	}
+}
 
-	pop_shader();
+void SpriteBatch::push_circle(const Circle& circle, u32 accuracy, const Colour& colour)
+{
+	float dtheta = Calc::TAU / accuracy;
+
+	for (float theta = 0.0f; theta < Calc::TAU; theta += dtheta)
+	{
+		Triangle triangle;
+		triangle.a = circle.position;
+		triangle.b = Vec2F::from_angle(theta         , circle.radius) + circle.position;
+		triangle.c = Vec2F::from_angle(theta + dtheta, circle.radius) + circle.position;
+
+		push_triangle(triangle, colour, FRAGMODE_SILHOUETTE);
+	}
+}
+
+void SpriteBatch::push_line(const Line& line, float thickness, const Colour& colour)
+{
+	Vec2F dir  = line.direction();
+	Vec2F perp = dir.perpendicular() * thickness;
+
+	Quad quad(
+		line.a + perp + (Vec2F(-thickness,  thickness)*dir),
+		line.a - perp + (Vec2F(-thickness, -thickness)*dir),
+		line.b - perp + (Vec2F( thickness, -thickness)*dir),
+		line.b + perp + (Vec2F( thickness,  thickness)*dir)
+	);
+
+	push_quad(quad, colour, FRAGMODE_SILHOUETTE);
 }
 
 void SpriteBatch::set_texture(const Ref<Texture>& tex, int idx)

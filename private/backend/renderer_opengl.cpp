@@ -381,6 +381,9 @@ public:
 
 			glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(4 * sizeof(float)));
 			glEnableVertexAttribArray(2);
+
+			glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(8 * sizeof(float)));
+			glEnableVertexAttribArray(3);
 		}
 		glBindVertexArray(0);
 	}
@@ -442,10 +445,45 @@ void Renderer::after_render()
 {
 }
 
+static const GLenum COLOUR_ATTACHMENT_0 = GL_COLOR_ATTACHMENT0;
+
+static const char* UNIFORM_TEXTURE_NAMES[] = {
+	"u_texture_0",
+	"u_texture_1",
+	"u_texture_2",
+	"u_texture_3",
+	"u_texture_4",
+	"u_texture_5",
+	"u_texture_6",
+	"u_texture_7",
+	"u_texture_8",
+	"u_texture_9",
+	"u_texture_10",
+	"u_texture_11",
+	"u_texture_12",
+	"u_texture_13",
+	"u_texture_14",
+	"u_texture_15",
+	"u_texture_16",
+	"u_texture_17",
+	"u_texture_18",
+	"u_texture_19",
+	"u_texture_20",
+	"u_texture_21",
+	"u_texture_22",
+	"u_texture_23",
+	"u_texture_24",
+	"u_texture_25",
+	"u_texture_26",
+	"u_texture_27",
+	"u_texture_28",
+	"u_texture_29",
+	"u_texture_30",
+	"u_texture_31",
+};
+
 void Renderer::render(const RenderPass& pass)
 {
-	const static GLenum COLOUR_ATTACHMENT_0 = GL_COLOR_ATTACHMENT0;
-
 	auto shader = (OpenGLShader*)pass.material.shader.get();
 	auto target = (OpenGLFramebuffer*)pass.target.get();
 	auto mesh = (OpenGLMesh*)pass.mesh.get();
@@ -475,12 +513,7 @@ void Renderer::render(const RenderPass& pass)
 		{
 			texture->bind(i);
 			texture->update(sampler);
-
-			char istr[2];
-			StrUtil::fromint(istr, i, 10);
-			std::string uniform = "u_texture_";
-			uniform.append(istr);
-			shader->set(uniform.c_str(), i);
+			shader->set(UNIFORM_TEXTURE_NAMES[i], i);
 		}
 	}
 

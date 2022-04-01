@@ -4,7 +4,7 @@
 #include <lev/graphics/texture.h>
 #include <lev/graphics/shader.h>
 
-#define LEV_MAT_TEXTURES 30
+#define LEV_MAT_TEXTURES 31
 
 namespace lev
 {

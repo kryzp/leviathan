@@ -148,5 +148,5 @@ Float2 Input::mouse_wheel()
 
 Float2 Input::mouse_wheel_change()
 {
-	return g_mouse_prev.wheel - g_mouse.wheel;
+	return g_mouse.wheel - g_mouse_prev.wheel;
 }

@@ -32,9 +32,9 @@ add_library(${PROJECT_NAME}
 	public/lev/math/ease.cpp
 	public/lev/math/circle.cpp
 	public/lev/math/colour.cpp
-	public/lev/math/line.cpp
 	public/lev/math/mat3x2.cpp
 	public/lev/math/mat4x4.cpp
+	public/lev/math/line.cpp
 	public/lev/math/quad.cpp
 	public/lev/math/triangle.cpp
 	public/lev/math/polygon.cpp

@@ -21,6 +21,16 @@ Line::Line(const Vec2F& pos, float angle, float len)
 {
 }
 
+Vec2F Line::delta() const
+{
+	return (b - a);
+}
+
+Vec2F Line::direction() const
+{
+	return (b - a).normalized();
+}
+
 float Line::length() const
 {
 	return (b - a).length();
@@ -29,4 +39,9 @@ float Line::length() const
 float Line::length_squared() const
 {
 	return (b - a).length_squared();
+}
+
+float Line::angle() const
+{
+	return (b - a).angle();
 }
