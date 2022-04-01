@@ -1,6 +1,6 @@
 #pragma once
 
-#include <lev/node/gui/gui_component.h>
+#include <lev/node/gui/gui_node.h>
 #include <lev/graphics/sprite_batch.h>
 #include <lev/graphics/font.h>
 
@@ -12,14 +12,14 @@
 
 namespace lev
 {
-	class GUIText : public GUIComponent
+	class GUIText : public GUINode
 	{
 	public:
 		const Font& font;
 		std::string text;
 
 		GUIText(const GUIConstraints& constraints, const std::string& text, const Font& font)
-			: GUIComponent(constraints)
+			: GUINode(constraints)
 			, font(font)
 			, text(text)
 		{
@@ -27,7 +27,7 @@ namespace lev
 
 		void render(SpriteBatch& b) override
 		{
-			GUIComponent::render(b);
+			GUINode::render(b);
 
 			b.push_matrix(Mat3x2::create_transform(position(), 0.0f, size(), Vec2F::zero()));
 			b.push_text(text.c_str(), font);

@@ -7,11 +7,11 @@
 
 namespace lev
 {
-	class GUIComponent : public Node
+	class GUINode : public Node
 	{
 	public:
-		GUIComponent(const GUIConstraints& constraints);
-		virtual ~GUIComponent();
+		GUINode(const GUIConstraints& constraints);
+		virtual ~GUINode();
 
 		virtual void init();
 		virtual void update();
@@ -47,6 +47,6 @@ namespace lev
 		bool mouse_clicked();
 
 		RectI m_rect;
-		Vector<GUIComponent*> m_components;
+		Vector<GUINode*> m_components;
 	};
 }

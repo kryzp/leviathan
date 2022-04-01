@@ -180,8 +180,7 @@ Size2 App::draw_size()
 
 float App::fps()
 {
-	// todo
-	return 0.0f;
+	return 1.0f / Time::delta;
 }
 
 void App::clear(const Colour& colour)

@@ -13,7 +13,7 @@
 
 namespace lev
 {
-	class GUIClickableTexture : public GUIComponent
+	class GUIClickableTexture : public GUINode
 	{
 	public:
 		struct ClickData
@@ -27,7 +27,7 @@ namespace lev
 		ClickFn on_clicked;
 
 		GUIClickableTexture(const GUIConstraints& constraints, const TextureRegion& texture, const ClickFn& on_clicked)
-			: GUIComponent(constraints)
+			: GUINode(constraints)
 			, texture(texture)
 			, on_clicked(on_clicked)
 		{
@@ -35,7 +35,7 @@ namespace lev
 
 		void update() override
 		{
-			GUIComponent::update();
+			GUINode::update();
 
 			if (mouse_clicked_over())
 			{
@@ -47,7 +47,7 @@ namespace lev
 
 		void render(SpriteBatch& b) override
 		{
-			GUIComponent::render(b);
+			GUINode::render(b);
 
 			b.push_matrix(Mat3x2::create_transform(position(), 0.0f, size() / texture.source->size(), Vec2F::zero()));
 			b.push_texture(texture);

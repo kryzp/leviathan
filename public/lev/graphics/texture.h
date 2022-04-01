@@ -98,7 +98,10 @@ namespace lev
 
 		Int2 size() const { return Int2(width(), height()); }
 
+		// todo: unbind functions?
+
 		virtual void bind(int i) const = 0;
+		virtual void bind_image(int i) const = 0;
 		virtual void generate(const byte* data) = 0;
 		virtual int width() const = 0;
 		virtual int height() const = 0;

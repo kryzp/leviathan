@@ -77,7 +77,7 @@ void SpriteBatch::initialize()
 			"}";
 #endif
 
-		m_material_stack[0].shader = Shader::create(vertex, fragment, true);
+		m_material_stack[0].shader = Shader::create(vertex, fragment, nullptr, true);
 	}
 
 	m_initialized = true;
@@ -255,7 +255,6 @@ void SpriteBatch::push_text(const char* str, const Font& font, TextAlign align, 
 void SpriteBatch::push_text(const char* str, const Font& font, const std::function<Vec2F(Font::Character,int)>& offsetfn, TextAlign align, const Colour& colour)
 {
 	const auto& atlas = font.atlas();
-	const auto& info = font.info();
 
 	int cursorx = 0;
 	for (int i = 0; i < StrUtil::length(str); i++)

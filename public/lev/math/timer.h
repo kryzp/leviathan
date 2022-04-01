@@ -13,8 +13,7 @@ namespace lev
 		void stop();
 		void pause();
 		void unpause();
-
-		void restart();
+		u64 reset();
 
 		u64 milliseconds() const;
 		u64 seconds() const;

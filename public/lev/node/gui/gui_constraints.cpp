@@ -1,5 +1,5 @@
 #include <lev/node/gui/gui_constraints.h>
-#include <lev/node/gui/gui_component.h>
+#include <lev/node/gui/gui_node.h>
 
 #include <lev/node/gui/constraints/pixel_constraint.h>
 #include <lev/node/gui/constraints/mousepos_constraint.h>
@@ -42,7 +42,7 @@ GUIConstraints GUIConstraints::create_mousepos(int width, int height)
 	return constraints;
 }
 
-void GUIConstraints::constrain(GUIComponent& component)
+void GUIConstraints::constrain(GUINode& component)
 {
 	if (x)
 		component.x(x->constrain_x(component));

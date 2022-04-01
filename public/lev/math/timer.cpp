@@ -47,10 +47,14 @@ void Timer::unpause()
 	m_paused_ticks = 0;
 }
 
-void Timer::restart()
+u64 Timer::reset()
 {
+	u64 sec = seconds();
+
 	if (m_started)
 		start();
+
+	return sec;
 }
 
 u64 Timer::milliseconds() const
