@@ -8,10 +8,10 @@ void GfxUtil::quad(Vertex* vtx, u32* indices, const Quad& quad, const Quad& uv, 
     colour.premultiply();
 
 	Vertex arrvtx[4] = {
-		{ .pos = quad.a, .uv = uv.a, .col = Colour::red(), .mode = mode },
-		{ .pos = quad.b, .uv = uv.b, .col = Colour::green(), .mode = mode },
-		{ .pos = quad.c, .uv = uv.c, .col = Colour::yellow(), .mode = mode },
-		{ .pos = quad.d, .uv = uv.d, .col = Colour::blue(), .mode = mode }
+		{ .pos = quad.a, .uv = uv.a, .col = colour, .mode = mode },
+		{ .pos = quad.b, .uv = uv.b, .col = colour, .mode = mode },
+		{ .pos = quad.c, .uv = uv.c, .col = colour, .mode = mode },
+		{ .pos = quad.d, .uv = uv.d, .col = colour, .mode = mode }
     };
 
     static const u32 arrindices[6] = {
