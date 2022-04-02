@@ -16,7 +16,7 @@
 
 #endif
 
-template <class T>
+template <typename T>
 inline void __levutils_swap(T& x, T& y) {
 	T tmp = x;
 	x = y;
@@ -24,9 +24,6 @@ inline void __levutils_swap(T& x, T& y) {
 }
 
 #define LEV_SWAP(_x, _y) __levutils_swap((_x), (_y))
-
-// todo: replace with singleton to inherit from?
-// class MySingleton : public lev::Singleton<MySingleton> { ... }
 
 // should be placed at the top of the class
 // e.g:

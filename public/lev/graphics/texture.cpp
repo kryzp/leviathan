@@ -42,14 +42,14 @@ Ref<Texture> Texture::create(const char* path)
 
 Ref<Texture> Texture::create(const Image& image)
 {
-	return create(image.width(), image.height(), TEXTURE_FORMAT_RGBA, (const byte*)image.pixels());
+	return create(image.width(), image.height(), TEXTURE_FORMAT_RGBA, TEXTURE_TYPE_UNSIGNED_BYTE, (const byte*)image.pixels());
 }
 
-Ref<Texture> Texture::create(int width, int height, TextureFormat format, const byte* data)
+Ref<Texture> Texture::create(int width, int height, TextureFormat format, TextureType type, const byte* data)
 {
 	LEV_ASSERT(width > 0 && height > 0, "Width and Height must be greater than 0");
 
-	Ref<Texture> result = Renderer::create_texture(TextureData(width, height, format));
+	Ref<Texture> result = Renderer::create_texture(TextureData(width, height, format, type));
 
 	if (data)
 		result->generate(data);

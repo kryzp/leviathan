@@ -5,11 +5,11 @@ using namespace lev;
 
 Ref<Framebuffer> Framebuffer::create(int width, int height)
 {
-	static const TextureFormat fmt = TEXTURE_FORMAT_RGBA;
-	return create(width, height, &fmt, 1);
+	static const TextureAttachment attachment = TextureAttachment(TEXTURE_FORMAT_RGBA, TEXTURE_TYPE_UNSIGNED_BYTE);
+	return create(width, height, &attachment, 1);
 }
 
-Ref<Framebuffer> Framebuffer::create(int width, int height, const TextureFormat* attachments, int attachment_count)
+Ref<Framebuffer> Framebuffer::create(int width, int height, const TextureAttachment* attachments, int attachment_count)
 {
 	LEV_ASSERT(attachments, "Attachments must not be null");
 	LEV_ASSERT(attachment_count > 0, "Attachment count must be higher than 0");
@@ -19,7 +19,7 @@ Ref<Framebuffer> Framebuffer::create(int width, int height, const TextureFormat*
 
 	for (int i = 0; i < attachment_count; i++)
 	{
-		if (attachments[i] == TEXTURE_FORMAT_DEPTH_STENCIL)
+		if (attachments[i].format == TEXTURE_FORMAT_DEPTH_STENCIL)
 			depthstencilcount++;
 
 		LEV_ASSERT(depthstencilcount < 2, "There must not be 2 or more depth stencil attachments");

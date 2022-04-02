@@ -17,6 +17,13 @@ namespace lev
 		TEXTURE_FORMAT_DEPTH_STENCIL
 	};
 
+	enum TextureType
+	{
+		TEXTURE_TYPE_UNSIGNED_BYTE,
+		TEXTURE_TYPE_FLOAT,
+		TEXTURE_TYPE_INT_24_8
+	};
+
 	enum TextureFilter
 	{
 		TEXTURE_FILTER_NEAREST,
@@ -34,18 +41,21 @@ namespace lev
 		int width;
 		int height;
 		TextureFormat format;
+		TextureType type;
 
 		TextureData()
 			: width(0)
 			, height(0)
 			, format(TEXTURE_FORMAT_RGBA)
+			, type(TEXTURE_TYPE_UNSIGNED_BYTE)
 		{
 		}
 
-		TextureData(int width, int height, TextureFormat format)
+		TextureData(int width, int height, TextureFormat format, TextureType type)
 			: width(width)
 			, height(height)
 			, format(format)
+			, type(type)
 		{
 		}
 	};
@@ -94,7 +104,7 @@ namespace lev
 
 		static Ref<Texture> create(const char* path);
 		static Ref<Texture> create(const Image& image);
-		static Ref<Texture> create(int width, int height, TextureFormat format, const byte* data);
+		static Ref<Texture> create(int width, int height, TextureFormat format, TextureType type, const byte* data);
 
 		Int2 size() const { return Int2(width(), height()); }
 
@@ -102,7 +112,8 @@ namespace lev
 
 		virtual void bind(int i) const = 0;
 		virtual void bind_image(int i) const = 0;
-		virtual void generate(const byte* data) = 0;
+		virtual void generate(const void* data) = 0;
+		virtual void get_data(float* buf) = 0;
 		virtual int width() const = 0;
 		virtual int height() const = 0;
 		virtual TextureFormat format() const = 0;

@@ -40,15 +40,13 @@ namespace
 		}
 	}
 
-	int get_gl_texture_type(TextureFormat fmt)
+	int get_gl_texture_type(TextureType type)
 	{
-		switch (fmt)
+		switch (type)
 		{
-			case TEXTURE_FORMAT_RED:			return GL_UNSIGNED_BYTE;
-			case TEXTURE_FORMAT_RG:				return GL_UNSIGNED_BYTE;
-			case TEXTURE_FORMAT_RGB:			return GL_UNSIGNED_BYTE;
-			case TEXTURE_FORMAT_RGBA:			return GL_UNSIGNED_BYTE;
-			case TEXTURE_FORMAT_DEPTH_STENCIL:	return GL_UNSIGNED_INT_24_8;
+			case TEXTURE_TYPE_UNSIGNED_BYTE:	return GL_UNSIGNED_BYTE;
+			case TEXTURE_TYPE_FLOAT:			return GL_FLOAT;
+			case TEXTURE_TYPE_INT_24_8:			return GL_UNSIGNED_INT_24_8;
 		}
 	}
 
@@ -97,9 +95,13 @@ namespace
 class OpenGLTexture : public Texture
 {
 	u32 m_id;
+	
 	int m_width;
 	int m_height;
+
 	TextureFormat m_format;
+	TextureType m_type;
+	
 	int m_gl_format;
 	int m_gl_internal_format;
 	int m_gl_type;
@@ -111,10 +113,11 @@ public:
 		, m_width(data.width)
 		, m_height(data.height)
 		, m_format(data.format)
+		, m_type(data.type)
 	{
 		m_gl_format = get_gl_texture_fmt(m_format);
 		m_gl_internal_format = get_gl_texture_internal_fmt(m_format);
-		m_gl_type = get_gl_texture_type(m_format);
+		m_gl_type = get_gl_texture_type(m_type);
 
 		glGenTextures(1, &m_id);
 		glBindTexture(GL_TEXTURE_2D, m_id);
@@ -128,19 +131,28 @@ public:
 
 	void bind(int i) const override
 	{
+		LEV_ASSERT(i >= 0 && i < 32, "Index must be within 0 -> 31");
 		glActiveTexture(GL_TEXTURE0 + i);
 		glBindTexture(GL_TEXTURE_2D, m_id);
 	}
 
 	void bind_image(int i) const override
 	{
+		LEV_ASSERT(i >= 0 && i < 32, "Index must be within 0 -> 31");
 		glActiveTexture(GL_TEXTURE0 + i);
-		glBindImageTexture(0, m_id, 0, GL_FALSE, 0, GL_WRITE_ONLY, get_gl_texture_internal_fmt(m_format));
+		glBindImageTexture(0, m_id, 0, GL_FALSE, 0, GL_READ_WRITE, m_gl_internal_format);
 	}
 
-	void generate(const byte* data) override
+	void generate(const void* data) override
 	{
+		LEV_ASSERT(data, "Data must not be nullptr");
 		glTexImage2D(GL_TEXTURE_2D, 0, m_gl_internal_format, m_width, m_height, 0, m_gl_format, m_gl_type, data);
+	}
+
+	void get_data(float* buf) override
+	{
+		LEV_ASSERT(buf, "Buffer must not be nullptr");
+		glGetTexImage(GL_TEXTURE_2D, 0, m_gl_format, m_gl_type, buf);
 	}
 
 	void update(const TextureSampler& sampler)
@@ -358,10 +370,10 @@ public:
 
 		for (int i = 0; i < data.attachment_count; i++)
 		{
-			auto tex = Texture::create(m_width, m_height, data.attachments[i], nullptr);
+			auto tex = Texture::create(m_width, m_height, data.attachments[i].format, data.attachments[i].type,  nullptr);
 			auto gltex = (OpenGLTexture*)tex.get();
 
-			if (data.attachments[i] == TEXTURE_FORMAT_DEPTH_STENCIL)
+			if (data.attachments[i].format == TEXTURE_FORMAT_DEPTH_STENCIL)
 			{
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, gltex->id(), 0);
 				m_gl_attachments.push_back(GL_DEPTH_STENCIL_ATTACHMENT);

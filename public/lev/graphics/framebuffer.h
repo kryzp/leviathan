@@ -7,11 +7,23 @@
 
 namespace lev
 {
+	struct TextureAttachment
+	{
+		TextureFormat format;
+		TextureType type;
+
+		TextureAttachment(TextureFormat format, TextureType type)
+			: format(format)
+			, type(type)
+		{
+		}
+	};
+
 	struct FramebufferData
 	{
 		int width;
 		int height;
-		const TextureFormat* attachments;
+		const TextureAttachment* attachments;
 		int attachment_count;
 	};
 
@@ -21,7 +33,7 @@ namespace lev
 		virtual ~Framebuffer() = default;
 
 		static Ref<Framebuffer> create(int width, int height);
-		static Ref<Framebuffer> create(int width, int height, const TextureFormat* attachments, int attachment_count);
+		static Ref<Framebuffer> create(int width, int height, const TextureAttachment* attachments, int attachment_count);
 
 		virtual void clear(const Colour& colour = Colour::empty()) = 0;
 		virtual const Vector<Ref<Texture>>& attachments() const = 0;

@@ -100,7 +100,7 @@ void Font::load(float size, const char* path)
 
 		stbtt_PackEnd(&pack_context);
 
-		m_atlas.texture = Texture::create(LEV_FONT_ATLAS_W, LEV_FONT_ATLAS_H, TEXTURE_FORMAT_RED, bitmap);
+		m_atlas.texture = Texture::create(LEV_FONT_ATLAS_W, LEV_FONT_ATLAS_H, TEXTURE_FORMAT_RED, TEXTURE_TYPE_UNSIGNED_BYTE, bitmap);
 
 		m_characters = new Character[LEV_FONT_CHARCOUNT];
 
