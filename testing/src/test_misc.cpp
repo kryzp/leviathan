@@ -4,7 +4,7 @@
 
 using namespace lev;
 
-#define PARTICLE_COUNT 750000
+#define PARTICLE_COUNT 1000000
 
 struct Particle
 {
@@ -18,6 +18,7 @@ int main()
 	Rng rng;
 
 	Ref<Shader> compute_shader;
+	Ref<Shader> compute_shader_fade;
 	Ref<Texture> tex;
 	Ref<Font> nokiafc;
 
@@ -43,7 +44,8 @@ int main()
 		{
 			tex = Texture::create(App::window_width(), App::window_height(), lev::TEXTURE_FORMAT_RGBA, lev::TEXTURE_TYPE_UNSIGNED_BYTE, nullptr);
 			nokiafc = create_ref<Font>(20, "D:\\_PROJECTS\\leviathan\\testing\\res\\fonts\\nokiafc22.ttf");
-			compute_shader = Shader::create_compute("D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\compute.comp");
+			compute_shader = Shader::create_compute("D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\particle.comp");
+			compute_shader_fade = Shader::create_compute("D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\fade.comp");
 			particle_buf = ShaderBuffer::create(particles, sizeof(Particle) * PARTICLE_COUNT);
 		};
 
@@ -56,6 +58,10 @@ int main()
 			compute_shader->use()
 				.set("delta_time", Time::delta)
 				.set_buffer(particle_buf, 1)
+				.dispatch_compute(PARTICLE_COUNT, 1, 1)
+				.wait_compute();
+
+			compute_shader_fade->use()
 				.dispatch_compute(tex->width(), tex->height(), 1)
 				.wait_compute();
 

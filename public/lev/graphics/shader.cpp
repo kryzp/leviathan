@@ -44,19 +44,31 @@ Ref<Shader> Shader::create(const char* vertex, const char* fragment, const char*
 	}
 	else
 	{
-		char vtxsrc[LEV_SHADER_MAX_CHAR_SIZE];
-		char frgsrc[LEV_SHADER_MAX_CHAR_SIZE];
-		char geosrc[LEV_SHADER_MAX_CHAR_SIZE];
+		char vtxsrc[LEV_SHADER_MAX_SIZE] = {0};
+		char frgsrc[LEV_SHADER_MAX_SIZE] = {0};
 
-		FileStream(vertex, "r").read(vtxsrc, LEV_SHADER_MAX_CHAR_SIZE).close();
-		FileStream(fragment, "r").read(frgsrc, LEV_SHADER_MAX_CHAR_SIZE).close();
+		auto vtxfs = FileStream(vertex, "r");
+		auto frgfs = FileStream(fragment, "r");
 
-		if (geometry)
-			FileStream(geometry, "r").read(geosrc, LEV_SHADER_MAX_CHAR_SIZE).close();
+		LEV_ASSERT(vtxfs.size() <= LEV_SHADER_MAX_SIZE, "Vertex shader file size must not be above LEV_SHADER_MAX_SIZE");
+		LEV_ASSERT(frgfs.size() <= LEV_SHADER_MAX_SIZE, "Fragment shader file size must not be above LEV_SHADER_MAX_SIZE");
+
+		vtxfs.read(vtxsrc, vtxfs.size()).close();
+		frgfs.read(frgsrc, frgfs.size()).close();
 
 		data.vertex_source = vtxsrc;
 		data.fragment_source = frgsrc;
-		data.geometry_source = geosrc;
+
+		if (geometry)
+		{
+			char geosrc[LEV_SHADER_MAX_SIZE];
+			auto geofs = FileStream(geometry, "r");
+
+			LEV_ASSERT(geofs.size() <= LEV_SHADER_MAX_SIZE-1, "Geometry shader file size must not be above LEV_SHADER_MAX_SIZE");
+
+			geofs.read(geosrc, geofs.size()).close();
+			data.geometry_source = geosrc;
+		}
 	}
 
 	return Renderer::create_shader(data);
@@ -73,8 +85,12 @@ Ref<Shader> Shader::create_compute(const char* compute, bool is_source)
 		data.compute_source = compute;
 	else
 	{
-		char cmpsrc[LEV_SHADER_MAX_CHAR_SIZE];
-		FileStream(compute, "r").read(cmpsrc, LEV_SHADER_MAX_CHAR_SIZE);
+		char cmpsrc[LEV_SHADER_MAX_SIZE] = {0};
+		auto cmpfs = FileStream(compute, "r");
+		
+		LEV_ASSERT(cmpfs.size() <= LEV_SHADER_MAX_SIZE, "Compute shader file size must not be above LEV_SHADER_MAX_SIZE");
+		
+		cmpfs.read(cmpsrc, cmpfs.size()).close();
 		data.compute_source = cmpsrc;
 	}
 

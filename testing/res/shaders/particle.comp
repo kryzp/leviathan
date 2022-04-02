@@ -12,14 +12,14 @@ struct Particle
 
 layout(std430, binding = 1) buffer particle_data
 {
-	Particle particles[750000];
+	Particle particles[1000000];
 };
 
 uniform float delta_time = 0.0;
 
 double between_zero_and_one(uint x)
 {
-	return double(x) / 4294967295.0;
+	return float(x) / 4294967295.0;
 }
 
 uint hash(uint state)
@@ -39,17 +39,15 @@ const float move_speed = 150.0;
 
 int get_id(int width)
 {
-	return int(gl_GlobalInvocationID.x) + (int(gl_GlobalInvocationID.y) * width);
+	return int(gl_GlobalInvocationID.x);
+	//return int(gl_GlobalInvocationID.x) + (int(gl_GlobalInvocationID.y) * width);
 }
 
 void main()
 {
 	ivec2 size = imageSize(o_trail_map);
-	ivec2 coords = ivec2(gl_GlobalInvocationID.xy);
-	vec4 colhere = imageLoad(o_trail_map, coords);
-	imageStore(o_trail_map, coords, colhere * 0.9);
 
-	if (get_id(size.x) < 0 || get_id(size.x) >= 750000) {
+	if (get_id(size.x) < 0 || get_id(size.x) >= 1000000) {
 		return;
 	}
 

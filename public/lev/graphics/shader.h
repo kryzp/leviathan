@@ -10,7 +10,7 @@
 
 #include <string>
 
-#define LEV_SHADER_MAX_CHAR_SIZE LEV_KILOBYTES(5)
+#define LEV_SHADER_MAX_SIZE LEV_KILOBYTES(5)
 
 namespace lev
 {
