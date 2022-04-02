@@ -55,14 +55,14 @@ int main()
 
 			tex->bind_image(0);
 
+			compute_shader_fade->use()
+				.dispatch_compute(tex->width(), tex->height(), 1)
+				.wait_compute();
+
 			compute_shader->use()
 				.set("delta_time", Time::delta)
 				.set_buffer(particle_buf, 1)
 				.dispatch_compute(PARTICLE_COUNT, 1, 1)
-				.wait_compute();
-
-			compute_shader_fade->use()
-				.dispatch_compute(tex->width(), tex->height(), 1)
 				.wait_compute();
 
 			batch.push_texture(tex);
