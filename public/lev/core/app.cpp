@@ -83,10 +83,14 @@ void App::run()
 			Time::prev_seconds = Time::seconds;
 
 			Time::milliseconds = System::ticks();
+
 			Time::seconds = Time::milliseconds / 1000.0f;
 
-			Time::delta = Time::milliseconds - Time::prev_milliseconds;
-			Time::delta = Time::seconds - Time::prev_seconds;
+			// deltatime is pretty wack on the first frame
+			if (Time::frames == 1)
+				Time::delta = 1.0f / g_config.target_framerate;
+			else
+				Time::delta = Time::seconds - Time::prev_seconds;
 		}
 
 		// update

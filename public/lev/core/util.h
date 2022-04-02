@@ -129,7 +129,6 @@ namespace lev
 		static float milliseconds;
 		static float prev_milliseconds;
 		static float delta;
-		static float deltams;
 		static u64 frames;
 	};
 

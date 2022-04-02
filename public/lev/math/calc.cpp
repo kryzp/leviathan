@@ -36,7 +36,7 @@ float Calc::exp(float x)
 
 float Calc::sigmoid(float x)
 {
-	return 1.0f - 1.0f/(1 + Calc::exp(x));
+	return 1.0f - (1.0f / (1.0f + Calc::exp(x)));
 }
 
 float Calc::log(float x, float b)

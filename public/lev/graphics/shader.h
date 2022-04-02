@@ -8,7 +8,9 @@
 #include <lev/math/mat4x4.h>
 #include <lev/graphics/texture.h>
 
-#define LEV_SHADER_CHAR_SIZE LEV_KILOBYTES(5)
+#include <string>
+
+#define LEV_SHADER_MAX_CHAR_SIZE LEV_KILOBYTES(5)
 
 namespace lev
 {
@@ -21,26 +23,26 @@ namespace lev
 		SHADER_TYPE_MAX
 	};
 
-	// oh no 15kb what ever will we do
 	struct ShaderData
 	{
 		u8 type;
+		std::string vertex_source;
+		std::string fragment_source;
+		std::string geometry_source;
+		std::string compute_source;
+	};
 
-		union
-		{
-			struct
-			{
-				char vertex_source[LEV_SHADER_CHAR_SIZE];
-				char fragment_source[LEV_SHADER_CHAR_SIZE];
-				char geometry_source[LEV_SHADER_CHAR_SIZE];
-			};
+	class ShaderBuffer
+	{
+	public:
+		ShaderBuffer() = default;
+		virtual ~ShaderBuffer() = default;
 
-			struct
-			{
-				// compute shader gets compensation for being lonely
-				char compute_source[LEV_SHADER_CHAR_SIZE*3];
-			};
-		};
+		static Ref<ShaderBuffer> create(void* buf, u64 size);
+
+		virtual void bind(int idx) = 0;
+		virtual void update(void* buf, u64 size) = 0;
+		virtual u64 size() const = 0;
 	};
 
 	class Shader
@@ -61,6 +63,8 @@ namespace lev
 		virtual Shader& dispatch_compute(u32 n_groups_x, u32 n_groups_y, u32 n_groups_z) = 0;
 		virtual Shader& dispatch_compute(s64 indirect) = 0;
 		virtual Shader& wait_compute() = 0;
+
+		virtual Shader& set_buffer(const Ref<ShaderBuffer>& buf, int binding) = 0;
 
 		virtual Shader& set(const char* name, bool value)						= 0;
 		virtual Shader& set(const char* name, bool* values, int count)			= 0;

@@ -122,6 +122,7 @@ public:
 		glGenTextures(1, &m_id);
 		glBindTexture(GL_TEXTURE_2D, m_id);
 		glTexImage2D(GL_TEXTURE_2D, 0, m_gl_internal_format, m_width, m_height, 0, m_gl_format, m_gl_type, nullptr);
+		update(TextureSampler::pixel()); // removing this breaks compute shader imageSize for whatever reason (i guess the wrap has something todo with it?)
 	}
 
 	~OpenGLTexture()
@@ -178,6 +179,49 @@ Ref<Texture> Renderer::create_texture(const TextureData& data)
 /* SHADER                                                */
 /*********************************************************/
 
+class OpenGLShaderBuffer : public ShaderBuffer
+{
+	u32 m_id;
+	u64 m_size;
+
+public:
+	OpenGLShaderBuffer(void* buf, u64 size)
+		: m_size(size)
+		, m_id(0)
+	{
+		glGenBuffers(1, &m_id);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_id);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, size, buf, GL_DYNAMIC_COPY);
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	}
+
+	~OpenGLShaderBuffer()
+	{
+		glDeleteBuffers(1, &m_id);
+	}
+
+	void bind(int idx) override
+	{
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, idx, m_id);
+	}
+
+	void update(void* buf, u64 size) override
+	{
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_id);
+		void* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
+		MemUtil::copy(p, buf, size);
+		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+	}
+
+	u64 size() const override { return m_size; }
+	u32 id() const { return m_id; }
+};
+
+Ref<ShaderBuffer> Renderer::create_shader_buffer(void* buf, u64 size)
+{
+	return create_ref<OpenGLShaderBuffer>(buf, size);
+}
+
 class OpenGLShader : public Shader
 {
 	u32 m_id;
@@ -196,56 +240,12 @@ public:
 		int success;
 		char infolog[512];
 
-		const char* vertexdata = data.vertex_source;
-		const char* fragmentdata = data.fragment_source;
-		const char* geometrydata = data.geometry_source;
-		const char* computedata = data.compute_source;
-
-		u32 vertex = glCreateShader(GL_VERTEX_SHADER);
-		if (data.type & SHADER_TYPE_VERTEX)
-		{
-			glShaderSource(vertex, 1, &vertexdata, NULL);
-			glCompileShader(vertex);
-
-			glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
-			if (!success)
-			{
-				glGetShaderInfoLog(vertex, 512, NULL, infolog);
-				Log::error("failed to compile vertex shader: %s", infolog);
-			}
-		}
-
-		u32 fragment = glCreateShader(GL_FRAGMENT_SHADER);
-		if (data.type & SHADER_TYPE_FRAGMENT)
-		{
-			glShaderSource(fragment, 1, &fragmentdata, NULL);
-			glCompileShader(fragment);
-
-			glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
-			if (!success)
-			{
-				glGetShaderInfoLog(fragment, 512, NULL, infolog);
-				Log::error("failed to compile fragment shader: %s", infolog);
-			}
-		}
-
-		u32 geometry = glCreateShader(GL_GEOMETRY_SHADER);
-		if (data.type & SHADER_TYPE_GEOMETRY)
-		{
-			glShaderSource(geometry, 1, &geometrydata, NULL);
-			glCompileShader(geometry);
-
-			glGetShaderiv(geometry, GL_COMPILE_STATUS, &success);
-			if (!success)
-			{
-				glGetShaderInfoLog(geometry, 512, NULL, infolog);
-				Log::error("failed to compile geometry shader: %s", infolog);
-			}
-		}
-
 		u32 id = glCreateProgram();
-		if (data.type & SHADER_TYPE_COMPUTE)
+
+		if (data.type == SHADER_TYPE_COMPUTE)
 		{
+			const char* computedata = data.compute_source.c_str();
+
 			u32 compute = glCreateShader(GL_COMPUTE_SHADER);
 			glShaderSource(compute, 1, &computedata, NULL);
 			glCompileShader(compute);
@@ -262,8 +262,56 @@ public:
 
 			glDeleteShader(compute);
 		}
-		else if (data.type & (SHADER_TYPE_FRAGMENT | SHADER_TYPE_VERTEX))
+		else
 		{
+			const char* vertexdata = data.vertex_source.c_str();
+			const char* fragmentdata = data.fragment_source.c_str();
+			const char* geometrydata = data.geometry_source.c_str();
+
+			u32 vertex = glCreateShader(GL_VERTEX_SHADER);
+			if (data.type & SHADER_TYPE_VERTEX)
+			{
+				glShaderSource(vertex, 1, &vertexdata, NULL);
+				glCompileShader(vertex);
+
+				glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
+				if (!success)
+				{
+					glGetShaderInfoLog(vertex, 512, NULL, infolog);
+					Log::error("failed to compile vertex shader: %s", infolog);
+				}
+			}
+
+			u32 fragment = glCreateShader(GL_FRAGMENT_SHADER);
+			if (data.type & SHADER_TYPE_FRAGMENT)
+			{
+				glShaderSource(fragment, 1, &fragmentdata, NULL);
+				glCompileShader(fragment);
+
+				glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
+				if (!success)
+				{
+					glGetShaderInfoLog(fragment, 512, NULL, infolog);
+					Log::error("failed to compile fragment shader: %s", infolog);
+				}
+			}
+
+			u32 geometry = 0;
+			if (data.type & SHADER_TYPE_GEOMETRY)
+			{
+				geometry = glCreateShader(GL_GEOMETRY_SHADER);
+
+				glShaderSource(geometry, 1, &geometrydata, NULL);
+				glCompileShader(geometry);
+
+				glGetShaderiv(geometry, GL_COMPILE_STATUS, &success);
+				if (!success)
+				{
+					glGetShaderInfoLog(geometry, 512, NULL, infolog);
+					Log::error("failed to compile geometry shader: %s", infolog);
+				}
+			}
+
 			glAttachShader(id, vertex);
 			glAttachShader(id, fragment);
 
@@ -285,6 +333,7 @@ public:
 			if (data.type & SHADER_TYPE_GEOMETRY)
 				glDeleteShader(geometry);
 		}
+
 		m_id = id;
 	}
 
@@ -316,6 +365,12 @@ public:
 	Shader& use() override
 	{
 		glUseProgram(m_id);
+		return *this;
+	}
+
+	Shader& set_buffer(const Ref<ShaderBuffer>& buf, int binding) override
+	{
+		buf->bind(binding);
 		return *this;
 	}
 

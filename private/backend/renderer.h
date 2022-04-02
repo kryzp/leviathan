@@ -35,6 +35,7 @@ namespace lev
 
 		Ref<Texture> create_texture(const TextureData& data);
 		Ref<Shader> create_shader(const ShaderData& data);
+		Ref<ShaderBuffer> create_shader_buffer(void* buf, u64 size);
 		Ref<Framebuffer> create_framebuffer(const FramebufferData& data);
 		Ref<Mesh> create_mesh();
 	}

@@ -1,0 +1,72 @@
+#version 430
+
+layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
+layout(rgba32f, binding = 0) uniform image2D o_trail_map;
+
+struct Particle
+{
+	float x;
+	float y;
+	float ang;
+};
+
+layout(std430, binding = 1) buffer particle_data
+{
+	Particle particles[750000];
+};
+
+uniform float delta_time = 0.0;
+
+double between_zero_and_one(uint x)
+{
+	return double(x) / 4294967295.0;
+}
+
+uint hash(uint state)
+{
+	state ^= 2747636419u;
+	state *= 2654435769u;
+	state ^= state >> 16;
+	state *= 2654435769u;
+	state ^= state >> 16;
+	state *= 2654435769u;
+	return state;
+}
+
+const float PI = 3.14159265359;
+const float TAU = 6.28318530718;
+const float move_speed = 150.0;
+
+int get_id(int width)
+{
+	return int(gl_GlobalInvocationID.x) + (int(gl_GlobalInvocationID.y) * width);
+}
+
+void main()
+{
+	ivec2 size = imageSize(o_trail_map);
+	ivec2 coords = ivec2(gl_GlobalInvocationID.xy);
+	vec4 colhere = imageLoad(o_trail_map, coords);
+	imageStore(o_trail_map, coords, colhere * 0.9);
+
+	if (get_id(size.x) < 0 || get_id(size.x) >= 750000) {
+		return;
+	}
+
+	Particle particle = particles[get_id(size.x)];
+	uint rand = hash(uint(particle.y * size.x) + uint(particle.x) + hash(get_id(size.x)));
+
+	vec2 dir = vec2(cos(particle.ang), sin(particle.ang));
+	vec2 newpos = vec2(particle.x, particle.y) + (dir * move_speed * delta_time);
+
+	if (newpos.x < 0 || newpos.x >= size.x || newpos.y < 0 || newpos.y >= size.y)
+	{
+		newpos.x = clamp(newpos.x, 0.0, size.x - 0.01);
+		newpos.y = clamp(newpos.y, 0.0, size.y - 0.01);
+		particles[get_id(size.x)].ang = float(between_zero_and_one(rand)) * TAU;
+	}
+
+	particles[get_id(size.x)].x = newpos.x;
+	particles[get_id(size.x)].y = newpos.y;
+	imageStore(o_trail_map, ivec2(newpos.x, newpos.y), vec4(1.0));
+}
