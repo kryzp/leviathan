@@ -7,4 +7,4 @@ float Time::prev_milliseconds = 0.0f;
 float Time::elapsed = 0.0f;
 float Time::prev_elapsed = 0.0f;
 float Time::delta = 0.0f;
-u64 Time::frames = 0;
+u64 Time::loops = 0;

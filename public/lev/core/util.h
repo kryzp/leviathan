@@ -124,7 +124,7 @@ namespace lev
 		static float elapsed;
 		static float prev_elapsed;
 		static float delta;
-		static u64 frames;
+		static u64 loops;
 	};
 
 	namespace MemUtil

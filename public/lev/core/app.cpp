@@ -84,7 +84,7 @@ void App::run()
 
 		// time + update
 		{
-			Time::frames++;
+			Time::loops++;
 
 			u64 ticks = System::ticks();
 			u64 diff = ticks - prev_ticks;
