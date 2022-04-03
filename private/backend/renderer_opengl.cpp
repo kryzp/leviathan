@@ -164,6 +164,17 @@ public:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sampler.filter == TEXTURE_FILTER_LINEAR) ? GL_LINEAR : GL_NEAREST);
 	}
 
+	void copy_to(Ref<Texture>& other) override
+	{
+		OpenGLTexture* other_ptr = (OpenGLTexture*)other.get();
+
+		glCopyImageSubData(
+			m_id,				GL_TEXTURE_2D, 0, 0, 0, 0,
+			other_ptr->m_id,	GL_TEXTURE_2D, 0, 0, 0, 0,
+			m_width, m_height, 1
+		);
+	}
+
 	int width() const override { return m_width; }
 	int height() const override { return m_height; }
 	TextureFormat format() const override { return m_format; }
@@ -185,13 +196,13 @@ class OpenGLShaderBuffer : public ShaderBuffer
 	u64 m_size;
 
 public:
-	OpenGLShaderBuffer(void* buf, u64 size)
-		: m_size(size)
-		, m_id(0)
+	OpenGLShaderBuffer(u64 size)
+		: m_id(0)
+		, m_size(size)
 	{
 		glGenBuffers(1, &m_id);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_id);
-		glBufferData(GL_SHADER_STORAGE_BUFFER, size, buf, GL_DYNAMIC_COPY);
+		glBufferData(GL_SHADER_STORAGE_BUFFER, size, nullptr, GL_DYNAMIC_COPY);
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	}
 
@@ -205,11 +216,11 @@ public:
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, idx, m_id);
 	}
 
-	void update(void* buf, u64 size) override
+	void set(void* buf) override
 	{
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_id);
 		void* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
-		MemUtil::copy(p, buf, size);
+		MemUtil::copy(p, buf, m_size);
 		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 	}
 
@@ -217,9 +228,9 @@ public:
 	u32 id() const { return m_id; }
 };
 
-Ref<ShaderBuffer> Renderer::create_shader_buffer(void* buf, u64 size)
+Ref<ShaderBuffer> Renderer::create_shader_buffer(u64 size)
 {
-	return create_ref<OpenGLShaderBuffer>(buf, size);
+	return create_ref<OpenGLShaderBuffer>(size);
 }
 
 class OpenGLShader : public Shader
@@ -344,7 +355,7 @@ public:
 
 	Shader& dispatch_compute(u32 n_groups_x, u32 n_groups_y, u32 n_groups_z) override
 	{
-		LEV_ASSERT(n_groups_x != 0 && n_groups_y != 0 && n_groups_z, "Inputs must not be 0");
+		LEV_ASSERT(n_groups_x != 0 && n_groups_y != 0 && n_groups_z != 0, "Inputs must not be 0");
 		glDispatchCompute(n_groups_x, n_groups_y, n_groups_z);
 		return *this;
 	}
@@ -686,17 +697,17 @@ void Renderer::render(const RenderPass& pass)
 	glBindVertexArray(0);
 }
 
-void Renderer::clear(float r, float g, float b, float a)
+void Renderer::clear(const Colour& colour)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, App::draw_width(), App::draw_height());
-	glClearColor(r, g, b, a);
+	glClearColor(
+		colour.r,
+		colour.g,
+		colour.b,
+		colour.a
+	);
 	glClear(GL_COLOR_BUFFER_BIT);
-}
-
-void Renderer::clear(const Colour& colour)
-{
-	clear(colour.r, colour.g, colour.b, colour.a);
 }
 
 #endif

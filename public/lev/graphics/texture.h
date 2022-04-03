@@ -110,6 +110,8 @@ namespace lev
 
 		// todo: unbind functions?
 
+		virtual void copy_to(Ref<Texture>& other) = 0;
+
 		virtual void bind(int i) const = 0;
 		virtual void bind_image(int i) const = 0;
 		virtual void generate(const void* data) = 0;

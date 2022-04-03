@@ -10,6 +10,8 @@ add_library(${PROJECT_NAME}
 	public/lev/core/time.cpp
 	public/lev/core/memutil.cpp
 	public/lev/core/strutil.cpp
+
+	public/lev/assets/asset_mgr.cpp
 	
 	public/lev/graphics/gfxutil.cpp
 	public/lev/graphics/sprite_batch.cpp

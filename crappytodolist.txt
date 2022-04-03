@@ -1,13 +1,6 @@
 roughly in order of importance
 ==============================
 
-* asset management system
- - textures
- - fonts
- - sounds
- - custom import classes you can create (::ext?)
-   - e.g: TiledMapImporter : lev::AssetImporter<TiledMap> { public: TiledMap load(const char* file) override; } ...
-
 * font string_width and string_height functions
 
 * unbind functions in the rendering pipeline

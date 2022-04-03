@@ -12,12 +12,10 @@ Shader::~Shader()
 {
 }
 
-Ref<ShaderBuffer> ShaderBuffer::create(void* buf, u64 size)
+Ref<ShaderBuffer> ShaderBuffer::create(u64 size)
 {
-	LEV_ASSERT(buf, "Buffer must not be nullptr");
-	LEV_ASSERT(size >= 0, "Size must be >= 0");
-
-	return Renderer::create_shader_buffer(buf, size);
+	LEV_ASSERT(size > 0, "Size must be > 0");
+	return Renderer::create_shader_buffer(size);
 }
 
 Ref<Shader> Shader::create(const char* vertex, const char* fragment, const char* geometry, bool is_source)

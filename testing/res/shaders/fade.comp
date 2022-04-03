@@ -7,5 +7,5 @@ void main()
 {
 	ivec2 coords = ivec2(gl_GlobalInvocationID.xy);
 	vec4 pixel = imageLoad(o_trail_map, coords);
-	imageStore(o_trail_map, coords, pixel * 0.95);
+	imageStore(o_trail_map, coords, pixel * (1.0 - 0.01));
 }

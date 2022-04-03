@@ -38,10 +38,10 @@ namespace lev
 		ShaderBuffer() = default;
 		virtual ~ShaderBuffer() = default;
 
-		static Ref<ShaderBuffer> create(void* buf, u64 size);
+		static Ref<ShaderBuffer> create(u64 size);
 
 		virtual void bind(int idx) = 0;
-		virtual void update(void* buf, u64 size) = 0;
+		virtual void set(void* buf) = 0;
 		virtual u64 size() const = 0;
 	};
 

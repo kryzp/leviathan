@@ -33,11 +33,6 @@ inline void __levutils_swap(T& x, T& y) {
 //     public:
 //         void do_the_thing();
 
-// then do:
-// LEV_INSTANCE(MySingleton).do_the_thing();
-
-#define LEV_INSTANCE(_classname) (_classname::inst())
-
 #define LEV_SINGLETON_CLASS(_classname) \
 public: \
 	static _classname& inst() \
