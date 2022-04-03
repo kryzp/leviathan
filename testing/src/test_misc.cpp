@@ -1,65 +1,7 @@
 #include <lev/core/app.h>
-#include <lev/assets/asset_mgr.h>
-#include <lev/graphics/sprite_batch.h>
-
-using namespace lev;
-
-struct CustomAsset
-{
-	int data;
-
-	CustomAsset(int dd)
-		: data(dd)
-	{
-	}
-};
-
-class CustomLoader : public AssetLoader<CustomAsset>
-{
-public:
-	Ref<CustomAsset> load(const char* name) override { return create_ref<CustomAsset>(5); }
-	Ref<CustomAsset> get(const char* name) override { return create_ref<CustomAsset>(5); }
-	bool has(const char* name) override { return true; }
-};
-
-int main()
-{
-	SpriteBatch batch;
-	
-	Ref<Texture> tex;
-	Ref<CustomAsset> custom;
-
-	Config conf;
-	{
-		conf.name = "le assets";
-
-		conf.on_init = [&]()
-		{
-			AssetMgr::inst().register_loader<CustomLoader>();
-			custom = AssetMgr::inst().load<CustomAsset>("aaa");
-			AssetMgr::inst().load<Texture>("fff", "D:\\_PROJECTS\\leviathan\\testing\\res\\textures\\p0.png");
-		};
-
-		conf.on_update = [&]()
-		{
-			Log::print("custom data: %d", custom->data);
-		};
-
-		conf.on_render = [&]()
-		{
-			App::clear();
-			batch.push_texture(AssetMgr::inst().get<Texture>("fff")); // testing
-			batch.render();
-		};
-	}
-	App::start(conf);
-}
-
-#if 0
-
-#include <lev/core/app.h>
 #include <lev/math/rng.h>
 #include <lev/graphics/sprite_batch.h>
+#include <lev/assets/asset_mgr.h>
 
 using namespace lev;
 
@@ -111,14 +53,32 @@ int main()
 		conf.on_init = [&]()
 		{
 			tex = Texture::create(WINDOW_WIDTH, WINDOW_HEIGHT, TEXTURE_FORMAT_RGBA, TEXTURE_TYPE_UNSIGNED_BYTE, nullptr);
-			nokiafc = create_ref<Font>(20, "D:\\_PROJECTS\\leviathan\\testing\\res\\fonts\\nokiafc22.ttf");
+
+			nokiafc = AssetMgr::inst().load<Font>("nokia", FontLoadData {
+				.size = 20,
+				.path = "D:\\_PROJECTS\\leviathan\\testing\\res\\fonts\\nokiafc22.ttf"
+			});
 
 			particle_buf = ShaderBuffer::create(sizeof(Particle) * PARTICLE_COUNT);
 			particle_buf->set(particles);
 
-			compute_shader_part = Shader::create_compute("D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\particle.comp");
-			compute_shader_fade = Shader::create_compute("D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\fade.comp");
-			compute_shader_blur = Shader::create_compute("D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\blur.comp");
+			compute_shader_part = AssetMgr::inst().load<Shader>("compute_particle", ShaderLoadData {
+				.type = SHADER_TYPE_COMPUTE,
+				.is_source = false,
+				.compute = "D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\particle.comp"
+			});
+
+			compute_shader_fade = AssetMgr::inst().load<Shader>("compute_fade", ShaderLoadData {
+				.type = SHADER_TYPE_COMPUTE,
+				.is_source = false,
+				.compute = "D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\fade.comp"
+			});
+
+			compute_shader_blur = AssetMgr::inst().load<Shader>("compute_blur", ShaderLoadData {
+				.type = SHADER_TYPE_COMPUTE,
+				.is_source = false,
+				.compute = "D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\blur.comp"
+			});
 		};
 
 		conf.on_render = [&]()
@@ -158,5 +118,3 @@ int main()
 
 	return 0;
 }
-
-#endif
