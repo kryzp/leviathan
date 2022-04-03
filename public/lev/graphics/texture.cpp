@@ -56,3 +56,13 @@ Ref<Texture> Texture::create(int width, int height, TextureFormat format, Textur
 
 	return result;
 }
+
+void Texture::unbind()
+{
+	Renderer::unbind_texture();
+}
+
+void Texture::unbind_image()
+{
+	Renderer::unbind_texture_image();
+}

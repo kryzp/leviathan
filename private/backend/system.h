@@ -23,6 +23,7 @@ namespace lev
 		int draw_width();
 		int draw_height();
 
+		void sleep(u32 ms);
 		u64 ticks();
 
 		void* stream_from_file(const char* filepath, const char* mode);

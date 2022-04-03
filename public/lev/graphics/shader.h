@@ -40,6 +40,8 @@ namespace lev
 
 		static Ref<ShaderBuffer> create(u64 size);
 
+		static void unbind();
+
 		virtual void bind(int idx) = 0;
 		virtual void set(void* buf) = 0;
 		virtual u64 size() const = 0;
@@ -56,6 +58,8 @@ namespace lev
 
 		static Ref<Shader> create(const char* vertex, const char* fragment, const char* geometry = nullptr, bool is_source = false);
 		static Ref<Shader> create_compute(const char* compute, bool is_source = false);
+
+		static void unbind();
 
 		virtual u8 type() = 0;
 		virtual Shader& use() = 0;

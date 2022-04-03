@@ -1,26 +1,16 @@
-roughly in order of importance
-==============================
-
-* font string_width and string_height functions
-
-* unbind functions in the rendering pipeline
-
-* add much more asseritions where theyre needed
-
-* theres no fixed framerate currently lol actually make that a thing
-
-* get rid of some of the Ref<T> and see if you can replace them with raw pointers
-
-* spritebatch instanced rendering
-
-* sounds / music
-
-* quaternion implementation
 
 * string class (just using std::string for now)
 
-* debuggging console
+* make the entity system not the most bare bones thing ever
+
+* sounds / music
+
+* spritebatch instanced rendering
+
+* add much more asseritions where theyre needed
 
 * lua???
 
-* quads are like upside down lol makes it hard to work with
+* debuggging console
+
+* quaternion implementation

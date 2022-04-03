@@ -35,6 +35,8 @@ namespace lev
 		static Ref<Framebuffer> create(int width, int height);
 		static Ref<Framebuffer> create(int width, int height, const TextureAttachment* attachments, int attachment_count);
 
+		static void unbind();
+
 		virtual void clear(const Colour& colour = Colour::empty()) = 0;
 		virtual const Vector<Ref<Texture>>& attachments() const = 0;
 		virtual int attachment_count() const = 0;

@@ -119,10 +119,10 @@ namespace lev
 
 	struct Time
 	{
-		static float seconds;
-		static float prev_seconds;
 		static float milliseconds;
 		static float prev_milliseconds;
+		static float elapsed;
+		static float prev_elapsed;
 		static float delta;
 		static u64 frames;
 	};

@@ -192,6 +192,12 @@ int System::draw_height()
 	return result;
 }
 
+void System::sleep(u32 ms)
+{
+	if (ms > 0)
+		SDL_Delay(ms);
+}
+
 u64 System::ticks()
 {
 	return SDL_GetTicks64();

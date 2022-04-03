@@ -4,18 +4,25 @@
 
 using namespace lev;
 
+Ref<ShaderBuffer> ShaderBuffer::create(u64 size)
+{
+	LEV_ASSERT(size > 0, "Size must be > 0");
+	return Renderer::create_shader_buffer(size);
+}
+
+void ShaderBuffer::unbind()
+{
+	Renderer::unbind_shader_buffer();
+}
+
+//////////////////////////////////////////////////////////
+
 Shader::Shader()
 {
 }
 
 Shader::~Shader()
 {
-}
-
-Ref<ShaderBuffer> ShaderBuffer::create(u64 size)
-{
-	LEV_ASSERT(size > 0, "Size must be > 0");
-	return Renderer::create_shader_buffer(size);
 }
 
 Ref<Shader> Shader::create(const char* vertex, const char* fragment, const char* geometry, bool is_source)
@@ -93,4 +100,9 @@ Ref<Shader> Shader::create_compute(const char* compute, bool is_source)
 	}
 
 	return Renderer::create_shader(data);
+}
+
+void Shader::unbind()
+{
+	Renderer::unbind_shader();
 }

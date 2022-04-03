@@ -33,6 +33,11 @@ Ref<Framebuffer> Framebuffer::create(int width, int height, const TextureAttachm
 	});
 }
 
+void Framebuffer::unbind()
+{
+	Renderer::unbind_framebuffer();
+}
+
 const Ref<Texture>& Framebuffer::attachment(int i) const
 {
 	return attachments()[i];

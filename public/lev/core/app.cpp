@@ -73,33 +73,49 @@ bool App::init()
 
 void App::run()
 {
+	u64 lag = 0;
+	u64 prev_ticks = 0;
+
+	const float TIME_TGT = 1.0f / (float)g_config.target_tps;
+
 	while (g_running)
 	{
-		// time
+		System::update();
+
+		// time + update
 		{
 			Time::frames++;
 
-			Time::prev_milliseconds = Time::milliseconds;
-			Time::prev_seconds = Time::seconds;
-
-			Time::milliseconds = System::ticks();
-
-			Time::seconds = Time::milliseconds / 1000.0f;
-
-			// deltatime is pretty wack on the first frame
-			if (Time::frames == 1)
-				Time::delta = 1.0f / g_config.target_framerate;
-			else
-				Time::delta = Time::seconds - Time::prev_seconds;
-		}
-
-		// update
-		{
-			Input::update();
-			System::update();
+			u64 ticks = System::ticks();
+			u64 diff = ticks - prev_ticks;
+			prev_ticks = ticks;
+			lag += diff;
 			
-			if (g_config.on_update)
-				g_config.on_update();
+            while (lag < TIME_TGT)
+            {
+                System::sleep(TIME_TGT - lag);
+                ticks = System::ticks();
+                diff = ticks - prev_ticks;
+                prev_ticks = ticks;
+                lag += diff;
+            }
+
+			while (lag >= TIME_TGT)
+			{
+				lag -= TIME_TGT;
+				Time::delta = TIME_TGT;
+				
+				Time::prev_milliseconds = Time::milliseconds;
+				Time::milliseconds += TIME_TGT;
+
+				Time::prev_elapsed = Time::elapsed;
+				Time::elapsed += Time::delta;
+
+				Input::update();
+
+				if (g_config.on_update)
+					g_config.on_update();
+			}
 		}
 
 		// render

@@ -107,7 +107,7 @@ void Font::load(float size, const char* path)
 		for (int i = 0; i < LEV_FONT_CHARCOUNT; i++)
 		{
 			const auto& c = packed_chars[i];
-			
+
 			m_characters[i] = {
 				.codepoint = i,
 				.bbox = RectI(c.x0, c.y0, c.x1 - c.x0, c.y1 - c.y0),
@@ -145,6 +145,38 @@ int Font::kern_advance(int curr, int next) const
 	}
 
 	return 0;
+}
+
+float Font::string_width(const char* str) const
+{
+	float result = 0.0f;
+
+	for (int i = 0; i < StrUtil::length(str); i++)
+	{
+		auto c = m_characters[str[i]];
+
+		result +=
+			c.advance_x +
+			c.draw_offset.x +
+			kern_advance(str[i], str[i+1]);
+	}
+
+	return result;
+}
+
+float Font::string_height(const char* str) const
+{
+	float hhh = 0.0f;
+	float max_bboxh = 0.0f;
+
+	for (int i = 0; i < StrUtil::length(str); i++)
+	{
+		auto c = m_characters[str[i]];
+		max_bboxh = Calc::max(max_bboxh, c.bbox.h);
+		hhh = Calc::max(hhh, c.bbox.h + c.draw_offset.y);
+	}
+
+	return max_bboxh + hhh;
 }
 
 const Font::Info& Font::info() const

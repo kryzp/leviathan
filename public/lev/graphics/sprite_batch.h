@@ -18,6 +18,11 @@
 
 #include <functional>
 
+#define LEV_SB_FRAGMODE_ALL (Colour(1.0f, 0.0f, 0.0f, 0.0f))
+#define LEV_SB_FRAGMODE_ALPHA (Colour(0.0f, 1.0f, 0.0f, 0.0f))
+#define LEV_SB_FRAGMODE_RED (Colour(0.0f, 0.0f, 1.0f, 0.0f))
+#define LEV_SB_FRAGMODE_SILHOUETTE (Colour(0.0f, 0.0f, 0.0f, 1.0f))
+
 namespace lev
 {
 	// todo: different sprite sort / rendering modes (front to back, back to front, immediate, etc...)
@@ -49,8 +54,8 @@ namespace lev
 		void push_texture(const Ref<Texture>& tex, const Colour& colour = Colour::white(), const Colour& mode = Colour(1.0f, 0.0f, 0.0f, 0.0f));
 		void push_quad(const Quad& quad, const Colour& colour = Colour::white(), const Colour& mode = Colour(1.0f, 0.0f, 0.0f, 0.0f));
 		void push_triangle(const Triangle& tri, const Colour& colour = Colour::white(), const Colour& mode = Colour(1.0f, 0.0f, 0.0f, 0.0f));
-		void push_text(const char* str, const Font& font, TextAlign align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white());
-		void push_text(const char* str, const Font& font, const std::function<Vec2F(Font::Character,int)>& offsetfn, TextAlign align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white());
+		void push_text(const char* str, const Ref<Font>& font, TextAlign align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white());
+		void push_text(const char* str, const Ref<Font>& font, const std::function<Vec2F(Font::Character,int)>& offsetfn, TextAlign align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white());
 		void push_circle(const Circle& circle, u32 accuracy = 40U, const Colour& colour = Colour::white());
 		void push_line(const Line& line, float thickness, const Colour& colour = Colour::white());
 

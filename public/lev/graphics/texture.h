@@ -106,6 +106,9 @@ namespace lev
 		static Ref<Texture> create(const Image& image);
 		static Ref<Texture> create(int width, int height, TextureFormat format, TextureType type, const byte* data);
 
+		static void unbind();
+		static void unbind_image();
+
 		Int2 size() const { return Int2(width(), height()); }
 
 		// todo: unbind functions?

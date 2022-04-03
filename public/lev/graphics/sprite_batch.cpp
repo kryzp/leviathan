@@ -6,11 +6,6 @@
 
 using namespace lev;
 
-#define FRAGMODE_ALL (Colour(1.0f, 0.0f, 0.0f, 0.0f))
-#define FRAGMODE_ALPHA (Colour(0.0f, 1.0f, 0.0f, 0.0f))
-#define FRAGMODE_RED (Colour(0.0f, 0.0f, 1.0f, 0.0f))
-#define FRAGMODE_SILHOUETTE (Colour(0.0f, 0.0f, 0.0f, 1.0f))
-
 namespace
 {
 	BlendMode g_default_blend = {
@@ -247,32 +242,32 @@ void SpriteBatch::push_texture(const Ref<Texture>& tex, const Colour& colour, co
 
 // todo make the font rendering not suck lol
 
-void SpriteBatch::push_text(const char* str, const Font& font, TextAlign align, const Colour& colour)
+void SpriteBatch::push_text(const char* str, const Ref<Font>& font, TextAlign align, const Colour& colour)
 {
 	push_text(str, font, [&](Font::Character c, int idx) -> lev::Vec2F { return Vec2F::zero(); }, align, colour);
 }
 
-void SpriteBatch::push_text(const char* str, const Font& font, const std::function<Vec2F(Font::Character,int)>& offsetfn, TextAlign align, const Colour& colour)
+void SpriteBatch::push_text(const char* str, const Ref<Font>& font, const std::function<Vec2F(Font::Character,int)>& offsetfn, TextAlign align, const Colour& colour)
 {
-	const auto& atlas = font.atlas();
+	const auto& atlas = font->atlas();
 
 	int cursorx = 0;
 	for (int i = 0; i < StrUtil::length(str); i++)
 	{
-		auto c = font.character(str[i]);
+		auto c = font->character(str[i]);
 
 		push_matrix(Mat3x2::create_translation(
 			Vec2F(cursorx + c.draw_offset.x, c.draw_offset.y) +
 			offsetfn(c, i)
 		));
 
-		push_texture(atlas.region(c.bbox), colour, FRAGMODE_RED);
+		push_texture(atlas.region(c.bbox), colour, LEV_SB_FRAGMODE_RED);
 
 		pop_matrix();
 
 		cursorx +=
 			c.advance_x +
-			font.kern_advance(str[i], str[i+1]);
+			font->kern_advance(str[i], str[i+1]);
 	}
 }
 
@@ -287,7 +282,7 @@ void SpriteBatch::push_circle(const Circle& circle, u32 accuracy, const Colour& 
 		triangle.b = Vec2F::from_angle(theta         , circle.radius) + circle.position;
 		triangle.c = Vec2F::from_angle(theta + dtheta, circle.radius) + circle.position;
 
-		push_triangle(triangle, colour, FRAGMODE_SILHOUETTE);
+		push_triangle(triangle, colour, LEV_SB_FRAGMODE_SILHOUETTE);
 	}
 }
 
@@ -303,7 +298,7 @@ void SpriteBatch::push_line(const Line& line, float thickness, const Colour& col
 		line.b + perp + (Vec2F( thickness,  thickness)*dir)
 	);
 
-	push_quad(quad, colour, FRAGMODE_SILHOUETTE);
+	push_quad(quad, colour, LEV_SB_FRAGMODE_SILHOUETTE);
 }
 
 void SpriteBatch::set_texture(const Ref<Texture>& tex, int idx)

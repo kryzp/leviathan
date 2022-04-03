@@ -181,11 +181,6 @@ public:
 	u32 id() const { return m_id; }
 };
 
-Ref<Texture> Renderer::create_texture(const TextureData& data)
-{
-	return create_ref<OpenGLTexture>(data);
-}
-
 /*********************************************************/
 /* SHADER                                                */
 /*********************************************************/
@@ -227,11 +222,6 @@ public:
 	u64 size() const override { return m_size; }
 	u32 id() const { return m_id; }
 };
-
-Ref<ShaderBuffer> Renderer::create_shader_buffer(u64 size)
-{
-	return create_ref<OpenGLShaderBuffer>(size);
-}
 
 class OpenGLShader : public Shader
 {
@@ -406,11 +396,6 @@ public:
 	Shader& set(const char* name, const Mat4x4& value)				override { glUniformMatrix4fv	(glGetUniformLocation(m_id, name), 1, GL_FALSE, value.value_ptr()	); return *this; }
 };
 
-Ref<Shader> Renderer::create_shader(const ShaderData& data)
-{
-	return create_ref<OpenGLShader>(data);
-}
-
 /*********************************************************/
 /* FRAMEBUFFER                                           */
 /*********************************************************/
@@ -488,11 +473,6 @@ public:
 	u32 id() const { return m_id; }
 };
 
-Ref<Framebuffer> Renderer::create_framebuffer(const FramebufferData& data)
-{
-	return create_ref<OpenGLFramebuffer>(data);
-}
-
 /*********************************************************/
 /* MESH                                                  */
 /*********************************************************/
@@ -567,11 +547,6 @@ public:
 	u64 index_count() const override { return m_index_count; }
 	u32 id() const { return m_id; }
 };
-
-Ref<Mesh> Renderer::create_mesh()
-{
-	return create_ref<OpenGLMesh>();
-}
 
 /*********************************************************/
 /* MAIN                                                  */
@@ -708,6 +683,61 @@ void Renderer::clear(const Colour& colour)
 		colour.a
 	);
 	glClear(GL_COLOR_BUFFER_BIT);
+}
+
+/*********************************************************/
+/* MISC                                                  */
+/*********************************************************/
+
+Ref<Texture> Renderer::create_texture(const TextureData& data)
+{
+	return create_ref<OpenGLTexture>(data);
+}
+
+Ref<ShaderBuffer> Renderer::create_shader_buffer(u64 size)
+{
+	return create_ref<OpenGLShaderBuffer>(size);
+}
+
+Ref<Shader> Renderer::create_shader(const ShaderData& data)
+{
+	return create_ref<OpenGLShader>(data);
+}
+
+Ref<Framebuffer> Renderer::create_framebuffer(const FramebufferData& data)
+{
+	return create_ref<OpenGLFramebuffer>(data);
+}
+
+Ref<Mesh> Renderer::create_mesh()
+{
+	return create_ref<OpenGLMesh>();
+}
+
+void Renderer::unbind_texture()
+{
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Renderer::unbind_texture_image()
+{
+	// yes
+	glBindImageTexture(0, 0, 0, 0, 0, 0, 0);
+}
+
+void Renderer::unbind_shader()
+{
+	glUseProgram(0);
+}
+
+void Renderer::unbind_shader_buffer()
+{
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+}
+
+void Renderer::unbind_framebuffer()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 #endif

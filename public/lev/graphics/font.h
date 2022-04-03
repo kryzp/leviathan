@@ -58,6 +58,9 @@ namespace lev
 		void load(float size, const char* path);
 		void free();
 
+		float string_width(const char* str) const;
+		float string_height(const char* str) const;
+
         int kern_advance(int curr, int next) const;
 
 		const Info& info() const;
