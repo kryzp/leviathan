@@ -1,15 +1,19 @@
 #pragma once
 
+#include <lev/core/util.h>
+
 #include <random>
 #include <ctime>
 
 namespace lev
 {
 	template <typename Engine = std::mt19937>
-	class Rng
+	class Random
 	{
+		LEV_SINGLETON_CLASS(Random)
+
 	public:
-		Rng();
+		Random();
 
 		int integer(int min, int max);
 		float real(float min, float max);
@@ -19,30 +23,29 @@ namespace lev
 
 	private:
 		Engine m_rng;
-
 	};
 
 	template <typename Engine>
-	Rng<Engine>::Rng()
+	Random<Engine>::Random()
 		: m_rng(std::time(nullptr))
 	{
 	}
 
 	template <typename Engine>
-	int Rng<Engine>::integer(int min, int max)
+	int Random<Engine>::integer(int min, int max)
 	{
 		return generic_range<std::uniform_int_distribution<int>>(min, max);
 	}
 
 	template <typename Engine>
-	float Rng<Engine>::real(float min, float max)
+	float Random<Engine>::real(float min, float max)
 	{
 		return generic_range<std::uniform_real_distribution<float>>(min, max);
 	}
 
 	template <typename Engine>
 	template <typename Dist, typename T>
-	T Rng<Engine>::generic_range(T min, T max)
+	T Random<Engine>::generic_range(T min, T max)
 	{
 		Dist dist = Dist(min, max);
 		return dist(m_rng);
