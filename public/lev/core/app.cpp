@@ -76,7 +76,7 @@ void App::run()
 	u64 lag = 0;
 	u64 prev_ticks = 0;
 
-	const float TIME_TGT = 1.0f / (float)g_config.target_tps;
+	const u64 TIME_TGT = static_cast<u64>(1000.0f / (float)g_config.target_fps);
 
 	while (g_running)
 	{
@@ -103,7 +103,7 @@ void App::run()
 			while (lag >= TIME_TGT)
 			{
 				lag -= TIME_TGT;
-				Time::delta = TIME_TGT;
+				Time::delta = 1.0f / g_config.target_fps;
 				
 				Time::prev_milliseconds = Time::milliseconds;
 				Time::milliseconds += TIME_TGT;
@@ -200,7 +200,7 @@ Size2 App::draw_size()
 
 float App::fps()
 {
-	return 1.0f / Time::delta;
+	return g_config.target_fps;
 }
 
 void App::clear(const Colour& colour)

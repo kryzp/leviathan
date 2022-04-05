@@ -16,7 +16,7 @@ namespace lev
 		const char* name = nullptr;
 		int width = 1280;
 		int height = 720;
-		int target_tps = 60;
+		int target_fps = 60;
 		bool resizable = false;
 		bool vsync = true;
 
