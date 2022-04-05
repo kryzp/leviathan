@@ -35,12 +35,12 @@ inline void __levutils_swap(T& x, T& y) {
 
 #define LEV_SINGLETON_CLASS(_classname) \
 public: \
-	static _classname& inst() \
+	static _classname* inst() \
 	{ \
 		static _classname* instance = nullptr; \
 		if (!instance) { instance = new _classname(); } \
 		LEV_ASSERT(instance, "Instance should not be nullptr. How tf did that even happen are you using a potato to store memory????"); \
-		return *instance; \
+		return instance; \
 	} \
 private:
 

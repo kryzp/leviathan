@@ -37,6 +37,7 @@ Texture::~Texture()
 
 Ref<Texture> Texture::create(const char* path)
 {
+	LEV_ASSERT(path, "Path must not be nullptr");
 	return create(Image(path));
 }
 

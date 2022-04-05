@@ -18,9 +18,9 @@ namespace lev
 
 			struct
 			{
-				T a;
-				T b;
-				T c;
+				T w;
+				T h;
+				T d;
 			};
 
 			struct
@@ -29,21 +29,7 @@ namespace lev
 				T second;
 				T third;
 			};
-
-			struct
-			{
-				T width;
-				T height;
-				T depth;
-			};
-
-			struct
-			{
-				T w;
-				T h;
-				T d;
-			};
-
+			
 			T coords[3];
 			T data[3];
 		};

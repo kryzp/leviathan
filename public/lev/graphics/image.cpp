@@ -37,8 +37,6 @@ void Image::load(const char* path)
 {
 	m_stbi_management = true;
 
-	stbi_set_flip_vertically_on_load(true);
-
 	int w, h, nrc;
 	m_pixels = (Colour*)stbi_load(path, &w, &h, &nrc, 0);
 	m_width = w;

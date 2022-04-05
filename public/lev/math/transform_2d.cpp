@@ -1,9 +1,9 @@
-#include <lev/math/transform.h>
+#include <lev/math/transform_2d.h>
 #include <lev/math/calc.h>
 
 using namespace lev;
 
-Transform::Transform()
+Transform2D::Transform2D()
 	: m_matrix(Mat3x2::identity())
 	, m_origin(Vec2F::zero())
 	, m_position(Vec2F::zero())
@@ -13,7 +13,7 @@ Transform::Transform()
 {
 }
 
-Transform::Transform(const Transform& other)
+Transform2D::Transform2D(const Transform2D& other)
 {
 	m_matrix = other.m_matrix;
 	m_origin = other.m_origin;
@@ -23,7 +23,7 @@ Transform::Transform(const Transform& other)
 	m_dirty = other.m_dirty;
 }
 
-Mat3x2 Transform::matrix()
+Mat3x2 Transform2D::matrix()
 {
 	if (m_dirty)
 	{
@@ -34,19 +34,19 @@ Mat3x2 Transform::matrix()
 	return m_matrix;
 }
 
-Transform Transform::offset(const Vec2F& amount)
+Transform2D Transform2D::offset(const Vec2F& amount)
 {
-	Transform copy = *this;
+	Transform2D copy = *this;
 	copy.m_position += amount;
 	return copy;
 }
 
-Vec2F Transform::origin() const
+Vec2F Transform2D::origin() const
 {
 	return m_origin;
 }
 
-Transform& Transform::origin(const Vec2F& v)
+Transform2D& Transform2D::origin(const Vec2F& v)
 {
 	if (v != m_origin)
 	{
@@ -60,17 +60,17 @@ Transform& Transform::origin(const Vec2F& v)
 	return *this;
 }
 
-Transform& Transform::origin(float x, float y)
+Transform2D& Transform2D::origin(float x, float y)
 {
 	return origin(Vec2F(x, y));
 }
 
-Vec2F Transform::position() const
+Vec2F Transform2D::position() const
 {
 	return m_position;
 }
 
-Transform& Transform::position(const Vec2F& v)
+Transform2D& Transform2D::position(const Vec2F& v)
 {
 	if (v != m_position)
 	{
@@ -84,27 +84,27 @@ Transform& Transform::position(const Vec2F& v)
 	return *this;
 }
 
-Transform& Transform::position(float x, float y)
+Transform2D& Transform2D::position(float x, float y)
 {
 	return position(Vec2F(x, y));
 }
 
-Transform& Transform::move(const Vec2F& v)
+Transform2D& Transform2D::move(const Vec2F& v)
 {
 	return position(m_position + v);
 }
 
-Transform& Transform::move(float x, float y)
+Transform2D& Transform2D::move(float x, float y)
 {
 	return move(Vec2F(x, y));
 }
 
-Vec2F Transform::scale() const
+Vec2F Transform2D::scale() const
 {
 	return m_scale;
 }
 
-Transform& Transform::scale(const Vec2F& v)
+Transform2D& Transform2D::scale(const Vec2F& v)
 {
 	if (v != m_scale)
 	{
@@ -118,17 +118,17 @@ Transform& Transform::scale(const Vec2F& v)
 	return *this;
 }
 
-Transform& Transform::scale(float x, float y)
+Transform2D& Transform2D::scale(float x, float y)
 {
 	return scale(Vec2F(x, y));
 }
 
-float Transform::rotation() const
+float Transform2D::rotation() const
 {
 	return m_rotation;
 }
 
-Transform& Transform::rotation(float r)
+Transform2D& Transform2D::rotation(float r)
 {
 	if (r != m_rotation)
 	{
@@ -142,17 +142,17 @@ Transform& Transform::rotation(float r)
 	return *this;
 }
 
-Transform& Transform::rotate(float r)
+Transform2D& Transform2D::rotate(float r)
 {
 	return rotation(m_rotation + r);
 }
 
-float Transform::rotation_rad() const
+float Transform2D::rotation_rad() const
 {
 	return m_rotation;
 }
 
-float Transform::rotation_deg() const
+float Transform2D::rotation_deg() const
 {
 	return m_rotation * Calc::RAD2DEG;
 }

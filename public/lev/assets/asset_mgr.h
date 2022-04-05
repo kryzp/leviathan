@@ -12,12 +12,12 @@ namespace lev
 {
 	struct ShaderLoadData
 	{
-		int type;
-		bool is_source;
-		const char* vertex;
-		const char* fragment;
-		const char* geometry;
-		const char* compute;
+		int type; // todo: unnecessary since we can infer what type it is from what strings are nullptr
+		bool is_source = false;
+		const char* vertex = nullptr;
+		const char* fragment = nullptr;
+		const char* geometry = nullptr;
+		const char* compute = nullptr;
 	};
 
 	struct FontLoadData
@@ -59,12 +59,14 @@ namespace lev
 		virtual ~AssetLoader() = default;
 
 		virtual Ref<Asset> load(const char* name, LoadData... data) = 0;
+		//virtual void unload(const char* name) = 0; //!!! TODO NOT DONE
+
 		virtual Ref<Asset> get(const char* name) = 0;
 		virtual bool has(const char* name) = 0;
 	};
 
 	template <class Asset, typename... LoadData>
-	u64 AssetLoader<Asset, LoadData...>::Meta::id = AssetLoaderRegistry::inst().retrieve_id<Asset>();
+	u64 AssetLoader<Asset, LoadData...>::Meta::id = AssetLoaderRegistry::inst()->retrieve_id<Asset>();
 
 	class AssetMgr
 	{
@@ -82,6 +84,9 @@ namespace lev
 		template <class Asset, typename... LoadData>
 		Ref<Asset> load(const char* name, LoadData... data);
 
+		//template <class Asset, typename... LoadData>
+		//void unload(const char* name, LoadData... data);
+
 		template <class Asset, typename... LoadData>
 		Ref<Asset> get(const char* name);
 
@@ -89,19 +94,21 @@ namespace lev
 		bool has(const char* name);
 
 	private:
-		HashMap<u64, Ref<AssetLoaderBase>> m_loaders;
+		HashMap<u64, AssetLoaderBase*> m_loaders;
 	};
 
 	template <class Loader, typename... Args>
 	void AssetMgr::register_loader(Args&&... args)
 	{
-		m_loaders.insert(Loader::Meta::id, create_ref<Loader>(args...));
+		m_loaders.insert(Loader::Meta::id, new Loader(std::forward<Args>(args)...));
 	}
 
 	template <class Asset, typename... LoadData>
 	AssetLoader<Asset, LoadData...>* AssetMgr::retrieve_loader()
 	{
-		return (AssetLoader<Asset, LoadData...>*)(m_loaders.get(AssetLoader<Asset, LoadData...>::Meta::id).get());
+		return static_cast<AssetLoader<Asset, LoadData...>*>(
+			m_loaders.get(AssetLoader<Asset, LoadData...>::Meta::id)
+		);
 	}
 
 	template <class Asset, typename... LoadData>

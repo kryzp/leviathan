@@ -21,17 +21,17 @@ namespace lev
 	class GUIConstraints
 	{
 	public:
-		GUIConstraints();
-		~GUIConstraints();
+		GUIConstraints() = default;
+		~GUIConstraints() = default;
+
+		static GUIConstraints create_fixed(int x, int y, int w, int h);
+		static GUIConstraints create_mousepos(int w, int h);
 
 		void constrain(GUINode& component);
 
-		static GUIConstraints create_fixed(int x, int y, int width, int height);
-		static GUIConstraints create_mousepos(int width, int height);
-
 		Ref<GUIConstraint> x;
 		Ref<GUIConstraint> y;
-		Ref<GUIConstraint> width;
-		Ref<GUIConstraint> height;
+		Ref<GUIConstraint> w;
+		Ref<GUIConstraint> h;
 	};
 }

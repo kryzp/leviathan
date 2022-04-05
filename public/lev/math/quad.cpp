@@ -16,9 +16,19 @@ Quad::Quad(const Vec2F& a, const Vec2F& b, const Vec2F& c, const Vec2F& d)
 }
 
 Quad::Quad(const RectF& rect)
-	: a(rect.top_left())
-	, b(rect.bottom_left())
-	, c(rect.bottom_right())
-	, d(rect.top_right())
+	: a(rect.bottom_right())
+	, b(rect.top_right())
+	, c(rect.top_left())
+	, d(rect.bottom_left())
 {
+}
+
+Quad Quad::operator / (const Vec2F& factor) const
+{
+	return Quad(
+		a / factor,
+		b / factor,
+		c / factor,
+		d / factor
+	);
 }

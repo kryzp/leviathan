@@ -583,8 +583,10 @@ void Renderer::after_render()
 {
 }
 
+// yes
 static const GLenum COLOUR_ATTACHMENT_0 = GL_COLOR_ATTACHMENT0;
 
+// yes pt.2
 static const char* UNIFORM_TEXTURE_NAMES[] = {
 	"u_texture_0",
 	"u_texture_1",

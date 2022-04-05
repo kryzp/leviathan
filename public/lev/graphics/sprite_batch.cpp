@@ -191,20 +191,13 @@ void SpriteBatch::push_texture(const TextureRegion& tex, const Colour& colour, c
 
 	Float2 texsize = tex.source->size();
 
+	auto textex = Quad(RectF(0.0f, 0.0f, tex.bounds.w, tex.bounds.h));
+	auto uvuvuv = Quad(tex.bounds) / texsize;
+
 	GfxUtil::quad(
 		vertices, indices,
-		Quad(RectF(
-			0.0f,
-			0.0f,
-			tex.bounds.w,
-			tex.bounds.h
-		)),
-		Quad(
-			Vec2F(tex.bounds.left(), tex.bounds.top()) / texsize,
-			Vec2F(tex.bounds.left(), tex.bounds.bottom()) / texsize,
-			Vec2F(tex.bounds.right(), tex.bounds.bottom()) / texsize,
-			Vec2F(tex.bounds.right(), tex.bounds.top()) / texsize
-		),
+		textex,
+		uvuvuv,
 		colour,
 		mode
 	);
@@ -242,12 +235,12 @@ void SpriteBatch::push_texture(const Ref<Texture>& tex, const Colour& colour, co
 
 // todo make the font rendering not suck lol
 
-void SpriteBatch::push_text(const char* str, const Ref<Font>& font, TextAlign align, const Colour& colour)
+void SpriteBatch::push_string(const char* str, const Ref<Font>& font, TextAlign align, const Colour& colour)
 {
-	push_text(str, font, [&](Font::Character c, int idx) -> lev::Vec2F { return Vec2F::zero(); }, align, colour);
+	push_string(str, font, [&](Font::Character c, int idx) -> lev::Vec2F { return Vec2F::zero(); }, align, colour);
 }
 
-void SpriteBatch::push_text(const char* str, const Ref<Font>& font, const std::function<Vec2F(Font::Character,int)>& offsetfn, TextAlign align, const Colour& colour)
+void SpriteBatch::push_string(const char* str, const Ref<Font>& font, const std::function<Vec2F(Font::Character,int)>& offsetfn, TextAlign align, const Colour& colour)
 {
 	const auto& atlas = font->atlas();
 

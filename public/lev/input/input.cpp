@@ -27,7 +27,6 @@ void Input::update()
 	g_mouse_prev = g_mouse;
 
 	MemUtil::set(g_kb.text, 0, Input::MAX_TEXT_INPUT);
-
 	g_mouse.wheel = Float2::zero();
 }
 

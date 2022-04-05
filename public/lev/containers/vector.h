@@ -14,9 +14,16 @@ namespace lev
 	{
     public:
         Vector();
+        
         Vector(std::initializer_list<T> data);
         Vector(u64 initial_capacity);
+
         Vector(const Vector& other);
+        Vector(Vector&& other) noexcept;
+
+        Vector& operator = (const Vector& other);
+        Vector& operator = (Vector&& other) noexcept;
+
         ~Vector();
 
         void allocate(u64 capacity);
@@ -98,6 +105,58 @@ namespace lev
             for (int i = 0; i < other.m_size; i++)
                 new (m_buf + i) T(other.m_buf[i]);
         }
+    }
+    
+    template <typename T>
+    Vector<T>::Vector(Vector&& other) noexcept
+    {
+        clear();
+
+        if (m_buf)
+            ::operator delete (m_buf, sizeof(T) * m_size);
+
+        this->m_size = std::move(other.m_size);
+        this->m_count = std::move(other.m_count);
+        this->m_buf = std::move(other.m_buf);
+
+        other.m_size = 0;
+        other.m_count = 0;
+        other.m_buf = nullptr;
+    }
+    
+    template <typename T>
+    Vector<T>& Vector<T>::operator = (const Vector& other)
+    {
+        if (other.m_size > 0)
+        {
+            allocate(other.m_size);
+            clear();
+            m_count = other.size();
+
+            for (int i = 0; i < other.m_size; i++)
+                new (m_buf + i) T(other.m_buf[i]);
+        }
+
+        return *this;
+    }
+    
+    template <typename T>
+    Vector<T>& Vector<T>::operator = (Vector&& other) noexcept
+    {
+        clear();
+
+        if (m_buf)
+            ::operator delete (m_buf, sizeof(T) * m_size);
+
+        this->m_size = std::move(other.m_size);
+        this->m_count = std::move(other.m_count);
+        this->m_buf = std::move(other.m_buf);
+
+        other.m_size = 0;
+        other.m_count = 0;
+        other.m_buf = nullptr;
+
+        return *this;
     }
 
     template <typename T>

@@ -2,6 +2,7 @@
 
 #include <lev/core/util.h>
 #include <lev/containers/vector.h>
+#include <lev/node/signal.h>
 
 namespace lev
 {
@@ -17,13 +18,22 @@ namespace lev
 		virtual void update();
 		virtual void render(SpriteBatch& b);
 
+		virtual void recieve_signal(const Signal& s);
+		virtual void broadcast_signal(const Signal& s);
+		virtual void broadcast_signal_down(const Signal& s);
+
 		template <class T, typename... Args>
 		T* add(Args&&... args);
+
+		void remove(const Node* other);
 		void remove(u64 id);
+		
 		bool has(u64 id);
+		
 		Node* get(u64 id);
 		const Node* get(u64 id) const;
 
+		Node* owner();
 		Node* parent();
 		const Node* parent() const;
 
@@ -31,7 +41,7 @@ namespace lev
 
 	private:
 		Node* m_parent;
-		Vector<Node*> m_nodes;
+		Vector<Node*> m_children;
 
 		u64 m_id;
 		u64 m_id_counter;
@@ -50,7 +60,7 @@ namespace lev
 			node->m_id = m_id_counter++;
 
 		node->init();
-		m_nodes.push_back(node);
+		m_children.push_back(node);
 		return node;
 	}
 }

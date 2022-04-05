@@ -146,6 +146,11 @@ Mat3x2 Mat3x2::create_transform(const Vec2F& position, float rotation, const Vec
 	return mat;
 }
 
+Vec2F Mat3x2::extract_position() const
+{
+	return Vec2F(m31, m32);
+}
+
 Mat3x2 Mat3x2::operator - (const Mat3x2& other) const
 {
 	return Mat3x2(

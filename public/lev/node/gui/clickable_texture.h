@@ -1,6 +1,6 @@
 #pragma once
 
-#include <lev/node/gui/gui_component.h>
+#include <lev/node/gui/gui_node.h>
 #include <lev/graphics/sprite_batch.h>
 #include <lev/graphics/texture.h>
 #include <lev/input/input.h>

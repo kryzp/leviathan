@@ -6,40 +6,28 @@
 
 using namespace lev;
 
-GUIConstraints::GUIConstraints()
-	: x(nullptr)
-	, y(nullptr)
-	, width(nullptr)
-	, height(nullptr)
+GUIConstraints GUIConstraints::create_fixed(int x, int y, int w, int h)
 {
+	GUIConstraints c;
+
+	c.x = create_ref<PixelConstraint>(x);
+	c.y = create_ref<PixelConstraint>(y);
+	c.w = create_ref<PixelConstraint>(w);
+	c.h = create_ref<PixelConstraint>(h);
+	
+	return c;
 }
 
-GUIConstraints::~GUIConstraints()
+GUIConstraints GUIConstraints::create_mousepos(int w, int h)
 {
-}
+	GUIConstraints c;
 
-GUIConstraints GUIConstraints::create_fixed(int x, int y, int width, int height)
-{
-	GUIConstraints constraints;
-	{
-		constraints.x      = create_ref<PixelConstraint>(x);
-		constraints.y      = create_ref<PixelConstraint>(y);
-		constraints.width  = create_ref<PixelConstraint>(width);
-		constraints.height = create_ref<PixelConstraint>(height);
-	}
-	return constraints;
-}
-
-GUIConstraints GUIConstraints::create_mousepos(int width, int height)
-{
-	GUIConstraints constraints;
-	{
-		constraints.x      = create_ref<MousePosConstraint>();
-		constraints.y      = create_ref<MousePosConstraint>();
-		constraints.width  = create_ref<PixelConstraint>(width);
-		constraints.height = create_ref<PixelConstraint>(height);
-	}
-	return constraints;
+	c.x = create_ref<MousePosConstraint>();
+	c.y = create_ref<MousePosConstraint>();
+	c.w = create_ref<PixelConstraint>(w);
+	c.h = create_ref<PixelConstraint>(h);
+	
+	return c;
 }
 
 void GUIConstraints::constrain(GUINode& component)
@@ -50,9 +38,9 @@ void GUIConstraints::constrain(GUINode& component)
 	if (y)
 		component.y(y->constrain_y(component));
 
-	if (width)
-		component.width(width->constrain_width(component));
+	if (w)
+		component.width(w->constrain_width(component));
 
-	if (height)
-		component.height(height->constrain_height(component));
+	if (h)
+		component.height(h->constrain_height(component));
 }

@@ -30,7 +30,7 @@ namespace lev
 			GUINode::render(b);
 
 			b.push_matrix(Mat3x2::create_transform(position(), 0.0f, size(), Vec2F::zero()));
-			b.push_text(text.c_str(), font);
+			b.push_string(text.c_str(), font);
 			b.pop_matrix();
 		}
 	};

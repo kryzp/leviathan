@@ -18,26 +18,14 @@ namespace lev
 
 			struct
 			{
-				T a;
-				T b;
-			};
-
-			struct
-			{
-				T first;
-				T second;
-			};
-
-			struct
-			{
 				T w;
 				T h;
 			};
 
 			struct
 			{
-				T width;
-				T height;
+				T first;
+				T second;
 			};
 
 			T coords[2];

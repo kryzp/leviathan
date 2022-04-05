@@ -1,11 +1,11 @@
 
 * string class (just using std::string for now)
 
-* make the entity system not the most bare bones thing ever
-
 * sounds / music
 
 * spritebatch instanced rendering
+
+* delegate class?
 
 * add much more asseritions where theyre needed
 

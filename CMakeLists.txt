@@ -40,15 +40,14 @@ add_library(${PROJECT_NAME}
 	public/lev/math/quad.cpp
 	public/lev/math/triangle.cpp
 	public/lev/math/polygon.cpp
-	public/lev/math/transform.cpp
+	public/lev/math/transform_2d.cpp
 	public/lev/math/timer.cpp
 	public/lev/math/quaternion.cpp
 
 	public/lev/node/node.cpp
+	public/lev/node/2d/collider_2d.cpp
 	public/lev/node/gui/gui_node.cpp
 	public/lev/node/gui/gui_constraints.cpp
-	
-	public/lev/physics/collider.cpp
 
 	private/backend/system_sdl2.cpp
 	private/backend/renderer_opengl.cpp

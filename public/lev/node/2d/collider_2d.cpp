@@ -1,25 +1,17 @@
-#include <lev/physics/collider.h>
+#include <lev/node/2d/collider_2d.h>
+
+#include <lev/math/calc.h>
+#include <lev/math/vec2.h>
+#include <limits>
 
 using namespace lev;
 
 Collider2D::Collider2D()
-	: parent(nullptr)
-	, transform()
-	, polygon()
+	: polygon()
 	, world_polygon()
 	, m_world_bounds(RectF::zero())
 	, m_axis()
 {
-}
-
-Collider2D::Collider2D(const Collider2D& other)
-{
-	this->polygon        = other.polygon;
-	this->world_polygon  = other.world_polygon;
-	this->m_world_bounds = other.m_world_bounds;
-	this->m_axis         = other.m_axis;
-	this->transform      = other.transform;
-	this->parent         = other.parent;
 }
 
 Collider2D::Collider2D(const Polygon& polygon)
@@ -34,17 +26,12 @@ Collider2D::Collider2D(const RectF& rect)
 	make_rect(rect);
 }
 
-Collider2D::Collider2D(float x, float y, float w, float h)
-	: Collider2D()
-{
-	make_rect(RectF(x, y, w, h));
-}
-
 void Collider2D::make_polygon(const Polygon& poly)
 {
 	this->polygon.vertices = poly.vertices;
 	this->world_polygon.vertices = poly.vertices;
 	this->m_axis = Vector<Vec2F>(poly.vertices.size());
+	update_world_polygon();
 }
 
 void Collider2D::make_rect(const RectF& rect)
@@ -79,17 +66,18 @@ Collider2D Collider2D::offset_copy(const Vec2F& amount) const
 
 RectF Collider2D::world_bounds()
 {
-	update();
+	update_world_polygon();
 	return m_world_bounds;
 }
 
-void Collider2D::update()
+void Collider2D::update_world_polygon()
 {
 	int vert_count = polygon.vertices.size();
-
+	
+	// TODO: ONLY SUPPORTS ONE LEVEL OF PARENT
 	Mat3x2 mat = transform.matrix();
-	if (parent)
-		mat = parent->matrix() * mat;
+	if (parent())
+		mat = static_cast<Node2D*>(parent())->transform.matrix() * mat;
 
 	// update world polygon
 	{
@@ -105,7 +93,9 @@ void Collider2D::update()
 
 			world_polygon.vertices[i] = Vec2F::transform(polygon.vertices[i], mat);
 
-			m_axis[i] = (next_vert - curr_vert).normalized().perpendicular();
+			m_axis[i] = (next_vert - curr_vert)
+				.normalized()
+				.perpendicular();
 		}
 	}
 

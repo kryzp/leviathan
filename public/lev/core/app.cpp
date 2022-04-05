@@ -99,7 +99,7 @@ void App::run()
                 prev_ticks = ticks;
                 lag += diff;
             }
-
+			
 			while (lag >= TIME_TGT)
 			{
 				lag -= TIME_TGT;
@@ -111,10 +111,10 @@ void App::run()
 				Time::prev_elapsed = Time::elapsed;
 				Time::elapsed += Time::delta;
 
-				Input::update();
-
 				if (g_config.on_update)
 					g_config.on_update();
+				
+				Input::update();
 			}
 		}
 
