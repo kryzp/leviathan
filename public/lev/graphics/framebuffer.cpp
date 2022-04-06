@@ -25,7 +25,7 @@ Ref<Framebuffer> Framebuffer::create(int width, int height, const TextureAttachm
 		LEV_ASSERT(depthstencilcount < 2, "There must not be 2 or more depth stencil attachments");
 	}
 
-	return Renderer::create_framebuffer({
+	return Renderer::inst()->create_framebuffer({
 		.width = width,
 		.height = height,
 		.attachments = attachments,
@@ -35,7 +35,7 @@ Ref<Framebuffer> Framebuffer::create(int width, int height, const TextureAttachm
 
 void Framebuffer::unbind()
 {
-	Renderer::unbind_framebuffer();
+	Renderer::inst()->unbind_framebuffer();
 }
 
 const Ref<Texture>& Framebuffer::attachment(int i) const

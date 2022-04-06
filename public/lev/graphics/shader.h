@@ -2,13 +2,12 @@
 
 #include <lev/core/util.h>
 #include <lev/containers/vector.h>
+#include <lev/containers/string.h>
 #include <lev/math/vec2.h>
 #include <lev/math/vec3.h>
 #include <lev/math/mat3x2.h>
 #include <lev/math/mat4x4.h>
 #include <lev/graphics/texture.h>
-
-#include <string>
 
 #define LEV_SHADER_MAX_SIZE LEV_KILOBYTES(5)
 
@@ -26,10 +25,10 @@ namespace lev
 	struct ShaderData
 	{
 		u8 type;
-		std::string vertex_source;
-		std::string fragment_source;
-		std::string geometry_source;
-		std::string compute_source;
+		Str<LEV_SHADER_MAX_SIZE> vertex_source;
+		Str<LEV_SHADER_MAX_SIZE> fragment_source;
+		Str<LEV_SHADER_MAX_SIZE> geometry_source;
+		Str<LEV_SHADER_MAX_SIZE> compute_source;
 	};
 
 	class ShaderBuffer

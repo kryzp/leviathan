@@ -1,16 +1,8 @@
 
-* string class (just using std::string for now)
-
 * sounds / music
 
 * spritebatch instanced rendering
 
-* delegate class?
-
-* add much more asseritions where theyre needed
-
 * lua???
 
 * debuggging console
-
-* quaternion implementation

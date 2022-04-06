@@ -7,12 +7,12 @@ using namespace lev;
 Ref<ShaderBuffer> ShaderBuffer::create(u64 size)
 {
 	LEV_ASSERT(size > 0, "Size must be > 0");
-	return Renderer::create_shader_buffer(size);
+	return Renderer::inst()->create_shader_buffer(size);
 }
 
 void ShaderBuffer::unbind()
 {
-	Renderer::unbind_shader_buffer();
+	Renderer::inst()->unbind_shader_buffer();
 }
 
 //////////////////////////////////////////////////////////
@@ -76,7 +76,7 @@ Ref<Shader> Shader::create(const char* vertex, const char* fragment, const char*
 		}
 	}
 
-	return Renderer::create_shader(data);
+	return Renderer::inst()->create_shader(data);
 }
 
 Ref<Shader> Shader::create_compute(const char* compute, bool is_source)
@@ -99,10 +99,10 @@ Ref<Shader> Shader::create_compute(const char* compute, bool is_source)
 		data.compute_source = cmpsrc;
 	}
 
-	return Renderer::create_shader(data);
+	return Renderer::inst()->create_shader(data);
 }
 
 void Shader::unbind()
 {
-	Renderer::unbind_shader();
+	Renderer::inst()->unbind_shader();
 }

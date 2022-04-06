@@ -1,15 +1,13 @@
 #pragma once
 
+#include <lev/core/util.h>
 #include <lev/containers/vector.h>
 #include <lev/math/vec2.h>
 
+#define LEV_MAX_TEXT_INPUT 256
+
 namespace lev
 {
-	namespace Input
-	{
-		constexpr int MAX_TEXT_INPUT = 256;
-	}
-	
 	enum MouseButton
 	{
 		MB_UNKNOWN = 0,
@@ -242,24 +240,26 @@ namespace lev
 	struct KeyboardState
 	{
 		bool down[KEY_MAX];
-		char text[Input::MAX_TEXT_INPUT];
+		char text[LEV_MAX_TEXT_INPUT];
 	};
 
 	struct MouseState
 	{
 		bool down[MB_MAX];
-
 		Vec2F screen_position;
 		Vec2F draw_position;
 		Vec2F position;
-		
 		Float2 wheel;
 	};
 
-	namespace Input
+	class Input
 	{
+		LEV_SINGLETON_CLASS(Input)
+
+	public:
 		bool init();
 		void destroy();
+
 		void update();
 
 		bool down_mb(int mb);
@@ -293,5 +293,12 @@ namespace lev
 		void on_key_down(int key);
 		void on_key_up(int key);
 		void on_text_utf8(const char* text);
-	}
+
+	private:
+		KeyboardState m_kb;
+		KeyboardState m_kb_prev;
+
+		MouseState m_mouse;
+		MouseState m_mouse_prev;
+	};
 }

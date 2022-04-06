@@ -3,8 +3,7 @@
 #include <lev/node/gui/gui_node.h>
 #include <lev/graphics/sprite_batch.h>
 #include <lev/graphics/font.h>
-
-#include <string>
+#include <lev/containers/string.h>
 
 namespace lev
 {
@@ -12,9 +11,9 @@ namespace lev
 	{
 	public:
 		Ref<Font> font;
-		std::string text;
+		String text;
 
-		GUIText(const GUIConstraints& constraints, const std::string& text, const Ref<Font>& font)
+		GUIText(const GUIConstraints& constraints, const String& text, const Ref<Font>& font)
 			: GUINode(constraints)
 			, font(font)
 			, text(text)

@@ -21,18 +21,22 @@ namespace lev
 		bool vsync = true;
 
 		std::function<void(void)> on_init = nullptr;
+		std::function<void(void)> on_exit = nullptr;
 		std::function<void(void)> on_destroy = nullptr;
 		std::function<void(void)> on_update = nullptr;
 		std::function<void(void)> on_render = nullptr;
 		std::function<void(const char*, LogType)> on_log = nullptr;
 	};
 
-	namespace App
+	class App
 	{
+		LEV_SINGLETON_CLASS(App)
+
+	public:
 		void start(const Config& cfg);
-		bool init();
-		void destroy();
-		void run();
+
+		float fps();
+		void clear(const Colour& colour = Colour::empty());
 
 		void exit();
 		bool is_running();
@@ -46,7 +50,12 @@ namespace lev
 		int draw_height();
 		Size2 draw_size();
 
-		float fps();
-		void clear(const Colour& colour = Colour::empty());
-	}
+	private:
+		bool init();
+		void run();
+		void destroy();
+
+		bool m_running;
+		Config m_config;
+	};
 }

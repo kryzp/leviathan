@@ -9,7 +9,7 @@ struct Particle
 	float ang;
 };
 
-#define PARTICLE_COUNT 50000
+#define PARTICLE_COUNT 25000
 
 layout(std430, binding = 1) buffer particle_data
 {
@@ -33,6 +33,8 @@ float uint_zero_to_one(uint x)
 }
 
 uniform float u_delta_time = 0.0;
+uniform vec2 u_mouse_pos = vec2(0.0, 0.0);
+uniform bool u_mouse_pressed = false;
 
 const float QUARTER = 1.57079632679;
 const float PI = 3.14159265359;
@@ -51,6 +53,15 @@ void main()
 	Particle particle = particles[id];
 	uint rand = hash(uint(particle.y * size.x) + uint(particle.x) + hash(id));
 	float randf = uint_zero_to_one(rand);
+
+	if (u_mouse_pressed)
+	{
+		vec2 diff = u_mouse_pos - vec2(particles[id].x, particles[id].y);
+		float lensqr = diff.x*diff.x + diff.y*diff.y;
+
+		if (lensqr < 10000.0)
+			particles[id].ang = atan(diff.y, diff.x);
+	}
 
 	vec2 dir = vec2(cos(particle.ang), sin(particle.ang));
 	vec2 newpos = vec2(particle.x, particle.y) + (dir * move_speed * u_delta_time);

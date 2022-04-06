@@ -81,8 +81,8 @@ void SpriteBatch::initialize()
 void SpriteBatch::render(const Ref<Framebuffer>& framebuffer, int sort_mode)
 {
 	render(Mat4x4::create_orthographic(
-		framebuffer ? framebuffer->width() : App::draw_width(),
-		framebuffer ? framebuffer->height() : App::draw_height(),
+		framebuffer ? framebuffer->width() : App::inst()->draw_width(),
+		framebuffer ? framebuffer->height() : App::inst()->draw_height(),
 		0.0f, 10000.0f
 	), framebuffer, sort_mode);
 }
@@ -106,8 +106,8 @@ void SpriteBatch::render(const Mat4x4& proj, const Ref<Framebuffer>& framebuffer
 		b.material.shader->use();
 		b.material.shader->set(Shader::PROJECTION, proj);
 		b.material.shader->set(Shader::RESOLUTION, Vec2F(
-			framebuffer ? framebuffer->width() : App::draw_width(),
-			framebuffer ? framebuffer->height() : App::draw_height()
+			framebuffer ? framebuffer->width() : App::inst()->draw_width(),
+			framebuffer ? framebuffer->height() : App::inst()->draw_height()
 		));
 
 		render_batch(pass, b);
@@ -122,7 +122,7 @@ void SpriteBatch::render_batch(RenderPass& pass, const RenderBatch& b)
 	pass.material = b.material;
 	pass.mesh = b.mesh;
 
-	Renderer::render(pass);
+	Renderer::inst()->render(pass);
 }
 
 void SpriteBatch::push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx, u64 idxcount)
@@ -132,10 +132,10 @@ void SpriteBatch::push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx,
 	batch.blend = peek_blend();
 	batch.layer = peek_layer();
 
-	batch.mesh = Renderer::create_mesh();
+	batch.mesh = Renderer::inst()->create_mesh();
 	{
 		Vertex transformed[vtxcount];
-		MemUtil::copy(transformed, vtx, sizeof(Vertex) * vtxcount);
+		mem::copy(transformed, vtx, sizeof(Vertex) * vtxcount);
 
 		for (int i = 0; i < vtxcount; i++)
 			transformed[i].pos = Vec2F::transform(transformed[i].pos, m_transform_matrix);
@@ -248,7 +248,7 @@ void SpriteBatch::push_string(const char* str, const Ref<Font>& font, const std:
 	}
 
 	int cursorx = 0;
-	for (int i = 0; i < StrUtil::length(str); i++)
+	for (int i = 0; i < str::length(str); i++)
 	{
 		auto c = font->character(str[i]);
 

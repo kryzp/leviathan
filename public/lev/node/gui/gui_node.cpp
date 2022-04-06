@@ -39,7 +39,7 @@ void GUINode::render(SpriteBatch& b)
 
 bool GUINode::mouse_hovering_over(bool include_children)
 {
-	Vec2F mouse_pos = Input::mouse_draw_pos();
+	Vec2F mouse_pos = Input::inst()->mouse_draw_pos();
 	RectI mouse_rect = RectI(mouse_pos.x, mouse_pos.y, 1, 1);
 
 	bool hovering = mouse_rect.intersects(bounding_box());
@@ -62,7 +62,7 @@ bool GUINode::mouse_hovering_over(bool include_children)
 
 bool GUINode::mouse_clicked_over(bool include_children, int mb)
 {
-	return mouse_hovering_over(include_children) && Input::pressed_mb(mb);
+	return mouse_hovering_over(include_children) && Input::inst()->pressed_mb(mb);
 }
 
 RectI GUINode::bounding_box() const { return m_rect; }

@@ -248,7 +248,7 @@ namespace lev
     template <typename T>
     void Vector<T>::fill(byte value)
     {
-        MemUtil::set(m_buf, value, sizeof(T) * m_size);
+        mem::set(m_buf, value, sizeof(T) * m_size);
     }
 
     template <typename T>
@@ -279,7 +279,7 @@ namespace lev
     void Vector<T>::push_front(T item)
     {
         resize(m_count + 1);
-        MemUtil::move(m_buf + 1, m_buf, sizeof(T) * m_count);
+        mem::move(m_buf + 1, m_buf, sizeof(T) * m_count);
         new (m_buf) T(std::move(item));
         m_count++;
     }

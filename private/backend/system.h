@@ -6,11 +6,15 @@ namespace lev
 {
 	struct Config;
 
-	namespace System
+	class System
 	{
-		bool init(const Config* cfg);
-		void destroy();
+		LEV_SINGLETON_CLASS(System)
+
+	public:
+		bool init(const Config& cfg);
 		void postinit();
+		void destroy();
+
 		void update();
 		void present();
 
@@ -39,7 +43,9 @@ namespace lev
 		void* gl_context_create();
 		void gl_context_make_current(void* context);
 		void gl_context_destroy(void* context);
-
 		bool gl_load_glad_loader();
-	}
+
+	private:
+		void* m_window;
+	};
 }

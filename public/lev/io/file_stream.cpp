@@ -16,6 +16,6 @@ FileStream::FileStream(const char* filename, const char* mode)
 
 FileStream& FileStream::open(const char* filename, const char* mode)
 {
-	p_stream = System::stream_from_file(filename, mode);
+	p_stream = System::inst()->stream_from_file(filename, mode);
 	return *this;
 }

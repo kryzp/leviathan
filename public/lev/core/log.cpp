@@ -12,34 +12,16 @@
 
 using namespace lev;
 
-namespace
+bool log::init()
 {
-    const char* g_directory;
-    char g_curr_file[256];
-}
-
-bool Log::init()
-{
-    if (g_directory)
-    {
-        u64 time_seconds = static_cast<long>(time(NULL));
-        char time_seconds_str[16];
-
-        StrUtil::fromint(time_seconds_str, time_seconds, 10);
-        StrUtil::copy(g_curr_file, g_directory, 231);
-        StrUtil::copy(g_curr_file, time_seconds_str, 16);
-        StrUtil::copy(g_curr_file, FILE_EXT, 8);
-        g_curr_file[255] = '\0';
-    }
-
     return true;
 }
 
-void Log::destroy()
+void log::destroy()
 {
 }
 
-void Log::print(const char* fmt, ...)
+void log::print(const char* fmt, ...)
 {
     va_list valist;
     va_start(valist, fmt);
@@ -48,11 +30,11 @@ void Log::print(const char* fmt, ...)
     printf("%s\n", format);
     va_end(valist);
 
-    if (App::config().on_log)
-        App::config().on_log(format, LOG_TYPE_NORMAL);
+    if (App::inst()->config().on_log)
+        App::inst()->config().on_log(format, LOG_TYPE_NORMAL);
 }
 
-void Log::warn(const char* fmt, ...)
+void log::warn(const char* fmt, ...)
 {
     va_list valist;
     va_start(valist, fmt);
@@ -61,11 +43,11 @@ void Log::warn(const char* fmt, ...)
     printf("\033[0;33m[WARN] %s\033[0m\n", format);
     va_end(valist);
 
-    if (App::config().on_log)
-        App::config().on_log(format, LOG_TYPE_WARN);
+    if (App::inst()->config().on_log)
+        App::inst()->config().on_log(format, LOG_TYPE_WARN);
 }
 
-void Log::error(const char* fmt, ...)
+void log::error(const char* fmt, ...)
 {
     va_list valist;
     va_start(valist, fmt);
@@ -74,10 +56,11 @@ void Log::error(const char* fmt, ...)
     printf("\033[0;31m[ERROR] %s\033[0m\n", format);
     va_end(valist);
 
-    if (App::config().on_log)
-        App::config().on_log(format, LOG_TYPE_ERROR);
+    if (App::inst()->config().on_log)
+        App::inst()->config().on_log(format, LOG_TYPE_ERROR);
 }
 
+/*
 void Log::file(const char *msg, ...)
 {
     if (!g_directory)
@@ -96,8 +79,8 @@ void Log::file(const char *msg, ...)
         fprintf(f, "%s\n", format);
         fclose(f);
 
-        if (App::config().on_log)
-            App::config().on_log(format, LOG_TYPE_FILE);
+        if (App::inst()->config().on_log)
+            App::inst()->config().on_log(format, LOG_TYPE_FILE);
     }
     
     va_end(args);
@@ -123,3 +106,4 @@ const char* Log::directory()
 {
     return g_directory;
 }
+*/

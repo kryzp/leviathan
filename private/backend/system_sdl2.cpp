@@ -16,12 +16,9 @@
 
 using namespace lev;
 
-namespace
-{
-	SDL_Window* g_window;
-}
+#define M_WINDOW ((SDL_Window*)m_window)
 
-bool System::init(const Config* cfg)
+bool System::init(const Config& cfg)
 {
 #if _WIN32
 	SetProcessDPIAware();
@@ -29,48 +26,49 @@ bool System::init(const Config* cfg)
 
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) != 0)
 	{
-		Log::error("failed to initialize sdl2");
+		log::error("failed to initialize sdl2");
 		return false;
 	}
 
 	int flags = SDL_WINDOW_ALLOW_HIGHDPI;
 
-	if (cfg->resizable)
+	if (cfg.resizable)
 		flags |= SDL_WINDOW_RESIZABLE;
 
 #ifdef LEV_USE_OPENGL
 	flags |= SDL_WINDOW_OPENGL;
-
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+	{
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+		SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+	}
 #endif
 
-	g_window = SDL_CreateWindow(cfg->name, 0, 0, cfg->width, cfg->height, flags);
+	m_window = SDL_CreateWindow(cfg.name, 0, 0, cfg.width, cfg.height, flags);
 	
-	if (!g_window)
+	if (!m_window)
 	{
-		Log::error("failed to create window");
+		log::error("failed to create window");
 		return false;
 	}
 
-	SDL_SetWindowPosition(g_window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+	SDL_SetWindowPosition(M_WINDOW, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
 	return true;
 }
 
 void System::destroy()
 {
-	if (g_window != nullptr)
-		SDL_DestroyWindow(g_window);
+	if (M_WINDOW != nullptr)
+		SDL_DestroyWindow(M_WINDOW);
 
-	g_window = nullptr;
+	m_window = nullptr;
 
 	SDL_Quit();
 }
@@ -78,7 +76,7 @@ void System::destroy()
 void System::postinit()
 {
 #ifdef LEV_USE_OPENGL
-	if (App::config().vsync)
+	if (App::inst()->config().vsync)
 		SDL_GL_SetSwapInterval(1);
 	else
 		SDL_GL_SetSwapInterval(0);
@@ -93,38 +91,38 @@ void System::update()
 		switch (e.type)
 		{
 			case SDL_QUIT:
-				App::exit();
+				App::inst()->exit();
 				break;
 
 			case SDL_MOUSEWHEEL:
-				Input::on_mouse_wheel(e.wheel.x, e.wheel.y);
+				Input::inst()->on_mouse_wheel(e.wheel.x, e.wheel.y);
 				break;
 
 			case SDL_MOUSEMOTION:
 				int spx, spy;
 				SDL_GetGlobalMouseState(&spx, &spy);
-				Input::on_mouse_screen_move(spx, spy);
-				Input::on_mouse_move(e.motion.x, e.motion.y);
+				Input::inst()->on_mouse_screen_move(spx, spy);
+				Input::inst()->on_mouse_move(e.motion.x, e.motion.y);
 				break;
 
 			case SDL_MOUSEBUTTONDOWN:
-				Input::on_mouse_down(e.button.button);
+				Input::inst()->on_mouse_down(e.button.button);
 				break;
 
 			case SDL_MOUSEBUTTONUP:
-				Input::on_mouse_up(e.button.button);
+				Input::inst()->on_mouse_up(e.button.button);
 				break;
 
 			case SDL_KEYDOWN:
-				Input::on_key_down(e.key.keysym.scancode);
+				Input::inst()->on_key_down(e.key.keysym.scancode);
 				break;
 
 			case SDL_KEYUP:
-				Input::on_key_up(e.key.keysym.scancode);
+				Input::inst()->on_key_up(e.key.keysym.scancode);
 				break;
 
 			case SDL_TEXTINPUT:
-                Input::on_text_utf8(e.text.text);
+                Input::inst()->on_text_utf8(e.text.text);
 				break;
 
 			default:
@@ -136,33 +134,33 @@ void System::update()
 void System::present()
 {
 #ifdef LEV_USE_OPENGL
-	SDL_GL_SwapWindow(g_window);
+	SDL_GL_SwapWindow(M_WINDOW);
 #endif
 
-	SDL_ShowWindow(g_window);
+	SDL_ShowWindow(M_WINDOW);
 }
 
 void System::set_window_position(int x, int y)
 {
-	SDL_SetWindowPosition(g_window, x, y);
+	SDL_SetWindowPosition(M_WINDOW, x, y);
 }
 
 void System::get_window_position(int* x, int* y)
 {
-	SDL_GetWindowPosition(g_window, x, y);
+	SDL_GetWindowPosition(M_WINDOW, x, y);
 }
 
 int System::window_width()
 {
 	int result = 0;
-	SDL_GetWindowSize(g_window, &result, nullptr);
+	SDL_GetWindowSize(M_WINDOW, &result, nullptr);
 	return result;
 }
 
 int System::window_height()
 {
 	int result = 0;
-	SDL_GetWindowSize(g_window, nullptr, &result);
+	SDL_GetWindowSize(M_WINDOW, nullptr, &result);
 	return result;
 }
 
@@ -171,7 +169,7 @@ int System::draw_width()
 	int result = 0;
 
 #ifdef LEV_USE_OPENGL
-	SDL_GL_GetDrawableSize(g_window, &result, nullptr);
+	SDL_GL_GetDrawableSize(M_WINDOW, &result, nullptr);
 #else
 	result = window_width();
 #endif
@@ -184,7 +182,7 @@ int System::draw_height()
 	int result = 0;
 
 #ifdef LEV_USE_OPENGL
-	SDL_GL_GetDrawableSize(g_window, nullptr, &result);
+	SDL_GL_GetDrawableSize(M_WINDOW, nullptr, &result);
 #else
 	result = window_height();
 #endif
@@ -251,7 +249,7 @@ void System::stream_close(void* stream)
 void* System::gl_context_create()
 {
 #ifdef LEV_USE_OPENGL
-	return SDL_GL_CreateContext(g_window);
+	return SDL_GL_CreateContext(M_WINDOW);
 #endif
 
 	return nullptr;
@@ -260,7 +258,7 @@ void* System::gl_context_create()
 void System::gl_context_make_current(void* context)
 {
 #ifdef LEV_USE_OPENGL
-	SDL_GL_MakeCurrent(g_window, context);
+	SDL_GL_MakeCurrent(M_WINDOW, context);
 #endif
 }
 

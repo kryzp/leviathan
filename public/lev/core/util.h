@@ -6,8 +6,8 @@
 #ifdef LEV_DEBUG
 
 // looks hacky but basically i just dereference oob memory and try writing to it, causing a crash
-#define LEV_ASSERT(_exp, _msg) if(!(_exp)){Log::error("ASSERTION: " _msg);*((volatile int*)0)=0;}
-#define LEV_ERROR(_msg) {Log::error("ERROR: " _msg);*((volatile int*)0)=0;}
+#define LEV_ASSERT(_exp, _msg) if(!(_exp)){log::error("ASSERTION: " _msg);*((volatile int*)0)=0;}
+#define LEV_ERROR(_msg) {log::error("ERROR: " _msg);*((volatile int*)0)=0;}
 
 #else
 
@@ -102,20 +102,13 @@ namespace lev
 		LOG_TYPE_MAX
 	};
 
-	namespace Log
+	namespace log
 	{
 		bool init();
 		void destroy();
-
 		void print(const char* fmt, ...);
 		void error(const char* fmt, ...);
 		void warn(const char* fmt, ...);
-
-		void file(const char *msg, ...);
-		void filenewline();
-
-		void directory(const char* dir);
-		const char* directory();
 	}
 
 	struct Time
@@ -128,7 +121,7 @@ namespace lev
 		static u64 loops;
 	};
 
-	namespace MemUtil
+	namespace mem
 	{
 		void* set(void* ptr, byte val, u64 size);
 		void* copy(void* dst, const void* src, u64 size);
@@ -138,13 +131,13 @@ namespace lev
 		bool vcompare(void* ptr, byte val, u64 size);
 	}
 
-	namespace StrUtil
+	namespace str
 	{
 		u64 length(const char* str);
 		char* cncat(char* dst, const char* src, u64 size);
 		char* copy(char* dst, const char* src, u64 size);
 		int compare(const char* str1, const char* str2);
-		u64 spn(const char* str, const char* control);
+		u64 cspan(const char* scan, const char* match);
 		void fromint(char* buf, s32 value, int radix);
 		void fromint64(char* buf, s64 value, int radix);
 	}

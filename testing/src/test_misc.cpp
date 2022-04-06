@@ -6,7 +6,7 @@
 
 using namespace lev;
 
-#define PARTICLE_COUNT 50000
+#define PARTICLE_COUNT 25000
 #define SCALE 1
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720
@@ -30,7 +30,6 @@ int main()
 
 	Ref<Texture> trail_map;
 	Ref<Font> nokiafc;
-	Node scene;
 
 	Ref<ShaderBuffer> particle_buf;
 	Particle* particles = new Particle[PARTICLE_COUNT];
@@ -81,8 +80,6 @@ int main()
 					"D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\colourize.frag"
 				)
 			);
-			
-			scene.add<GUIText>(GUIConstraints::create_mousepos(1.0f, 1.0f), "amongnus suusyy baka", nokiafc);
 		};
 
 		conf.on_update = [&]()
@@ -95,29 +92,27 @@ int main()
 
 			compute_shader_part->use()
 				.set("u_delta_time", Time::delta)
+				.set("u_mouse_pos", Input::inst()->mouse_draw_pos())
+				.set("u_mouse_pressed", Input::inst()->down_mb(MB_LEFT))
 				.set_buffer(particle_buf, 1)
 				.dispatch_compute(PARTICLE_COUNT, 1, 1)
 				.wait_compute();
-
-			scene.update();
 		};
 
 		conf.on_render = [&]()
 		{
-			App::clear();
+			App::inst()->clear();
 
 			batch.push_matrix(Mat3x2::create_scale(SCALE));
 			batch.push_shader(shader_colourize);
 			batch.push_texture(trail_map);
 			batch.pop_shader();
 			batch.pop_matrix();
-
-			scene.render(batch);
 			
 			batch.render();
 		};
 	}
-	App::start(conf);
+	App::inst()->start(conf);
 
 	delete[] particles;
 

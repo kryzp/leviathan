@@ -78,17 +78,17 @@ void Image::paint(const RectI& rect, PaintFn fn)
 
 void Image::pixels(const Colour* data)
 {
-	MemUtil::copy(m_pixels, data, sizeof(Colour) * (m_width * m_height));
+	mem::copy(m_pixels, data, sizeof(Colour) * (m_width * m_height));
 }
 
 void Image::pixels(const Colour* data, u64 pixel_count)
 {
-	MemUtil::copy(m_pixels, data, sizeof(Colour) * pixel_count);
+	mem::copy(m_pixels, data, sizeof(Colour) * pixel_count);
 }
 
 void Image::pixels(const Colour* data, u64 offset, u64 pixel_count)
 {
-	MemUtil::copy(m_pixels, data + offset, sizeof(Colour) * pixel_count);
+	mem::copy(m_pixels, data + offset, sizeof(Colour) * pixel_count);
 }
 
 Colour* Image::pixels()

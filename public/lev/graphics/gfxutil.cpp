@@ -19,8 +19,8 @@ void GfxUtil::quad(Vertex* vtx, u32* indices, const Quad& quad, const Quad& uv, 
         1, 2, 3
     };
     
-    MemUtil::copy(vtx, arrvtx, sizeof(arrvtx));
-    MemUtil::copy(indices, arrindices, sizeof(arrindices));
+    mem::copy(vtx, arrvtx, sizeof(arrvtx));
+    mem::copy(indices, arrindices, sizeof(arrindices));
 }
 
 void GfxUtil::tri(Vertex* vtx, u32* indices, const Triangle& triangle, const Triangle& uv, Colour colour, const Colour& mode)
@@ -37,6 +37,6 @@ void GfxUtil::tri(Vertex* vtx, u32* indices, const Triangle& triangle, const Tri
         0, 1, 2
     };
 
-    MemUtil::copy(vtx, arrvtx, sizeof(arrvtx));
-    MemUtil::copy(indices, arrindices, sizeof(arrindices));
+    mem::copy(vtx, arrvtx, sizeof(arrvtx));
+    mem::copy(indices, arrindices, sizeof(arrindices));
 }

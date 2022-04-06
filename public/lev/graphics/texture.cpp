@@ -50,7 +50,7 @@ Ref<Texture> Texture::create(int width, int height, TextureFormat format, Textur
 {
 	LEV_ASSERT(width > 0 && height > 0, "Width and Height must be greater than 0");
 
-	Ref<Texture> result = Renderer::create_texture(TextureData(width, height, format, type));
+	Ref<Texture> result = Renderer::inst()->create_texture(TextureData(width, height, format, type));
 
 	if (data)
 		result->generate(data);
@@ -60,10 +60,10 @@ Ref<Texture> Texture::create(int width, int height, TextureFormat format, Textur
 
 void Texture::unbind()
 {
-	Renderer::unbind_texture();
+	Renderer::inst()->unbind_texture();
 }
 
 void Texture::unbind_image()
 {
-	Renderer::unbind_texture_image();
+	Renderer::inst()->unbind_texture_image();
 }

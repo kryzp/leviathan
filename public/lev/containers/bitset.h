@@ -105,7 +105,7 @@ namespace lev
 	template <u64 Size>
 	Bitset<Size>& Bitset<Size>::reset()
 	{
-		MemUtil::set(m_bits, 0, memory_size());
+		mem::set(m_bits, 0, memory_size());
 		return *this;
 	}
 

@@ -13,9 +13,9 @@ namespace lev
 		{
 		}
 
-		int constrain_x(const GUINode& component)		const override { return Input::mouse_draw_pos().x; }
-		int constrain_y(const GUINode& component)		const override { return Input::mouse_draw_pos().y; }
-		int constrain_width(const GUINode& component)	const override { return Input::mouse_draw_pos().x; }
-		int constrain_height(const GUINode& component)	const override { return Input::mouse_draw_pos().y; }
+		int constrain_x(const GUINode& component)		const override { return Input::inst()->mouse_draw_pos().x; }
+		int constrain_y(const GUINode& component)		const override { return Input::inst()->mouse_draw_pos().y; }
+		int constrain_width(const GUINode& component)	const override { return Input::inst()->mouse_draw_pos().x; }
+		int constrain_height(const GUINode& component)	const override { return Input::inst()->mouse_draw_pos().y; }
 	};
 }

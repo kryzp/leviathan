@@ -12,7 +12,7 @@ add_library(${PROJECT_NAME}
 	public/lev/core/strutil.cpp
 
 	public/lev/assets/asset_mgr.cpp
-	
+
 	public/lev/graphics/gfxutil.cpp
 	public/lev/graphics/sprite_batch.cpp
 	public/lev/graphics/framebuffer.cpp

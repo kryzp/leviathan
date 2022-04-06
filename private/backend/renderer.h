@@ -20,8 +20,11 @@ namespace lev
 		Ref<Framebuffer> target;
 	};
 
-	namespace Renderer
+	class Renderer
 	{
+		LEV_SINGLETON_CLASS(Renderer)
+
+	public:
 		bool init();
 		void destroy();
 
@@ -30,7 +33,6 @@ namespace lev
 		void before_render();
 		void after_render();
 
-		void clear(float r, float g, float b, float a = 0.0f);
 		void clear(const Colour& colour = Colour::empty());
 
 		Ref<Texture> create_texture(const TextureData& data);
@@ -44,5 +46,8 @@ namespace lev
 		void unbind_shader();
 		void unbind_shader_buffer();
 		void unbind_framebuffer();
-	}
+		
+	private:
+		void* m_context;
+	};
 }

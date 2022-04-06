@@ -2,7 +2,7 @@
 #include <lev/graphics/texture.h>
 #include <lev/graphics/shader.h>
 #include <lev/graphics/font.h>
-#include <string>
+#include <lev/containers/string.h>
 
 using namespace lev;
 
@@ -30,7 +30,7 @@ public:
 	}
 
 private:
-	HashMap<std::string, Ref<Texture>> m_textures;
+	HashMap<String, Ref<Texture>> m_textures;
 };
 
 class ShaderLoader : public AssetLoader<Shader, ShaderLoadData>
@@ -63,7 +63,7 @@ public:
 	}
 
 private:
-	HashMap<std::string, Ref<Shader>> m_shaders;
+	HashMap<String, Ref<Shader>> m_shaders;
 };
 
 class FontLoader : public AssetLoader<Font, FontLoadData>
@@ -90,7 +90,7 @@ public:
 	}
 
 private:
-	HashMap<std::string, Ref<Font>> m_fonts;
+	HashMap<String, Ref<Font>> m_fonts;
 };
 
 AssetMgr::AssetMgr()

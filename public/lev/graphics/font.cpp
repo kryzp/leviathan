@@ -158,7 +158,7 @@ float Font::string_width(const char* str) const
 {
 	float result = 0.0f;
 
-	for (int i = 0; i < StrUtil::length(str); i++)
+	for (int i = 0; i < str::length(str); i++)
 	{
 		auto c = m_characters[str[i]];
 
@@ -176,7 +176,7 @@ float Font::string_height(const char* str) const
 	float hhh = 0.0f;
 	float max_bboxh = 0.0f;
 
-	for (int i = 0; i < StrUtil::length(str); i++)
+	for (int i = 0; i < str::length(str); i++)
 	{
 		auto c = m_characters[str[i]];
 		max_bboxh = Calc::max(max_bboxh, c.bbox.h);

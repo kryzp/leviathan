@@ -14,8 +14,6 @@ using namespace lev;
 
 namespace
 {
-	void* g_context;
-
 	int get_gl_texture_fmt(TextureFormat fmt)
 	{
 		switch (fmt)
@@ -26,6 +24,8 @@ namespace
 			case TEXTURE_FORMAT_RGBA:			return GL_RGBA;
 			case TEXTURE_FORMAT_DEPTH_STENCIL:	return GL_DEPTH_STENCIL;
 		}
+
+		return -1;
 	}
 
 	int get_gl_texture_internal_fmt(TextureFormat fmt)
@@ -38,6 +38,8 @@ namespace
 			case TEXTURE_FORMAT_RGBA:			return GL_RGBA32F;
 			case TEXTURE_FORMAT_DEPTH_STENCIL:	return GL_DEPTH24_STENCIL8;
 		}
+
+		return -1;
 	}
 
 	int get_gl_texture_type(TextureType type)
@@ -48,6 +50,8 @@ namespace
 			case TEXTURE_TYPE_FLOAT:			return GL_FLOAT;
 			case TEXTURE_TYPE_INT_24_8:			return GL_UNSIGNED_INT_24_8;
 		}
+
+		return -1;
 	}
 
 	int get_gl_blend_equation(BlendEquation func)
@@ -60,6 +64,8 @@ namespace
 			case BLEND_EQUATION_MIN:				return GL_MIN;
 			case BLEND_EQUATION_MAX:				return GL_MAX;
 		}
+
+		return -1;
 	}
 
 	int get_gl_blend_func(BlendFunc factor)
@@ -85,6 +91,8 @@ namespace
 			case BLEND_FUNC_CONSTANT_ALPHA:				return GL_CONSTANT_ALPHA;
 			case BLEND_FUNC_ONE_MINUS_CONSTANT_ALPHA:	return GL_ONE_MINUS_CONSTANT_ALPHA;
 		}
+
+		return -1;
 	}
 }
 
@@ -215,7 +223,7 @@ public:
 	{
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_id);
 		void* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
-		MemUtil::copy(p, buf, m_size);
+		mem::copy(p, buf, m_size);
 		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 	}
 
@@ -263,7 +271,7 @@ public:
 			if (!success)
 			{
 				glGetProgramInfoLog(id, 512, NULL, infolog);
-				Log::error("failed to link compute shader program: %s", infolog);
+				log::error("failed to link compute shader program: %s", infolog);
 			}
 
 			glDeleteShader(compute);
@@ -284,7 +292,7 @@ public:
 				if (!success)
 				{
 					glGetShaderInfoLog(vertex, 512, NULL, infolog);
-					Log::error("failed to compile vertex shader: %s", infolog);
+					log::error("failed to compile vertex shader: %s", infolog);
 				}
 			}
 
@@ -298,7 +306,7 @@ public:
 				if (!success)
 				{
 					glGetShaderInfoLog(fragment, 512, NULL, infolog);
-					Log::error("failed to compile fragment shader: %s", infolog);
+					log::error("failed to compile fragment shader: %s", infolog);
 				}
 			}
 
@@ -314,7 +322,7 @@ public:
 				if (!success)
 				{
 					glGetShaderInfoLog(geometry, 512, NULL, infolog);
-					Log::error("failed to compile geometry shader: %s", infolog);
+					log::error("failed to compile geometry shader: %s", infolog);
 				}
 			}
 
@@ -330,7 +338,7 @@ public:
 			if (!success)
 			{
 				glGetProgramInfoLog(id, 512, NULL, infolog);
-				Log::error("failed to link rendering shader program: %s", infolog);
+				log::error("failed to link rendering shader program: %s", infolog);
 			}
 
 			glDeleteShader(vertex);
@@ -559,10 +567,10 @@ public:
 
 bool Renderer::init()
 {
-	g_context = System::gl_context_create();
-	System::gl_context_make_current(g_context);
+	m_context = System::inst()->gl_context_create();
+	System::inst()->gl_context_make_current(m_context);
 
-	if (!System::gl_load_glad_loader())
+	if (!System::inst()->gl_load_glad_loader())
 	{
 		std::cout << "failed to initialize glad" << std::endl;
 		return false;
@@ -577,7 +585,7 @@ bool Renderer::init()
 
 void Renderer::destroy()
 {
-	System::gl_context_destroy(g_context);
+	System::inst()->gl_context_destroy(m_context);
 }
 
 void Renderer::before_render()
@@ -644,7 +652,7 @@ void Renderer::render(const RenderPass& pass)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glDrawBuffers(1, &COLOUR_ATTACHMENT_0);
-		glViewport(0, 0, App::draw_width(), App::draw_height());
+		glViewport(0, 0, App::inst()->draw_width(), App::inst()->draw_height());
 	}
 
 	shader->use();
@@ -682,7 +690,7 @@ void Renderer::render(const RenderPass& pass)
 void Renderer::clear(const Colour& colour)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, App::draw_width(), App::draw_height());
+	glViewport(0, 0, App::inst()->draw_width(), App::inst()->draw_height());
 	glClearColor(
 		colour.r,
 		colour.g,
