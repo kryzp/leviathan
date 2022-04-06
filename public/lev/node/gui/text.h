@@ -6,19 +6,15 @@
 
 #include <string>
 
-/*
- * just for demonstration of how to use / testing
- */
-
 namespace lev
 {
 	class GUIText : public GUINode
 	{
 	public:
-		const Font& font;
+		Ref<Font> font;
 		std::string text;
 
-		GUIText(const GUIConstraints& constraints, const std::string& text, const Font& font)
+		GUIText(const GUIConstraints& constraints, const std::string& text, const Ref<Font>& font)
 			: GUINode(constraints)
 			, font(font)
 			, text(text)
@@ -30,7 +26,7 @@ namespace lev
 			GUINode::render(b);
 
 			b.push_matrix(Mat3x2::create_transform(position(), 0.0f, size(), Vec2F::zero()));
-			b.push_string(text.c_str(), font);
+			b.push_string(text.c_str(), font, TEXT_ALIGN_LEFT, Colour::white());
 			b.pop_matrix();
 		}
 	};

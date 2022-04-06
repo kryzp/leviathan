@@ -16,6 +16,6 @@ namespace lev
 	struct Signal
 	{
 		u64 sender;
-		int type;
+		u32 type;
 	};
 }

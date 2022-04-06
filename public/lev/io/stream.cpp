@@ -10,7 +10,8 @@ Stream::Stream()
 
 Stream::~Stream()
 {
-	System::stream_close(p_stream);
+	if (p_stream)
+		System::stream_close(p_stream);
 }
 
 Stream& Stream::read(void* buffer, s64 length)
@@ -34,6 +35,7 @@ Stream& Stream::seek(s64 offset)
 Stream& Stream::close()
 {
 	System::stream_close(p_stream);
+	p_stream = nullptr;
 	return *this;
 }
 

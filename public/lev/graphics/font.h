@@ -4,18 +4,22 @@
 #include <lev/math/rect.h>
 #include <lev/math/vec2.h>
 
-// todo: make this determined by the font not constant
-#define LEV_FONT_CHARCOUNT 256
+// i dont know what would be the best size for these so this is just a guess
 #define LEV_FONT_ATLAS_W 1024
-#define LEV_FONT_ATLAS_H 1024
+#define LEV_FONT_ATLAS_H 512
+#define LEV_FONT_CHARCOUNT 256
 
 namespace lev
 {
     class Texture;
 	struct TextureRegion;
 
-	// ONLY SUPPORTS TRUETYPE FONTS
-	// todo: use some kind of enum class to denote which how to load the font
+	enum FontType
+	{
+		FONT_TYPE_TTF,
+		FONT_TYPE_OTF,
+		FONT_TYPE_MAX
+	};
 
 	class Font
 	{
@@ -27,6 +31,7 @@ namespace lev
 			int descent;
 			int line_gap;
 			RectI bbox;
+			int type;
 		};
 
 		struct Kerning
@@ -52,10 +57,10 @@ namespace lev
 		};
 
 		Font();
-		Font(float size, const char* path);
+		Font(float size, const char* path, int type = FONT_TYPE_TTF);
 		~Font();
 
-		void load(float size, const char* path);
+		void load(float size, const char* path, int type = FONT_TYPE_TTF);
 		void free();
 
 		float string_width(const char* str) const;

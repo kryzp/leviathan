@@ -43,7 +43,7 @@ public:
 
 		Ref<Shader> shd = nullptr;
 
-		if (data.type == SHADER_TYPE_COMPUTE)
+		if (data.compute)
 			shd = Shader::create_compute(data.compute, data.is_source);
 		else
 			shd = Shader::create(data.vertex, data.fragment, data.geometry, data.is_source);

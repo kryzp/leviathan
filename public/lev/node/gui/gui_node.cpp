@@ -3,48 +3,38 @@
 
 using namespace lev;
 
-GUINode::GUINode(const GUIConstraints& constraints)
+GUINode::GUINode(const GUIConstraints& c)
 	: Node()
-	, constraints(constraints)
-	, enabled(true)
-	, alpha(1.0f)
+	, constraints(c)
 {
 	this->constraints.constrain(*this);
 }
 
 GUINode::~GUINode()
 {
-	for (auto& component : m_components)
-		delete component;
 }
 
 void GUINode::init()
 {
+	Node::init();
 }
 
 void GUINode::update()
 {
 	this->constraints.constrain(*this);
-
-	for (auto& component : m_components)
+	
+	for (auto& n : children())
 	{
-		if (!component->enabled)
-			continue;
-
-		component->constraints.constrain(*component);
-		component->update();
+		auto guin = static_cast<GUINode*>(n);
+		guin->constraints.constrain(*guin);
 	}
+
+	Node::update();
 }
 
 void GUINode::render(SpriteBatch& b)
 {
-	for (auto& component : m_components)
-	{
-		if (!component->enabled)
-			continue;
-
-		component->render(b);
-	}
+	Node::render(b);
 }
 
 bool GUINode::mouse_hovering_over(bool include_children)
@@ -56,8 +46,9 @@ bool GUINode::mouse_hovering_over(bool include_children)
 
 	if (!hovering && include_children)
 	{
-		for (auto& child : m_components)
+		for (auto& n : children())
 		{
+			auto child = static_cast<GUINode*>(n);
 			RectI bb = child->bounding_box();
 			hovering = mouse_rect.intersects(bb);
 
@@ -69,27 +60,21 @@ bool GUINode::mouse_hovering_over(bool include_children)
 	return hovering;
 }
 
-bool GUINode::mouse_clicked_over(bool include_children)
+bool GUINode::mouse_clicked_over(bool include_children, int mb)
 {
-	return mouse_hovering_over(include_children) && mouse_clicked();
+	return mouse_hovering_over(include_children) && Input::pressed_mb(mb);
 }
 
-bool GUINode::mouse_clicked()
-{
-	return Input::pressed_mb(MB_LEFT); // todo: temp
-}
-
-void GUINode::clear() { m_components.clear(); }
 RectI GUINode::bounding_box() const { return m_rect; }
 
 Vec2F GUINode::position() const { return Vec2F(x(), y()); }
 Vec2F GUINode::size() const { return Vec2F(width(), height()); }
 
 int GUINode::x() const { return m_rect.x; }
-void GUINode::x(int x) { m_rect.x = x + ((dynamic_cast<GUINode*>(parent())) ? static_cast<GUINode*>(parent())->x() : 0); } // todo this is so so so horrible please remove or fix or for the love of god
+void GUINode::x(int x) { m_rect.x = x + ((dynamic_cast<GUINode*>(parent())) ? static_cast<GUINode*>(parent())->x() : 0); } // hmmmm
 
 int GUINode::y() const { return m_rect.y; }
-void GUINode::y(int y) { m_rect.y = y + ((dynamic_cast<GUINode*>(parent())) ? static_cast<GUINode*>(parent())->y() : 0); } // pain
+void GUINode::y(int y) { m_rect.y = y + ((dynamic_cast<GUINode*>(parent())) ? static_cast<GUINode*>(parent())->y() : 0); } // hmmmmmmmm
 
 int GUINode::width() const { return m_rect.w; }
 void GUINode::width(int w) { m_rect.w = w; }

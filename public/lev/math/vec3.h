@@ -29,6 +29,13 @@ namespace lev
 				T second;
 				T third;
 			};
+
+			struct
+			{
+				T pitch;
+				T yaw;
+				T roll;
+			};
 			
 			T coords[3];
 			T data[3];
@@ -40,9 +47,7 @@ namespace lev
 
 		template <typename Y>
 		Vec3(const Vec3<Y>& other)
-			: x(other.x)
-			, y(other.y)
-			, z(other.z)
+			: x(other.x), y(other.y), z(other.z)
 		{
 		}
 
@@ -90,25 +95,19 @@ namespace lev
 	
 	template <typename T>
 	Vec3<T>::Vec3()
-		: x(0)
-		, y(0)
-		, z(0)
+		: x(0), y(0), z(0)
 	{
 	}
 
 	template <typename T>
 	Vec3<T>::Vec3(T x)
-		: x(x)
-		, y(x)
-		, z(x)
+		: x(x), y(x), z(x)
 	{
 	}
 
 	template <typename T>
 	Vec3<T>::Vec3(T x, T y, T z)
-		: x(x)
-		, y(y)
-		, z(z)
+		: x(x), y(y), z(z)
 	{
 	}
 
@@ -179,7 +178,7 @@ namespace lev
 	template <typename T> const Vec3<T>& Vec3<T>::one()			{ static const Vec3 ONE			= Vec3( 1,  1,  1); return ONE;			}
 	template <typename T> const Vec3<T>& Vec3<T>::left()		{ static const Vec3 LEFT		= Vec3(-1,  0,  0); return LEFT;		}
 	template <typename T> const Vec3<T>& Vec3<T>::right()		{ static const Vec3 RIGHT		= Vec3( 1,  0,  0); return RIGHT;		}
-	template <typename T> const Vec3<T>& Vec3<T>::up()			{ static const Vec3 UP			= Vec3( 0, -1,  0); return UP;			} // todo: should vec3's have their y axis go up as y increases? (opposite of vec2)
+	template <typename T> const Vec3<T>& Vec3<T>::up()			{ static const Vec3 UP			= Vec3( 0, -1,  0); return UP;			} // should vec3's have their y axis go up as y increases? (opposite of vec2)
 	template <typename T> const Vec3<T>& Vec3<T>::down()		{ static const Vec3 DOWN		= Vec3( 0,  1,  0); return DOWN;		}
 	template <typename T> const Vec3<T>& Vec3<T>::forward()		{ static const Vec3 FORWARD		= Vec3( 0,  0,  1); return FORWARD;		}
 	template <typename T> const Vec3<T>& Vec3<T>::backward()	{ static const Vec3 BACKWARD	= Vec3( 0,  0, -1); return BACKWARD;	}

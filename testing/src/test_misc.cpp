@@ -1,19 +1,21 @@
 #include <lev/core/app.h>
+#include <lev/node/gui/text.h>
 #include <lev/math/range.h>
 #include <lev/graphics/sprite_batch.h>
 #include <lev/assets/asset_mgr.h>
 
 using namespace lev;
 
-#define PARTICLE_COUNT 250
-#define SCALE 4
-#define WINDOW_WIDTH (1280 / SCALE)
-#define WINDOW_HEIGHT (720 / SCALE)
+#define PARTICLE_COUNT 50000
+#define SCALE 1
+#define WINDOW_WIDTH 1280
+#define WINDOW_HEIGHT 720
+#define SIM_WIDTH (WINDOW_WIDTH / SCALE)
+#define SIM_HEIGHT (WINDOW_HEIGHT / SCALE)
 
 struct Particle
 {
-	float x;
-	float y;
+	float x, y;
 	float ang;
 };
 
@@ -21,78 +23,74 @@ int main()
 {
 	SpriteBatch batch;
 	Range direction(0, Calc::TAU);
-
+	
 	Ref<Shader> compute_shader_part;
-	Ref<Shader> compute_shader_fade;
-	Ref<Shader> compute_shader_blur;
+	Ref<Shader> compute_shader_post;
+	Ref<Shader> shader_colourize;
 
-	Ref<Texture> tex;
+	Ref<Texture> trail_map;
 	Ref<Font> nokiafc;
+	Node scene;
 
+	Ref<ShaderBuffer> particle_buf;
 	Particle* particles = new Particle[PARTICLE_COUNT];
-
 	for (int i = 0; i < PARTICLE_COUNT; i++)
 	{
 		particles[i] = {
-			.x = WINDOW_WIDTH / 2.0f,
-			.y = WINDOW_HEIGHT / 2.0f,
+			.x = SIM_WIDTH / 2.0f,
+			.y = SIM_HEIGHT / 2.0f,
 			.ang = direction.random()
 		};
 	}
 
-	Ref<ShaderBuffer> particle_buf;
-
 	Config conf;
 	{
 		conf.name = "ah yes: p a r t i c l e";
-		//conf.vsync = false;
 
-		conf.width = WINDOW_WIDTH * SCALE;
-		conf.height = WINDOW_HEIGHT * SCALE;
+		conf.width = WINDOW_WIDTH;
+		conf.height = WINDOW_HEIGHT;
 
 		conf.target_fps = 144;
 
 		conf.on_init = [&]()
 		{
-			tex = Texture::create(WINDOW_WIDTH, WINDOW_HEIGHT, TEXTURE_FORMAT_RGBA, TEXTURE_TYPE_UNSIGNED_BYTE, nullptr);
-
-			nokiafc = AssetMgr::inst()->load<Font>("nokia", FontLoadData {
-				.size = 20,
-				.path = "D:\\_PROJECTS\\leviathan\\testing\\res\\fonts\\nokiafc22.ttf"
-			});
+			trail_map = Texture::create(SIM_WIDTH, SIM_HEIGHT, TEXTURE_FORMAT_RGBA, TEXTURE_TYPE_UNSIGNED_BYTE, nullptr);
 
 			particle_buf = ShaderBuffer::create(sizeof(Particle) * PARTICLE_COUNT);
 			particle_buf->set(particles);
 
-			compute_shader_part = AssetMgr::inst()->load<Shader>("compute_particle", ShaderLoadData {
-				.type = SHADER_TYPE_COMPUTE,
-				.is_source = false,
-				.compute = "D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\particle.comp"
-			});
+			nokiafc = AssetMgr::inst()->load<Font>(
+				"nokia",
+				FontLoadData(20, "D:\\_PROJECTS\\leviathan\\testing\\res\\fonts\\nokiafc22.ttf")
+			);
 
-			compute_shader_fade = AssetMgr::inst()->load<Shader>("compute_fade", ShaderLoadData {
-				.type = SHADER_TYPE_COMPUTE,
-				.is_source = false,
-				.compute = "D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\fade.comp"
-			});
+			compute_shader_part = AssetMgr::inst()->load<Shader>(
+				"compute_particle",
+				ShaderLoadData("D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\particle.comp")
+			);
 
-			compute_shader_blur = AssetMgr::inst()->load<Shader>("compute_blur", ShaderLoadData {
-				.type = SHADER_TYPE_COMPUTE,
-				.is_source = false,
-				.compute = "D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\blur.comp"
-			});
+			compute_shader_post = AssetMgr::inst()->load<Shader>(
+				"compute_post",
+				ShaderLoadData("D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\post.comp")
+			);
+
+			shader_colourize = AssetMgr::inst()->load<Shader>(
+				"colourize",
+				ShaderLoadData(
+					"D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\colourize.vert",
+					"D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\colourize.frag"
+				)
+			);
+			
+			scene.add<GUIText>(GUIConstraints::create_mousepos(1.0f, 1.0f), "amongnus suusyy baka", nokiafc);
 		};
 
 		conf.on_update = [&]()
 		{
-			tex->bind_image(0);
+			trail_map->bind_image(0);
 
-			compute_shader_blur->use()
-				.dispatch_compute(WINDOW_WIDTH, WINDOW_HEIGHT, 1)
-				.wait_compute();
-
-			compute_shader_fade->use()
-				.dispatch_compute(WINDOW_WIDTH, WINDOW_HEIGHT, 1)
+			compute_shader_post->use()
+				.dispatch_compute(SIM_WIDTH, SIM_HEIGHT, 1)
 				.wait_compute();
 
 			compute_shader_part->use()
@@ -100,20 +98,22 @@ int main()
 				.set_buffer(particle_buf, 1)
 				.dispatch_compute(PARTICLE_COUNT, 1, 1)
 				.wait_compute();
+
+			scene.update();
 		};
 
 		conf.on_render = [&]()
 		{
 			App::clear();
 
-			batch.push_matrix(Mat3x2::create_scale(Vec2F::one() * SCALE));
-			batch.push_texture(tex);
+			batch.push_matrix(Mat3x2::create_scale(SCALE));
+			batch.push_shader(shader_colourize);
+			batch.push_texture(trail_map);
+			batch.pop_shader();
 			batch.pop_matrix();
 
-			batch.push_matrix(Mat3x2::create_transform(Vec2F(10, 40), 0.0f, Vec2F::one() * 2.0f, Vec2F::zero()));
-			batch.push_string(("fps: " + std::to_string(App::fps())).c_str(), nokiafc, TEXT_ALIGN_LEFT, Colour::white());
-			batch.pop_matrix();
-
+			scene.render(batch);
+			
 			batch.render();
 		};
 	}

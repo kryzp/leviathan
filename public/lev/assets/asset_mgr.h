@@ -12,18 +12,35 @@ namespace lev
 {
 	struct ShaderLoadData
 	{
-		int type; // todo: unnecessary since we can infer what type it is from what strings are nullptr
 		bool is_source = false;
 		const char* vertex = nullptr;
 		const char* fragment = nullptr;
 		const char* geometry = nullptr;
 		const char* compute = nullptr;
+
+		ShaderLoadData(const char* compute)
+			: compute(compute)
+		{
+		}
+
+		ShaderLoadData(const char* vertex, const char* fragment, const char* geometry = nullptr)
+			: vertex(vertex)
+			, fragment(fragment)
+			, geometry(geometry)
+		{
+		}
 	};
 
 	struct FontLoadData
 	{
 		float size;
 		const char* path;
+
+		FontLoadData(float size, const char* path)
+			: size(size)
+			, path(path)
+		{
+		}
 	};
 }
 

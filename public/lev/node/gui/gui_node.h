@@ -4,13 +4,14 @@
 #include <lev/node/gui/gui_constraints.h>
 #include <lev/math/vec2.h>
 #include <lev/math/rect.h>
+#include <lev/input/input.h>
 
 namespace lev
 {
 	class GUINode : public Node
 	{
 	public:
-		GUINode(const GUIConstraints& constraints);
+		GUINode(const GUIConstraints& c);
 		virtual ~GUINode();
 
 		virtual void init();
@@ -18,9 +19,7 @@ namespace lev
 		virtual void render(SpriteBatch& b);
 
 		virtual bool mouse_hovering_over(bool include_children = true);
-		virtual bool mouse_clicked_over(bool include_children = true);
-
-		void clear();
+		virtual bool mouse_clicked_over(bool include_children = true, int mb = MB_LEFT);
 
 		RectI bounding_box() const;
 
@@ -40,13 +39,8 @@ namespace lev
 		void height(int h);
 
 		GUIConstraints constraints;
-		bool enabled;
-		float alpha;
 
 	protected:
-		bool mouse_clicked();
-
 		RectI m_rect;
-		Vector<GUINode*> m_components;
 	};
 }

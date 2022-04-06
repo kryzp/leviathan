@@ -11,6 +11,8 @@ namespace lev
 	class Image
 	{
 	public:
+		using PaintFn = std::function<Colour(u32, u32)>;
+
 		Image();
 		Image(const char* path);
 		Image(int width, int height);
@@ -18,6 +20,9 @@ namespace lev
 
 		void load(const char* path);
 		void free();
+
+		void paint(PaintFn fn);
+		void paint(const RectI& rect, PaintFn fn);
 
 		void pixels(const Colour* data);
 		void pixels(const Colour* data, u64 pixel_count);

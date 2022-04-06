@@ -14,26 +14,30 @@ namespace lev
 		TEXTURE_FORMAT_RG,
 		TEXTURE_FORMAT_RGB,
 		TEXTURE_FORMAT_RGBA,
-		TEXTURE_FORMAT_DEPTH_STENCIL
+		TEXTURE_FORMAT_DEPTH_STENCIL,
+		TEXTURE_FORMAT_MAX
 	};
 
 	enum TextureType
 	{
 		TEXTURE_TYPE_UNSIGNED_BYTE,
 		TEXTURE_TYPE_FLOAT,
-		TEXTURE_TYPE_INT_24_8
+		TEXTURE_TYPE_INT_24_8,
+		TEXTURE_TYPE_MAX
 	};
 
 	enum TextureFilter
 	{
 		TEXTURE_FILTER_NEAREST,
-		TEXTURE_FILTER_LINEAR
+		TEXTURE_FILTER_LINEAR,
+		TEXTURE_FILTER_MAX
 	};
 
 	enum TextureWrap
 	{
 		TEXTURE_WRAP_CLAMP,
-		TEXTURE_WRAP_REPEAT
+		TEXTURE_WRAP_REPEAT,
+		TEXTURE_WRAP_MAX
 	};
 
 	struct TextureData
@@ -110,8 +114,6 @@ namespace lev
 		static void unbind_image();
 
 		Int2 size() const { return Int2(width(), height()); }
-
-		// todo: unbind functions?
 
 		virtual void copy_to(Ref<Texture>& other) = 0;
 

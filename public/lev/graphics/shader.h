@@ -14,7 +14,7 @@
 
 namespace lev
 {
-	enum ShaderType : u8
+	enum ShaderType
 	{
 		SHADER_TYPE_FRAGMENT	= 1 << 0,
 		SHADER_TYPE_VERTEX		= 1 << 1,
@@ -44,6 +44,7 @@ namespace lev
 
 		virtual void bind(int idx) = 0;
 		virtual void set(void* buf) = 0;
+		virtual void release() = 0;
 		virtual u64 size() const = 0;
 	};
 

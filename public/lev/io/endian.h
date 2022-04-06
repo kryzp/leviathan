@@ -5,7 +5,8 @@ namespace lev
 	enum Endianness
 	{
 		ENDIANNESS_LITTLE,
-		ENDIANNESS_BIG
+		ENDIANNESS_BIG,
+		ENDIANNESS_MAX
 	};
 
 	namespace Endian

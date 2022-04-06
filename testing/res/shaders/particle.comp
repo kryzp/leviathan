@@ -5,14 +5,15 @@ layout(rgba32f, binding = 0) uniform image2D o_trail_map;
 
 struct Particle
 {
-	float x;
-	float y;
+	float x, y;
 	float ang;
 };
 
+#define PARTICLE_COUNT 50000
+
 layout(std430, binding = 1) buffer particle_data
 {
-	Particle particles[250];
+	Particle particles[PARTICLE_COUNT];
 };
 
 uint hash(uint state)
@@ -33,33 +34,49 @@ float uint_zero_to_one(uint x)
 
 uniform float u_delta_time = 0.0;
 
+const float QUARTER = 1.57079632679;
 const float PI = 3.14159265359;
 const float TAU = 6.28318530718;
-const float move_speed = 125.0;
+const float move_speed = 50.0;
 
 void main()
 {
 	ivec2 size = imageSize(o_trail_map);
+	uint id = gl_GlobalInvocationID.x;
 
-	if (gl_GlobalInvocationID.x < 0 || gl_GlobalInvocationID.x >= 250) {
+	if (id < 0 || id >= PARTICLE_COUNT) {
 		return;
 	}
 
-	Particle particle = particles[gl_GlobalInvocationID.x];
-	uint rand = hash(uint(particle.y * size.x) + uint(particle.x) + hash(gl_GlobalInvocationID.x));
+	Particle particle = particles[id];
+	uint rand = hash(uint(particle.y * size.x) + uint(particle.x) + hash(id));
+	float randf = uint_zero_to_one(rand);
 
 	vec2 dir = vec2(cos(particle.ang), sin(particle.ang));
 	vec2 newpos = vec2(particle.x, particle.y) + (dir * move_speed * u_delta_time);
 
 	if (newpos.x < 0 || newpos.x >= size.x || newpos.y < 0 || newpos.y >= size.y)
 	{
-		particles[gl_GlobalInvocationID.x].ang = uint_zero_to_one(rand) * TAU;
+		// yes
+		if (newpos.y < 0) {
+			particles[id].ang = (randf * PI);
+		} else if (newpos.y >= size.y) {
+			particles[id].ang = (randf * PI) + PI;
+		} else if (newpos.x < 0) {
+			if (randf > 0.5) {
+				particles[id].ang = TAU - (randf * QUARTER);
+			} else {
+				particles[id].ang = randf * QUARTER;
+			}
+		} else if (newpos.x >= size.x) {
+			particles[id].ang = (randf * PI) + QUARTER;
+		}
 
 		newpos.x = clamp(newpos.x, 0.0, size.x - 0.01);
 		newpos.y = clamp(newpos.y, 0.0, size.y - 0.01);
 	}
 
-	particles[gl_GlobalInvocationID.x].x = newpos.x;
-	particles[gl_GlobalInvocationID.x].y = newpos.y;
+	particles[id].x = newpos.x;
+	particles[id].y = newpos.y;
 	imageStore(o_trail_map, ivec2(newpos.x, newpos.y), vec4(1.0));
 }

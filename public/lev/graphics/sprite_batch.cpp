@@ -78,22 +78,25 @@ void SpriteBatch::initialize()
 	m_initialized = true;
 }
 
-void SpriteBatch::render(const Ref<Framebuffer>& framebuffer)
+void SpriteBatch::render(const Ref<Framebuffer>& framebuffer, int sort_mode)
 {
 	render(Mat4x4::create_orthographic(
 		framebuffer ? framebuffer->width() : App::draw_width(),
 		framebuffer ? framebuffer->height() : App::draw_height(),
 		0.0f, 10000.0f
-	), framebuffer);
+	), framebuffer, sort_mode);
 }
 
-void SpriteBatch::render(const Mat4x4& proj, const Ref<Framebuffer>& framebuffer)
+void SpriteBatch::render(const Mat4x4& proj, const Ref<Framebuffer>& framebuffer, int sort_mode)
 {
 	if (!m_initialized)
 		initialize();
 
 	RenderPass pass;
 	pass.target = framebuffer;
+
+	// todo: sort by layers
+	// [sort_mode]
 
 	for (auto& b : m_batches)
 	{
@@ -118,6 +121,7 @@ void SpriteBatch::render_batch(RenderPass& pass, const RenderBatch& b)
 	pass.blend = b.blend;
 	pass.material = b.material;
 	pass.mesh = b.mesh;
+
 	Renderer::render(pass);
 }
 
@@ -126,17 +130,19 @@ void SpriteBatch::push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx,
 	RenderBatch batch;
 	batch.material = peek_material();
 	batch.blend = peek_blend();
+	batch.layer = peek_layer();
 
 	batch.mesh = Renderer::create_mesh();
+	{
+		Vertex transformed[vtxcount];
+		MemUtil::copy(transformed, vtx, sizeof(Vertex) * vtxcount);
 
-	Vertex transformed[vtxcount];
-	MemUtil::copy(transformed, vtx, sizeof(Vertex) * vtxcount);
+		for (int i = 0; i < vtxcount; i++)
+			transformed[i].pos = Vec2F::transform(transformed[i].pos, m_transform_matrix);
 
-	for (int i = 0; i < vtxcount; i++)
-		transformed[i].pos = Vec2F::transform(transformed[i].pos, m_transform_matrix);
-
-	batch.mesh->vertex_data(transformed, vtxcount);
-	batch.mesh->index_data(idx, idxcount);
+		batch.mesh->vertex_data(transformed, vtxcount);
+		batch.mesh->index_data(idx, idxcount);
+	}
 
 	m_batches.push_back(batch);
 }
@@ -149,12 +155,7 @@ void SpriteBatch::push_quad(const Quad& quad, const Colour& colour, const Colour
 	GfxUtil::quad(
 		vertices, indices,
 		quad,
-		Quad(
-			Vec2F(0.0f, 0.0f),
-			Vec2F(0.0f, 1.0f),
-			Vec2F(1.0f, 1.0f),
-			Vec2F(1.0f, 0.0f)
-		),
+		Quad(RectF::one()),
 		colour,
 		mode
 	);
@@ -191,13 +192,10 @@ void SpriteBatch::push_texture(const TextureRegion& tex, const Colour& colour, c
 
 	Float2 texsize = tex.source->size();
 
-	auto textex = Quad(RectF(0.0f, 0.0f, tex.bounds.w, tex.bounds.h));
-	auto uvuvuv = Quad(tex.bounds) / texsize;
-
 	GfxUtil::quad(
 		vertices, indices,
-		textex,
-		uvuvuv,
+		Quad(RectF(0.0f, 0.0f, tex.bounds.w, tex.bounds.h)),
+		Quad(tex.bounds) / texsize,
 		colour,
 		mode
 	);
@@ -214,26 +212,14 @@ void SpriteBatch::push_texture(const Ref<Texture>& tex, const Colour& colour, co
 
 	GfxUtil::quad(
 		vertices, indices,
-		Quad(RectF(
-			0.0f,
-			0.0f,
-			tex->width(),
-			tex->height()
-		)),
-		Quad(
-			Vec2F(0.0f, 0.0f),
-			Vec2F(0.0f, 1.0f),
-			Vec2F(1.0f, 1.0f),
-			Vec2F(1.0f, 0.0f)
-		),
+		Quad(RectF(0.0f, 0.0f, tex->width(), tex->height())),
+		Quad(RectF::one()),
 		colour,
 		mode
 	);
 
 	push_vertices(vertices, 4, indices, 6);
 }
-
-// todo make the font rendering not suck lol
 
 void SpriteBatch::push_string(const char* str, const Ref<Font>& font, TextAlign align, const Colour& colour)
 {
@@ -242,7 +228,24 @@ void SpriteBatch::push_string(const char* str, const Ref<Font>& font, TextAlign 
 
 void SpriteBatch::push_string(const char* str, const Ref<Font>& font, const std::function<Vec2F(Font::Character,int)>& offsetfn, TextAlign align, const Colour& colour)
 {
+	// todo: new line support
+
 	const auto& atlas = font->atlas();
+
+	switch (align)
+	{
+		case TEXT_ALIGN_LEFT:
+			push_matrix(Mat3x2::identity());
+			break;
+		
+		case TEXT_ALIGN_CENTRE:
+			push_matrix(Mat3x2::create_translation(Vec2F(-font->string_width(str) / 2.0f, 0.0f)));
+			break;
+
+		case TEXT_ALIGN_RIGHT:
+			push_matrix(Mat3x2::create_translation(Vec2F(-font->string_width(str), 0.0f)));
+			break;
+	}
 
 	int cursorx = 0;
 	for (int i = 0; i < StrUtil::length(str); i++)
@@ -262,6 +265,8 @@ void SpriteBatch::push_string(const char* str, const Ref<Font>& font, const std:
 			c.advance_x +
 			font->kern_advance(str[i], str[i+1]);
 	}
+
+	pop_matrix();
 }
 
 void SpriteBatch::push_circle(const Circle& circle, u32 accuracy, const Colour& colour)
@@ -319,14 +324,22 @@ const TextureSampler& SpriteBatch::peek_sampler(int idx)
 	return peek_material().samplers[idx];
 }
 
-void SpriteBatch::set_shader(const Ref<Shader>& shader)
+void SpriteBatch::push_layer(float layer)
 {
-	m_material_stack.back().shader = shader;
+	m_layer_stack.push_back(layer);
 }
 
-void SpriteBatch::reset_shader()
+float SpriteBatch::pop_layer()
 {
-	set_shader(nullptr);
+	if (m_layer_stack.size() > 1)
+		return m_layer_stack.pop_back();
+
+	return m_layer_stack.back();
+}
+
+float SpriteBatch::peek_layer() const
+{
+	return m_layer_stack.back();
 }
 
 void SpriteBatch::push_shader(const Ref<Shader>& shader)
@@ -336,9 +349,9 @@ void SpriteBatch::push_shader(const Ref<Shader>& shader)
 	push_material(mat);
 }
 
-void SpriteBatch::pop_shader()
+Ref<Shader> SpriteBatch::pop_shader()
 {
-	pop_material();
+	return pop_material().shader;
 }
 
 Ref<Shader> SpriteBatch::peek_shader()

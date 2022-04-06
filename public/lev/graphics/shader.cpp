@@ -58,8 +58,8 @@ Ref<Shader> Shader::create(const char* vertex, const char* fragment, const char*
 		LEV_ASSERT(vtxfs.size() <= LEV_SHADER_MAX_SIZE, "Vertex shader file size must not be above LEV_SHADER_MAX_SIZE");
 		LEV_ASSERT(frgfs.size() <= LEV_SHADER_MAX_SIZE, "Fragment shader file size must not be above LEV_SHADER_MAX_SIZE");
 
-		vtxfs.read(vtxsrc, vtxfs.size()).close();
-		frgfs.read(frgsrc, frgfs.size()).close();
+		vtxfs.read(vtxsrc, vtxfs.size());
+		frgfs.read(frgsrc, frgfs.size());
 
 		data.vertex_source = vtxsrc;
 		data.fragment_source = frgsrc;
@@ -71,7 +71,7 @@ Ref<Shader> Shader::create(const char* vertex, const char* fragment, const char*
 
 			LEV_ASSERT(geofs.size() <= LEV_SHADER_MAX_SIZE-1, "Geometry shader file size must not be above LEV_SHADER_MAX_SIZE");
 
-			geofs.read(geosrc, geofs.size()).close();
+			geofs.read(geosrc, geofs.size());
 			data.geometry_source = geosrc;
 		}
 	}
@@ -95,7 +95,7 @@ Ref<Shader> Shader::create_compute(const char* compute, bool is_source)
 		
 		LEV_ASSERT(cmpfs.size() <= LEV_SHADER_MAX_SIZE, "Compute shader file size must not be above LEV_SHADER_MAX_SIZE");
 		
-		cmpfs.read(cmpsrc, cmpfs.size()).close();
+		cmpfs.read(cmpsrc, cmpfs.size());
 		data.compute_source = cmpsrc;
 	}
 

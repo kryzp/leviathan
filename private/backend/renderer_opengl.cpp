@@ -203,7 +203,7 @@ public:
 
 	~OpenGLShaderBuffer()
 	{
-		glDeleteBuffers(1, &m_id);
+		release();
 	}
 
 	void bind(int idx) override
@@ -217,6 +217,11 @@ public:
 		void* p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
 		MemUtil::copy(p, buf, m_size);
 		glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+	}
+
+	void release() override
+	{
+		glDeleteBuffers(1, &m_id);
 	}
 
 	u64 size() const override { return m_size; }

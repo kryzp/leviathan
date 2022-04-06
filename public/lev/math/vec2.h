@@ -38,8 +38,7 @@ namespace lev
 		
 		template <typename Y>
 		Vec2(const Vec2<Y>& other)
-			: x(other.x)
-			, y(other.y)
+			: x(other.x), y(other.y)
 		{
 		}
 
@@ -90,22 +89,19 @@ namespace lev
 
 	template <typename T>
 	Vec2<T>::Vec2()
-		: x(0)
-		, y(0)
+		: x(0), y(0)
 	{
 	}
 	
 	template <typename T>
 	Vec2<T>::Vec2(T x)
-		: x(x)
-		, y(x)
+		: x(x), y(x)
 	{
 	}
 	
 	template <typename T>
 	Vec2<T>::Vec2(T x, T y)
-		: x(x)
-		, y(y)
+		: x(x), y(y)
 	{
 	}
 	

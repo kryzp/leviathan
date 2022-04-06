@@ -27,6 +27,7 @@ namespace lev
 
 		void remove(const Node* other);
 		void remove(u64 id);
+		void clear();
 		
 		bool has(u64 id);
 		
@@ -37,11 +38,18 @@ namespace lev
 		Node* parent();
 		const Node* parent() const;
 
+		bool enabled() const;
+		void enabled(bool v);
+
+		const Vector<Node*>& children() const;
+
 		u64 id() const;
 
 	private:
 		Node* m_parent;
 		Vector<Node*> m_children;
+
+		bool m_enabled;
 
 		u64 m_id;
 		u64 m_id_counter;

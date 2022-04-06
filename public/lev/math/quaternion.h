@@ -25,6 +25,11 @@ namespace lev
 			float elements[4];
 		};
 
-		// todo
+		Quaternion();
+		Quaternion(float x);
+		Quaternion(float s, float i, float j, float k);
+
+		static const Quaternion& zero();
+		static const Quaternion& one();
 	};
 }

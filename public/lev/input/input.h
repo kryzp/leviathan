@@ -18,7 +18,7 @@ namespace lev
 		MB_RIGHT = 3,
 		MB_SIDE_BOTTOM = 4,
 		MB_SIDE_TOP = 5,
-		MB_MAX,
+		MB_MAX
 	};
 
 	enum Key

@@ -57,21 +57,24 @@ void Image::free()
 	m_pixels = nullptr;
 }
 
-/*
-void Image::paint(ImagePaintFn fn)
+void Image::paint(PaintFn fn)
 {
 	paint(RectI(0, 0, m_width, m_height), fn);
 }
 
-void Image::paint(const RectI& rect, ImagePaintFn fn)
+void Image::paint(const RectI& rect, PaintFn fn)
 {
-	for (int y = 0; y < rect.y; y++)
+	for (u32 y = 0; y < rect.h; y++)
 	{
-		for (int x = 0; x < rect.x; x++)
-			m_pixels[((rect.y + y) * m_width) + (rect.x + x)] = fn(x, y);
+		for (u32 x = 0; x < rect.w; x++)
+		{
+			int yy = rect.y + y;
+			int xx = rect.x + x;
+
+			m_pixels[(yy * m_width) + xx] = fn(x, y);
+		}
 	}
 }
-*/
 
 void Image::pixels(const Colour* data)
 {

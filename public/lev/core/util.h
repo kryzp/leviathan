@@ -98,7 +98,8 @@ namespace lev
 		LOG_TYPE_NORMAL,
 		LOG_TYPE_WARN,
 		LOG_TYPE_ERROR,
-		LOG_TYPE_FILE
+		LOG_TYPE_FILE,
+		LOG_TYPE_MAX
 	};
 
 	namespace Log

@@ -25,9 +25,15 @@
 
 namespace lev
 {
-	// todo: different sprite sort / rendering modes (front to back, back to front, immediate, etc...)
-
 	struct RenderPass;
+
+	enum SpriteSort
+	{
+		SPRITE_SORT_FTB, // front to back - drawn in front to back order of layer
+		SPRITE_SORT_BTF, // back to front - drawn in back to front order of layers
+		SPRITE_SORT_DEFERRED, // deferred - drawn in order of render calls
+		SPRITE_SORT_MAX
+	};
 
 	enum TextAlign
 	{
@@ -41,9 +47,9 @@ namespace lev
 	public:
 		SpriteBatch();
 		~SpriteBatch();
-		
-		void render(const Ref<Framebuffer>& framebuffer = nullptr);
-		void render(const Mat4x4& proj, const Ref<Framebuffer>& framebuffer = nullptr);
+
+		void render(const Ref<Framebuffer>& framebuffer = nullptr, int sort_mode = SPRITE_SORT_FTB);
+		void render(const Mat4x4& proj, const Ref<Framebuffer>& framebuffer = nullptr, int sort_mode = SPRITE_SORT_FTB);
 
 		///////////////////////////////////////////////////////
 		//  W E L C O M E   T O   T H E   P U S H   Z O N E  // (kind of a vibe ngl)
@@ -68,13 +74,13 @@ namespace lev
 		Ref<Texture> peek_texture(int idx = 0);
 		const TextureSampler& peek_sampler(int idx = 0);
 
-		void set_shader(const Ref<Shader>& shader);
-		void reset_shader();
 		void push_shader(const Ref<Shader>& shader);
-		void pop_shader();
+		Ref<Shader> pop_shader();
 		Ref<Shader> peek_shader();
 
-		// todo: layers
+		void push_layer(float layer);
+		float pop_layer();
+		float peek_layer() const;
 
 		void push_matrix(const Mat3x2& mat);
 		Mat3x2 pop_matrix();
@@ -94,12 +100,15 @@ namespace lev
 			Ref<Mesh> mesh;
 			Material material;
 			BlendMode blend;
+			float layer;
 		};
 
 		void initialize();
 		bool m_initialized;
 
 		void render_batch(RenderPass& pass, const RenderBatch& b);
+
+		Vector<float> m_layer_stack;
 
 		Vector<Mat3x2> m_matrix_stack;
 		Mat3x2 m_transform_matrix;

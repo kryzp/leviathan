@@ -28,10 +28,10 @@ Font::Font()
 {
 }
 
-Font::Font(float size, const char* path)
+Font::Font(float size, const char* path, int type)
 	: Font()
 {
-	load(size, path);
+	load(size, path, type);
 }
 
 Font::~Font()
@@ -39,87 +39,94 @@ Font::~Font()
 	free();
 }
 
-void Font::load(float size, const char* path)
+void Font::load(float size, const char* path, int type)
 {
 	LEV_ASSERT(path, "Path must not be null");
 	LEV_ASSERT(size > 0.0f, "Size must be greater than 0");
 
-	FileStream fs(path, "rb");
-	byte* ttf_buffer = new byte[fs.size()];
-	fs.read(ttf_buffer, fs.size()).close();
-
-	m_internal_info = new stbtt_fontinfo();
-	if (!stbtt_InitFont(M_INTERNAL_INFO, ttf_buffer, stbtt_GetFontOffsetForIndex(ttf_buffer, 0)))
-		LEV_ERROR("Failed to create font");
-
 	m_info.size = size;
+	m_info.type = type;
 
-	stbtt_GetFontVMetrics(M_INTERNAL_INFO, &m_info.ascent, &m_info.descent, &m_info.line_gap);
-
-	int x0, y0, x1, y1;
-	stbtt_GetFontBoundingBox(M_INTERNAL_INFO, &x0, &y0, &x1, &y1);
+	if (type == FONT_TYPE_OTF)
 	{
-		m_info.bbox.x = x0;
-		m_info.bbox.y = y0;
-		m_info.bbox.w = x1 - x0;
-		m_info.bbox.h = y1 - y0;
+		LEV_ERROR("OTF Loading is currently not supported");
 	}
-
-	// store kerning data
-	m_kerning_count = stbtt_GetKerningTableLength(M_INTERNAL_INFO);
-	m_kerning = new Kerning[m_kerning_count];
+	else
 	{
-		stbtt_kerningentry* kerning_tables = new stbtt_kerningentry[m_kerning_count];
-		stbtt_GetKerningTable(M_INTERNAL_INFO, kerning_tables, m_kerning_count);
+		FileStream fs(path, "rb");
+		byte* ttf_buffer = new byte[fs.size()];
+		fs.read(ttf_buffer, fs.size()).close();
 
-		for (int i = 0; i < m_kerning_count; i++)
+		m_internal_info = new stbtt_fontinfo();
+		if (!stbtt_InitFont(M_INTERNAL_INFO, ttf_buffer, stbtt_GetFontOffsetForIndex(ttf_buffer, 0)))
+			LEV_ERROR("Failed to create font");
+
+		stbtt_GetFontVMetrics(M_INTERNAL_INFO, &m_info.ascent, &m_info.descent, &m_info.line_gap);
+
+		int x0, y0, x1, y1;
+		stbtt_GetFontBoundingBox(M_INTERNAL_INFO, &x0, &y0, &x1, &y1);
 		{
-			m_kerning[i] = {
-				.advance = kerning_tables[i].advance,
-				.glyph0 = kerning_tables[i].glyph1,
-				.glyph1 = kerning_tables[i].glyph2
-			};
+			m_info.bbox.x = x0;
+			m_info.bbox.y = y0;
+			m_info.bbox.w = x1 - x0;
+			m_info.bbox.h = y1 - y0;
 		}
 
-		delete[] kerning_tables;
-	}
+		// store kerning data
+		m_kerning_count = stbtt_GetKerningTableLength(M_INTERNAL_INFO);
+		m_kerning = new Kerning[m_kerning_count];
+		{
+			stbtt_kerningentry* kerning_tables = new stbtt_kerningentry[m_kerning_count];
+			stbtt_GetKerningTable(M_INTERNAL_INFO, kerning_tables, m_kerning_count);
+
+			for (int i = 0; i < m_kerning_count; i++)
+			{
+				m_kerning[i] = {
+					.advance = kerning_tables[i].advance,
+					.glyph0 = kerning_tables[i].glyph1,
+					.glyph1 = kerning_tables[i].glyph2
+				};
+			}
+
+			delete[] kerning_tables;
+		}
 	
-	// pack data into texture + store character data
-	byte* bitmap = new byte[LEV_FONT_ATLAS_SIZE];
-	{
-		stbtt_packedchar packed_chars[LEV_FONT_CHARCOUNT];
-		stbtt_pack_context pack_context = { 0 };
-
-		if (!stbtt_PackBegin(&pack_context, bitmap, LEV_FONT_ATLAS_W, LEV_FONT_ATLAS_H, LEV_FONT_ATLAS_W, 1, NULL))
-			LEV_ERROR("Failed to initialize font");
-
-		//stbtt_PackSetOversampling(&pack_context, m_info.oversample_x, m_info.oversample_y);
-
-		if (!stbtt_PackFontRange(&pack_context, ttf_buffer, 0, m_info.size, 0, LEV_FONT_CHARCOUNT, packed_chars))
-			LEV_ERROR("Failed to pack font");
-
-		stbtt_PackEnd(&pack_context);
-
-		m_atlas.texture = Texture::create(LEV_FONT_ATLAS_W, LEV_FONT_ATLAS_H, TEXTURE_FORMAT_RED, TEXTURE_TYPE_UNSIGNED_BYTE, bitmap);
-
-		m_characters = new Character[LEV_FONT_CHARCOUNT];
-
-		for (int i = 0; i < LEV_FONT_CHARCOUNT; i++)
+		// pack data into texture + store character data
+		byte* bitmap = new byte[LEV_FONT_ATLAS_SIZE];
 		{
-			const auto& c = packed_chars[i];
+			stbtt_packedchar packed_chars[LEV_FONT_CHARCOUNT];
+			stbtt_pack_context pack_context = { 0 };
 
-			m_characters[i] = {
-				.codepoint = i,
-				.bbox = RectI(c.x0, c.y0, c.x1 - c.x0, c.y1 - c.y0),
-				.advance_x = c.xadvance,
-				.draw_offset = Vec2F(c.xoff, c.yoff),
-				.draw_offset2 = Vec2F(c.xoff2, c.yoff2)
-			};
+			if (!stbtt_PackBegin(&pack_context, bitmap, LEV_FONT_ATLAS_W, LEV_FONT_ATLAS_H, LEV_FONT_ATLAS_W, 1, NULL))
+				LEV_ERROR("Failed to initialize font");
+
+			//stbtt_PackSetOversampling(&pack_context, m_info.oversample_x, m_info.oversample_y);
+
+			if (!stbtt_PackFontRange(&pack_context, ttf_buffer, 0, m_info.size, 0, LEV_FONT_CHARCOUNT, packed_chars))
+				LEV_ERROR("Failed to pack font");
+
+			stbtt_PackEnd(&pack_context);
+
+			m_atlas.texture = Texture::create(LEV_FONT_ATLAS_W, LEV_FONT_ATLAS_H, TEXTURE_FORMAT_RED, TEXTURE_TYPE_UNSIGNED_BYTE, bitmap);
+
+			m_characters = new Character[LEV_FONT_CHARCOUNT];
+
+			for (int i = 0; i < LEV_FONT_CHARCOUNT; i++)
+			{
+				const auto& c = packed_chars[i];
+
+				m_characters[i] = {
+					.codepoint = i,
+					.bbox = RectI(c.x0, c.y0, c.x1 - c.x0, c.y1 - c.y0),
+					.advance_x = c.xadvance,
+					.draw_offset = Vec2F(c.xoff, c.yoff),
+					.draw_offset2 = Vec2F(c.xoff2, c.yoff2)
+				};
+			}
 		}
+		delete[] bitmap;
+		delete[] ttf_buffer;
 	}
-	delete[] bitmap;
-
-	delete[] ttf_buffer;
 }
 
 void Font::free()
