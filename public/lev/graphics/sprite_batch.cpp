@@ -339,7 +339,10 @@ float SpriteBatch::pop_layer()
 
 float SpriteBatch::peek_layer() const
 {
-	return m_layer_stack.back();
+	if (m_layer_stack.size() > 0)
+		return m_layer_stack.back();
+
+	return 0.0f;
 }
 
 void SpriteBatch::push_shader(const Ref<Shader>& shader)
