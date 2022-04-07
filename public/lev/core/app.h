@@ -30,7 +30,7 @@ namespace lev
 
 	class App
 	{
-		LEV_SINGLETON_CLASS(App)
+		LEV_SINGLETON_CLASS(App);
 
 	public:
 		void start(const Config& cfg);

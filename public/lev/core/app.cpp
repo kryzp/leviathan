@@ -5,7 +5,6 @@
 #include <lev/math/timer.h>
 
 #include <lev/input/input.h>
-#include <lev/entity/entity.h>
 
 #include <backend/system.h>
 #include <backend/renderer.h>
@@ -54,12 +53,6 @@ bool App::init()
     if (!Input::inst()->init())
     {
         log::error("failed to initialize input");
-        return false;
-    }
-
-    if (!EntityMgr::inst()->init())
-    {
-        log::error("failed to initialize entity system");
         return false;
     }
 
@@ -140,6 +133,7 @@ void App::destroy()
 
 	System::inst()->destroy();
 	Renderer::inst()->destroy();
+    Input::inst()->destroy();
 
 #ifdef LEV_DEBUG
 	log::destroy();

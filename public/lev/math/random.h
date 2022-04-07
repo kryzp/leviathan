@@ -10,7 +10,7 @@ namespace lev
 	template <typename Engine = std::mt19937>
 	class Random
 	{
-		LEV_SINGLETON_CLASS(Random)
+		LEV_SINGLETON_CLASS(Random);
 
 	public:
 		Random();

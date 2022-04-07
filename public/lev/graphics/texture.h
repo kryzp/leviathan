@@ -119,6 +119,12 @@ namespace lev
         Ref<Texture> source;
         RectI bounds;
 
+        TextureRegion()
+            : source(nullptr)
+            , bounds(RectI::zero())
+        {
+        }
+
         TextureRegion(const Ref<Texture>& source, const RectI& bounds = RectI::zero())
             : source(source)
             , bounds(bounds)

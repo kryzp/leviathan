@@ -51,10 +51,10 @@ namespace lev
 {
 	class AssetLoaderRegistry
 	{
-		LEV_SINGLETON_CLASS(AssetLoaderRegistry)
+		LEV_SINGLETON_CLASS(AssetLoaderRegistry);
 
 	public:
-		template <class Asset, typename... LoadData>
+		template <class Asset, typename... LoadData> // todo is 'typename... LoadData' really needed here?
 		u16 retrieve_id()
 		{
 			static u16 id = m_counter++;
@@ -88,7 +88,7 @@ namespace lev
 
 	class AssetMgr
 	{
-		LEV_SINGLETON_CLASS(AssetMgr)
+		LEV_SINGLETON_CLASS(AssetMgr);
 
 	public:
 		AssetMgr();

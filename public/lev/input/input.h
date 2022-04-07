@@ -254,7 +254,7 @@ namespace lev
 
 	class Input
 	{
-		LEV_SINGLETON_CLASS(Input)
+		LEV_SINGLETON_CLASS(Input);
 
 	public:
 		bool init();
