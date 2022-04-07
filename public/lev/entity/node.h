@@ -1,8 +1,10 @@
+#if 0
+
 #pragma once
 
 #include <lev/core/util.h>
 #include <lev/containers/vector.h>
-#include <lev/node/signal.h>
+#include <lev/node/event.h>
 
 namespace lev
 {
@@ -18,9 +20,9 @@ namespace lev
 		virtual void update();
 		virtual void render(SpriteBatch& b);
 
-		virtual void recieve_signal(const Signal& s);
-		virtual void broadcast_signal(const Signal& s);
-		virtual void broadcast_signal_down(const Signal& s);
+		virtual void receive_event(const Event& s);
+		virtual void broadcast_event(const Event& s);
+		virtual void broadcast_event_down(const Event& s);
 
 		template <class T, typename... Args>
 		T* add(Args&&... args);
@@ -34,7 +36,7 @@ namespace lev
 		Node* get(u64 id);
 		const Node* get(u64 id) const;
 
-		Node* owner();
+		Node* scene();
 		Node* parent();
 		const Node* parent() const;
 
@@ -72,3 +74,5 @@ namespace lev
 		return node;
 	}
 }
+
+#endif

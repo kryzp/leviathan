@@ -5,6 +5,7 @@
 #include <lev/math/timer.h>
 
 #include <lev/input/input.h>
+#include <lev/entity/entity.h>
 
 #include <backend/system.h>
 #include <backend/renderer.h>
@@ -38,12 +39,6 @@ bool App::init()
 	}
 #endif
 
-	if (!Input::inst()->init())
-	{
-		log::error("failed to initialize input");
-		return false;
-	}
-
 	if (!System::inst()->init(m_config))
 	{
 		log::error("failed to initialize system");
@@ -55,6 +50,18 @@ bool App::init()
 		log::error("failed to initialize rendering");
 		return false;
 	}
+
+    if (!Input::inst()->init())
+    {
+        log::error("failed to initialize input");
+        return false;
+    }
+
+    if (!EntityMgr::inst()->init())
+    {
+        log::error("failed to initialize entity system");
+        return false;
+    }
 
 	if (m_config.on_init)
 		m_config.on_init();

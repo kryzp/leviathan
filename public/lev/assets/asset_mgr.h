@@ -5,6 +5,7 @@
 #include <lev/containers/vector.h>
 #include <lev/containers/hash_map.h>
 #include <lev/core/util.h>
+#include <lev/containers/string.h>
 
 #define LEV_MAX_ASSET_HOLDERS 16
 
@@ -54,14 +55,14 @@ namespace lev
 
 	public:
 		template <class Asset, typename... LoadData>
-		u64 retrieve_id()
+		u16 retrieve_id()
 		{
-			static u64 id = m_counter++;
+			static u16 id = m_counter++;
 			return id;
 		}
 
 	private:
-		u64 m_counter = 0;
+		u16 m_counter = 0;
 	};
 
 	class AssetLoaderBase { };
@@ -70,20 +71,20 @@ namespace lev
 	class AssetLoader : public AssetLoaderBase
 	{
 	public:
-		struct Meta { static u64 id; };
+		struct Meta { static u16 id; };
 
 		AssetLoader() = default;
 		virtual ~AssetLoader() = default;
 
-		virtual Ref<Asset> load(const char* name, LoadData... data) = 0;
+		virtual Ref<Asset> load(const String& name, LoadData... data) = 0;
 		//virtual void unload(const char* name) = 0; //!!! TODO NOT DONE
 
-		virtual Ref<Asset> get(const char* name) = 0;
-		virtual bool has(const char* name) = 0;
+		virtual Ref<Asset> get(const String& name) = 0;
+		virtual bool has(const String& name) = 0;
 	};
 
 	template <class Asset, typename... LoadData>
-	u64 AssetLoader<Asset, LoadData...>::Meta::id = AssetLoaderRegistry::inst()->retrieve_id<Asset>();
+	u16 AssetLoader<Asset, LoadData...>::Meta::id = AssetLoaderRegistry::inst()->retrieve_id<Asset>();
 
 	class AssetMgr
 	{

@@ -1,8 +1,8 @@
-#include <lev/node/gui/gui_constraints.h>
-#include <lev/node/gui/gui_node.h>
+#include <lev/gui/gui_constraints.h>
+#include <lev/gui/gui_component.h>
 
-#include <lev/node/gui/constraints/pixel_constraint.h>
-#include <lev/node/gui/constraints/mousepos_constraint.h>
+#include <lev/gui/constraints/pixel_constraint.h>
+#include <lev/gui/constraints/mousepos_constraint.h>
 
 using namespace lev;
 
@@ -30,7 +30,7 @@ GUIConstraints GUIConstraints::create_mousepos(int w, int h)
 	return c;
 }
 
-void GUIConstraints::constrain(GUINode& component)
+void GUIConstraints::constrain(GUIComponent& component)
 {
 	if (x)
 		component.x(x->constrain_x(component));

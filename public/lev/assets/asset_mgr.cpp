@@ -2,14 +2,13 @@
 #include <lev/graphics/texture.h>
 #include <lev/graphics/shader.h>
 #include <lev/graphics/font.h>
-#include <lev/containers/string.h>
 
 using namespace lev;
 
-class TextureLoader : public AssetLoader<Texture, const char*>
+class TextureLoader : public AssetLoader<Texture, const String&>
 {
 public:
-	Ref<Texture> load(const char* name, const char* path) override
+	Ref<Texture> load(const String& name, const String& path) override
 	{
 		if (m_textures.contains(name))
 			return m_textures.get(name);
@@ -19,12 +18,12 @@ public:
 		return tex;
 	}
 
-	Ref<Texture> get(const char* name) override
+	Ref<Texture> get(const String& name) override
 	{
 		return m_textures.get(name);
 	}
 
-	bool has(const char* name) override
+	bool has(const String& name) override
 	{
 		return m_textures.contains(name);
 	}
@@ -36,7 +35,7 @@ private:
 class ShaderLoader : public AssetLoader<Shader, ShaderLoadData>
 {
 public:
-	Ref<Shader> load(const char* name, ShaderLoadData data) override
+	Ref<Shader> load(const String& name, ShaderLoadData data) override
 	{
 		if (m_shaders.contains(name))
 			return m_shaders.get(name);
@@ -52,12 +51,12 @@ public:
 		return shd;
 	}
 
-	Ref<Shader> get(const char* name) override
+	Ref<Shader> get(const String& name) override
 	{
 		return m_shaders.get(name);
 	}
 
-	bool has(const char* name) override
+	bool has(const String& name) override
 	{
 		return m_shaders.contains(name);
 	}
@@ -69,7 +68,7 @@ private:
 class FontLoader : public AssetLoader<Font, FontLoadData>
 {
 public:
-	Ref<Font> load(const char* name, FontLoadData data) override
+	Ref<Font> load(const String& name, FontLoadData data) override
 	{
 		if (m_fonts.contains(name))
 			return m_fonts.get(name);
@@ -79,12 +78,12 @@ public:
 		return fnt;
 	}
 
-	Ref<Font> get(const char* name) override
+	Ref<Font> get(const String& name) override
 	{
 		return m_fonts.get(name);
 	}
 
-	bool has(const char* name) override
+	bool has(const String& name) override
 	{
 		return m_fonts.contains(name);
 	}

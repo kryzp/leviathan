@@ -134,14 +134,14 @@ void SpriteBatch::push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx,
 
 	batch.mesh = Renderer::inst()->create_mesh();
 	{
-		Vertex transformed[vtxcount];
-		mem::copy(transformed, vtx, sizeof(Vertex) * vtxcount);
+        Vertex transformed[vtxcount]; // note: will only work on some compilers. MSVC wont allow this so compiling with msvc would mean using 'new' or just Vector<Vertex>
+        mem::copy(transformed, vtx, sizeof(Vertex) * vtxcount); // i have no clue why this is necessary but it doesnt work without it lol sssskssksskssksksksksksk
 
-		for (int i = 0; i < vtxcount; i++)
-			transformed[i].pos = Vec2F::transform(transformed[i].pos, m_transform_matrix);
+        for (int i = 0; i < vtxcount; i++)
+            transformed[i].pos = Vec2F::transform(vtx[i].pos, m_transform_matrix);
 
-		batch.mesh->vertex_data(transformed, vtxcount);
-		batch.mesh->index_data(idx, idxcount);
+        batch.mesh->vertex_data(transformed, vtxcount);
+        batch.mesh->index_data(idx, idxcount);
 	}
 
 	m_batches.push_back(batch);

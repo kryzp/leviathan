@@ -18,7 +18,7 @@ namespace lev
 		Rect(T x, T y, T w, T h);
 		
 		template <typename Y>
-		Rect(const Rect<Y>& other)
+		Rect(const Rect<Y>& other) noexcept
 			: x(other.x)
 			, y(other.y)
 			, w(other.w)
@@ -125,11 +125,11 @@ namespace lev
 	template <typename T> bool Rect<T>::operator == (const Rect& other) const { return this->x == other.x && this->y == other.y && this->w == other.w && this->h == other.y; }
 	template <typename T> bool Rect<T>::operator != (const Rect& other) const { return !(*this == other); }
 
-	template <typename T> Rect<T> Rect<T>::operator + (const Rect& other) const { return Rect(this->x + other.x, this->y + other.y, this->w + other.w; this->h + other.h; }
-	template <typename T> Rect<T> Rect<T>::operator - (const Rect& other) const { return Rect(this->x - other.x, this->y - other.y, this->w - other.w; this->h - other.h; }
-	template <typename T> Rect<T> Rect<T>::operator * (const Rect& other) const { return Rect(this->x * other.x, this->y * other.y, this->w * other.w; this->h * other.h; }
-	template <typename T> Rect<T> Rect<T>::operator / (const Rect& other) const { return Rect(this->x / other.x, this->y / other.y, this->w / other.w; this->h / other.h; }
-		
+	template <typename T> Rect<T> Rect<T>::operator + (const Rect& other) const { return Rect(this->x + other.x, this->y + other.y, this->w + other.w, this->h + other.h); }
+	template <typename T> Rect<T> Rect<T>::operator - (const Rect& other) const { return Rect(this->x - other.x, this->y - other.y, this->w - other.w, this->h - other.h); }
+	template <typename T> Rect<T> Rect<T>::operator * (const Rect& other) const { return Rect(this->x * other.x, this->y * other.y, this->w * other.w, this->h * other.h); }
+	template <typename T> Rect<T> Rect<T>::operator / (const Rect& other) const { return Rect(this->x / other.x, this->y / other.y, this->w / other.w, this->h / other.h); }
+
 	template <typename T> Rect<T> Rect<T>::operator - () const { return Rect(-this->x, -this->y, -this->w, -this->h); }
 
 	template <typename T> Rect<T>& Rect<T>::operator += (const Rect& other) { this->x += other.x; this->y += other.y; this->w += other.w; this->h += other.h; return *this; }

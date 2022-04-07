@@ -38,6 +38,8 @@ bld/
 CMakeSettings.json
 .vscode/
 cmake-build-debug/
+cmake-build-release/
+.idea/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/

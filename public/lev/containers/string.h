@@ -30,7 +30,9 @@ namespace lev
 		constexpr u64 size() const;
 
 		char& operator [] (u64 idx);
-        const char& operator [] (u64 idx) const;
+
+		bool operator == (const Str& other) const;
+		bool operator != (const Str& other) const;
 
 		operator const char* () const;
 
@@ -158,12 +160,17 @@ namespace lev
 		LEV_ASSERT(idx < m_length, "Index must not be more than the length of the string");
 		return m_buf[idx];
 	}
+	
+	template <u64 Size>
+	bool Str<Size>::operator == (const Str& other) const
+	{
+		return str::compare(m_buf, other.m_buf) == 0;
+	}
 
 	template <u64 Size>
-    const char& Str<Size>::operator [] (u64 idx) const
+	bool Str<Size>::operator != (const Str& other) const
 	{
-		LEV_ASSERT(idx < m_length, "Index must not be more than the length of the string");
-		return m_buf[idx];
+		return !(*this == other);
 	}
 
 	template <u64 Size>

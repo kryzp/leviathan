@@ -37,7 +37,7 @@ namespace lev
 		Vec2(T x, T y);
 		
 		template <typename Y>
-		Vec2(const Vec2<Y>& other)
+		Vec2(const Vec2<Y>& other) noexcept
 			: x(other.x), y(other.y)
 		{
 		}

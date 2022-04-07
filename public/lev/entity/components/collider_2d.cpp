@@ -1,3 +1,5 @@
+#if 0
+
 #include <lev/node/2d/collider_2d.h>
 
 #include <lev/math/calc.h>
@@ -42,6 +44,18 @@ void Collider2D::make_rect(const RectF& rect)
 		Vec2F(rect.w, rect.h),
 		Vec2F(rect.x, rect.h)
 	}));
+}
+
+Collision2D Collider2D::collide_all(const std::function<void(Collision2D)>& on_hit)
+{
+    for (auto& collider_node : scene()->children())
+    {
+        if (dynamic_cast<Collider2D*>(collider_node)) // todo :(
+        {
+            Collider2D* other = static_cast<Collider2D*>(collider_node);
+            on_hit(collide(*other));
+        }
+    }
 }
 
 Collision2D Collider2D::collide(Collider2D& other)
@@ -171,3 +185,5 @@ bool Collider2D::poly_to_poly(Collider2D& a, Collider2D& b, Vec2F* pushout)
 
 	return true;
 }
+
+#endif

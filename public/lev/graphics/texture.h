@@ -88,18 +88,6 @@ namespace lev
 		static const TextureSampler& linear();
 	};
 
-	struct TextureRegion
-	{
-		Ref<Texture> source;
-		RectI bounds;
-
-		TextureRegion(const Ref<Texture>& source, const RectI& bounds)
-			: source(source)
-			, bounds(bounds)
-		{
-		}
-	};
-
 	class Texture
 	{
 	public:
@@ -125,4 +113,18 @@ namespace lev
 		virtual int height() const = 0;
 		virtual TextureFormat format() const = 0;
 	};
+
+    struct TextureRegion
+    {
+        Ref<Texture> source;
+        RectI bounds;
+
+        TextureRegion(const Ref<Texture>& source, const RectI& bounds = RectI::zero())
+            : source(source)
+            , bounds(bounds)
+        {
+            if (bounds == RectI::zero())
+                this->bounds = RectI(source->width(), source->height());
+        }
+    };
 }

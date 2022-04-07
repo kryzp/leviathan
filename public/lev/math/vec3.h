@@ -46,7 +46,7 @@ namespace lev
 		Vec3(T x, T y, T z);
 
 		template <typename Y>
-		Vec3(const Vec3<Y>& other)
+		Vec3(const Vec3<Y>& other) noexcept
 			: x(other.x), y(other.y), z(other.z)
 		{
 		}

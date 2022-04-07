@@ -1,3 +1,5 @@
+#if 0
+
 #pragma once
 
 #include <lev/node/2d/node_2d.h>
@@ -5,6 +7,8 @@
 #include <lev/math/rect.h>
 #include <lev/math/transform_2d.h>
 #include <lev/containers/vector.h>
+
+#include <functional>
 
 namespace lev
 {
@@ -27,6 +31,7 @@ namespace lev
 		void make_polygon(const Polygon& polygon);
 		void make_rect(const RectF& rect);
 
+        Collision2D collide_all(const std::function<void(Collision2D)>& on_hit);
 		Collision2D collide(Collider2D& other);
 
 		Collider2D offset_copy(const Vec2F& offset) const;
@@ -44,3 +49,5 @@ namespace lev
 		Vector<Vec2F> m_axis;
 	};
 }
+
+#endif

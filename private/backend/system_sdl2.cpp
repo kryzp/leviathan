@@ -19,7 +19,7 @@ using namespace lev;
 class SDL2System : public System
 {
 private:
-    SDL_Window* m_window;
+    SDL_Window* m_window = nullptr;
 
 public:
     bool init(const Config& cfg) override

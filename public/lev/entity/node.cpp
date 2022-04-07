@@ -1,3 +1,5 @@
+#if 0
+
 #include <lev/node/node.h>
 #include <lev/graphics/sprite_batch.h>
 
@@ -44,27 +46,27 @@ void Node::render(SpriteBatch& b)
 		n->render(b);
 }
 
-void Node::recieve_signal(const Signal& s)
+void Node::receive_event(const Event& s)
 {
 }
 
-void Node::broadcast_signal(const Signal& s)
+void Node::broadcast_event(const Event& s)
 {
 	if (!m_enabled)
 		return;
 
-	owner()->broadcast_signal_down(s);
+    scene()->broadcast_event_down(s);
 }
 
-void Node::broadcast_signal_down(const Signal& s)
+void Node::broadcast_event_down(const Event& s)
 {
 	if (!m_enabled)
 		return;
 
-	recieve_signal(s);
+    receive_event(s);
 
 	for (auto& n : m_children)
-		n->broadcast_signal_down(s);
+        n->broadcast_event_down(s);
 }
 
 void Node::remove(const Node* other)
@@ -119,7 +121,7 @@ const Node* Node::get(u64 id) const
 	return nullptr;
 }
 
-Node* Node::owner()
+Node* Node::scene()
 {
 	Node* result = this;
 
@@ -135,3 +137,5 @@ bool Node::enabled() const { return m_enabled; }
 void Node::enabled(bool v) { m_enabled = v; }
 const Vector<Node*>& Node::children() const { return m_children; }
 u64 Node::id() const { return m_id; }
+
+#endif

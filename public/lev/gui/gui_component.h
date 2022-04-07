@@ -1,18 +1,19 @@
 #pragma once
 
-#include <lev/node/node.h>
-#include <lev/node/gui/gui_constraints.h>
+#include <lev/gui/gui_constraints.h>
+#include <lev/graphics/sprite_batch.h>
 #include <lev/math/vec2.h>
 #include <lev/math/rect.h>
+#include <lev/math/transform_2d.h>
 #include <lev/input/input.h>
 
 namespace lev
 {
-	class GUINode : public Node
+	class GUIComponent
 	{
 	public:
-		GUINode(const GUIConstraints& c);
-		virtual ~GUINode();
+        GUIComponent(const GUIConstraints& c);
+		virtual ~GUIComponent();
 
 		virtual void init();
 		virtual void update();
@@ -39,6 +40,10 @@ namespace lev
 		void height(int h);
 
 		GUIConstraints constraints;
+        GUIComponent* parent;
+        Vector<GUIComponent*> components;
+
+        bool enabled;
 
 	protected:
 		RectI m_rect;

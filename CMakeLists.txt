@@ -44,10 +44,8 @@ add_library(${PROJECT_NAME}
 	public/lev/math/timer.cpp
 	public/lev/math/quaternion.cpp
 
-	public/lev/node/node.cpp
-	public/lev/node/2d/collider_2d.cpp
-	public/lev/node/gui/gui_node.cpp
-	public/lev/node/gui/gui_constraints.cpp
+	public/lev/gui/gui_component.cpp
+	public/lev/gui/gui_constraints.cpp
 
 	private/backend/system_sdl2.cpp
 	private/backend/renderer_opengl.cpp
@@ -86,6 +84,6 @@ if (SDL2_ENABLED)
 	target_link_libraries(${PROJECT_NAME} PUBLIC ${SDL2_LIBRARIES})
 endif()
 
-add_executable(lv_test testing/src/test_misc.cpp)
+add_executable(lv_test testing/src/breakout.cpp)
 target_include_directories(lv_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/public)
 target_link_libraries(lv_test PUBLIC ${PROJECT_NAME})

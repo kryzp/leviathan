@@ -115,7 +115,7 @@ namespace lev
 
 		Vector<BlendMode> m_blend_stack;
 		Vector<Material> m_material_stack;
-		
+
 		Vector<RenderBatch> m_batches;
 	};
 }

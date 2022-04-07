@@ -475,7 +475,7 @@ public:
 			colour.a
 		);
 
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	}
 
 	virtual const Vector<Ref<Texture>>& attachments() const override { return m_attachments; }
@@ -607,7 +607,7 @@ static const char* UNIFORM_TEXTURE_NAMES[] = {
 class OpenGLRenderer : public Renderer
 {
 private:
-    void* m_context;
+    void* m_context = nullptr;
 
 public:
     bool init() override
@@ -703,7 +703,7 @@ public:
                 colour.b,
                 colour.a
         );
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
 
     Ref<Texture> create_texture(const TextureData& data) override
@@ -738,7 +738,6 @@ public:
 
     void unbind_texture_image() override
     {
-        // yes
         glBindImageTexture(0, 0, 0, 0, 0, 0, 0);
     }
 
