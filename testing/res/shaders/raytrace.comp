@@ -1,0 +1,49 @@
+#version 430
+
+layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
+layout(rgba32f, binding = 0) uniform image2D o_raytraced_image;
+
+//http://blog.three-eyed-games.com/2018/05/03/gpu-ray-tracing-in-unity-part-1/
+
+uniform mat4x4 u_camera_to_world;
+uniform mat4x4 u_camera_inverse_projection;
+
+struct Ray
+{
+    vec3 origin;
+    vec3 direction;
+};
+
+Ray create_ray(vec3 origin, vec3 direction)
+{
+    Ray ray;
+    ray.origin = origin;
+    ray.direction = direction;
+
+    return ray;
+}
+
+Ray create_camera_ray(vec2 uv)
+{
+    vec3 origin = (u_camera_to_world * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
+
+    vec3 direction = (u_camera_inverse_projection * vec4(uv, 0.0, 1.0)).xyz;
+    direction = (u_camera_to_world * vec4(direction, 0.0)).xyz;
+    direction = normalize(direction);
+
+    return create_ray(origin, direction);
+}
+
+void main()
+{
+    ivec2 size = imageSize(o_raytraced_image);
+    ivec2 coords = gl_GlobalInvocationID.xy;
+    vec2 fcoords = vec2(gl_GlobalInvocationID.xy);
+
+    vec2 uv = vec2(((fcoords + vec2(0.5, 0.5)) / (size * 2.0)) - 1.0);
+
+    Ray ray = create_camera_ray(uv);
+
+    vec4 col = vec4(ray.direction * 0.5 + 0.5, 1.0);
+    imageStore(o_raytraced_image, coords, col);
+}

@@ -1,5 +1,6 @@
 #include <lev/math/mat4x4.h>
 #include <lev/math/mat3x2.h>
+#include <lev/core/util.h>
 #include <lev/math/calc.h>
 #include <iostream>
 
@@ -54,6 +55,25 @@ Mat4x4 Mat4x4::create_orthographic_ext(float left, float right, float bottom, fl
 	return result;
 }
 
+Mat4x4 Mat4x4::create_projection(float fov, float aspect, float near, float far, bool left_handed)
+{
+    Mat4x4 result;
+
+    LEV_ASSERT(fov > 0 && aspect != 0, "FOV must be greater than 0 and aspect must not be 0");
+
+    float frustum_depth = far - near;
+    float inv_depth = 1 / frustum_depth;
+
+    result.m22 = 1 / tan(0.5f * fov);
+    result.m11 = (left_handed ? 1 : -1) * result.m22 / aspect;
+    result.m33 = far * inv_depth;
+    result.m43 = (-far * near) * inv_depth;
+    result.m34 = 1;
+    result.m44 = 0;
+
+    return result;
+}
+
 Mat4x4 Mat4x4::from_mat3x2(const Mat3x2& mat)
 {
 	return Mat4x4(
@@ -84,14 +104,76 @@ Mat4x4 Mat4x4::create_scale(float x, float y, float z)
 	);
 }
 
-float* Mat4x4::value_ptr()
+float Mat4x4::determinant() const
 {
-	return elements;//&m11;
+    // yoink
+    //https://stackoverflow.com/questions/1148309/inverting-a-4x4-matrix
+
+    float A2323 = this->m33*this->m44 - this->m34*this->m43;
+    float A1323 = this->m32*this->m44 - this->m34*this->m42;
+    float A1223 = this->m32*this->m43 - this->m33*this->m42;
+    float A0323 = this->m31*this->m44 - this->m34*this->m41;
+    float A0223 = this->m31*this->m43 - this->m33*this->m41;
+    float A0123 = this->m31*this->m42 - this->m32*this->m41;
+
+    return (
+        this->m11 * (this->m22*A2323 - this->m23*A1323 + this->m24*A1223) -
+        this->m12 * (this->m21*A2323 - this->m23*A0323 + this->m24*A0223) +
+        this->m13 * (this->m21*A1323 - this->m22*A0323 + this->m24*A0123) -
+        this->m14 * (this->m21*A1223 - this->m22*A0223 + this->m23*A0123)
+    );
 }
 
-const float* Mat4x4::value_ptr() const
+Mat4x4 Mat4x4::inverse() const
 {
-	return elements;//&m11;
+    // yoink
+    //https://stackoverflow.com/questions/1148309/inverting-a-4x4-matrix
+
+    float A2323 = this->m33*this->m44 - this->m34*this->m43;
+    float A1323 = this->m32*this->m44 - this->m34*this->m42;
+    float A1223 = this->m32*this->m43 - this->m33*this->m42;
+    float A0323 = this->m31*this->m44 - this->m34*this->m41;
+    float A0223 = this->m31*this->m43 - this->m33*this->m41;
+    float A0123 = this->m31*this->m42 - this->m32*this->m41;
+    float A2313 = this->m23*this->m44 - this->m24*this->m43;
+    float A1313 = this->m22*this->m44 - this->m24*this->m42;
+    float A1213 = this->m22*this->m43 - this->m23*this->m42;
+    float A2312 = this->m23*this->m34 - this->m24*this->m33;
+    float A1312 = this->m22*this->m34 - this->m24*this->m32;
+    float A1212 = this->m22*this->m33 - this->m23*this->m32;
+    float A0313 = this->m21*this->m44 - this->m24*this->m41;
+    float A0213 = this->m21*this->m43 - this->m23*this->m41;
+    float A0312 = this->m21*this->m34 - this->m24*this->m31;
+    float A0212 = this->m21*this->m33 - this->m23*this->m31;
+    float A0113 = this->m21*this->m42 - this->m22*this->m41;
+    float A0112 = this->m21*this->m32 - this->m22*this->m31;
+
+    float det =
+        this->m11 * (this->m22*A2323 - this->m23*A1323 + this->m24*A1223) -
+        this->m12 * (this->m21*A2323 - this->m23*A0323 + this->m24*A0223) +
+        this->m13 * (this->m21*A1323 - this->m22*A0323 + this->m24*A0123) -
+        this->m14 * (this->m21*A1223 - this->m22*A0223 + this->m23*A0123);
+
+    det = 1 / det;
+
+    return Mat4x4(
+        det *   (this->m22*A2323 - this->m23*A1323 + this->m24*A1223),
+        det * - (this->m12*A2323 - this->m13*A1323 + this->m14*A1223),
+        det *   (this->m12*A2313 - this->m13*A1313 + this->m14*A1213),
+        det * - (this->m12*A2312 - this->m13*A1312 + this->m14*A1212),
+        det * - (this->m21*A2323 - this->m23*A0323 + this->m24*A0223),
+        det *   (this->m11*A2323 - this->m13*A0323 + this->m14*A0223),
+        det * - (this->m11*A2313 - this->m13*A0313 + this->m14*A0213),
+        det *   (this->m11*A2312 - this->m13*A0312 + this->m14*A0212),
+        det *   (this->m21*A1323 - this->m22*A0323 + this->m24*A0123),
+        det * - (this->m11*A1323 - this->m12*A0323 + this->m14*A0123),
+        det *   (this->m11*A1313 - this->m12*A0313 + this->m14*A0113),
+        det * - (this->m11*A1312 - this->m12*A0312 + this->m14*A0112),
+        det * - (this->m21*A1223 - this->m22*A0223 + this->m23*A0123),
+        det *   (this->m11*A1223 - this->m12*A0223 + this->m13*A0123),
+        det * - (this->m11*A1213 - this->m12*A0213 + this->m13*A0113),
+        det *   (this->m11*A1212 - this->m12*A0212 + this->m13*A0112)
+    );
 }
 
 Mat4x4 Mat4x4::operator - (const Mat4x4& other) const
@@ -185,6 +267,16 @@ Mat4x4& Mat4x4::operator *= (const Mat4x4& other)
 {
 	*this = (*this) * other;
 	return *this;
+}
+
+float* Mat4x4::value_ptr()
+{
+    return &m11;
+}
+
+const float* Mat4x4::value_ptr() const
+{
+    return &m11;
 }
 
 const Mat4x4& Mat4x4::identity()

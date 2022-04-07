@@ -1,5 +1,5 @@
 #include <lev/core/app.h>
-#include <lev/node/gui/text.h>
+#include <lev/input/input.h>
 #include <lev/math/range.h>
 #include <lev/graphics/sprite_batch.h>
 #include <lev/assets/asset_mgr.h>

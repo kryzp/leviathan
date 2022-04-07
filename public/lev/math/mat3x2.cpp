@@ -50,12 +50,12 @@ Mat3x2::Mat3x2(
 
 float* Mat3x2::value_ptr()
 {
-	return elements;//&m11;
+	return &m11;
 }
 
 const float* Mat3x2::value_ptr() const
 {
-	return elements;//&m11;
+    return &m11;
 }
 
 float Mat3x2::determinant() const

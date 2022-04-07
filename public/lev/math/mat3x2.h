@@ -22,7 +22,8 @@ namespace lev
 				float m32;
 			};
 
-			float elements[6];
+            float floats[6];
+			float elements[2][3];
 		};
 
 		Mat3x2();
@@ -48,7 +49,7 @@ namespace lev
 		Vec2<float> extract_position() const;
 
 		float* value_ptr();
-		const float* value_ptr() const;
+        const float* value_ptr() const;
 
 		float determinant() const;
 		Mat3x2 inverse() const;

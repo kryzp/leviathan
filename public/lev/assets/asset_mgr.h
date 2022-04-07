@@ -19,15 +19,17 @@ namespace lev
 		const char* geometry = nullptr;
 		const char* compute = nullptr;
 
-		ShaderLoadData(const char* compute)
+		ShaderLoadData(const char* compute, bool is_source = false)
 			: compute(compute)
+            , is_source(is_source)
 		{
 		}
 
-		ShaderLoadData(const char* vertex, const char* fragment, const char* geometry = nullptr)
+		ShaderLoadData(const char* vertex, const char* fragment, const char* geometry = nullptr, bool is_source = false)
 			: vertex(vertex)
 			, fragment(fragment)
 			, geometry(geometry)
+            , is_source(is_source)
 		{
 		}
 	};

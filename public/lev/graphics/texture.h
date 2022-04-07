@@ -105,8 +105,8 @@ namespace lev
 
 		virtual void copy_to(Ref<Texture>& other) = 0;
 
-		virtual void bind(int i) const = 0;
-		virtual void bind_image(int i) const = 0;
+		virtual void bind(int idx) const = 0;
+		virtual void bind_image(int idx) const = 0;
 		virtual void generate(const void* data) = 0;
 		virtual void get_data(float* buf) = 0;
 		virtual int width() const = 0;

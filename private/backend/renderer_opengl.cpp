@@ -138,17 +138,17 @@ public:
 		glDeleteTextures(1, &m_id);
 	}
 
-	void bind(int i) const override
+	void bind(int idx) const override
 	{
-		LEV_ASSERT(i >= 0 && i < 32, "Index must be within 0 -> 31");
-		glActiveTexture(GL_TEXTURE0 + i);
+		LEV_ASSERT(idx >= 0 && idx < 32, "Index must be within 0 -> 31");
+		glActiveTexture(GL_TEXTURE0 + idx);
 		glBindTexture(GL_TEXTURE_2D, m_id);
 	}
 
-	void bind_image(int i) const override
+	void bind_image(int idx) const override
 	{
-		LEV_ASSERT(i >= 0 && i < 32, "Index must be within 0 -> 31");
-		glActiveTexture(GL_TEXTURE0 + i);
+		LEV_ASSERT(idx >= 0 && idx < 32, "Index must be within 0 -> 31");
+		glActiveTexture(GL_TEXTURE0 + idx);
 		glBindImageTexture(0, m_id, 0, GL_FALSE, 0, GL_READ_WRITE, m_gl_internal_format);
 	}
 

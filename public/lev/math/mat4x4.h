@@ -28,7 +28,8 @@ namespace lev
 				float m44;
 			};
 
-			float elements[16];
+            float floats[16];
+			float elements[4][4];
 		};
 
 		Mat4x4();
@@ -50,8 +51,13 @@ namespace lev
 		static Mat4x4 create_orthographic(float width, float height, float near, float far);
 		static Mat4x4 create_orthographic_ext(float left, float right, float bottom, float top, float near, float far);
 
+        static Mat4x4 create_projection(float fov, float aspect, float near, float far, bool left_handed = true);
+
 		float* value_ptr();
-		const float* value_ptr() const;
+        const float* value_ptr() const;
+
+        float determinant() const;
+        Mat4x4 inverse() const;
 
 		Mat4x4 operator - (const Mat4x4& other) const;
 		Mat4x4 operator + (const Mat4x4& other) const;
