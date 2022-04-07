@@ -8,44 +8,41 @@ namespace lev
 
 	class System
 	{
-		LEV_SINGLETON_CLASS(System)
-
 	public:
-		bool init(const Config& cfg);
-		void postinit();
-		void destroy();
+        static System* inst();
 
-		void update();
-		void present();
+		virtual bool init(const Config& cfg) = 0;
+		virtual void postinit() = 0;
+		virtual void destroy() = 0;
 
-		void set_window_position(int x, int y);
-		void get_window_position(int* x, int* y);
+		virtual void update() = 0;
+		virtual void present() = 0;
 
-		int window_width();
-		int window_height();
+		virtual void set_window_position(int x, int y) = 0;
+		virtual void get_window_position(int* x, int* y) = 0;
 
-		int draw_width();
-		int draw_height();
+		virtual int window_width() = 0;
+		virtual int window_height() = 0;
 
-		void sleep(u32 ms);
-		u64 ticks();
+		virtual int draw_width() = 0;
+		virtual int draw_height() = 0;
 
-		void* stream_from_file(const char* filepath, const char* mode);
-		void* stream_from_memory(void* memory, s64 size);
-		void* stream_from_const_memory(const void* memory, s64 size);
-		s64 stream_read(void* stream, void* ptr, s64 size);
-		s64 stream_write(void* stream, const void* ptr, s64 size);
-		s64 stream_seek(void* stream, s64 offset);
-		s64 stream_size(void* stream);
-		s64 stream_position(void* stream);
-		void stream_close(void* stream);
+		virtual void sleep(u32 ms) = 0;
+		virtual u64 ticks() = 0;
 
-		void* gl_context_create();
-		void gl_context_make_current(void* context);
-		void gl_context_destroy(void* context);
-		bool gl_load_glad_loader();
+		virtual void* stream_from_file(const char* filepath, const char* mode) = 0;
+		virtual void* stream_from_memory(void* memory, s64 size) = 0;
+		virtual void* stream_from_const_memory(const void* memory, s64 size) = 0;
+		virtual s64 stream_read(void* stream, void* ptr, s64 size) = 0;
+		virtual s64 stream_write(void* stream, const void* ptr, s64 size) = 0;
+		virtual s64 stream_seek(void* stream, s64 offset) = 0;
+		virtual s64 stream_size(void* stream) = 0;
+		virtual s64 stream_position(void* stream) = 0;
+		virtual void stream_close(void* stream) = 0;
 
-	private:
-		void* m_window;
+		virtual void* gl_context_create() = 0;
+		virtual void gl_context_make_current(void* context) = 0;
+		virtual void gl_context_destroy(void* context) = 0;
+		virtual bool gl_load_glad_loader() = 0;
 	};
 }

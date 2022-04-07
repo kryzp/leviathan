@@ -31,7 +31,7 @@ namespace lev
 	{
 		SPRITE_SORT_FTB, // front to back - drawn in front to back order of layer
 		SPRITE_SORT_BTF, // back to front - drawn in back to front order of layers
-		SPRITE_SORT_DEFERRED, // deferred - drawn in order of render calls
+		SPRITE_SORT_DEFERRED, // deferred - drawn in order of render calls individually
 		SPRITE_SORT_MAX
 	};
 

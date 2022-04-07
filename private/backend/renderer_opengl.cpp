@@ -565,194 +565,204 @@ public:
 /* MAIN                                                  */
 /*********************************************************/
 
-bool Renderer::init()
-{
-	m_context = System::inst()->gl_context_create();
-	System::inst()->gl_context_make_current(m_context);
-
-	if (!System::inst()->gl_load_glad_loader())
-	{
-		std::cout << "failed to initialize glad" << std::endl;
-		return false;
-	}
-
-	glEnable(GL_BLEND);
-
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	return true;
-}
-
-void Renderer::destroy()
-{
-	System::inst()->gl_context_destroy(m_context);
-}
-
-void Renderer::before_render()
-{
-}
-
-void Renderer::after_render()
-{
-}
-
 // yes
 static const GLenum COLOUR_ATTACHMENT_0 = GL_COLOR_ATTACHMENT0;
 
 // yes pt.2
 static const char* UNIFORM_TEXTURE_NAMES[] = {
-	"u_texture_0",
-	"u_texture_1",
-	"u_texture_2",
-	"u_texture_3",
-	"u_texture_4",
-	"u_texture_5",
-	"u_texture_6",
-	"u_texture_7",
-	"u_texture_8",
-	"u_texture_9",
-	"u_texture_10",
-	"u_texture_11",
-	"u_texture_12",
-	"u_texture_13",
-	"u_texture_14",
-	"u_texture_15",
-	"u_texture_16",
-	"u_texture_17",
-	"u_texture_18",
-	"u_texture_19",
-	"u_texture_20",
-	"u_texture_21",
-	"u_texture_22",
-	"u_texture_23",
-	"u_texture_24",
-	"u_texture_25",
-	"u_texture_26",
-	"u_texture_27",
-	"u_texture_28",
-	"u_texture_29",
-	"u_texture_30",
-	"u_texture_31",
+        "u_texture_0",
+        "u_texture_1",
+        "u_texture_2",
+        "u_texture_3",
+        "u_texture_4",
+        "u_texture_5",
+        "u_texture_6",
+        "u_texture_7",
+        "u_texture_8",
+        "u_texture_9",
+        "u_texture_10",
+        "u_texture_11",
+        "u_texture_12",
+        "u_texture_13",
+        "u_texture_14",
+        "u_texture_15",
+        "u_texture_16",
+        "u_texture_17",
+        "u_texture_18",
+        "u_texture_19",
+        "u_texture_20",
+        "u_texture_21",
+        "u_texture_22",
+        "u_texture_23",
+        "u_texture_24",
+        "u_texture_25",
+        "u_texture_26",
+        "u_texture_27",
+        "u_texture_28",
+        "u_texture_29",
+        "u_texture_30",
+        "u_texture_31",
 };
 
-void Renderer::render(const RenderPass& pass)
+class OpenGLRenderer : public Renderer
 {
-	auto shader = (OpenGLShader*)pass.material.shader.get();
-	auto target = (OpenGLFramebuffer*)pass.target.get();
-	auto mesh = (OpenGLMesh*)pass.mesh.get();
-	auto& blend = pass.blend;
-	
-	if (target)
-	{
-		target->bind();
-		glDrawBuffers(target->gl_attachments().size(), target->gl_attachments().begin());
-		glViewport(0, 0, target->width(), target->height());
-	}
-	else
-	{
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glDrawBuffers(1, &COLOUR_ATTACHMENT_0);
-		glViewport(0, 0, App::inst()->draw_width(), App::inst()->draw_height());
-	}
+private:
+    void* m_context;
 
-	shader->use();
+public:
+    bool init() override
+    {
+        m_context = System::inst()->gl_context_create();
+        System::inst()->gl_context_make_current(m_context);
 
-	for (int i = 0; i < LEV_MAT_TEXTURES; i++)
-	{
-		auto texture = (OpenGLTexture*)pass.material.textures[i].get();
-		auto sampler = pass.material.samplers[i];
+        if (!System::inst()->gl_load_glad_loader())
+        {
+            std::cout << "failed to initialize glad" << std::endl;
+            return false;
+        }
 
-		if (texture)
-		{
-			texture->bind(i);
-			texture->update(sampler);
-			shader->set(UNIFORM_TEXTURE_NAMES[i], i);
-		}
-	}
+        glEnable(GL_BLEND);
 
-	glBlendEquationSeparate(
-		get_gl_blend_equation(blend.equation_rgb),
-		get_gl_blend_equation(blend.equation_alpha)
-	);
+        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	glBlendFuncSeparate(
-		get_gl_blend_func(blend.func_src_rgb),
-		get_gl_blend_func(blend.func_dst_rgb),
-		get_gl_blend_func(blend.func_src_alpha),
-		get_gl_blend_func(blend.func_dst_alpha)
-	);
+        return true;
+    }
 
-	glBindVertexArray(mesh->id());
-	glDrawElements(GL_TRIANGLES, pass.mesh->index_count(), GL_UNSIGNED_INT, 0);
-	glBindVertexArray(0);
-}
+    void destroy() override
+    {
+        System::inst()->gl_context_destroy(m_context);
+    }
 
-void Renderer::clear(const Colour& colour)
+    void before_render() override
+    {
+    }
+
+    void after_render() override
+    {
+    }
+
+    void render(const RenderPass& pass) override
+    {
+        auto shader = (OpenGLShader*)pass.material.shader.get();
+        auto target = (OpenGLFramebuffer*)pass.target.get();
+        auto mesh = (OpenGLMesh*)pass.mesh.get();
+        auto& blend = pass.blend;
+
+        if (target)
+        {
+            target->bind();
+            glDrawBuffers(target->gl_attachments().size(), target->gl_attachments().begin());
+            glViewport(0, 0, target->width(), target->height());
+        }
+        else
+        {
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glDrawBuffers(1, &COLOUR_ATTACHMENT_0);
+            glViewport(0, 0, App::inst()->draw_width(), App::inst()->draw_height());
+        }
+
+        shader->use();
+
+        for (int i = 0; i < LEV_MAT_TEXTURES; i++)
+        {
+            auto texture = (OpenGLTexture*)pass.material.textures[i].get();
+            auto sampler = pass.material.samplers[i];
+
+            if (texture)
+            {
+                texture->bind(i);
+                texture->update(sampler);
+                shader->set(UNIFORM_TEXTURE_NAMES[i], i);
+            }
+        }
+
+        glBlendEquationSeparate(
+                get_gl_blend_equation(blend.equation_rgb),
+                get_gl_blend_equation(blend.equation_alpha)
+        );
+
+        glBlendFuncSeparate(
+                get_gl_blend_func(blend.func_src_rgb),
+                get_gl_blend_func(blend.func_dst_rgb),
+                get_gl_blend_func(blend.func_src_alpha),
+                get_gl_blend_func(blend.func_dst_alpha)
+        );
+
+        glBindVertexArray(mesh->id());
+        glDrawElements(GL_TRIANGLES, pass.mesh->index_count(), GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+    }
+
+    void clear(const Colour& colour) override
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, App::inst()->draw_width(), App::inst()->draw_height());
+        glClearColor(
+                colour.r,
+                colour.g,
+                colour.b,
+                colour.a
+        );
+        glClear(GL_COLOR_BUFFER_BIT);
+    }
+
+    Ref<Texture> create_texture(const TextureData& data) override
+    {
+        return create_ref<OpenGLTexture>(data);
+    }
+
+    Ref<ShaderBuffer> create_shader_buffer(u64 size) override
+    {
+        return create_ref<OpenGLShaderBuffer>(size);
+    }
+
+    Ref<Shader> create_shader(const ShaderData& data) override
+    {
+        return create_ref<OpenGLShader>(data);
+    }
+
+    Ref<Framebuffer> create_framebuffer(const FramebufferData& data) override
+    {
+        return create_ref<OpenGLFramebuffer>(data);
+    }
+
+    Ref<Mesh> create_mesh() override
+    {
+        return create_ref<OpenGLMesh>();
+    }
+
+    void unbind_texture() override
+    {
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    void unbind_texture_image() override
+    {
+        // yes
+        glBindImageTexture(0, 0, 0, 0, 0, 0, 0);
+    }
+
+    void unbind_shader() override
+    {
+        glUseProgram(0);
+    }
+
+    void unbind_shader_buffer() override
+    {
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+    }
+
+    void unbind_framebuffer() override
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+};
+
+Renderer* Renderer::inst()
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, App::inst()->draw_width(), App::inst()->draw_height());
-	glClearColor(
-		colour.r,
-		colour.g,
-		colour.b,
-		colour.a
-	);
-	glClear(GL_COLOR_BUFFER_BIT);
-}
-
-/*********************************************************/
-/* MISC                                                  */
-/*********************************************************/
-
-Ref<Texture> Renderer::create_texture(const TextureData& data)
-{
-	return create_ref<OpenGLTexture>(data);
-}
-
-Ref<ShaderBuffer> Renderer::create_shader_buffer(u64 size)
-{
-	return create_ref<OpenGLShaderBuffer>(size);
-}
-
-Ref<Shader> Renderer::create_shader(const ShaderData& data)
-{
-	return create_ref<OpenGLShader>(data);
-}
-
-Ref<Framebuffer> Renderer::create_framebuffer(const FramebufferData& data)
-{
-	return create_ref<OpenGLFramebuffer>(data);
-}
-
-Ref<Mesh> Renderer::create_mesh()
-{
-	return create_ref<OpenGLMesh>();
-}
-
-void Renderer::unbind_texture()
-{
-	glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-void Renderer::unbind_texture_image()
-{
-	// yes
-	glBindImageTexture(0, 0, 0, 0, 0, 0, 0);
-}
-
-void Renderer::unbind_shader()
-{
-	glUseProgram(0);
-}
-
-void Renderer::unbind_shader_buffer()
-{
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-}
-
-void Renderer::unbind_framebuffer()
-{
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    static OpenGLRenderer* instance = nullptr;
+    if (!instance) { instance = new OpenGLRenderer(); }
+    return instance;
 }
 
 #endif

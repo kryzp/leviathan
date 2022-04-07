@@ -23,7 +23,7 @@ int main()
 {
 	SpriteBatch batch;
 	Range direction(0, Calc::TAU);
-	
+
 	Ref<Shader> compute_shader_part;
 	Ref<Shader> compute_shader_post;
 	Ref<Shader> shader_colourize;

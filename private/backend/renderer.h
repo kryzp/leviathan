@@ -22,32 +22,29 @@ namespace lev
 
 	class Renderer
 	{
-		LEV_SINGLETON_CLASS(Renderer)
-
 	public:
-		bool init();
-		void destroy();
+        static Renderer* inst();
 
-		void render(const RenderPass& pass);
-		
-		void before_render();
-		void after_render();
+        virtual bool init() = 0;
+        virtual void destroy() = 0;
 
-		void clear(const Colour& colour = Colour::empty());
+        virtual void render(const RenderPass& pass) = 0;
 
-		Ref<Texture> create_texture(const TextureData& data);
-		Ref<Shader> create_shader(const ShaderData& data);
-		Ref<ShaderBuffer> create_shader_buffer(u64 size);
-		Ref<Framebuffer> create_framebuffer(const FramebufferData& data);
-		Ref<Mesh> create_mesh();
+        virtual void before_render() = 0;
+        virtual void after_render() = 0;
 
-		void unbind_texture();
-		void unbind_texture_image();
-		void unbind_shader();
-		void unbind_shader_buffer();
-		void unbind_framebuffer();
-		
-	private:
-		void* m_context;
+        virtual void clear(const Colour& colour = Colour::empty()) = 0;
+
+		virtual Ref<Texture> create_texture(const TextureData& data) = 0;
+		virtual Ref<Shader> create_shader(const ShaderData& data) = 0;
+		virtual Ref<ShaderBuffer> create_shader_buffer(u64 size) = 0;
+		virtual Ref<Framebuffer> create_framebuffer(const FramebufferData& data) = 0;
+		virtual Ref<Mesh> create_mesh() = 0;
+
+		virtual void unbind_texture() = 0;
+		virtual void unbind_texture_image() = 0;
+		virtual void unbind_shader() = 0;
+		virtual void unbind_shader_buffer() = 0;
+		virtual void unbind_framebuffer() = 0;
 	};
 }
