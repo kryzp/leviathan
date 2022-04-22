@@ -34,11 +34,67 @@ namespace
 	{
 		switch (fmt)
 		{
-			case TEX_FMT_RED:			return GL_R32F;
-			case TEX_FMT_RG:			return GL_RG32F;
-			case TEX_FMT_RGB:			return GL_RGB32F;
-			case TEX_FMT_RGBA:			return GL_RGBA32F;
-			case TEX_FMT_DEPTH_STENCIL:	return GL_DEPTH24_STENCIL8;
+			case I_TEX_FMT_R8: 					return GL_R8;
+			case I_TEX_FMT_R8_SNORM: 			return GL_R8_SNORM;
+			case I_TEX_FMT_R16: 				return GL_R16;
+			case I_TEX_FMT_R16_SNORM: 			return GL_R16_SNORM;
+			case I_TEX_FMT_RG8: 				return GL_RG8;
+			case I_TEX_FMT_RG8_SNORM: 			return GL_RG8_SNORM;
+			case I_TEX_FMT_RG16: 				return GL_RG16;
+			case I_TEX_FMT_RG16_SNORM: 			return GL_RG16_SNORM;
+			case I_TEX_FMT_R3_G3_B2: 			return GL_R3_G3_B2;
+			case I_TEX_FMT_RGB4: 				return GL_RGB4;
+			case I_TEX_FMT_RGB5: 				return GL_RGB5;
+			case I_TEX_FMT_RGB8: 				return GL_RGB8;
+			case I_TEX_FMT_RGB8_SNORM: 			return GL_RGB8_SNORM;
+			case I_TEX_FMT_RGB10: 				return GL_RGB10;
+			case I_TEX_FMT_RGB12: 				return GL_RGB12;
+			case I_TEX_FMT_RGB16_SNORM: 		return GL_RGB16_SNORM;
+			case I_TEX_FMT_RGBA2: 				return GL_RGBA2;
+			case I_TEX_FMT_RGBA4: 				return GL_RGBA4;
+			case I_TEX_FMT_RGB5_A1: 			return GL_RGB5_A1;
+			case I_TEX_FMT_RGBA8: 				return GL_RGBA8;
+			case I_TEX_FMT_RGBA8_SNORM: 		return GL_RGBA8_SNORM;
+			case I_TEX_FMT_RGB10_A2: 			return GL_RGB10_A2;
+			case I_TEX_FMT_RGB10_A2UI: 			return GL_RGB10_A2UI;
+			case I_TEX_FMT_RGBA12: 				return GL_RGBA12;
+			case I_TEX_FMT_RGBA16: 				return GL_RGBA16;
+			case I_TEX_FMT_SRGB8: 				return GL_SRGB8;
+			case I_TEX_FMT_SRGB8_ALPHA8: 		return GL_SRGB8_ALPHA8;
+			case I_TEX_FMT_R16F: 				return GL_R16F;
+			case I_TEX_FMT_RG16F: 				return GL_RG16F;
+			case I_TEX_FMT_RGB16F: 				return GL_RGB16F;
+			case I_TEX_FMT_RGBA16F: 			return GL_RGBA16F;
+			case I_TEX_FMT_R32F: 				return GL_R32F;
+			case I_TEX_FMT_RG32F: 				return GL_RG32F;
+			case I_TEX_FMT_RGB32F: 				return GL_RGB32F;
+			case I_TEX_FMT_RGBA32F: 			return GL_RGBA32F;
+			case I_TEX_FMT_R11F_G11F_B10F: 		return GL_R11F_G11F_B10F;
+			case I_TEX_FMT_RGB9_E5: 			return GL_RGB9_E5;
+			case I_TEX_FMT_R8I: 				return GL_R8I;
+			case I_TEX_FMT_R8UI: 				return GL_R8UI;
+			case I_TEX_FMT_R16I: 				return GL_R16I;
+			case I_TEX_FMT_R16UI: 				return GL_R16UI;
+			case I_TEX_FMT_R32I: 				return GL_R32I;
+			case I_TEX_FMT_R32UI: 				return GL_R32UI;
+			case I_TEX_FMT_RG8I: 				return GL_RG8I;
+			case I_TEX_FMT_RG8UI: 				return GL_RG8UI;
+			case I_TEX_FMT_RG16I: 				return GL_RG16I;
+			case I_TEX_FMT_RG16UI: 				return GL_RG16UI;
+			case I_TEX_FMT_RG32I: 				return GL_RG32I;
+			case I_TEX_FMT_RG32UI: 				return GL_RG32UI;
+			case I_TEX_FMT_RGB8I: 				return GL_RGB8I;
+			case I_TEX_FMT_RGB8UI: 				return GL_RGB8UI;
+			case I_TEX_FMT_RGB16I: 				return GL_RGB16I;
+			case I_TEX_FMT_RGB16UI: 			return GL_RGB16UI;
+			case I_TEX_FMT_RGB32I: 				return GL_RGB32I;
+			case I_TEX_FMT_RGB32UI: 			return GL_RGB32UI;
+			case I_TEX_FMT_RGBA8I: 				return GL_RGBA8I;
+			case I_TEX_FMT_RGBA8UI: 			return GL_RGBA8UI;
+			case I_TEX_FMT_RGBA16I: 			return GL_RGBA16I;
+			case I_TEX_FMT_RGBA16UI: 			return GL_RGBA16UI;
+			case I_TEX_FMT_RGBA32I: 			return GL_RGBA32I;
+			case I_TEX_FMT_RGBA32UI: 			return GL_RGBA32UI;
 		}
 
 		return 0;
@@ -129,12 +185,12 @@ public:
 		, m_width(data.width)
 		, m_height(data.height)
 		, m_format(data.format)
+		, m_internal_format(data.internal_format)
 		, m_type(data.type)
+		, m_gl_format(get_gl_texture_fmt(m_format))
+		, m_gl_internal_format(get_gl_texture_internal_fmt(m_internal_format))
+		, m_gl_type(get_gl_texture_type(m_type))
 	{
-		m_gl_format = get_gl_texture_fmt(m_format);
-		m_gl_internal_format = get_gl_texture_internal_fmt(m_format);
-		m_gl_type = get_gl_texture_type(m_type);
-
 		glGenTextures(1, &m_id);
 		glBindTexture(GL_TEXTURE_2D, m_id);
 		glTexImage2D(GL_TEXTURE_2D, 0, m_gl_internal_format, m_width, m_height, 0, m_gl_format, m_gl_type, nullptr);
