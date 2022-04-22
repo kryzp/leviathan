@@ -9,11 +9,11 @@ out vec2 frag_coord;
 out vec4 frag_mod_colour;
 out vec4 frag_mode;
 
-uniform mat4 u_projection;
+uniform mat4 lev_projection;
 
 void main()
 {
-	gl_Position = u_projection * vec4(a_pos, 0.0, 1.0);
+	gl_Position = lev_projection * vec4(a_pos, 0.0, 1.0);
 	frag_mod_colour = a_colour;
 	frag_coord = a_uv;
 	frag_mode = a_mode;

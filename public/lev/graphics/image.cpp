@@ -101,12 +101,22 @@ const Colour* Image::pixels() const
 	return m_pixels;
 }
 
-int Image::width() const
+byte* Image::raw_pixel_data()
+{
+    return (byte*)m_pixels;
+}
+
+const byte* Image::raw_pixel_data() const
+{
+    return (const byte*)m_pixels;
+}
+
+u32 Image::width() const
 {
 	return m_width;
 }
 
-int Image::height() const
+u32 Image::height() const
 {
 	return m_height;
 }

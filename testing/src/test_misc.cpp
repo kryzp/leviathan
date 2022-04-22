@@ -53,7 +53,7 @@ int main()
 
 		conf.on_init = [&]()
 		{
-			trail_map = Texture::create(SIM_WIDTH, SIM_HEIGHT, TEXTURE_FORMAT_RGBA, TEXTURE_TYPE_UNSIGNED_BYTE, nullptr);
+			trail_map = Texture::create(SIM_WIDTH, SIM_HEIGHT, TEX_FMT_RGBA, I_TEX_FMT_RGBA32F, TEX_TYPE_UNSIGNED_BYTE, nullptr);
 
 			particle_buf = ShaderBuffer::create(sizeof(Particle) * PARTICLE_COUNT);
 			particle_buf->set(particles);
@@ -104,9 +104,9 @@ int main()
 			App::inst()->clear();
 
 			batch.push_matrix(Mat3x2::create_scale(SCALE));
-			batch.push_shader(shader_colourize);
+			batch.peek_material().shader() = shader_colourize;
 			batch.push_texture(trail_map);
-			batch.pop_shader();
+			batch.peek_material().shader() = nullptr;
 			batch.pop_matrix();
 			
 			batch.render();

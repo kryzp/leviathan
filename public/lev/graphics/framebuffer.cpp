@@ -3,33 +3,39 @@
 
 using namespace lev;
 
-Ref<Framebuffer> Framebuffer::create(int width, int height)
+// yes i should be using a seperate struct instead of just reusing TextureData since for framebuffers both width and height must all be the same so we're wasting memory but im lazy
+// todo: fix this when im not lazy
+// todo todo: stop being so lazy all of the time
+
+Ref<Framebuffer> Framebuffer::create(u32 width, u32 height)
 {
-	static const TextureAttachment attachment = TextureAttachment(TEXTURE_FORMAT_RGBA, TEXTURE_TYPE_UNSIGNED_BYTE);
-	return create(width, height, &attachment, 1);
+	static const FramebufferAttachments attachment = {
+        Pair(TextureData(width, height, TEX_FMT_RGBA, I_TEX_FMT_RGBA32F, TEX_TYPE_UNSIGNED_BYTE), TextureSampler::pixel())
+    };
+
+	return create(attachment);
 }
 
-Ref<Framebuffer> Framebuffer::create(int width, int height, const TextureAttachment* attachments, int attachment_count)
+Ref<Framebuffer> Framebuffer::create(const FramebufferAttachments& attachments)
 {
-	LEV_ASSERT(attachments, "Attachments must not be null");
-	LEV_ASSERT(attachment_count > 0, "Attachment count must be higher than 0");
-	LEV_ASSERT(width > 0 && height > 0, "Width and Height must be higher than 0");
+	LEV_ASSERT(attachments.begin(), "Attachments must not be null");
+	LEV_ASSERT(attachments.size() > 0, "Attachment count must be higher than 0");
+	LEV_ASSERT(attachments[0].first.width > 0 && attachments[0].first.height > 0, "Width and Height must be higher than 0");
 
 	int depthstencilcount = 0;
 
-	for (int i = 0; i < attachment_count; i++)
+	for (int i = 0; i < attachments.size(); i++)
 	{
-		if (attachments[i].format == TEXTURE_FORMAT_DEPTH_STENCIL)
+		if (attachments[i].first.format == TEX_FMT_DEPTH_STENCIL)
 			depthstencilcount++;
 
 		LEV_ASSERT(depthstencilcount < 2, "There must not be 2 or more depth stencil attachments");
 	}
 
 	return Renderer::inst()->create_framebuffer({
-		.width = width,
-		.height = height,
-		.attachments = attachments,
-		.attachment_count = attachment_count
+		.width = attachments[0].first.width,
+		.height = attachments[0].first.height,
+		.attachments = attachments
 	});
 }
 

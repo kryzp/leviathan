@@ -13,11 +13,11 @@ namespace lev
 		Str();
 		Str(const char* str);
 
-        Str(const Str& other);
-        Str(Str&& other) noexcept;
+		Str(const Str& other);
+		Str(Str&& other) noexcept;
 
-        Str& operator = (const Str& other);
-        Str& operator = (Str&& other) noexcept;
+		Str& operator = (const Str& other);
+		Str& operator = (Str&& other) noexcept;
 
 		~Str();
 
@@ -37,7 +37,7 @@ namespace lev
 		operator const char* () const;
 
 	private:
-		char m_buf[Size];
+		char m_buf[Size];//{0};
 		u64 m_length;
 	};
 
@@ -47,6 +47,7 @@ namespace lev
 	Str<Size>::Str()
 		: m_length(0)
 	{
+		mem::set(m_buf, 0, m_length);
 	}
 
 	template <u64 Size>
@@ -59,7 +60,7 @@ namespace lev
 	}
 	
 	template <u64 Size>
-    Str<Size>::Str(const Str& other)
+	Str<Size>::Str(const Str& other)
 	{
 		LEV_ASSERT(other.m_length < (Size - 1), "Length must not exceed maximum size");
 
@@ -69,7 +70,7 @@ namespace lev
 	}
 	
 	template <u64 Size>
-    Str<Size>::Str(Str&& other) noexcept
+	Str<Size>::Str(Str&& other) noexcept
 	{
 		LEV_ASSERT(other.m_length < (Size - 1), "Length must not exceed maximum size");
 		
@@ -85,7 +86,7 @@ namespace lev
 	}
 	
 	template <u64 Size>
-    Str<Size>& Str<Size>::operator = (const Str& other)
+	Str<Size>& Str<Size>::operator = (const Str& other)
 	{
 		LEV_ASSERT(other.m_length < (Size - 1), "Length must not exceed maximum size");
 		
@@ -100,7 +101,7 @@ namespace lev
 	}
 	
 	template <u64 Size>
-    Str<Size>& Str<Size>::operator = (Str&& other) noexcept
+	Str<Size>& Str<Size>::operator = (Str&& other) noexcept
 	{
 		LEV_ASSERT(other.m_length < (Size - 1), "Length must not exceed maximum size");
 		

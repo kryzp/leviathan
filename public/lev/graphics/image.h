@@ -27,18 +27,22 @@ namespace lev
 		void pixels(const Colour* data);
 		void pixels(const Colour* data, u64 pixel_count);
 		void pixels(const Colour* data, u64 offset, u64 pixel_count);
+
 		Colour* pixels();
 		const Colour* pixels() const;
 
-		int width() const;
-		int height() const;
+        byte* raw_pixel_data();
+        const byte* raw_pixel_data() const;
+
+        u32 width() const;
+        u32 height() const;
 		int nr_channels() const;
 		
 	private:
 		Colour* m_pixels;
 
-		int m_width;
-		int m_height;
+        u32 m_width;
+        u32 m_height;
 		int m_nr_channels;
 
 		bool m_stbi_management;

@@ -6,9 +6,9 @@ using namespace lev;
 const TextureSampler& TextureSampler::pixel()
 {
 	static const TextureSampler PIXEL(
-		TEXTURE_FILTER_NEAREST,
-		TEXTURE_WRAP_CLAMP,
-		TEXTURE_WRAP_CLAMP
+		TEX_FILTER_NEAREST,
+		TEX_WRAP_CLAMP,
+		TEX_WRAP_CLAMP
 	);
 
 	return PIXEL;
@@ -17,9 +17,9 @@ const TextureSampler& TextureSampler::pixel()
 const TextureSampler& TextureSampler::linear()
 {
 	static const TextureSampler LINEAR(
-		TEXTURE_FILTER_LINEAR,
-		TEXTURE_WRAP_CLAMP,
-		TEXTURE_WRAP_CLAMP
+		TEX_FILTER_LINEAR,
+		TEX_WRAP_CLAMP,
+		TEX_WRAP_CLAMP
 	);
 
 	return LINEAR;
@@ -27,30 +27,22 @@ const TextureSampler& TextureSampler::linear()
 
 ////////////////////////////////////////////////////////////////////////////
 
-Texture::Texture()
-{
-}
-
-Texture::~Texture()
-{
-}
-
 Ref<Texture> Texture::create(const char* path)
 {
 	LEV_ASSERT(path, "Path must not be nullptr");
-	return create(Image(path));
+	return create(Image(path), TEX_FMT_RGBA, I_TEX_FMT_RGBA32F, TEX_TYPE_UNSIGNED_BYTE);
 }
 
-Ref<Texture> Texture::create(const Image& image)
+Ref<Texture> Texture::create(const Image& image, u8 format, u8 internal_format, u8 type)
 {
-	return create(image.width(), image.height(), TEXTURE_FORMAT_RGBA, TEXTURE_TYPE_UNSIGNED_BYTE, (const byte*)image.pixels());
+	return create(image.width(), image.height(), format, internal_format, type, image.raw_pixel_data());
 }
 
-Ref<Texture> Texture::create(int width, int height, TextureFormat format, TextureType type, const byte* data)
+Ref<Texture> Texture::create(u32 width, u32 height, u8 format, u8 internal_format, u8 type, const byte* data)
 {
-	LEV_ASSERT(width > 0 && height > 0, "Width and Height must be greater than 0");
-
-	Ref<Texture> result = Renderer::inst()->create_texture(TextureData(width, height, format, type));
+	Ref<Texture> result = Renderer::inst()->create_texture(
+		TextureData(width, height, format, internal_format, type)
+	);
 
 	if (data)
 		result->generate(data);

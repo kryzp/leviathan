@@ -50,8 +50,8 @@ namespace lev
 	class Shader
 	{
 	public:
-		static constexpr const char* PROJECTION = "u_projection";
-		static constexpr const char* RESOLUTION = "u_resolution";
+		static constexpr const char* PROJECTION = "lev_projection";
+		static constexpr const char* RESOLUTION = "lev_resolution";
 
 		Shader();
 		virtual ~Shader();

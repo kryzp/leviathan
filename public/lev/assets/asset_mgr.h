@@ -127,7 +127,7 @@ namespace lev
 	AssetLoader<Asset, LoadData...>* AssetMgr::retrieve_loader()
 	{
 		return static_cast<AssetLoader<Asset, LoadData...>*>(
-			m_loaders.get(AssetLoader<Asset, LoadData...>::Meta::id)
+            m_loaders.at(AssetLoader<Asset, LoadData...>::Meta::id)
 		);
 	}
 

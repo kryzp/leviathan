@@ -18,11 +18,6 @@
 
 #include <functional>
 
-#define LEV_SB_FRAGMODE_ALL (Colour(1.0f, 0.0f, 0.0f, 0.0f))
-#define LEV_SB_FRAGMODE_ALPHA (Colour(0.0f, 1.0f, 0.0f, 0.0f))
-#define LEV_SB_FRAGMODE_RED (Colour(0.0f, 0.0f, 1.0f, 0.0f))
-#define LEV_SB_FRAGMODE_SILHOUETTE (Colour(0.0f, 0.0f, 0.0f, 1.0f))
-
 namespace lev
 {
 	struct RenderPass;
@@ -42,11 +37,21 @@ namespace lev
 		TEXT_ALIGN_RIGHT
 	};
 
+    enum SBFragMode
+    {
+        SB_FRAGMODE_NONE,
+        SB_FRAGMODE_ALL        = 1 << 0,
+        SB_FRAGMODE_ALPHA      = 1 << 1,
+        SB_FRAGMODE_RED        = 1 << 2,
+        SB_FRAGMODE_SILHOUETTE = 1 << 3,
+        SB_FRAGMODE_MAX
+    };
+
 	class SpriteBatch
 	{
 	public:
 		SpriteBatch();
-		~SpriteBatch();
+		~SpriteBatch() = default;
 
 		void render(const Ref<Framebuffer>& framebuffer = nullptr, int sort_mode = SPRITE_SORT_FTB);
 		void render(const Mat4x4& proj, const Ref<Framebuffer>& framebuffer = nullptr, int sort_mode = SPRITE_SORT_FTB);
@@ -56,10 +61,10 @@ namespace lev
 		///////////////////////////////////////////////////////
 
 		void push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx, u64 idxcount);
-		void push_texture(const TextureRegion& tex, const Colour& colour = Colour::white(), const Colour& mode = Colour(1.0f, 0.0f, 0.0f, 0.0f));
-		void push_texture(const Ref<Texture>& tex, const Colour& colour = Colour::white(), const Colour& mode = Colour(1.0f, 0.0f, 0.0f, 0.0f));
-		void push_quad(const Quad& quad, const Colour& colour = Colour::white(), const Colour& mode = Colour(1.0f, 0.0f, 0.0f, 0.0f));
-		void push_triangle(const Triangle& tri, const Colour& colour = Colour::white(), const Colour& mode = Colour(1.0f, 0.0f, 0.0f, 0.0f));
+		void push_texture(const TextureRegion& tex, const Colour& colour = Colour::white(), u8 mode = SB_FRAGMODE_ALL);
+		void push_texture(const Ref<Texture>& tex, const Colour& colour = Colour::white(), u8 mode = SB_FRAGMODE_ALL);
+		void push_quad(const Quad& quad, const Colour& colour = Colour::white(), u8 mode = SB_FRAGMODE_ALL);
+		void push_triangle(const Triangle& tri, const Colour& colour = Colour::white(), u8 mode = SB_FRAGMODE_ALL);
 		void push_string(const char* str, const Ref<Font>& font, TextAlign align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white());
 		void push_string(const char* str, const Ref<Font>& font, const std::function<Vec2F(Font::Character,int)>& offsetfn, TextAlign align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white());
 		void push_circle(const Circle& circle, u32 accuracy = 40U, const Colour& colour = Colour::white());
@@ -74,25 +79,21 @@ namespace lev
 		Ref<Texture> peek_texture(int idx = 0);
 		const TextureSampler& peek_sampler(int idx = 0);
 
-		void push_shader(const Ref<Shader>& shader);
-		Ref<Shader> pop_shader();
-		Ref<Shader> peek_shader();
-
 		void push_layer(float layer);
 		float pop_layer();
 		float peek_layer() const;
 
 		void push_matrix(const Mat3x2& mat);
 		Mat3x2 pop_matrix();
-		const Mat3x2& peek_matrix() const;
+		Mat3x2& peek_matrix();
 
 		void push_material(const Material& material);
 		Material pop_material();
-		const Material& peek_material();
+		Material& peek_material();
 
 		void push_blend(const BlendMode& blend);
 		BlendMode pop_blend();
-		const BlendMode& peek_blend();
+		BlendMode& peek_blend();
 
 	private:
 		struct RenderBatch

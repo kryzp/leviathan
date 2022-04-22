@@ -25,13 +25,9 @@ SpriteBatch::SpriteBatch()
 	m_blend_stack.push_back(g_default_blend);
 
 	Material mat;
-	mat.textures[0] = nullptr;
-	mat.samplers[0] = TextureSampler::pixel();
+	mat.texture(0) = nullptr;
+	mat.sampler(0) = TextureSampler::pixel();
 	m_material_stack.push_back(mat);
-}
-
-SpriteBatch::~SpriteBatch()
-{
 }
 
 void SpriteBatch::initialize()
@@ -48,9 +44,9 @@ void SpriteBatch::initialize()
 			"out vec2 frag_coord;\n"
 			"out vec4 frag_mod_colour;\n"
 			"out vec4 frag_mode;\n"
-			"uniform mat4 u_projection;\n"
+			"uniform mat4 lev_projection;\n"
 			"void main() {\n"
-			"	gl_Position = u_projection * vec4(a_pos, 0.0, 1.0);\n"
+			"	gl_Position = lev_projection * vec4(a_pos, 0.0, 1.0);\n"
 			"	frag_mod_colour = a_colour;\n"
 			"	frag_coord = a_uv;\n"
 			"	frag_mode = a_mode;\n"
@@ -62,9 +58,9 @@ void SpriteBatch::initialize()
 			"in vec2 frag_coord;\n"
 			"in vec4 frag_mod_colour;\n"
 			"in vec4 frag_mode;\n"
-			"uniform sampler2D u_texture_0;\n"
+			"uniform sampler2D lev_texture_0;\n"
 			"void main() {\n"
-			"	vec4 texcol = texture(u_texture_0, frag_coord);\n"
+			"	vec4 texcol = texture(lev_texture_0, frag_coord);\n"
 			"	frag_colour = frag_mode.r * texcol   * frag_mod_colour + "
 			"                 frag_mode.g * texcol.a * frag_mod_colour + "
 			"                 frag_mode.b * texcol.r * frag_mod_colour + "
@@ -72,7 +68,7 @@ void SpriteBatch::initialize()
 			"}";
 #endif
 
-		m_material_stack[0].shader = Shader::create(vertex, fragment, nullptr, true);
+		m_material_stack[0].shader() = Shader::create(vertex, fragment, nullptr, true);
 	}
 
 	m_initialized = true;
@@ -100,12 +96,12 @@ void SpriteBatch::render(const Mat4x4& proj, const Ref<Framebuffer>& framebuffer
 
 	for (auto& b : m_batches)
 	{
-		if (!b.material.shader)
-			b.material.shader = m_material_stack[0].shader;
+		if (!b.material.shader())
+			b.material.shader() = m_material_stack[0].shader();
 
-		b.material.shader->use();
-		b.material.shader->set(Shader::PROJECTION, proj);
-		b.material.shader->set(Shader::RESOLUTION, Vec2F(
+		b.material.shader()->use();
+		b.material.shader()->set(Shader::PROJECTION, proj);
+		b.material.shader()->set(Shader::RESOLUTION, Vec2F(
 			framebuffer ? framebuffer->width() : App::inst()->draw_width(),
 			framebuffer ? framebuffer->height() : App::inst()->draw_height()
 		));
@@ -147,7 +143,7 @@ void SpriteBatch::push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx,
 	m_batches.push_back(batch);
 }
 
-void SpriteBatch::push_quad(const Quad& quad, const Colour& colour, const Colour& mode)
+void SpriteBatch::push_quad(const Quad& quad, const Colour& colour, u8 mode)
 {
 	Vertex vertices[4];
 	u32 indices[6];
@@ -163,7 +159,7 @@ void SpriteBatch::push_quad(const Quad& quad, const Colour& colour, const Colour
 	push_vertices(vertices, 4, indices, 6);
 }
 
-void SpriteBatch::push_triangle(const Triangle& tri, const Colour& colour, const Colour& mode)
+void SpriteBatch::push_triangle(const Triangle& tri, const Colour& colour, u8 mode)
 {
 	Vertex vertices[3];
 	u32 indices[3];
@@ -183,7 +179,7 @@ void SpriteBatch::push_triangle(const Triangle& tri, const Colour& colour, const
 	push_vertices(vertices, 3, indices, 3);
 }
 
-void SpriteBatch::push_texture(const TextureRegion& tex, const Colour& colour, const Colour& mode)
+void SpriteBatch::push_texture(const TextureRegion& tex, const Colour& colour, u8 mode)
 {
 	set_texture(tex.source);
 
@@ -203,7 +199,7 @@ void SpriteBatch::push_texture(const TextureRegion& tex, const Colour& colour, c
 	push_vertices(vertices, 4, indices, 6);
 }
 
-void SpriteBatch::push_texture(const Ref<Texture>& tex, const Colour& colour, const Colour& mode)
+void SpriteBatch::push_texture(const Ref<Texture>& tex, const Colour& colour, u8 mode)
 {
 	set_texture(tex);
 
@@ -257,7 +253,7 @@ void SpriteBatch::push_string(const char* str, const Ref<Font>& font, const std:
 			offsetfn(c, i)
 		));
 
-		push_texture(atlas.region(c.bbox), colour, LEV_SB_FRAGMODE_RED);
+		push_texture(atlas.region(c.bbox), colour, SB_FRAGMODE_RED);
 
 		pop_matrix();
 
@@ -280,7 +276,7 @@ void SpriteBatch::push_circle(const Circle& circle, u32 accuracy, const Colour& 
 		triangle.b = Vec2F::from_angle(theta         , circle.radius) + circle.position;
 		triangle.c = Vec2F::from_angle(theta + dtheta, circle.radius) + circle.position;
 
-		push_triangle(triangle, colour, LEV_SB_FRAGMODE_SILHOUETTE);
+		push_triangle(triangle, colour, SB_FRAGMODE_SILHOUETTE);
 	}
 }
 
@@ -296,32 +292,32 @@ void SpriteBatch::push_line(const Line& line, float thickness, const Colour& col
 		line.b + perp + (Vec2F( thickness,  thickness)*dir)
 	);
 
-	push_quad(quad, colour, LEV_SB_FRAGMODE_SILHOUETTE);
+	push_quad(quad, colour, SB_FRAGMODE_SILHOUETTE);
 }
 
 void SpriteBatch::set_texture(const Ref<Texture>& tex, int idx)
 {
-	m_material_stack.back().textures[idx] = tex;
+	m_material_stack.back().texture(idx) = tex;
 }
 
 void SpriteBatch::set_sampler(const TextureSampler& sampler, int idx)
 {
-	m_material_stack.back().samplers[idx] = sampler;
+	m_material_stack.back().sampler(idx) = sampler;
 }
 
 void SpriteBatch::reset_texture(int idx)
 {
-	m_material_stack.back().textures[idx].reset();
+	m_material_stack.back().texture(idx).reset();
 }
 
 Ref<Texture> SpriteBatch::peek_texture(int idx)
 {
-	return peek_material().textures[idx];
+	return peek_material().texture(idx);
 }
 
 const TextureSampler& SpriteBatch::peek_sampler(int idx)
 {
-	return peek_material().samplers[idx];
+	return peek_material().sampler(idx);
 }
 
 void SpriteBatch::push_layer(float layer)
@@ -345,23 +341,6 @@ float SpriteBatch::peek_layer() const
 	return 0.0f;
 }
 
-void SpriteBatch::push_shader(const Ref<Shader>& shader)
-{
-	auto mat = m_material_stack.back();
-	mat.shader = shader;
-	push_material(mat);
-}
-
-Ref<Shader> SpriteBatch::pop_shader()
-{
-	return pop_material().shader;
-}
-
-Ref<Shader> SpriteBatch::peek_shader()
-{
-	return peek_material().shader;
-}
-
 void SpriteBatch::push_matrix(const Mat3x2& matrix)
 {
 	m_matrix_stack.push_back(m_transform_matrix);
@@ -375,7 +354,7 @@ Mat3x2 SpriteBatch::pop_matrix()
 	return val;
 }
 
-const Mat3x2& SpriteBatch::peek_matrix() const
+Mat3x2& SpriteBatch::peek_matrix()
 {
 	return m_transform_matrix;
 }
@@ -393,7 +372,7 @@ Material SpriteBatch::pop_material()
 	return m_material_stack.back();
 }
 
-const Material& SpriteBatch::peek_material()
+Material& SpriteBatch::peek_material()
 {
 	return m_material_stack.back();
 }
@@ -411,7 +390,7 @@ BlendMode SpriteBatch::pop_blend()
 	return m_blend_stack.back();
 }
 
-const BlendMode& SpriteBatch::peek_blend()
+BlendMode& SpriteBatch::peek_blend()
 {
 	return m_blend_stack.back();
 }

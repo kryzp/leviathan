@@ -18,7 +18,7 @@ namespace lev
 
 	namespace GfxUtil
 	{
-		void quad(Vertex* vtx, u32* indices, const Quad& quad, const Quad& uv, Colour colour, const Colour& mode);
-		void tri(Vertex* vtx, u32* indices, const Triangle& triangle, const Triangle& uv, Colour colour, const Colour& mode);
+		void quad(Vertex* vtx, u32* indices, const Quad& quad, const Quad& uv, Colour colour, u8 mode);
+		void tri(Vertex* vtx, u32* indices, const Triangle& triangle, const Triangle& uv, Colour colour, u8 mode);
 	}
 };

@@ -2,29 +2,19 @@
 
 #include <lev/core/util.h>
 #include <lev/containers/vector.h>
+#include <lev/containers/pair.h>
 #include <lev/graphics/texture.h>
 #include <lev/math/colour.h>
 
 namespace lev
 {
-	struct TextureAttachment
-	{
-		TextureFormat format;
-		TextureType type;
-
-		TextureAttachment(TextureFormat format, TextureType type)
-			: format(format)
-			, type(type)
-		{
-		}
-	};
+	using FramebufferAttachments = Vector<Pair<TextureData, TextureSampler>>;
 
 	struct FramebufferData
 	{
-		int width;
-		int height;
-		const TextureAttachment* attachments;
-		int attachment_count;
+        u32 width;
+        u32 height;
+		FramebufferAttachments attachments;
 	};
 
 	class Framebuffer : public NonCopyable, public NonMovable
@@ -32,8 +22,8 @@ namespace lev
 	public:
 		virtual ~Framebuffer() = default;
 
-		static Ref<Framebuffer> create(int width, int height);
-		static Ref<Framebuffer> create(int width, int height, const TextureAttachment* attachments, int attachment_count);
+		static Ref<Framebuffer> create(u32 width, u32 height);
+		static Ref<Framebuffer> create(const FramebufferAttachments& attachments);
 
 		static void unbind();
 

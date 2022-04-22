@@ -107,7 +107,7 @@ void Font::load(float size, const char* path, int type)
 
 			stbtt_PackEnd(&pack_context);
 
-			m_atlas.texture = Texture::create(LEV_FONT_ATLAS_W, LEV_FONT_ATLAS_H, TEXTURE_FORMAT_RED, TEXTURE_TYPE_UNSIGNED_BYTE, bitmap);
+			m_atlas.texture = Texture::create(LEV_FONT_ATLAS_W, LEV_FONT_ATLAS_H, TEX_FMT_RED, I_TEX_FMT_R32F, TEX_TYPE_UNSIGNED_BYTE, bitmap);
 
 			m_characters = new Character[LEV_FONT_CHARCOUNT];
 
@@ -131,14 +131,9 @@ void Font::load(float size, const char* path, int type)
 
 void Font::free()
 {
-	if (m_internal_info)
-		delete M_INTERNAL_INFO;
-
-	if (m_kerning)
-		delete[] m_kerning;
-
-	if (m_characters)
-		delete[] m_characters;
+    delete M_INTERNAL_INFO;
+    delete[] m_kerning;
+    delete[] m_characters;
 }
 
 int Font::kern_advance(int curr, int next) const

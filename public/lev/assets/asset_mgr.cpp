@@ -11,7 +11,7 @@ public:
 	Ref<Texture> load(const String& name, const String& path) override
 	{
 		if (m_textures.contains(name))
-			return m_textures.get(name);
+			return m_textures.at(name);
 
 		Ref<Texture> tex = Texture::create(path);
 		m_textures.insert(name, tex);
@@ -20,7 +20,7 @@ public:
 
 	Ref<Texture> get(const String& name) override
 	{
-		return m_textures.get(name);
+		return m_textures.at(name);
 	}
 
 	bool has(const String& name) override
@@ -38,7 +38,7 @@ public:
 	Ref<Shader> load(const String& name, ShaderLoadData data) override
 	{
 		if (m_shaders.contains(name))
-			return m_shaders.get(name);
+			return m_shaders.at(name);
 
 		Ref<Shader> shd = nullptr;
 
@@ -53,7 +53,7 @@ public:
 
 	Ref<Shader> get(const String& name) override
 	{
-		return m_shaders.get(name);
+		return m_shaders.at(name);
 	}
 
 	bool has(const String& name) override
@@ -71,7 +71,7 @@ public:
 	Ref<Font> load(const String& name, FontLoadData data) override
 	{
 		if (m_fonts.contains(name))
-			return m_fonts.get(name);
+			return m_fonts.at(name);
 
 		Ref<Font> fnt = create_ref<Font>(data.size, data.path);
 		m_fonts.insert(name, fnt);
@@ -80,7 +80,7 @@ public:
 
 	Ref<Font> get(const String& name) override
 	{
-		return m_fonts.get(name);
+		return m_fonts.at(name);
 	}
 
 	bool has(const String& name) override
