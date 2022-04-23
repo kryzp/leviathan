@@ -46,7 +46,7 @@ void Polygon::project(const Vec2F& axis, float* min, float* max) const
 	}
 }
 
-void Polygon::foreach_point(const std::function<void(int, const Vec2F&, const Vec2F&)>& fn)
+void Polygon::foreach_point(const std::function<void(int, Vec2F&, Vec2F&)>& fn)
 {
 	for (int i = 0; i < vertices.size(); i++)
 	{

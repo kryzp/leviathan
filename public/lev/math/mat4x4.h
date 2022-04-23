@@ -4,6 +4,9 @@ namespace lev
 {
 	struct Mat3x2;
 
+	template <typename T> struct Vec3;
+	using Vec3F = Vec3<float>;
+
 	struct Mat4x4
 	{
 		union
@@ -46,12 +49,15 @@ namespace lev
 		static Mat4x4 from_mat3x2(const Mat3x2& mat);
 
 		static Mat4x4 create_translation(float x, float y, float z);
+		static Mat4x4 create_rotation(float angle, Vec3F axis);
 		static Mat4x4 create_scale(float x, float y, float z);
+
+		static Mat4x4 create_lookat(const Vec3F& eye, const Vec3F& centre, const Vec3F& up);
 
 		static Mat4x4 create_orthographic(float width, float height, float near, float far);
 		static Mat4x4 create_orthographic_ext(float left, float right, float bottom, float top, float near, float far);
 
-        static Mat4x4 create_projection(float fov, float aspect, float near, float far, bool left_handed = true);
+        static Mat4x4 create_projection(float fov, float aspect, float near, float far);
 
 		float* value_ptr();
         const float* value_ptr() const;
@@ -66,5 +72,7 @@ namespace lev
 		Mat4x4& operator -= (const Mat4x4& other);
 		Mat4x4& operator += (const Mat4x4& other);
 		Mat4x4& operator *= (const Mat4x4& other);
+
+		float* operator [] (int idx);
 	};
 };

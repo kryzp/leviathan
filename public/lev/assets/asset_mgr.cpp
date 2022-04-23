@@ -8,93 +8,39 @@ using namespace lev;
 class TextureLoader : public AssetLoader<Texture, const String&>
 {
 public:
-	Ref<Texture> load(const String& name, const String& path) override
+	void load(Ref<Texture>& obj, const String& path) override
 	{
-		if (m_textures.contains(name))
-			return m_textures.at(name);
-
-		Ref<Texture> tex = Texture::create(path);
-		m_textures.insert(name, tex);
-		return tex;
+		obj = Texture::create(path);
 	}
-
-	Ref<Texture> get(const String& name) override
-	{
-		return m_textures.at(name);
-	}
-
-	bool has(const String& name) override
-	{
-		return m_textures.contains(name);
-	}
-
-private:
-	HashMap<String, Ref<Texture>> m_textures;
 };
 
 class ShaderLoader : public AssetLoader<Shader, ShaderLoadData>
 {
 public:
-	Ref<Shader> load(const String& name, ShaderLoadData data) override
+	void load(Ref<Shader>& obj, ShaderLoadData data) override
 	{
-		if (m_shaders.contains(name))
-			return m_shaders.at(name);
-
-		Ref<Shader> shd = nullptr;
-
 		if (data.compute)
-			shd = Shader::create_compute(data.compute, data.is_source);
+			obj = Shader::create_compute(data.compute, data.is_source);
 		else
-			shd = Shader::create(data.vertex, data.fragment, data.geometry, data.is_source);
-
-		m_shaders.insert(name, shd);
-		return shd;
+			obj = Shader::create(data.vertex, data.fragment, data.geometry, data.is_source);
 	}
-
-	Ref<Shader> get(const String& name) override
-	{
-		return m_shaders.at(name);
-	}
-
-	bool has(const String& name) override
-	{
-		return m_shaders.contains(name);
-	}
-
-private:
-	HashMap<String, Ref<Shader>> m_shaders;
 };
 
 class FontLoader : public AssetLoader<Font, FontLoadData>
 {
 public:
-	Ref<Font> load(const String& name, FontLoadData data) override
+	void load(Ref<Font>& obj, FontLoadData data) override
 	{
-		if (m_fonts.contains(name))
-			return m_fonts.at(name);
-
-		Ref<Font> fnt = create_ref<Font>(data.size, data.path);
-		m_fonts.insert(name, fnt);
-		return fnt;
+		obj = create_ref<Font>(data.size, data.path);
 	}
-
-	Ref<Font> get(const String& name) override
-	{
-		return m_fonts.at(name);
-	}
-
-	bool has(const String& name) override
-	{
-		return m_fonts.contains(name);
-	}
-
-private:
-	HashMap<String, Ref<Font>> m_fonts;
 };
 
 AssetMgr::AssetMgr()
 {
-	register_loader<TextureLoader>();
-	register_loader<ShaderLoader>();
-	register_loader<FontLoader>();
+	mem::set(m_loaders, 0, sizeof(AssetLoaderBase*) * LEV_MAX_ASSET_TYPES);
+	mem::set(m_assets, 0, sizeof(AssetListBase*) * LEV_MAX_ASSET_TYPES);
+
+	register_loader<TextureLoader, Texture>();
+	register_loader<ShaderLoader, Shader>();
+	register_loader<FontLoader, Font>();
 }

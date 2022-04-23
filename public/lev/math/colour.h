@@ -33,7 +33,7 @@ namespace lev
 		static const Colour& magenta();
 		static const Colour& cyan();
 
-		// packs all floats into a single 32-bit integer, loses precision
+		// packs all floats into a single 32-bit unsigned integer, loses precision
 		static u32 pack(const Colour& colour);
 
 		static Colour from_hsv(float hue, float sat, float val, float alpha = 1.0f);

@@ -141,19 +141,19 @@ Colour Colour::operator - () const
 	);
 }
 
-Colour Colour::operator * (float mult) const
+Colour Colour::operator * (float factor) const
 {
 	return Colour(
-		(u8)(static_cast<float>(r) * mult),
-		(u8)(static_cast<float>(g) * mult),
-		(u8)(static_cast<float>(b) * mult),
-		(u8)(static_cast<float>(a) * mult)
+		(u8)(static_cast<float>(r) * factor),
+		(u8)(static_cast<float>(g) * factor),
+		(u8)(static_cast<float>(b) * factor),
+		(u8)(static_cast<float>(a) * factor)
 	);
 }
 
-Colour& Colour::operator *= (float mult)
+Colour& Colour::operator *= (float factor)
 {
-	*this = *this * mult;
+	(*this) = (*this) * factor;
 	return *this;
 }
 

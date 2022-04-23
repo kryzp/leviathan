@@ -60,6 +60,7 @@ namespace lev
 		static const Vec3& forward();
 		static const Vec3& backward();
 
+		static float dot(const Vec3& a, const Vec3& b);
 		static Vec3 cross(const Vec3& a, const Vec3& b);
 		static Vec3 lerp(const Vec3& from, const Vec3& to, float amount);
 		static Vec3 spring(const Vec3& from, const Vec3& to, float bounciness, float tension, Vec3& intermediate);
@@ -112,8 +113,19 @@ namespace lev
 	}
 
 	template <typename T>
+	float Vec3<T>::dot(const Vec3<T>& a, const Vec3<T>& b)
+	{
+		return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
+	}
+
+	template <typename T>
 	Vec3<T> Vec3<T>::cross(const Vec3<T>& a, const Vec3<T>& b)
 	{
+		return Vec3(
+			(a.y * b.z) - (a.z * b.y),
+			(a.z * b.x) - (a.x * b.z),
+			(a.x * b.y) - (a.y * b.x)
+		);
 	}
 	
 	template <typename T>

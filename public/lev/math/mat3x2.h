@@ -61,5 +61,7 @@ namespace lev
 		Mat3x2& operator -= (const Mat3x2& other);
 		Mat3x2& operator += (const Mat3x2& other);
 		Mat3x2& operator *= (const Mat3x2& other);
+
+		float* operator [] (int idx);
 	};
 };

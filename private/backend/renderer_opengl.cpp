@@ -16,7 +16,7 @@ using namespace lev;
 
 namespace
 {
-    u32 get_gl_texture_fmt(u8 fmt)
+	u32 get_gl_texture_fmt(u8 fmt)
 	{
 		switch (fmt)
 		{
@@ -30,7 +30,7 @@ namespace
 		return 0;
 	}
 
-    u32 get_gl_texture_internal_fmt(u8 fmt)
+	u32 get_gl_texture_internal_fmt(u8 fmt)
 	{
 		switch (fmt)
 		{
@@ -100,7 +100,7 @@ namespace
 		return 0;
 	}
 
-    u32 get_gl_texture_type(u8 type)
+	u32 get_gl_texture_type(u8 type)
 	{
 		switch (type)
 		{
@@ -117,7 +117,7 @@ namespace
 		return 0;
 	}
 
-    u32 get_gl_blend_equation(u8 func)
+	u32 get_gl_blend_equation(u8 func)
 	{
 		switch (func)
 		{
@@ -131,7 +131,7 @@ namespace
 		return 0;
 	}
 
-    u32 get_gl_blend_func(u8 factor)
+	u32 get_gl_blend_func(u8 factor)
 	{
 		switch (factor)
 		{
@@ -492,8 +492,15 @@ public:
 		return *this;
 	}
 
-	u8 type() override { return m_type; }
-	u32 id() const { return m_id; }
+	u8 type() override
+	{
+		return m_type;
+	}
+
+	u32 id() const
+	{
+		return m_id;
+	}
 
 	Shader& set(const char* name, bool value) override
     {
@@ -822,7 +829,6 @@ static const char* UNIFORM_TEXTURE_NAMES[] = {
 
 class OpenGLRenderer : public Renderer
 {
-private:
     void* m_context = nullptr;
 
 public:
@@ -838,6 +844,8 @@ public:
         }
 
         glEnable(GL_BLEND);
+		glEnable(GL_STENCIL_TEST);
+		glEnable(GL_DEPTH_TEST);
 
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 

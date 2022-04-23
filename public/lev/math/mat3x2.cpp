@@ -205,6 +205,11 @@ Mat3x2& Mat3x2::operator *= (const Mat3x2& other)
 	return *this;
 }
 
+float* Mat3x2::operator [] (int idx)
+{
+	return elements[idx];
+}
+
 const Mat3x2& Mat3x2::identity()
 {
 	static const Mat3x2 IDENTITY = Mat3x2(

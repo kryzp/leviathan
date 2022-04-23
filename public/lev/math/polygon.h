@@ -16,7 +16,6 @@ namespace lev
 		static bool axis_overlaps(const Polygon& a, const Polygon& b, const Vec2F& axis, float* amount);
 
 		void project(const Vec2F& axis, float* min, float* max) const;
-
-		void foreach_point(const std::function<void(int, const Vec2F&, const Vec2F&)>& fn);
+		void foreach_point(const std::function<void(int, Vec2F&, Vec2F&)>& fn);
 	};
 }

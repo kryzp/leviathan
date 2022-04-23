@@ -3,10 +3,6 @@
 
 using namespace lev;
 
-// yes i should be using a seperate struct instead of just reusing TextureData since for framebuffers both width and height must all be the same so we're wasting memory but im lazy
-// todo: fix this when im not lazy
-// todo todo: stop being so lazy all of the time
-
 Ref<Framebuffer> Framebuffer::create(u32 width, u32 height)
 {
 	static const FramebufferAttachments attachment = {
@@ -29,6 +25,7 @@ Ref<Framebuffer> Framebuffer::create(const FramebufferAttachments& attachments)
 		if (attachments[i].first.format == TEX_FMT_DEPTH_STENCIL)
 			depthstencilcount++;
 
+		LEV_ASSERT(attachments[0].first.width == attachments[i].first.width && attachments[0].first.height == attachments[i].first.height, "All textures must be of the same size");
 		LEV_ASSERT(depthstencilcount < 2, "There must not be 2 or more depth stencil attachments");
 	}
 
