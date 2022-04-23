@@ -22,6 +22,8 @@ add_library(${PROJECT_NAME}
 	public/lev/graphics/material.cpp
 	public/lev/graphics/texture.cpp
 	public/lev/graphics/shader.cpp
+	public/lev/graphics/compare.cpp
+	public/lev/graphics/blend.cpp
 
 	public/lev/io/endian.cpp
 	public/lev/io/stream.cpp
@@ -50,7 +52,7 @@ add_library(${PROJECT_NAME}
 	private/backend/system_sdl2.cpp
 	private/backend/renderer_opengl.cpp
 	private/third_party/glad/glad.c
-)
+    public/lev/graphics/blend.cpp)
 
 target_include_directories(${PROJECT_NAME}
 	

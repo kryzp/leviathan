@@ -2,6 +2,7 @@
 
 #include <lev/core/app.h>
 
+
 #include <backend/renderer.h>
 #include <backend/system.h>
 
@@ -131,9 +132,9 @@ namespace
 		return 0;
 	}
 
-	u32 get_gl_blend_func(u8 factor)
+	u32 get_gl_blend_func(u8 func)
 	{
-		switch (factor)
+		switch (func)
 		{
 			case BLEND_FUNC_ZERO:						return GL_ZERO;
 			case BLEND_FUNC_ONE:						return GL_ONE;
@@ -153,6 +154,52 @@ namespace
 			case BLEND_FUNC_ONE_MINUS_CONSTANT_COLOUR:	return GL_ONE_MINUS_CONSTANT_COLOR;
 			case BLEND_FUNC_CONSTANT_ALPHA:				return GL_CONSTANT_ALPHA;
 			case BLEND_FUNC_ONE_MINUS_CONSTANT_ALPHA:	return GL_ONE_MINUS_CONSTANT_ALPHA;
+		}
+
+		return 0;
+	}
+
+	u32 get_gl_compare_face(u8 face)
+	{
+		switch (face)
+		{
+			case LEV_FACE_FRONT:			return GL_FRONT;
+			case LEV_FACE_BACK:				return GL_BACK;
+			case LEV_FACE_FRONT_AND_BACK: 	return GL_FRONT_AND_BACK;
+		}
+
+		return 0;
+	}
+
+	u32 get_gl_compare_func(u8 func)
+	{
+		switch (func)
+		{
+			case LEV_COMPARE_NEVER:		return GL_NEVER;
+			case LEV_COMPARE_LESS:		return GL_LESS;
+			case LEV_COMPARE_LEQUAL:	return GL_LEQUAL;
+			case LEV_COMPARE_GREATER:	return GL_GREATER;
+			case LEV_COMPARE_GEQUAL:	return GL_GEQUAL;
+			case LEV_COMPARE_EQUAL:		return GL_EQUAL;
+			case LEV_COMPARE_NOTEQUAL:	return GL_NOTEQUAL;
+			case LEV_COMPARE_ALWAYS:	return GL_ALWAYS;
+		}
+
+		return 0;
+	}
+
+	u32 get_gl_compare_fail(u8 fail)
+	{
+		switch (fail)
+		{
+			case LEV_COMPARE_FAIL_KEEP: 		return GL_KEEP;
+			case LEV_COMPARE_FAIL_ZERO: 		return GL_ZERO;
+			case LEV_COMPARE_FAIL_REPLACE: 		return GL_REPLACE;
+			case LEV_COMPARE_FAIL_INCR: 		return GL_INCR;
+			case LEV_COMPARE_FAIL_INCR_WRAP: 	return GL_INCR_WRAP;
+			case LEV_COMPARE_FAIL_DECR: 		return GL_DECR;
+			case LEV_COMPARE_FAIL_DECR_WRAP: 	return GL_DECR_WRAP;
+			case LEV_COMPARE_FAIL_INVERT: 		return GL_INVERT;
 		}
 
 		return 0;
@@ -843,9 +890,10 @@ public:
             return false;
         }
 
-        glEnable(GL_BLEND);
-		glEnable(GL_STENCIL_TEST);
+		glEnable(GL_BLEND);
 		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_STENCIL_TEST);
+		glEnable(GL_SCISSOR_TEST);
 
         //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -900,17 +948,52 @@ public:
             shader->set(UNIFORM_TEXTURE_NAMES[i], i);
         }
 
-        glBlendEquationSeparate(
-                get_gl_blend_equation(blend.equation_rgb),
-                get_gl_blend_equation(blend.equation_alpha)
-        );
+		// depth stencil
+		{
+			u32 gl_face = get_gl_compare_face(pass.stencil.face);
 
-        glBlendFuncSeparate(
-                get_gl_blend_func(blend.func_src_rgb),
-                get_gl_blend_func(blend.func_dst_rgb),
-                get_gl_blend_func(blend.func_src_alpha),
-                get_gl_blend_func(blend.func_dst_alpha)
-        );
+			glStencilFuncSeparate(
+				gl_face,
+				get_gl_compare_func(pass.stencil.func),
+				pass.stencil.ref,
+				pass.stencil.mask
+			);
+
+			glStencilOpSeparate(
+				gl_face,
+				get_gl_compare_fail(pass.stencil.s_fail),
+				get_gl_compare_fail(pass.stencil.dp_fail),
+				get_gl_compare_fail(pass.stencil.dp_pass)
+			);
+
+			glDepthFunc(get_gl_compare_func(pass.depth));
+			//glDepthMask(pass.depth_mask_toggle);
+		}
+
+		if (pass.viewport != RectI::zero())
+		{
+			glViewport(pass.viewport.x, pass.viewport.y, pass.viewport.w, pass.viewport.h);
+		}
+
+		if (pass.scissor != RectI::zero())
+		{
+			glScissor(pass.scissor.x, pass.scissor.y, pass.scissor.w, pass.scissor.h);
+		}
+
+		// blending
+		{
+			glBlendEquationSeparate(
+				get_gl_blend_equation(blend.equation_rgb),
+				get_gl_blend_equation(blend.equation_alpha)
+			);
+
+			glBlendFuncSeparate(
+				get_gl_blend_func(blend.func_src_rgb),
+				get_gl_blend_func(blend.func_dst_rgb),
+				get_gl_blend_func(blend.func_src_alpha),
+				get_gl_blend_func(blend.func_dst_alpha)
+			);
+		}
 
         glBindVertexArray(mesh->id());
         glDrawElements(GL_TRIANGLES, pass.mesh->index_count(), GL_UNSIGNED_INT, 0);
@@ -930,7 +1013,7 @@ public:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
 
-    Ref<Texture> create_texture(const TextureData& data) override
+	Ref<Texture> create_texture(const TextureData& data) override
     {
         return create_ref<OpenGLTexture>(data);
     }
@@ -954,7 +1037,6 @@ public:
     {
         return create_ref<OpenGLMesh>();
     }
-
     void unbind_texture() override
     {
         glBindTexture(GL_TEXTURE_2D, 0);

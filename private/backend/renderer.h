@@ -9,15 +9,20 @@
 #include <lev/graphics/mesh.h>
 #include <lev/graphics/material.h>
 #include <lev/graphics/framebuffer.h>
+#include <lev/graphics/compare.h>
 
 namespace lev
 {
 	struct RenderPass
 	{
-		BlendMode blend;
 		Material material;
+		BlendMode blend;
 		Ref<Mesh> mesh;
 		Ref<Framebuffer> target;
+		Compare stencil;
+		u8 depth;
+		RectI viewport;
+		RectI scissor;
 	};
 
 	class Renderer
@@ -29,7 +34,6 @@ namespace lev
         virtual void destroy() = 0;
 
         virtual void render(const RenderPass& pass) = 0;
-
         virtual void before_render() = 0;
         virtual void after_render() = 0;
 

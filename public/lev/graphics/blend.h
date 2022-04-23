@@ -1,9 +1,12 @@
 #pragma once
 
+#include <lev/core/util.h>
+
 namespace lev
 {
 	enum BlendEquation
 	{
+		BLEND_EQUATION_NONE = 0,
 		BLEND_EQUATION_ADD,
 		BLEND_EQUATION_SUBTRACT,
 		BLEND_EQUATION_REVERSE_SUBTRACT,
@@ -13,6 +16,7 @@ namespace lev
 
 	enum BlendFunc
 	{
+		BLEND_FUNC_NONE = 0,
 		BLEND_FUNC_ZERO,
 		BLEND_FUNC_ONE,
 		BLEND_FUNC_SRC_COLOUR,
@@ -36,13 +40,40 @@ namespace lev
 
 	struct BlendMode
 	{
-		BlendEquation equation_rgb;
-		BlendEquation equation_alpha;
+		u8 equation_rgb;
+		u8 equation_alpha;
 		
-		BlendFunc func_src_rgb;
-		BlendFunc func_dst_rgb;
+		u8 func_src_rgb;
+		u8 func_dst_rgb;
 
-		BlendFunc func_src_alpha;
-		BlendFunc func_dst_alpha;
+		u8 func_src_alpha;
+		u8 func_dst_alpha;
+
+		BlendMode()
+			: equation_rgb(BLEND_EQUATION_NONE)
+			, equation_alpha(BLEND_EQUATION_NONE)
+			, func_src_rgb(BLEND_FUNC_NONE)
+			, func_dst_rgb(BLEND_FUNC_NONE)
+			, func_src_alpha(BLEND_FUNC_NONE)
+			, func_dst_alpha(BLEND_FUNC_NONE)
+		{
+		}
+
+		BlendMode(
+			u8 eq_rgb, u8 eq_alp,
+			u8 fn_src_rgb, u8 fn_dst_rgb,
+			u8 fn_src_alp, u8 fn_dst_alp
+		)
+			: equation_rgb(eq_rgb)
+			, equation_alpha(eq_alp)
+			, func_src_rgb(fn_src_rgb)
+			, func_dst_rgb(fn_dst_rgb)
+			, func_src_alpha(fn_src_alp)
+			, func_dst_alpha(fn_dst_alp)
+		{
+		}
+
+		static const BlendMode& generic();
+		static const BlendMode& none();
 	};
 }

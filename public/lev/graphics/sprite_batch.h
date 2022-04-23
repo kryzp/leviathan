@@ -6,6 +6,7 @@
 #include <lev/graphics/font.h>
 #include <lev/graphics/mesh.h>
 #include <lev/graphics/framebuffer.h>
+#include <lev/graphics/compare.h>
 #include <lev/math/mat3x2.h>
 #include <lev/math/mat4x4.h>
 #include <lev/math/vec2.h>
@@ -79,9 +80,25 @@ namespace lev
 		Ref<Texture> peek_texture(int idx = 0);
 		const TextureSampler& peek_sampler(int idx = 0);
 
+		void push_stencil(Compare stencil);
+		Compare pop_stencil();
+		Compare& peek_stencil();
+
+		void push_depth(u8 depth);
+		u8 pop_depth();
+		u8& peek_depth();
+
+		void push_scissor(const RectI& scissor);
+		RectI pop_scissor();
+		RectI& peek_scissor();
+
+		void push_viewport(const RectI& viewport);
+		RectI pop_viewport();
+		RectI& peek_viewport();
+
 		void push_layer(float layer);
 		float pop_layer();
-		float peek_layer() const;
+		float& peek_layer();
 
 		void push_matrix(const Mat3x2& mat);
 		Mat3x2 pop_matrix();
@@ -101,6 +118,10 @@ namespace lev
 			Ref<Mesh> mesh;
 			Material material;
 			BlendMode blend;
+			u8 depth;
+			Compare stencil;
+			RectI viewport;
+			RectI scissor;
 			float layer;
 		};
 
@@ -109,14 +130,18 @@ namespace lev
 
 		void render_batch(RenderPass& pass, const RenderBatch& b);
 
-		Vector<float> m_layer_stack;
+		Vector<RenderBatch> m_batches;
 
 		Vector<Mat3x2> m_matrix_stack;
 		Mat3x2 m_transform_matrix;
 
-		Vector<BlendMode> m_blend_stack;
+		// todo: convert these into arrays?
+		Vector<float> m_layer_stack;
 		Vector<Material> m_material_stack;
-
-		Vector<RenderBatch> m_batches;
+		Vector<BlendMode> m_blend_stack;
+		Vector<u8> m_depth_stack;
+		Vector<Compare> m_stencil_stack;
+		Vector<RectI> m_scissor_stack;
+		Vector<RectI> m_viewport_stack;
 	};
 }

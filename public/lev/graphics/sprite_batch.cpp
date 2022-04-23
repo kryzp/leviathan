@@ -6,23 +6,16 @@
 
 using namespace lev;
 
-namespace
-{
-	BlendMode g_default_blend = {
-		.equation_rgb   = BLEND_EQUATION_ADD,
-		.equation_alpha = BLEND_EQUATION_ADD,
-		.func_src_rgb   = BLEND_FUNC_SRC_ALPHA,
-		.func_dst_rgb   = BLEND_FUNC_ONE_MINUS_SRC_ALPHA,
-		.func_src_alpha = BLEND_FUNC_ONE,
-		.func_dst_alpha = BLEND_FUNC_ONE
-	};
-}
-
 SpriteBatch::SpriteBatch()
 	: m_initialized(false)
 	, m_transform_matrix(Mat3x2::identity())
 {
-	m_blend_stack.push_back(g_default_blend);
+	m_layer_stack.push_back(0.0f);
+	m_blend_stack.push_back(BlendMode::generic());
+	m_depth_stack.push_back(LEV_COMPARE_ALWAYS);
+	m_stencil_stack.push_back(Compare::none());
+	m_scissor_stack.push_back(RectI::zero());
+	m_viewport_stack.push_back(RectI::zero());
 
 	Material mat;
 	mat.texture(0) = nullptr;
@@ -117,6 +110,10 @@ void SpriteBatch::render_batch(RenderPass& pass, const RenderBatch& b)
 	pass.blend = b.blend;
 	pass.material = b.material;
 	pass.mesh = b.mesh;
+	pass.depth = b.depth;
+	pass.stencil = b.stencil;
+	pass.viewport = b.viewport;
+	pass.scissor = b.scissor;
 
 	Renderer::inst()->render(pass);
 }
@@ -124,9 +121,13 @@ void SpriteBatch::render_batch(RenderPass& pass, const RenderBatch& b)
 void SpriteBatch::push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx, u64 idxcount)
 {
 	RenderBatch batch;
+	batch.layer = peek_layer();
 	batch.material = peek_material();
 	batch.blend = peek_blend();
-	batch.layer = peek_layer();
+	batch.depth = peek_depth();
+	batch.stencil = peek_stencil();
+	batch.viewport = peek_viewport();
+	batch.scissor = peek_scissor();
 
 	batch.mesh = Renderer::inst()->create_mesh();
 	{
@@ -320,6 +321,69 @@ const TextureSampler& SpriteBatch::peek_sampler(int idx)
 	return peek_material().sampler(idx);
 }
 
+void SpriteBatch::push_stencil(Compare stencil)
+{
+	m_stencil_stack.push_back(stencil);
+}
+
+Compare SpriteBatch::pop_stencil()
+{
+	return m_stencil_stack.pop_back();
+}
+
+Compare& SpriteBatch::peek_stencil()
+{
+	return m_stencil_stack.back();
+}
+
+void SpriteBatch::push_depth(u8 depth)
+{
+	m_depth_stack.push_back(depth);
+}
+
+u8 SpriteBatch::pop_depth()
+{
+	return m_depth_stack.pop_back();
+}
+
+u8& SpriteBatch::peek_depth()
+{
+	return m_depth_stack.back();
+}
+
+void SpriteBatch::push_scissor(const RectI& scissor)
+{
+	m_scissor_stack.push_back(scissor);
+}
+
+RectI SpriteBatch::pop_scissor()
+{
+	return m_scissor_stack.pop_back();
+}
+
+RectI& SpriteBatch::peek_scissor()
+{
+	return m_scissor_stack.back();
+}
+
+void SpriteBatch::push_viewport(const RectI& viewport)
+{
+	m_viewport_stack.push_back(viewport);
+}
+
+RectI SpriteBatch::pop_viewport()
+{
+	return m_viewport_stack.pop_back();
+}
+
+RectI& SpriteBatch::peek_viewport()
+{
+	if (m_viewport_stack.size() > 0)
+		return m_viewport_stack.back();
+
+	return m_viewport_stack.back();
+}
+
 void SpriteBatch::push_layer(float layer)
 {
 	m_layer_stack.push_back(layer);
@@ -333,12 +397,9 @@ float SpriteBatch::pop_layer()
 	return m_layer_stack.back();
 }
 
-float SpriteBatch::peek_layer() const
+float& SpriteBatch::peek_layer()
 {
-	if (m_layer_stack.size() > 0)
-		return m_layer_stack.back();
-
-	return 0.0f;
+	return m_layer_stack.back();
 }
 
 void SpriteBatch::push_matrix(const Mat3x2& matrix)
