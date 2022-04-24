@@ -18,19 +18,25 @@ using namespace lev;
 
 class SDL2System : public System
 {
-private:
-    SDL_Window* m_window = nullptr;
+    SDL_Window* m_window;
+	SDL_Joystick* m_joystick; // todo: add support for multiple joysticks
 
 public:
+	SDL2System()
+		: m_window(nullptr)
+		, m_joystick(nullptr)
+	{
+	}
+
     bool init(const Config& cfg) override
-    {
+	{
 #if _WIN32
         SetProcessDPIAware();
 #endif
 
         if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) != 0)
         {
-            log::error("failed to initialize sdl2");
+            log::error("failed to initialize sdl2: %s", SDL_GetError());
             return false;
         }
 
@@ -64,6 +70,13 @@ public:
 
         SDL_SetWindowPosition(m_window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
+		{
+			m_joystick = SDL_JoystickOpen(0);
+
+			if (!m_joystick)
+				log::error("unable to open joystick");
+		}
+
         return true;
     }
 
@@ -73,6 +86,9 @@ public:
             SDL_DestroyWindow(m_window);
 
         m_window = nullptr;
+
+		if (m_joystick)
+			SDL_JoystickClose(m_joystick);
 
         SDL_Quit();
     }
@@ -90,6 +106,9 @@ public:
     void update() override
     {
         SDL_Event e;
+
+		Float2 joy_motion;
+
         while (SDL_PollEvent(&e))
         {
             switch (e.type)
@@ -128,6 +147,32 @@ public:
                 case SDL_TEXTINPUT:
                     Input::inst()->on_text_utf8(e.text.text);
                     break;
+
+				case SDL_JOYBUTTONDOWN:
+					Input::inst()->on_joystick_button_down(e.jbutton.button);
+					break;
+
+				case SDL_JOYBUTTONUP:
+					Input::inst()->on_joystick_button_up(e.jbutton.button);
+					break;
+
+				case SDL_JOYBALLMOTION:
+					Input::inst()->on_joystick_ball(e.jball.ball);
+					break;
+
+				case SDL_JOYHATMOTION:
+					Input::inst()->on_joystick_hat(e.jhat.value);
+					break;
+
+				case SDL_JOYAXISMOTION:
+					float value;
+					if (e.jaxis.value >= 0)
+						value = static_cast<float>(e.jaxis.value) / 32767.0f;
+					else
+						value = static_cast<float>(e.jaxis.value) / 32768.0f;
+
+					Input::inst()->on_joystick_motion((e.jaxis.axis == 0) ? JS_AXIS_H : JS_AXIS_V, value);
+					break;
 
                 default:
                     break;

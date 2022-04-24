@@ -53,14 +53,15 @@ namespace lev
 {
 	class AssetRegistry
 	{
-		LEV_SINGLETON_CLASS(AssetRegistry);
-
 	public:
-		template <class Asset>
-		struct Meta
+		static AssetRegistry* inst()
 		{
-			static u16 id;
-		};
+			static AssetRegistry* instance = nullptr;
+			if (!instance) { instance = new AssetRegistry(); }
+			return instance;
+		}
+
+		template <class Asset> struct Meta { static u16 id; };
 
 		template <class Asset>
 		u16 register_id()
@@ -82,12 +83,7 @@ namespace lev
 	class AssetLoader : public AssetLoaderBase
 	{
 	public:
-		/*
-		struct Meta
-		{
-			static u16 asset_id;
-		};
-		*/
+		//struct Meta { static u16 asset_id; };
 
 		AssetLoader() = default;
 		virtual ~AssetLoader() = default;
@@ -100,9 +96,14 @@ namespace lev
 
 	class AssetMgr
 	{
-		LEV_SINGLETON_CLASS(AssetMgr);
-
 	public:
+		static AssetMgr* inst()
+		{
+			static AssetMgr* instance = nullptr;
+			if (!instance) { instance = new AssetMgr(); }
+			return instance;
+		}
+
 		AssetMgr();
 
 		template <class Loader, class Asset, typename... Args>

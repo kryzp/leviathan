@@ -6,8 +6,8 @@
 #ifdef LEV_DEBUG
 
 // looks hacky but basically i just dereference oob memory and try writing to it, causing a crash
-#define LEV_ASSERT(_exp, _msg) if(!(_exp)){log::error("ASSERTION: " _msg);*((volatile int*)0)=0;}
-#define LEV_ERROR(_msg) {log::error("ERROR: " _msg);*((volatile int*)0)=0;}
+#define LEV_ASSERT(_exp, _msg) if(!(_exp)){::lev::log::error("ASSERTION: " _msg);*((volatile int*)0)=0;}
+#define LEV_ERROR(_msg) {::lev::log::error("ERROR: " _msg);*((volatile int*)0)=0;}
 
 #else
 
@@ -24,25 +24,6 @@ inline void __levutils_swap(T& x, T& y) {
 }
 
 #define LEV_SWAP(_x, _y) __levutils_swap((_x), (_y))
-
-// should be placed at the top of the class
-// e.g:
-// class MySingleton {
-//     LEV_SINGLETON_CLASS(MySingleton)
-//
-//     public:
-//         void do_the_thing();
-
-#define LEV_SINGLETON_CLASS(_classname) \
-public: \
-	static _classname* inst() \
-	{ \
-		static _classname* instance = nullptr; \
-		if (!instance) { instance = new _classname(); } \
-		LEV_ASSERT(instance, "Instance should not be nullptr. How tf did that even happen are you using a potato to store memory????"); \
-		return instance; \
-	} \
-private:
 
 #define LEV_ARRAY_LENGTH(_arr) (sizeof((_arr)) / sizeof((*_arr)))
 

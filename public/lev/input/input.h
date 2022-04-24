@@ -8,17 +8,6 @@
 
 namespace lev
 {
-	enum MouseButton
-	{
-		MB_UNKNOWN = 0,
-		MB_LEFT = 1,
-		MB_MIDDLE = 2,
-		MB_RIGHT = 3,
-		MB_SIDE_BOTTOM = 4,
-		MB_SIDE_TOP = 5,
-		MB_MAX
-	};
-
 	enum Key
 	{
 		KEY_UNKNOWN = 0,
@@ -237,6 +226,38 @@ namespace lev
 		KEY_MAX
 	};
 
+	enum MouseButton
+	{
+		MB_UNKNOWN = 0,
+		MB_LEFT = 1,
+		MB_MIDDLE = 2,
+		MB_RIGHT = 3,
+		MB_SIDE_BOTTOM = 4,
+		MB_SIDE_TOP = 5,
+		MB_MAX
+	};
+
+	enum JoystickButton
+	{
+		JS_BTN_NONE = -1,
+		JS_BTN_A,
+		JS_BTN_B,
+		JS_BTN_X,
+		JS_BTN_Y,
+		JS_BTN_BACK,
+		JS_BTN_SELECT,
+		JS_BTN_START,
+		JS_BTN_LEFT_STICK,
+		JS_BTN_RIGHT_STICK,
+		JS_BTN_LEFT_SHOULDER,
+		JS_BTN_RIGHT_SHOULDER,
+		JS_BTN_UP,
+		JS_BTN_DOWN,
+		JS_BTN_LEFT,
+		JS_BTN_RIGHT,
+		JS_BTN_MAX
+	};
+
 	struct KeyboardState
 	{
 		bool down[KEY_MAX];
@@ -252,11 +273,33 @@ namespace lev
 		Float2 wheel;
 	};
 
+	struct JoystickState
+	{
+		Float2 left_stick;
+		Float2 right_stick;
+		float left_trigger;
+		float right_trigger;
+		bool down[JS_BTN_MAX];
+	};
+
+	enum JoystickAxis
+	{
+		JS_AXIS_NONE = 0,
+		JS_AXIS_H,
+		JS_AXIS_V,
+		JS_AXIS_MAX
+	};
+
 	class Input
 	{
-		LEV_SINGLETON_CLASS(Input);
-
 	public:
+		static Input* inst()
+		{
+			static Input* instance = nullptr;
+			if (!instance) { instance = new Input(); }
+			return instance;
+		}
+
 		bool init();
 		void destroy();
 
@@ -286,13 +329,19 @@ namespace lev
 		void on_mouse_move(float x, float y);
 		void on_mouse_screen_move(float x, float y);
 		
-		void on_mouse_down(int button);
-		void on_mouse_up(int button);
+		void on_mouse_down(u8 button);
+		void on_mouse_up(u8 button);
 		void on_mouse_wheel(float x, float y);
 		
 		void on_key_down(int key);
 		void on_key_up(int key);
 		void on_text_utf8(const char* text);
+
+		void on_joystick_button_down(u8 button);
+		void on_joystick_button_up(u8 button);
+		void on_joystick_ball(u8 ball);
+		void on_joystick_hat(u8 hat);
+		void on_joystick_motion(u8 axis, float value);
 
 	private:
 		KeyboardState m_kb;
@@ -300,5 +349,8 @@ namespace lev
 
 		MouseState m_mouse;
 		MouseState m_mouse_prev;
+
+		JoystickState m_joystick;//[4];
+		JoystickState m_joystick_prev;//[4];
 	};
 }

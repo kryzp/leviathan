@@ -21,8 +21,9 @@ namespace lev
 		Bitset& reset();
 		Bitset& invert();
 
-		Bitset& set(u64 idx);
+		Bitset& enable(u64 idx);
 		Bitset& disable(u64 idx);
+		Bitset& set(u64 idx, bool mode);
 		Bitset& toggle(u64 idx);
 
 		bool on(u64 idx) const;
@@ -31,8 +32,8 @@ namespace lev
 
 		bool operator [] (u64 idx) const;
 		
-		constexpr u64 size() const;
-		constexpr u64 memory_size() const;
+		constexpr inline u64 size() const;
+		constexpr inline u64 memory_size() const;
 
 	private:
 		u8* m_bits;
@@ -40,9 +41,8 @@ namespace lev
 
 	template <u64 Size>
 	Bitset<Size>::Bitset()
-		: m_bits(nullptr)
 	{
-		m_bits = new u8[memory_size()+1];
+		m_bits = new u8[memory_size()];
 		reset();
 	}
 
@@ -55,7 +55,7 @@ namespace lev
 	template <u64 Size>
 	bool Bitset<Size>::all() const
 	{
-		for (int i = 0; i < Size; i++)
+		for (u64 i = 0; i < Size; i++)
 		{
 			if (off(i))
 				return false;
@@ -67,7 +67,7 @@ namespace lev
 	template <u64 Size>
 	bool Bitset<Size>::none() const
 	{
-		for (int i = 0; i < Size; i++)
+		for (u64 i = 0; i < Size; i++)
 		{
 			if (on(i))
 				return false;
@@ -88,11 +88,12 @@ namespace lev
 		// popcount???
 
 		u64 total = 0;
-		for (int i = 0; i < Size; i++)
+		for (u64 i = 0; i < Size; i++)
 		{
 			if (on(i))
 				total++;
 		}
+
 		return total;
 	}
 
@@ -117,7 +118,7 @@ namespace lev
 	}
 
 	template <u64 Size>
-	Bitset<Size>& Bitset<Size>::set(u64 idx)
+	Bitset<Size>& Bitset<Size>::enable(u64 idx)
 	{
 		LEV_ASSERT(idx >= 0 && idx < Size, "Index must be within range of the bitset");
 		m_bits[idx/8] |= (1 << idx);
@@ -137,6 +138,15 @@ namespace lev
 	{
 		LEV_ASSERT(idx >= 0 && idx < Size, "Index must be within range of the bitset");
 		m_bits[idx/8] ^= (1 << idx);
+		return *this;
+	}
+
+	template <u64 Size>
+	Bitset<Size>& Bitset<Size>::set(u64 idx, bool mode)
+	{
+		LEV_ASSERT(idx >= 0 && idx < Size, "Index must be within range of the bitset");
+		if (mode) m_bits[idx/8] |= (1 << idx);
+		else m_bits[idx/8] &= ~(1 << idx);
 		return *this;
 	}
 
@@ -167,14 +177,14 @@ namespace lev
 	}
 
 	template <u64 Size>
-	constexpr u64 Bitset<Size>::size() const
+	constexpr inline u64 Bitset<Size>::size() const
 	{
 		return Size;
 	}
 
 	template <u64 Size>
-	constexpr u64 Bitset<Size>::memory_size() const
+	constexpr inline u64 Bitset<Size>::memory_size() const
 	{
-		return Size / 8;
+		return (Size / 8) + 1;
 	}
 }

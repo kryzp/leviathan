@@ -30,9 +30,14 @@ namespace lev
 
 	class App
 	{
-		LEV_SINGLETON_CLASS(App);
-
 	public:
+		static App* inst()
+		{
+			App* instance = nullptr;
+			if (!instance) { instance = new App(); }
+			return instance;
+		}
+
 		void start(const Config& cfg);
 
 		float fps();

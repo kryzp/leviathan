@@ -21,51 +21,6 @@ void Input::update()
 	m_mouse.wheel = Float2::zero();
 }
 
-void Input::on_mouse_move(float x, float y)
-{
-	m_mouse.position = Vec2F(x, y);
-
-	m_mouse.draw_position = Vec2F(
-		(x / App::inst()->window_width()) * App::inst()->draw_width(),
-		(y / App::inst()->window_height()) * App::inst()->draw_height()
-	);
-}
-
-void Input::on_mouse_screen_move(float x, float y)
-{
-	m_mouse.screen_position = Vec2F(x, y);
-}
-
-void Input::on_mouse_down(int button)
-{
-	m_mouse.down[button] = true;
-}
-
-void Input::on_mouse_up(int button)
-{
-	m_mouse.down[button] = false;
-}
-
-void Input::on_mouse_wheel(float x, float y)
-{
-	m_mouse.wheel = Float2(x, y);
-}
-
-void Input::on_key_down(int key)
-{
-	m_kb.down[key] = true;
-}
-
-void Input::on_key_up(int key)
-{
-	m_kb.down[key] = false;
-}
-
-void Input::on_text_utf8(const char* text)
-{
-	str::cncat(m_kb.text, text, LEV_MAX_TEXT_INPUT);
-}
-
 bool Input::down_mb(int mb)
 {
 	return m_mouse.down[mb];
@@ -139,4 +94,72 @@ Float2 Input::mouse_wheel()
 Float2 Input::mouse_wheel_change()
 {
 	return m_mouse.wheel - m_mouse_prev.wheel;
+}
+
+void Input::on_mouse_move(float x, float y)
+{
+	m_mouse.position = Vec2F(x, y);
+
+	m_mouse.draw_position = Vec2F(
+		(x / App::inst()->window_width()) * App::inst()->draw_width(),
+		(y / App::inst()->window_height()) * App::inst()->draw_height()
+	);
+}
+
+void Input::on_mouse_screen_move(float x, float y)
+{
+	m_mouse.screen_position = Vec2F(x, y);
+}
+
+void Input::on_mouse_down(u8 button)
+{
+	m_mouse.down[button] = true;
+}
+
+void Input::on_mouse_up(u8 button)
+{
+	m_mouse.down[button] = false;
+}
+
+void Input::on_mouse_wheel(float x, float y)
+{
+	m_mouse.wheel = Float2(x, y);
+}
+
+void Input::on_key_down(int key)
+{
+	m_kb.down[key] = true;
+}
+
+void Input::on_key_up(int key)
+{
+	m_kb.down[key] = false;
+}
+
+void Input::on_text_utf8(const char* text)
+{
+	str::cncat(m_kb.text, text, LEV_MAX_TEXT_INPUT);
+}
+
+void Input::on_joystick_button_down(u8 button)
+{
+	m_joystick.down[button] = true;
+}
+
+void Input::on_joystick_button_up(u8 button)
+{
+	m_joystick.down[button] = false;
+}
+
+void Input::on_joystick_ball(u8 ball)
+{
+}
+
+void Input::on_joystick_hat(u8 hat)
+{
+}
+
+void Input::on_joystick_motion(u8 axis, float value)
+{
+	
 }

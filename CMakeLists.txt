@@ -52,7 +52,7 @@ add_library(${PROJECT_NAME}
 	private/backend/system_sdl2.cpp
 	private/backend/renderer_opengl.cpp
 	private/third_party/glad/glad.c
-    public/lev/graphics/blend.cpp)
+)
 
 target_include_directories(${PROJECT_NAME}
 	

@@ -2,6 +2,7 @@
 #include <lev/input/input.h>
 #include <lev/math/range.h>
 #include <lev/graphics/sprite_batch.h>
+#include <lev/containers/bitset.h>
 #include <lev/assets/asset_mgr.h>
 
 using namespace lev;
@@ -60,24 +61,24 @@ int main()
 
 			nokiafc = AssetMgr::inst()->load<Font>(
 				"nokia",
-				FontLoadData(20, "D:\\_PROJECTS\\leviathan\\testing\\res\\fonts\\nokiafc22.ttf")
+				FontLoadData(20, "D:\\leviathan\\testing\\res\\fonts\\nokiafc22.ttf")
 			);
 
 			compute_shader_part = AssetMgr::inst()->load<Shader>(
 				"compute_particle",
-				ShaderLoadData("D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\particle.comp")
+				ShaderLoadData("D:\\leviathan\\testing\\res\\shaders\\particle.comp")
 			);
 
 			compute_shader_post = AssetMgr::inst()->load<Shader>(
 				"compute_post",
-				ShaderLoadData("D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\post.comp")
+				ShaderLoadData("D:\\leviathan\\testing\\res\\shaders\\post.comp")
 			);
 
 			shader_colourize = AssetMgr::inst()->load<Shader>(
 				"colourize",
 				ShaderLoadData(
-					"D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\colourize.vert",
-					"D:\\_PROJECTS\\leviathan\\testing\\res\\shaders\\colourize.frag"
+					"D:\\leviathan\\testing\\res\\shaders\\colourize.vert",
+					"D:\\leviathan\\testing\\res\\shaders\\colourize.frag"
 				)
 			);
 		};

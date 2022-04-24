@@ -1,209 +1,204 @@
 #if LEV_USE_OPENGL
 
 #include <lev/core/app.h>
-
+#include <lev/containers/hash_map.h>
 
 #include <backend/renderer.h>
 #include <backend/system.h>
 
-#include <lev/containers/hash_map.h>
+#include <third_party/glad/glad.h>
 
 #include <string>
 #include <stdlib.h>
 
-#include <third_party/glad/glad.h>
-
 using namespace lev;
 
-namespace
+static u32 get_gl_texture_fmt(u8 fmt)
 {
-	u32 get_gl_texture_fmt(u8 fmt)
+	switch (fmt)
 	{
-		switch (fmt)
-		{
-			case TEX_FMT_RED:			return GL_RED;
-			case TEX_FMT_RG:			return GL_RG;
-			case TEX_FMT_RGB:			return GL_RGB;
-			case TEX_FMT_RGBA:			return GL_RGBA;
-			case TEX_FMT_DEPTH_STENCIL:	return GL_DEPTH_STENCIL;
-		}
-
-		return 0;
+		case TEX_FMT_RED:			return GL_RED;
+		case TEX_FMT_RG:			return GL_RG;
+		case TEX_FMT_RGB:			return GL_RGB;
+		case TEX_FMT_RGBA:			return GL_RGBA;
+		case TEX_FMT_DEPTH_STENCIL:	return GL_DEPTH_STENCIL;
 	}
 
-	u32 get_gl_texture_internal_fmt(u8 fmt)
-	{
-		switch (fmt)
-		{
-			case I_TEX_FMT_R8: 					return GL_R8;
-			case I_TEX_FMT_R8_SNORM: 			return GL_R8_SNORM;
-			case I_TEX_FMT_R16: 				return GL_R16;
-			case I_TEX_FMT_R16_SNORM: 			return GL_R16_SNORM;
-			case I_TEX_FMT_RG8: 				return GL_RG8;
-			case I_TEX_FMT_RG8_SNORM: 			return GL_RG8_SNORM;
-			case I_TEX_FMT_RG16: 				return GL_RG16;
-			case I_TEX_FMT_RG16_SNORM: 			return GL_RG16_SNORM;
-			case I_TEX_FMT_R3_G3_B2: 			return GL_R3_G3_B2;
-			case I_TEX_FMT_RGB4: 				return GL_RGB4;
-			case I_TEX_FMT_RGB5: 				return GL_RGB5;
-			case I_TEX_FMT_RGB8: 				return GL_RGB8;
-			case I_TEX_FMT_RGB8_SNORM: 			return GL_RGB8_SNORM;
-			case I_TEX_FMT_RGB10: 				return GL_RGB10;
-			case I_TEX_FMT_RGB12: 				return GL_RGB12;
-			case I_TEX_FMT_RGB16_SNORM: 		return GL_RGB16_SNORM;
-			case I_TEX_FMT_RGBA2: 				return GL_RGBA2;
-			case I_TEX_FMT_RGBA4: 				return GL_RGBA4;
-			case I_TEX_FMT_RGB5_A1: 			return GL_RGB5_A1;
-			case I_TEX_FMT_RGBA8: 				return GL_RGBA8;
-			case I_TEX_FMT_RGBA8_SNORM: 		return GL_RGBA8_SNORM;
-			case I_TEX_FMT_RGB10_A2: 			return GL_RGB10_A2;
-			case I_TEX_FMT_RGB10_A2UI: 			return GL_RGB10_A2UI;
-			case I_TEX_FMT_RGBA12: 				return GL_RGBA12;
-			case I_TEX_FMT_RGBA16: 				return GL_RGBA16;
-			case I_TEX_FMT_SRGB8: 				return GL_SRGB8;
-			case I_TEX_FMT_SRGB8_ALPHA8: 		return GL_SRGB8_ALPHA8;
-			case I_TEX_FMT_R16F: 				return GL_R16F;
-			case I_TEX_FMT_RG16F: 				return GL_RG16F;
-			case I_TEX_FMT_RGB16F: 				return GL_RGB16F;
-			case I_TEX_FMT_RGBA16F: 			return GL_RGBA16F;
-			case I_TEX_FMT_R32F: 				return GL_R32F;
-			case I_TEX_FMT_RG32F: 				return GL_RG32F;
-			case I_TEX_FMT_RGB32F: 				return GL_RGB32F;
-			case I_TEX_FMT_RGBA32F: 			return GL_RGBA32F;
-			case I_TEX_FMT_R11F_G11F_B10F: 		return GL_R11F_G11F_B10F;
-			case I_TEX_FMT_RGB9_E5: 			return GL_RGB9_E5;
-			case I_TEX_FMT_R8I: 				return GL_R8I;
-			case I_TEX_FMT_R8UI: 				return GL_R8UI;
-			case I_TEX_FMT_R16I: 				return GL_R16I;
-			case I_TEX_FMT_R16UI: 				return GL_R16UI;
-			case I_TEX_FMT_R32I: 				return GL_R32I;
-			case I_TEX_FMT_R32UI: 				return GL_R32UI;
-			case I_TEX_FMT_RG8I: 				return GL_RG8I;
-			case I_TEX_FMT_RG8UI: 				return GL_RG8UI;
-			case I_TEX_FMT_RG16I: 				return GL_RG16I;
-			case I_TEX_FMT_RG16UI: 				return GL_RG16UI;
-			case I_TEX_FMT_RG32I: 				return GL_RG32I;
-			case I_TEX_FMT_RG32UI: 				return GL_RG32UI;
-			case I_TEX_FMT_RGB8I: 				return GL_RGB8I;
-			case I_TEX_FMT_RGB8UI: 				return GL_RGB8UI;
-			case I_TEX_FMT_RGB16I: 				return GL_RGB16I;
-			case I_TEX_FMT_RGB16UI: 			return GL_RGB16UI;
-			case I_TEX_FMT_RGB32I: 				return GL_RGB32I;
-			case I_TEX_FMT_RGB32UI: 			return GL_RGB32UI;
-			case I_TEX_FMT_RGBA8I: 				return GL_RGBA8I;
-			case I_TEX_FMT_RGBA8UI: 			return GL_RGBA8UI;
-			case I_TEX_FMT_RGBA16I: 			return GL_RGBA16I;
-			case I_TEX_FMT_RGBA16UI: 			return GL_RGBA16UI;
-			case I_TEX_FMT_RGBA32I: 			return GL_RGBA32I;
-			case I_TEX_FMT_RGBA32UI: 			return GL_RGBA32UI;
-		}
+	return 0;
+}
 
-		return 0;
+static u32 get_gl_texture_internal_fmt(u8 fmt)
+{
+	switch (fmt)
+	{
+		case I_TEX_FMT_R8: 					return GL_R8;
+		case I_TEX_FMT_R8_SNORM: 			return GL_R8_SNORM;
+		case I_TEX_FMT_R16: 				return GL_R16;
+		case I_TEX_FMT_R16_SNORM: 			return GL_R16_SNORM;
+		case I_TEX_FMT_RG8: 				return GL_RG8;
+		case I_TEX_FMT_RG8_SNORM: 			return GL_RG8_SNORM;
+		case I_TEX_FMT_RG16: 				return GL_RG16;
+		case I_TEX_FMT_RG16_SNORM: 			return GL_RG16_SNORM;
+		case I_TEX_FMT_R3_G3_B2: 			return GL_R3_G3_B2;
+		case I_TEX_FMT_RGB4: 				return GL_RGB4;
+		case I_TEX_FMT_RGB5: 				return GL_RGB5;
+		case I_TEX_FMT_RGB8: 				return GL_RGB8;
+		case I_TEX_FMT_RGB8_SNORM: 			return GL_RGB8_SNORM;
+		case I_TEX_FMT_RGB10: 				return GL_RGB10;
+		case I_TEX_FMT_RGB12: 				return GL_RGB12;
+		case I_TEX_FMT_RGB16_SNORM: 		return GL_RGB16_SNORM;
+		case I_TEX_FMT_RGBA2: 				return GL_RGBA2;
+		case I_TEX_FMT_RGBA4: 				return GL_RGBA4;
+		case I_TEX_FMT_RGB5_A1: 			return GL_RGB5_A1;
+		case I_TEX_FMT_RGBA8: 				return GL_RGBA8;
+		case I_TEX_FMT_RGBA8_SNORM: 		return GL_RGBA8_SNORM;
+		case I_TEX_FMT_RGB10_A2: 			return GL_RGB10_A2;
+		case I_TEX_FMT_RGB10_A2UI: 			return GL_RGB10_A2UI;
+		case I_TEX_FMT_RGBA12: 				return GL_RGBA12;
+		case I_TEX_FMT_RGBA16: 				return GL_RGBA16;
+		case I_TEX_FMT_SRGB8: 				return GL_SRGB8;
+		case I_TEX_FMT_SRGB8_ALPHA8: 		return GL_SRGB8_ALPHA8;
+		case I_TEX_FMT_R16F: 				return GL_R16F;
+		case I_TEX_FMT_RG16F: 				return GL_RG16F;
+		case I_TEX_FMT_RGB16F: 				return GL_RGB16F;
+		case I_TEX_FMT_RGBA16F: 			return GL_RGBA16F;
+		case I_TEX_FMT_R32F: 				return GL_R32F;
+		case I_TEX_FMT_RG32F: 				return GL_RG32F;
+		case I_TEX_FMT_RGB32F: 				return GL_RGB32F;
+		case I_TEX_FMT_RGBA32F: 			return GL_RGBA32F;
+		case I_TEX_FMT_R11F_G11F_B10F: 		return GL_R11F_G11F_B10F;
+		case I_TEX_FMT_RGB9_E5: 			return GL_RGB9_E5;
+		case I_TEX_FMT_R8I: 				return GL_R8I;
+		case I_TEX_FMT_R8UI: 				return GL_R8UI;
+		case I_TEX_FMT_R16I: 				return GL_R16I;
+		case I_TEX_FMT_R16UI: 				return GL_R16UI;
+		case I_TEX_FMT_R32I: 				return GL_R32I;
+		case I_TEX_FMT_R32UI: 				return GL_R32UI;
+		case I_TEX_FMT_RG8I: 				return GL_RG8I;
+		case I_TEX_FMT_RG8UI: 				return GL_RG8UI;
+		case I_TEX_FMT_RG16I: 				return GL_RG16I;
+		case I_TEX_FMT_RG16UI: 				return GL_RG16UI;
+		case I_TEX_FMT_RG32I: 				return GL_RG32I;
+		case I_TEX_FMT_RG32UI: 				return GL_RG32UI;
+		case I_TEX_FMT_RGB8I: 				return GL_RGB8I;
+		case I_TEX_FMT_RGB8UI: 				return GL_RGB8UI;
+		case I_TEX_FMT_RGB16I: 				return GL_RGB16I;
+		case I_TEX_FMT_RGB16UI: 			return GL_RGB16UI;
+		case I_TEX_FMT_RGB32I: 				return GL_RGB32I;
+		case I_TEX_FMT_RGB32UI: 			return GL_RGB32UI;
+		case I_TEX_FMT_RGBA8I: 				return GL_RGBA8I;
+		case I_TEX_FMT_RGBA8UI: 			return GL_RGBA8UI;
+		case I_TEX_FMT_RGBA16I: 			return GL_RGBA16I;
+		case I_TEX_FMT_RGBA16UI: 			return GL_RGBA16UI;
+		case I_TEX_FMT_RGBA32I: 			return GL_RGBA32I;
+		case I_TEX_FMT_RGBA32UI: 			return GL_RGBA32UI;
 	}
 
-	u32 get_gl_texture_type(u8 type)
-	{
-		switch (type)
-		{
-			case TEX_TYPE_UNSIGNED_BYTE:	    return GL_UNSIGNED_BYTE;
-            case TEX_TYPE_BYTE:                 return GL_BYTE;
-            case TEX_TYPE_UNSIGNED_SHORT:       return GL_UNSIGNED_SHORT;
-            case TEX_TYPE_UNSIGNED_INT:         return GL_UNSIGNED_INT;
-            case TEX_TYPE_UNSIGNED_INT_24_8:    return GL_UNSIGNED_INT_24_8;
-            case TEX_TYPE_INT:                  return GL_INT;
-            case TEX_TYPE_HALF_FLOAT:           return GL_HALF_FLOAT;
-			case TEX_TYPE_FLOAT:			    return GL_FLOAT;
-		}
+	return 0;
+}
 
-		return 0;
+static u32 get_gl_texture_type(u8 type)
+{
+	switch (type)
+	{
+		case TEX_TYPE_UNSIGNED_BYTE:	    return GL_UNSIGNED_BYTE;
+		case TEX_TYPE_BYTE:                 return GL_BYTE;
+		case TEX_TYPE_UNSIGNED_SHORT:       return GL_UNSIGNED_SHORT;
+		case TEX_TYPE_UNSIGNED_INT:         return GL_UNSIGNED_INT;
+		case TEX_TYPE_UNSIGNED_INT_24_8:    return GL_UNSIGNED_INT_24_8;
+		case TEX_TYPE_INT:                  return GL_INT;
+		case TEX_TYPE_HALF_FLOAT:           return GL_HALF_FLOAT;
+		case TEX_TYPE_FLOAT:			    return GL_FLOAT;
 	}
 
-	u32 get_gl_blend_equation(u8 func)
-	{
-		switch (func)
-		{
-			case BLEND_EQUATION_ADD:				return GL_FUNC_ADD;
-			case BLEND_EQUATION_SUBTRACT:			return GL_FUNC_SUBTRACT;
-			case BLEND_EQUATION_REVERSE_SUBTRACT:	return GL_FUNC_REVERSE_SUBTRACT;
-			case BLEND_EQUATION_MIN:				return GL_MIN;
-			case BLEND_EQUATION_MAX:				return GL_MAX;
-		}
+	return 0;
+}
 
-		return 0;
+static u32 get_gl_blend_equation(u8 func)
+{
+	switch (func)
+	{
+		case BLEND_EQUATION_ADD:				return GL_FUNC_ADD;
+		case BLEND_EQUATION_SUBTRACT:			return GL_FUNC_SUBTRACT;
+		case BLEND_EQUATION_REVERSE_SUBTRACT:	return GL_FUNC_REVERSE_SUBTRACT;
+		case BLEND_EQUATION_MIN:				return GL_MIN;
+		case BLEND_EQUATION_MAX:				return GL_MAX;
 	}
 
-	u32 get_gl_blend_func(u8 func)
-	{
-		switch (func)
-		{
-			case BLEND_FUNC_ZERO:						return GL_ZERO;
-			case BLEND_FUNC_ONE:						return GL_ONE;
-			case BLEND_FUNC_SRC_COLOUR:					return GL_SRC_COLOR;
-			case BLEND_FUNC_SRC1_COLOUR:				return GL_SRC1_COLOR;
-			case BLEND_FUNC_ONE_MINUS_SRC_COLOUR:		return GL_ONE_MINUS_SRC_COLOR;
-			case BLEND_FUNC_ONE_MINUS_SRC1_COLOUR:		return GL_ONE_MINUS_SRC1_COLOR;
-			case BLEND_FUNC_DST_COLOUR:					return GL_DST_COLOR;
-			case BLEND_FUNC_ONE_MINUS_DST_COLOUR:		return GL_ONE_MINUS_DST_COLOR;
-			case BLEND_FUNC_SRC_ALPHA:					return GL_SRC_ALPHA;
-			case BLEND_FUNC_SRC1_ALPHA:					return GL_SRC1_ALPHA;
-			case BLEND_FUNC_ONE_MINUS_SRC_ALPHA:		return GL_ONE_MINUS_SRC_ALPHA;
-			case BLEND_FUNC_ONE_MINUS_SRC1_ALPHA:		return GL_ONE_MINUS_SRC1_ALPHA;
-			case BLEND_FUNC_DST_ALPHA:					return GL_DST_ALPHA;
-			case BLEND_FUNC_ONE_MINUS_DST_ALPHA:		return GL_ONE_MINUS_DST_ALPHA;
-			case BLEND_FUNC_CONSTANT_COLOUR:			return GL_CONSTANT_COLOR;
-			case BLEND_FUNC_ONE_MINUS_CONSTANT_COLOUR:	return GL_ONE_MINUS_CONSTANT_COLOR;
-			case BLEND_FUNC_CONSTANT_ALPHA:				return GL_CONSTANT_ALPHA;
-			case BLEND_FUNC_ONE_MINUS_CONSTANT_ALPHA:	return GL_ONE_MINUS_CONSTANT_ALPHA;
-		}
+	return 0;
+}
 
-		return 0;
+static u32 get_gl_blend_func(u8 func)
+{
+	switch (func)
+	{
+		case BLEND_FUNC_ZERO:						return GL_ZERO;
+		case BLEND_FUNC_ONE:						return GL_ONE;
+		case BLEND_FUNC_SRC_COLOUR:					return GL_SRC_COLOR;
+		case BLEND_FUNC_SRC1_COLOUR:				return GL_SRC1_COLOR;
+		case BLEND_FUNC_ONE_MINUS_SRC_COLOUR:		return GL_ONE_MINUS_SRC_COLOR;
+		case BLEND_FUNC_ONE_MINUS_SRC1_COLOUR:		return GL_ONE_MINUS_SRC1_COLOR;
+		case BLEND_FUNC_DST_COLOUR:					return GL_DST_COLOR;
+		case BLEND_FUNC_ONE_MINUS_DST_COLOUR:		return GL_ONE_MINUS_DST_COLOR;
+		case BLEND_FUNC_SRC_ALPHA:					return GL_SRC_ALPHA;
+		case BLEND_FUNC_SRC1_ALPHA:					return GL_SRC1_ALPHA;
+		case BLEND_FUNC_ONE_MINUS_SRC_ALPHA:		return GL_ONE_MINUS_SRC_ALPHA;
+		case BLEND_FUNC_ONE_MINUS_SRC1_ALPHA:		return GL_ONE_MINUS_SRC1_ALPHA;
+		case BLEND_FUNC_DST_ALPHA:					return GL_DST_ALPHA;
+		case BLEND_FUNC_ONE_MINUS_DST_ALPHA:		return GL_ONE_MINUS_DST_ALPHA;
+		case BLEND_FUNC_CONSTANT_COLOUR:			return GL_CONSTANT_COLOR;
+		case BLEND_FUNC_ONE_MINUS_CONSTANT_COLOUR:	return GL_ONE_MINUS_CONSTANT_COLOR;
+		case BLEND_FUNC_CONSTANT_ALPHA:				return GL_CONSTANT_ALPHA;
+		case BLEND_FUNC_ONE_MINUS_CONSTANT_ALPHA:	return GL_ONE_MINUS_CONSTANT_ALPHA;
 	}
 
-	u32 get_gl_compare_face(u8 face)
-	{
-		switch (face)
-		{
-			case LEV_FACE_FRONT:			return GL_FRONT;
-			case LEV_FACE_BACK:				return GL_BACK;
-			case LEV_FACE_FRONT_AND_BACK: 	return GL_FRONT_AND_BACK;
-		}
+	return 0;
+}
 
-		return 0;
+static u32 get_gl_compare_face(u8 face)
+{
+	switch (face)
+	{
+		case LEV_FACE_FRONT:			return GL_FRONT;
+		case LEV_FACE_BACK:				return GL_BACK;
+		case LEV_FACE_FRONT_AND_BACK: 	return GL_FRONT_AND_BACK;
 	}
 
-	u32 get_gl_compare_func(u8 func)
-	{
-		switch (func)
-		{
-			case LEV_COMPARE_NEVER:		return GL_NEVER;
-			case LEV_COMPARE_LESS:		return GL_LESS;
-			case LEV_COMPARE_LEQUAL:	return GL_LEQUAL;
-			case LEV_COMPARE_GREATER:	return GL_GREATER;
-			case LEV_COMPARE_GEQUAL:	return GL_GEQUAL;
-			case LEV_COMPARE_EQUAL:		return GL_EQUAL;
-			case LEV_COMPARE_NOTEQUAL:	return GL_NOTEQUAL;
-			case LEV_COMPARE_ALWAYS:	return GL_ALWAYS;
-		}
+	return 0;
+}
 
-		return 0;
+static u32 get_gl_compare_func(u8 func)
+{
+	switch (func)
+	{
+		case LEV_COMPARE_NEVER:		return GL_NEVER;
+		case LEV_COMPARE_LESS:		return GL_LESS;
+		case LEV_COMPARE_LEQUAL:	return GL_LEQUAL;
+		case LEV_COMPARE_GREATER:	return GL_GREATER;
+		case LEV_COMPARE_GEQUAL:	return GL_GEQUAL;
+		case LEV_COMPARE_EQUAL:		return GL_EQUAL;
+		case LEV_COMPARE_NOTEQUAL:	return GL_NOTEQUAL;
+		case LEV_COMPARE_ALWAYS:	return GL_ALWAYS;
 	}
 
-	u32 get_gl_compare_fail(u8 fail)
-	{
-		switch (fail)
-		{
-			case LEV_COMPARE_FAIL_KEEP: 		return GL_KEEP;
-			case LEV_COMPARE_FAIL_ZERO: 		return GL_ZERO;
-			case LEV_COMPARE_FAIL_REPLACE: 		return GL_REPLACE;
-			case LEV_COMPARE_FAIL_INCR: 		return GL_INCR;
-			case LEV_COMPARE_FAIL_INCR_WRAP: 	return GL_INCR_WRAP;
-			case LEV_COMPARE_FAIL_DECR: 		return GL_DECR;
-			case LEV_COMPARE_FAIL_DECR_WRAP: 	return GL_DECR_WRAP;
-			case LEV_COMPARE_FAIL_INVERT: 		return GL_INVERT;
-		}
+	return 0;
+}
 
-		return 0;
+static u32 get_gl_compare_fail(u8 fail)
+{
+	switch (fail)
+	{
+		case LEV_COMPARE_FAIL_KEEP: 		return GL_KEEP;
+		case LEV_COMPARE_FAIL_ZERO: 		return GL_ZERO;
+		case LEV_COMPARE_FAIL_REPLACE: 		return GL_REPLACE;
+		case LEV_COMPARE_FAIL_INCR: 		return GL_INCR;
+		case LEV_COMPARE_FAIL_INCR_WRAP: 	return GL_INCR_WRAP;
+		case LEV_COMPARE_FAIL_DECR: 		return GL_DECR;
+		case LEV_COMPARE_FAIL_DECR_WRAP: 	return GL_DECR_WRAP;
+		case LEV_COMPARE_FAIL_INVERT: 		return GL_INVERT;
 	}
+
+	return 0;
 }
 
 /*********************************************************/

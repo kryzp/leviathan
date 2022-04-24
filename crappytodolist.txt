@@ -4,5 +4,3 @@
 * spritebatch instanced rendering
 
 * lua???
-
-* debuggging console
