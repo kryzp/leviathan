@@ -25,6 +25,8 @@ int main()
 	SpriteBatch batch;
 	Range direction(0, Calc::TAU);
 
+	AssetMgr assets;
+
 	Ref<Shader> compute_shader_part;
 	Ref<Shader> compute_shader_post;
 	Ref<Shader> shader_colourize;
@@ -59,22 +61,22 @@ int main()
 			particle_buf = ShaderBuffer::create(sizeof(Particle) * PARTICLE_COUNT);
 			particle_buf->set(particles);
 
-			nokiafc = AssetMgr::inst()->load<Font>(
+			nokiafc = assets.load<Font>(
 				"nokia",
 				FontLoadData(20, "D:\\leviathan\\testing\\res\\fonts\\nokiafc22.ttf")
 			);
 
-			compute_shader_part = AssetMgr::inst()->load<Shader>(
+			compute_shader_part = assets.load<Shader>(
 				"compute_particle",
 				ShaderLoadData("D:\\leviathan\\testing\\res\\shaders\\particle.comp")
 			);
 
-			compute_shader_post = AssetMgr::inst()->load<Shader>(
+			compute_shader_post = assets.load<Shader>(
 				"compute_post",
 				ShaderLoadData("D:\\leviathan\\testing\\res\\shaders\\post.comp")
 			);
 
-			shader_colourize = AssetMgr::inst()->load<Shader>(
+			shader_colourize = assets.load<Shader>(
 				"colourize",
 				ShaderLoadData(
 					"D:\\leviathan\\testing\\res\\shaders\\colourize.vert",

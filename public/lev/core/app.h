@@ -33,7 +33,7 @@ namespace lev
 	public:
 		static App* inst()
 		{
-			App* instance = nullptr;
+			static App* instance = nullptr;
 			if (!instance) { instance = new App(); }
 			return instance;
 		}

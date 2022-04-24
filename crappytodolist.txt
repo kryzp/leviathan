@@ -1,4 +1,6 @@
 
+* !!! NOT FINISHED THE JOYPAD INPUT ITS CRAP !!!
+
 * sounds / music
 
 * spritebatch instanced rendering

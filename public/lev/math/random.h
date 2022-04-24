@@ -10,9 +10,14 @@ namespace lev
 	template <typename Engine = std::mt19937>
 	class Random
 	{
-		LEV_SINGLETON_CLASS(Random);
-
 	public:
+		static Random* inst()
+		{
+			static Random* instance = nullptr;
+			if (!instance) { instance = new Random(); }
+			return instance;
+		}
+
 		Random();
 
 		int integer(int min, int max);

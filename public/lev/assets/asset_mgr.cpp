@@ -36,6 +36,7 @@ public:
 };
 
 AssetMgr::AssetMgr()
+	: m_registry()
 {
 	mem::set(m_loaders, 0, sizeof(AssetLoaderBase*) * LEV_MAX_ASSET_TYPES);
 	mem::set(m_assets, 0, sizeof(AssetListBase*) * LEV_MAX_ASSET_TYPES);

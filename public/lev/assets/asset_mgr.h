@@ -54,28 +54,16 @@ namespace lev
 	class AssetRegistry
 	{
 	public:
-		static AssetRegistry* inst()
-		{
-			static AssetRegistry* instance = nullptr;
-			if (!instance) { instance = new AssetRegistry(); }
-			return instance;
-		}
-
-		template <class Asset> struct Meta { static u16 id; };
-
 		template <class Asset>
-		u16 register_id()
+		u16 retrieve_id()
 		{
-			AssetRegistry::Meta<Asset>::id = m_counter++;
-			return m_counter - 1;
+			static u16 id = m_counter++;
+			return id;
 		}
 
 	private:
 		u16 m_counter = 0;
 	};
-
-	template <class Asset>
-	u16 AssetRegistry::Meta<Asset>::id = AssetRegistry::inst()->register_id<Asset>();
 
 	class AssetLoaderBase { };
 
@@ -83,27 +71,15 @@ namespace lev
 	class AssetLoader : public AssetLoaderBase
 	{
 	public:
-		//struct Meta { static u16 asset_id; };
-
 		AssetLoader() = default;
 		virtual ~AssetLoader() = default;
 
 		virtual void load(Ref<Asset>& obj, LoadData... data) = 0;
 	};
 
-	//template <class Asset, typename... LoadData>
-	//u16 AssetLoader<Asset, LoadData...>::Meta::asset_id = AssetRegistry::Meta<Asset>::id;
-
 	class AssetMgr
 	{
 	public:
-		static AssetMgr* inst()
-		{
-			static AssetMgr* instance = nullptr;
-			if (!instance) { instance = new AssetMgr(); }
-			return instance;
-		}
-
 		AssetMgr();
 
 		template <class Loader, class Asset, typename... Args>
@@ -135,12 +111,15 @@ namespace lev
 
 		AssetLoaderBase* m_loaders[LEV_MAX_ASSET_TYPES];
 		AssetListBase* m_assets[LEV_MAX_ASSET_TYPES];
+
+		AssetRegistry m_registry;
 	};
 
 	template <class Loader, class Asset, typename... Args>
 	void AssetMgr::register_loader(Args&&... args)
 	{
-		m_loaders[AssetRegistry::Meta<Asset>::id] = new Loader(std::forward<Args>(args)...);
+		u16 id = m_registry.retrieve_id<Asset>();
+		m_loaders[id] = new Loader(std::forward<Args>(args)...);
 	}
 
 	template <class Asset, typename... LoadData>
@@ -149,10 +128,10 @@ namespace lev
 		Ref<Asset> obj;
 
 		static_cast<AssetLoader<Asset, LoadData...>*>(
-			m_loaders[AssetRegistry::Meta<Asset>::id]
+			m_loaders[m_registry.retrieve_id<Asset>()]
 		)->load(obj, data...);
 
-		AssetListBase* base = m_assets[AssetRegistry::Meta<Asset>::id];
+		AssetListBase* base = m_assets[m_registry.retrieve_id<Asset>()];
 
 		if (!base)
 			base = new AssetList<Asset>();
@@ -166,7 +145,7 @@ namespace lev
 	void AssetMgr::unload(const String& name)
 	{
 		static_cast<AssetList<Asset>*>(
-			m_assets[AssetRegistry::Meta<Asset>::id]
+			m_assets[m_registry.retrieve_id<Asset>()]
 		)->assets.remove(name);
 	}
 
@@ -174,7 +153,7 @@ namespace lev
 	Ref<Asset> AssetMgr::get(const String& name)
 	{
 		return static_cast<AssetList<Asset>*>(
-			m_assets[AssetRegistry::Meta<Asset>::id]
+			m_assets[m_registry.retrieve_id<Asset>()]
 		)->assets.at(name);
 	}
 
@@ -182,7 +161,7 @@ namespace lev
 	bool AssetMgr::has(const String& name)
 	{
 		return static_cast<AssetList<Asset>*>(
-			m_assets[AssetRegistry::Meta<Asset>::id]
+			m_assets[m_registry.retrieve_id<Asset>()]
 		)->assets.contains(name);
 	}
 }
