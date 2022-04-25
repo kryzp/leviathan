@@ -154,5 +154,5 @@ float Transform2D::rotation_rad() const
 
 float Transform2D::rotation_deg() const
 {
-	return m_rotation * Calc::RAD2DEG;
+	return m_rotation * calc::RAD2DEG;
 }

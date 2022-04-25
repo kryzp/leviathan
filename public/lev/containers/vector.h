@@ -187,7 +187,7 @@ namespace lev
         if (capacity > m_size)
         {
             // 8 is just a nice number since vectors this small likely will have lots of rapid push/pop action
-            u64 newsize = Calc::max(8, m_size);
+            u64 newsize = calc::max(8, m_size);
             
             while (newsize < capacity)
                 newsize *= 2;

@@ -174,8 +174,8 @@ float Font::string_height(const char* str) const
 	for (int i = 0; i < str::length(str); i++)
 	{
 		auto c = m_characters[str[i]];
-		max_bboxh = Calc::max(max_bboxh, c.bbox.h);
-		hhh = Calc::max(hhh, c.bbox.h + c.draw_offset.y);
+		max_bboxh = calc::max(max_bboxh, c.bbox.h);
+		hhh = calc::max(hhh, c.bbox.h + c.draw_offset.y);
 	}
 
 	return max_bboxh + hhh;

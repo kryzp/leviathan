@@ -23,7 +23,7 @@ struct Particle
 int main()
 {
 	SpriteBatch batch;
-	Range direction(0, Calc::TAU);
+	Range direction(0, calc::TAU);
 
 	AssetMgr assets;
 

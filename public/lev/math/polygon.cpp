@@ -21,7 +21,7 @@ bool Polygon::axis_overlaps(const Polygon& a, const Polygon& b, const Vec2F& axi
 	a.project(axis, &min_a, &max_a);
 	b.project(axis, &min_b, &max_b);
 
-	if (Calc::abs(min_b - max_a) < Calc::abs(max_b - min_a))
+	if (calc::abs(min_b - max_a) < calc::abs(max_b - min_a))
 		(*amount) = min_b - max_a;
 	else
 		(*amount) = max_b - min_a;
@@ -41,8 +41,8 @@ void Polygon::project(const Vec2F& axis, float* min, float* max) const
 	for (int i = 1; i < vertices.size(); i++)
 	{
 		dot = Vec2F::dot(vertices[i], axis);
-		(*min) = Calc::min(dot, *min);
-		(*max) = Calc::max(dot, *max);
+		(*min) = calc::min(dot, *min);
+		(*max) = calc::max(dot, *max);
 	}
 }
 

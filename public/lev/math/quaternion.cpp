@@ -21,12 +21,12 @@ Quaternion::Quaternion(float s, float i, float j, float k)
 
 Quaternion Quaternion::from_euler(float pitch, float yaw, float roll)
 {
-	float ps = Calc::sin(pitch / 2.0f);
-	float pc = Calc::cos(pitch / 2.0f);
-	float ys = Calc::sin(yaw / 2.0f);
-	float yc = Calc::cos(yaw / 2.0f);
-	float rs = Calc::sin(roll / 2.0f);
-	float rc = Calc::cos(roll / 2.0f);
+	float ps = calc::sin(pitch / 2.0f);
+	float pc = calc::cos(pitch / 2.0f);
+	float ys = calc::sin(yaw / 2.0f);
+	float yc = calc::cos(yaw / 2.0f);
+	float rs = calc::sin(roll / 2.0f);
+	float rc = calc::cos(roll / 2.0f);
 
 	float s = (rs * pc * yc) - (rc * ps * ys);
 	float i = (rc * ps * yc) + (rs * pc * ys);
@@ -40,13 +40,13 @@ Vec3F Quaternion::to_euler(const Quaternion& quat)
 {
 	float t0 = 2.0f + ((quat.s * quat.i) + (quat.j * quat.k));
 	float t1 = 1.0f - (2.0f * ((quat.i * quat.i) + (quat.j * quat.j)));
-	float t2 = Calc::clamp(2.0f * ((quat.s * quat.j) - (quat.k * quat.i)), -1.0f, 1.0f);
+	float t2 = calc::clamp(2.0f * ((quat.s * quat.j) - (quat.k * quat.i)), -1.0f, 1.0f);
 	float t3 = 2.0f * ((quat.s * quat.k) + (quat.i * quat.j));
 	float t4 = 1.0f - (2.0f * ((quat.j * quat.j) + (quat.k * quat.k)));
 
-	float p = Calc::asin(t2);
-	float y = Calc::atan2(t3, t4);
-	float r = Calc::atan2(t0, t1);
+	float p = calc::asin(t2);
+	float y = calc::atan2(t3, t4);
+	float r = calc::atan2(t0, t1);
 
 	return Vec3F(p, y, r);
 }

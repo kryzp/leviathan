@@ -268,9 +268,9 @@ void SpriteBatch::push_string(const char* str, const Ref<Font>& font, const std:
 
 void SpriteBatch::push_circle(const Circle& circle, u32 accuracy, const Colour& colour)
 {
-	float dtheta = Calc::TAU / accuracy;
+	float dtheta = calc::TAU / accuracy;
 
-	for (float theta = 0.0f; theta < Calc::TAU; theta += dtheta)
+	for (float theta = 0.0f; theta < calc::TAU; theta += dtheta)
 	{
 		Triangle triangle;
 		triangle.a = circle.position;

@@ -4,7 +4,7 @@
 
 namespace lev
 {
-	namespace Calc
+	namespace calc
 	{
 		constexpr float E       = 2.71828182845f;
 		constexpr float PI      = 3.14159265359f;

@@ -112,8 +112,8 @@ Mat3x2 Mat3x2::create_scale(float scale)
 Mat3x2 Mat3x2::create_rotation(float rotation)
 {
 	return Mat3x2(
-		Calc::cos(rotation), Calc::sin(rotation),
-		-Calc::sin(rotation), Calc::cos(rotation),
+		calc::cos(rotation), calc::sin(rotation),
+		-calc::sin(rotation), calc::cos(rotation),
 		0, 0
 	);
 }

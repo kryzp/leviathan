@@ -17,7 +17,7 @@ Line::Line(const Vec2F& a, const Vec2F& b)
 
 Line::Line(const Vec2F& pos, float angle, float len)
 	: a(pos)
-	, b(pos + Vec2F(Calc::cos(angle) * len, Calc::sin(angle) * len))
+	, b(pos + Vec2F(calc::cos(angle) * len, calc::sin(angle) * len))
 {
 }
 

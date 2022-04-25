@@ -4,77 +4,77 @@
 
 using namespace lev;
 
-float Calc::abs(float x)
+float calc::abs(float x)
 {
 	return ::fabsf(x);
 }
 
-float Calc::mod(float x, float y)
+float calc::mod(float x, float y)
 {
 	return ::fmodf(x, y);
 }
 
-float Calc::sqrt(float x)
+float calc::sqrt(float x)
 {
 	return ::sqrtf(x);
 }
 
-float Calc::invsqrt(float x)
+float calc::invsqrt(float x)
 {
 	return 1.0f / sqrt(x);
 }
 
-float Calc::pow(float x, float e)
+float calc::pow(float x, float e)
 {
 	return ::powf(x, e);
 }
 
-float Calc::exp(float x)
+float calc::exp(float x)
 {
-	return ::powf(Calc::E, x);
+	return ::powf(calc::E, x);
 }
 
-float Calc::sigmoid(float x)
+float calc::sigmoid(float x)
 {
-	return 1.0f - (1.0f / (1.0f + Calc::exp(x)));
+	return 1.0f - (1.0f / (1.0f + calc::exp(x)));
 }
 
-float Calc::log(float x, float b)
+float calc::log(float x, float b)
 {
 	return ::logf(x) / ::logf(b);
 }
 
-float Calc::log2(float x)
+float calc::log2(float x)
 {
 	return ::log2f(x);
 }
 
-float Calc::log10(float x)
+float calc::log10(float x)
 {
 	return ::log10f(x);
 }
 
-float Calc::ln(float x)
+float calc::ln(float x)
 {
 	return ::logf(x);
 }
 
-float Calc::max(float a, float b)
+float calc::max(float a, float b)
 {
 	return (a > b) ? a : b;
 }
 
-float Calc::min(float a, float b)
+float calc::min(float a, float b)
 {
 	return (a < b) ? a : b;
 }
 
-float Calc::clamp(float v, float mn, float mx)
+float calc::clamp(float v, float mn, float mx)
 {
-	return Calc::max(mn, Calc::min(mx, v));
+	return calc::max(mn, calc::min(mx, v));
 }
 
-float Calc::sign(float x)
+float calc::sign(float x)
 {
 	if (x < 0.0f)
 		return -1.0f;
@@ -84,74 +84,74 @@ float Calc::sign(float x)
 	return 0.0f;
 }
 
-float Calc::round(float x)
+float calc::round(float x)
 {
 	return ::roundf(x);
 }
 
-float Calc::floor(float x)
+float calc::floor(float x)
 {
 	return ::floorf(x);
 }
 
-float Calc::ceil(float x)
+float calc::ceil(float x)
 {
 	return ::ceilf(x);
 }
 
-bool Calc::within_epsilon(float lhs, float rhs, float epsilon)
+bool calc::within_epsilon(float lhs, float rhs, float epsilon)
 {
 	float delta = rhs - lhs;
 	return ::fabsf(delta) <= epsilon;
 }
 
-float Calc::approach(float from, float to, float amount)
+float calc::approach(float from, float to, float amount)
 {
-	return (to > from) ? Calc::min(from + amount, to) : Calc::max(from - amount, to);
+	return (to > from) ? calc::min(from + amount, to) : calc::max(from - amount, to);
 }
 
-float Calc::lerp(float from, float to, float amount)
+float calc::lerp(float from, float to, float amount)
 {
 	return from + ((to - from) * amount);
 }
 
-float Calc::spring(float from, float to, float bounciness, float tension, float& intermediate)
+float calc::spring(float from, float to, float bounciness, float tension, float& intermediate)
 {
-	intermediate = Calc::lerp(intermediate, (to - from) * tension, 1.0f / bounciness);
+	intermediate = calc::lerp(intermediate, (to - from) * tension, 1.0f / bounciness);
 	return intermediate;
 }
 
-float Calc::sin(float x)
+float calc::sin(float x)
 {
 	return ::sinf(x);
 }
 
-float Calc::cos(float x)
+float calc::cos(float x)
 {
 	return ::cosf(x);
 }
 
-float Calc::tan(float x)
+float calc::tan(float x)
 {
 	return ::tanf(x);
 }
 
-float Calc::asin(float x)
+float calc::asin(float x)
 {
 	return ::asinf(x);
 }
 
-float Calc::acos(float x)
+float calc::acos(float x)
 {
 	return ::acosf(x);
 }
 
-float Calc::atan(float x)
+float calc::atan(float x)
 {
 	return ::atanf(x);
 }
 
-float Calc::atan2(float y, float x)
+float calc::atan2(float y, float x)
 {
 	return ::atan2f(y, x);
 }

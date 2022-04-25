@@ -71,7 +71,7 @@ Mat4x4 Mat4x4::create_projection(float fov, float aspect, float near, float far)
 
     Mat4x4 result;
 
-	float tan_theta_over_2 = Calc::tan(fov * Calc::PI / 360.0f);
+	float tan_theta_over_2 = calc::tan(fov * calc::PI / 360.0f);
 
 	result.m11 = 1.0f / tan_theta_over_2;
 	result.m22 = aspect / tan_theta_over_2;
@@ -107,8 +107,8 @@ Mat4x4 Mat4x4::create_rotation(float angle, Vec3F axis)
 {
 	axis = axis.normalized();
 
-	float sin_theta = Calc::sin(angle);
-	float cos_theta = Calc::cos(angle);
+	float sin_theta = calc::sin(angle);
+	float cos_theta = calc::cos(angle);
 	float cos_inv = 1.0f - cos_theta;
 
 	return Mat4x4(

@@ -132,25 +132,25 @@ namespace lev
 	Vec3<T> Vec3<T>::lerp(const Vec3& from, const Vec3& to, float amount)
 	{
 		return Vec3(
-			Calc::lerp(from.x, to.x, amount),
-			Calc::lerp(from.y, to.y, amount),
-			Calc::lerp(from.z, to.z, amount)
+			calc::lerp(from.x, to.x, amount),
+			calc::lerp(from.y, to.y, amount),
+			calc::lerp(from.z, to.z, amount)
 		);
 	}
 
 	template <typename T>
 	Vec3<T> Vec3<T>::spring(const Vec3& from, const Vec3& to, float bounciness, float tension, Vec3& intermediate)
 	{
-		intermediate.x = Calc::spring(from.x, to.x, bounciness, tension, intermediate.x);
-		intermediate.y = Calc::spring(from.y, to.y, bounciness, tension, intermediate.y);
-		intermediate.z = Calc::spring(from.z, to.z, bounciness, tension, intermediate.z);
+		intermediate.x = calc::spring(from.x, to.x, bounciness, tension, intermediate.x);
+		intermediate.y = calc::spring(from.y, to.y, bounciness, tension, intermediate.y);
+		intermediate.z = calc::spring(from.z, to.z, bounciness, tension, intermediate.z);
 		return intermediate;
 	}
 
 	template <typename T>
 	float Vec3<T>::length() const
 	{
-		return Calc::sqrt(length_squared());
+		return calc::sqrt(length_squared());
 	}
 
 	template <typename T>

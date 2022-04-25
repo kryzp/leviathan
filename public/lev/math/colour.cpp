@@ -44,7 +44,7 @@ u32 Colour::pack(const Colour& colour)
 Colour Colour::from_hsv(float hue, float sat, float val, float alpha)
 {
 	float C = sat * val;
-	float X = C * (1 - Calc::abs(Calc::mod(hue / 60.0f, 2) - 1));
+	float X = C * (1 - calc::abs(calc::mod(hue / 60.0f, 2) - 1));
 
 	float r, g, b;
 	r = g = b = 0.0f;

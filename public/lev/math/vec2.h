@@ -124,8 +124,8 @@ namespace lev
 	Vec2<T> Vec2<T>::from_angle(float angle, float length)
 	{
 		return Vec2(
-			Calc::cos(angle) * length,
-			Calc::sin(angle) * length
+			calc::cos(angle) * length,
+			calc::sin(angle) * length
 		);
 	}
 	
@@ -133,29 +133,29 @@ namespace lev
 	Vec2<T> Vec2<T>::lerp(const Vec2& from, const Vec2& to, float amount)
 	{
 		return Vec2(
-			Calc::lerp(from.x, to.x, amount),
-			Calc::lerp(from.y, to.y, amount)
+			calc::lerp(from.x, to.x, amount),
+			calc::lerp(from.y, to.y, amount)
 		);
 	}
 	
 	template <typename T>
 	Vec2<T> Vec2<T>::spring(const Vec2& from, const Vec2& to, float bounciness, float tension, Vec2& intermediate)
 	{
-		intermediate.x = Calc::spring(from.x, to.x, bounciness, tension, intermediate.x);
-		intermediate.y = Calc::spring(from.y, to.y, bounciness, tension, intermediate.y);
+		intermediate.x = calc::spring(from.x, to.x, bounciness, tension, intermediate.x);
+		intermediate.y = calc::spring(from.y, to.y, bounciness, tension, intermediate.y);
 		return intermediate;
 	}
 	
 	template <typename T>
 	float Vec2<T>::angle() const
 	{
-		return Calc::atan2(y, x);
+		return calc::atan2(y, x);
 	}
 	
 	template <typename T>
 	float Vec2<T>::length() const
 	{
-		return Calc::sqrt(length_squared());
+		return calc::sqrt(length_squared());
 	}
 	
 	template <typename T>
