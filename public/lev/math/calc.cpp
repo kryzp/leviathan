@@ -39,6 +39,14 @@ float calc::sigmoid(float x)
 	return 1.0f - (1.0f / (1.0f + calc::exp(x)));
 }
 
+float snap(float x, float delta)
+{
+	if (delta <= 1.0f)
+		return calc::floor(x) + (calc::round((x - calc::floor(x)) * (1.0f / delta)) * delta);
+	else
+		return calc::round(x / delta) * delta;
+}
+
 float calc::log(float x, float b)
 {
 	return ::logf(x) / ::logf(b);

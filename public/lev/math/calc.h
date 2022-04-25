@@ -20,6 +20,9 @@ namespace lev
 		float pow(float x, float e);
 		float exp(float x);
 		float sigmoid(float x);
+		float sign(float x);
+		float snap(float x, float delta);
+
 		float log(float x, float b);
 		float log2(float x);
 		float log10(float x);
@@ -29,10 +32,10 @@ namespace lev
 		float min(float a, float b);
 		float clamp(float v, float mn, float mx);
 
-		float sign(float x);
 		float round(float x);
 		float floor(float x);
 		float ceil(float x);
+
 		bool within_epsilon(float lhs, float rhs, float epsilon = std::numeric_limits<float>::epsilon());
 
 		float approach(float from, float to, float amount);

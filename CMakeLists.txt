@@ -68,7 +68,7 @@ set(SDL2_ENABLED true CACHE BOOL "Use SDL2 as the system implementation")
 set(SDL2_INCLUDE_DIRS "D:/_DEV/libs/SDL2-2.0.20/include/") # disgusting
 set(SDL2_LIBRARIES "D:/_DEV/libs/SDL2-2.0.20/lib/x64/SDL2.lib" "D:/_DEV/libs/SDL2-2.0.20/lib/x64/SDL2main.lib") # disgusting - the sequel
 
-set(DEBUG_MODE true)
+set(DEBUG_MODE false)
 
 add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
 
