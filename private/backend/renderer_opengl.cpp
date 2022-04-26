@@ -246,14 +246,14 @@ public:
 
 	void bind(int idx) const override
 	{
-		LEV_ASSERT(idx >= 0 && idx < 32, "Index must be within [0, 31] inclusive");
+		LEV_ASSERT(idx >= 0 && idx <= 31, "Index must be within [0, 31] inclusive");
 		glActiveTexture(GL_TEXTURE0 + idx);
 		glBindTexture(GL_TEXTURE_2D, m_id);
 	}
 
 	void bind_image(int idx) const override
 	{
-		LEV_ASSERT(idx >= 0 && idx < 32, "Index must be within [0, 31] inclusive");
+		LEV_ASSERT(idx >= 0 && idx <= 31, "Index must be within [0, 31] inclusive");
 		glActiveTexture(GL_TEXTURE0 + idx);
 		glBindImageTexture(0, m_id, 0, GL_FALSE, 0, GL_READ_WRITE, m_gl_internal_format);
 	}

@@ -76,6 +76,7 @@ namespace lev
 
 	enum LogType
 	{
+		LOG_TYPE_NONE = 0,
 		LOG_TYPE_NORMAL,
 		LOG_TYPE_WARN,
 		LOG_TYPE_ERROR,
@@ -92,14 +93,14 @@ namespace lev
 		void warn(const char* fmt, ...);
 	}
 
-	struct Time
+	namespace time
 	{
-		static float milliseconds;
-		static float prev_milliseconds;
-		static float elapsed;
-		static float prev_elapsed;
-		static float delta;
-		static u64 loops;
+		extern float milliseconds;
+		extern float prev_milliseconds;
+		extern float elapsed;
+		extern float prev_elapsed;
+		extern float delta;
+		extern u64 loops;
 	};
 
 	namespace mem

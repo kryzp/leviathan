@@ -144,10 +144,10 @@ Colour Colour::operator - () const
 Colour Colour::operator * (float factor) const
 {
 	return Colour(
-		(u8)(static_cast<float>(r) * factor),
-		(u8)(static_cast<float>(g) * factor),
-		(u8)(static_cast<float>(b) * factor),
-		(u8)(static_cast<float>(a) * factor)
+		r * factor,
+		g * factor,
+		b * factor,
+		a * factor
 	);
 }
 

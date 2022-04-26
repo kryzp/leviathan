@@ -94,7 +94,7 @@ int main()
 				.wait_compute();
 
 			compute_shader_part->use()
-				.set("u_delta_time", Time::delta)
+				.set("u_delta_time", time::delta)
 				.set("u_mouse_pos", Input::inst()->mouse_draw_pos())
 				.set("u_mouse_pressed", Input::inst()->down_mb(MB_LEFT))
 				.set_buffer(particle_buf, 1)

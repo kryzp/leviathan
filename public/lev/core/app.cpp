@@ -79,7 +79,7 @@ void App::run()
 
 		// time + update
 		{
-			Time::loops++;
+			time::loops++;
 
 			u64 ticks = System::inst()->ticks();
 			u64 diff = ticks - prev_ticks;
@@ -98,13 +98,13 @@ void App::run()
 			while (lag >= TIME_TGT)
 			{
 				lag -= TIME_TGT;
-				Time::delta = 1.0f / m_config.target_fps;
+				time::delta = 1.0f / m_config.target_fps;
 				
-				Time::prev_milliseconds = Time::milliseconds;
-				Time::milliseconds += TIME_TGT;
+				time::prev_milliseconds = time::milliseconds;
+				time::milliseconds += TIME_TGT;
 
-				Time::prev_elapsed = Time::elapsed;
-				Time::elapsed += Time::delta;
+				time::prev_elapsed = time::elapsed;
+				time::elapsed += time::delta;
 
 				if (m_config.on_update)
 					m_config.on_update();
