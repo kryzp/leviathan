@@ -1,6 +1,8 @@
 #include <lev/core/util.h>
 #include <string.h>
 
+#include <cctype>
+
 using namespace lev;
 
 u64 str::length(const char* str)
@@ -26,6 +28,11 @@ int str::compare(const char* str1, const char* str2)
 u64 str::cspan(const char* scan, const char* match)
 {
 	return ::strcspn(scan, match);
+}
+
+bool str::is_space(int c)
+{
+	return ::isspace(c);
 }
 
 void str::fromint(char* buf, s32 value, int radix)

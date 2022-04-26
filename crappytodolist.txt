@@ -1,8 +1,32 @@
 
 * !!! NOT FINISHED THE JOYPAD INPUT ITS CRAP !!!
 
+* .lev asset files since some assets get loaded in differently like e.g shaders
+
+e.g my_font.levfont
+{
+    size: 12
+    data: "<path>"
+}
+
+e.g my_texture.levtexture
+{
+    data: "<path>"
+}
+
+e.g my_shader.levshader
+{
+    opengl:
+        vert: "<path>"
+        frag: "<path>"
+        comp: "<path>"
+
+    metal:
+        data: "<path>"
+}
+
 * sounds / music
 
-* spritebatch instanced rendering
+* actually make the spritebatch 'batch' the data together instead of individually drawing each Batch
 
 * lua???

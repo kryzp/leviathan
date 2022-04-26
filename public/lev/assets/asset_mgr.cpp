@@ -10,7 +10,7 @@ class TextureLoader : public AssetLoader<Texture, const String&>
 public:
 	void load(Ref<Texture>& obj, const String& path) override
 	{
-		obj = Texture::create(path);
+		obj = Texture::create(path.c_str());
 	}
 };
 

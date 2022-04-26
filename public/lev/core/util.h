@@ -119,6 +119,7 @@ namespace lev
 		char* copy(char* dst, const char* src, u64 size);
 		int compare(const char* str1, const char* str2);
 		u64 cspan(const char* scan, const char* match);
+		bool is_space(int c);
 		void fromint(char* buf, s32 value, int radix);
 		void fromint64(char* buf, s64 value, int radix);
 	}

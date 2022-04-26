@@ -38,7 +38,7 @@ namespace lev
 		Value at(const Key& key);
 		void remove(const Key& key);
 		bool contains(const Key& key) const;
-		int indexof(const Key& key) const;
+		int index_of(const Key& key) const;
 
 	private:
 		void reallocate();
@@ -79,11 +79,11 @@ namespace lev
 	{
 		reallocate();
 
-		Entry& existing = m_entrys[indexof(key)];
+		Entry& existing = m_entrys[index_of(key)];
 
 		if (existing.value == Value())
 		{
-			m_entrys[indexof(key)] = Entry(key, value, nullptr);
+			m_entrys[index_of(key)] = Entry(key, value, nullptr);
 			m_count++;
 		}
 		else
@@ -131,7 +131,7 @@ namespace lev
 	{
 		reallocate();
 
-		Entry* entry = &m_entrys[indexof(key)];
+		Entry* entry = &m_entrys[index_of(key)];
 		while (entry)
 		{
 			auto next = entry->next;
@@ -146,7 +146,7 @@ namespace lev
 	template <typename Key, typename Value>
 	Value HashMap<Key, Value>::at(const Key& key)
 	{
-		Entry* entry = &m_entrys[indexof(key)];
+		Entry* entry = &m_entrys[index_of(key)];
 
 		while (entry)
 		{
@@ -175,7 +175,7 @@ namespace lev
 		Entry* newbuf = new Entry[m_size];
 
         for (int i = 0; i < oldsize; i++)
-			new (newbuf+indexof(m_entrys[i].key)) Entry(std::move(m_entrys[i]));
+			new (newbuf+ index_of(m_entrys[i].key)) Entry(std::move(m_entrys[i]));
 
 		delete[] m_entrys;
 		m_entrys = newbuf;
@@ -184,7 +184,7 @@ namespace lev
 	template <typename Key, typename Value>
 	bool HashMap<Key, Value>::contains(const Key& key) const
 	{
-		Entry* entry = &m_entrys[indexof(key)];
+		Entry* entry = &m_entrys[index_of(key)];
 
 		while (entry)
 		{
@@ -198,7 +198,7 @@ namespace lev
 	}
 
 	template <typename Key, typename Value>
-	int HashMap<Key, Value>::indexof(const Key& key) const
+	int HashMap<Key, Value>::index_of(const Key& key) const
 	{
 		std::hash<Key> keyhash;
 		return keyhash(key) % m_size;

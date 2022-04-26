@@ -383,7 +383,7 @@ class OpenGLShader : public Shader
     GLint get_uniform_location(const String& name)
     {
         if (!m_gl_uniforms.contains(name))
-            m_gl_uniforms.insert(name, glGetUniformLocation(m_id, name));
+            m_gl_uniforms.insert(name, glGetUniformLocation(m_id, name.c_str()));
         return m_gl_uniforms.at(name);
     }
 
