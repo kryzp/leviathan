@@ -66,8 +66,8 @@ namespace lev
 		void push_texture(const Ref<Texture>& tex, const Colour& colour = Colour::white(), u8 mode = SB_FRAGMODE_ALL);
 		void push_quad(const Quad& quad, const Colour& colour = Colour::white(), u8 mode = SB_FRAGMODE_ALL);
 		void push_triangle(const Triangle& tri, const Colour& colour = Colour::white(), u8 mode = SB_FRAGMODE_ALL);
-		void push_string(const char* str, const Ref<Font>& font, TextAlign align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white());
-		void push_string(const char* str, const Ref<Font>& font, const std::function<Vec2F(Font::Character,int)>& offsetfn, TextAlign align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white());
+		void push_string(const char* str, const Ref<Font>& font, u8 align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white(), int monospaced = 0);
+		void push_string(const char* str, const Ref<Font>& font, const std::function<Vec2F(Font::Character,int)>& offsetfn, u8 align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white(), int monospaced = 0);
 		void push_circle(const Circle& circle, u32 accuracy = 40U, const Colour& colour = Colour::white());
 		void push_line(const Line& line, float thickness, const Colour& colour = Colour::white());
 

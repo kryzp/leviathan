@@ -83,3 +83,9 @@ endif()
 add_executable(lv_test testing/src/test_misc.cpp)
 target_include_directories(lv_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/public)
 target_link_libraries(lv_test PUBLIC ${PROJECT_NAME})
+
+add_custom_command(TARGET lv_test
+	POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+	${CMAKE_SOURCE_DIR}/testing/res/ $<TARGET_FILE_DIR:lv_test>/res
+)

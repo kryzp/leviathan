@@ -113,16 +113,21 @@ namespace lev
 		bool vcompare(void* ptr, byte val, u64 size);
 	}
 
-	namespace str
+	namespace cstr
 	{
 		u64 length(const char* str);
 		char* cncat(char* dst, const char* src, u64 size);
 		char* copy(char* dst, const char* src, u64 size);
 		int compare(const char* str1, const char* str2);
 		u64 cspan(const char* scan, const char* match);
+		char* token(char* str, const char* sep);
 		bool is_space(int c);
-		void fromint(char* buf, s32 value, int radix);
-		void fromint64(char* buf, s64 value, int radix);
+		char to_upper(int c);
+		char to_lower(int c);
+		void from_int(char* buf, s32 value, int radix);
+		void from_int64(char* buf, s64 value, int radix);
+		int to_int(const char* str);
+		float to_float(const char* str);
 	}
 
 	class NonCopyable

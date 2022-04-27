@@ -28,10 +28,10 @@ Font::Font()
 {
 }
 
-Font::Font(float size, const char* path, int type)
+Font::Font(float size, const String& path)
 	: Font()
 {
-	load(size, path, type);
+	load(size, path);
 }
 
 Font::~Font()
@@ -39,10 +39,12 @@ Font::~Font()
 	free();
 }
 
-void Font::load(float size, const char* path, int type)
+void Font::load(float size, const String& path)
 {
 	LEV_ASSERT(path, "Path must not be null");
 	LEV_ASSERT(size > 0.0f, "Size must be greater than 0");
+
+	u8 type = path.ends_with(".ttf") ? FONT_TYPE_TTF : FONT_TYPE_OTF;
 
 	m_info.size = size;
 	m_info.type = type;
@@ -53,7 +55,7 @@ void Font::load(float size, const char* path, int type)
 	}
 	else
 	{
-		FileStream fs(path, "rb");
+		FileStream fs(path.c_str(), "rb");
 		byte* ttf_buffer = new byte[fs.size()];
 		fs.read(ttf_buffer, fs.size()).close();
 
@@ -153,7 +155,7 @@ float Font::string_width(const char* str) const
 {
 	float result = 0.0f;
 
-	for (int i = 0; i < str::length(str); i++)
+	for (int i = 0; i < cstr::length(str); i++)
 	{
 		auto c = m_characters[str[i]];
 
@@ -171,7 +173,7 @@ float Font::string_height(const char* str) const
 	float hhh = 0.0f;
 	float max_bboxh = 0.0f;
 
-	for (int i = 0; i < str::length(str); i++)
+	for (int i = 0; i < cstr::length(str); i++)
 	{
 		auto c = m_characters[str[i]];
 		max_bboxh = calc::max(max_bboxh, c.bbox.h);

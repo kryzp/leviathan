@@ -11,70 +11,16 @@
 
 namespace lev
 {
-	struct ShaderLoadData
-	{
-		bool is_source = false;
-		const char* vertex = nullptr;
-		const char* fragment = nullptr;
-		const char* geometry = nullptr;
-		const char* compute = nullptr;
-
-		explicit ShaderLoadData(const char* compute, bool is_source = false)
-			: compute(compute)
-            , is_source(is_source)
-		{
-		}
-
-		ShaderLoadData(const char* vertex, const char* fragment, const char* geometry = nullptr, bool is_source = false)
-			: vertex(vertex)
-			, fragment(fragment)
-			, geometry(geometry)
-            , is_source(is_source)
-		{
-		}
-	};
-
-	struct FontLoadData
-	{
-		float size;
-		const char* path;
-
-		FontLoadData(float size, const char* path)
-			: size(size)
-			, path(path)
-		{
-		}
-	};
-}
-
-///////////////////////////////////////////////////////
-
-namespace lev
-{
-	class AssetRegistry
-	{
-	public:
-		template <class Asset>
-		u16 retrieve_id()
-		{
-			static u16 id = m_counter++;
-			return id;
-		}
-
-	private:
-		u16 m_counter = 0;
-	};
-
 	class AssetLoaderBase { };
 
-	template <class Asset, typename... LoadData>
+	template <class Asset>
 	class AssetLoader : public AssetLoaderBase
 	{
 	public:
 		AssetLoader() = default;
 		virtual ~AssetLoader() = default;
 
-		virtual void load(Ref<Asset>& obj, LoadData... data) = 0;
+		virtual void load(Ref<Asset>& obj, const String& path) = 0;
 	};
 
 	class AssetMgr
@@ -85,8 +31,8 @@ namespace lev
 		template <class Loader, class Asset, typename... Args>
 		void register_loader(Args&&... args);
 
-		template <class Asset, typename... LoadData>
-		Ref<Asset> load(const String& name, LoadData... data);
+		template <class Asset>
+		Ref<Asset> load(const String& name, const String& path);
 
 		template <class Asset>
 		void unload(const String& name);
@@ -109,29 +55,36 @@ namespace lev
 			~AssetList() = default;
 		};
 
+		template <class Asset>
+		u16 retrieve_asset_id()
+		{
+			static u16 id = m_counter++;
+			return id;
+		}
+
 		AssetLoaderBase* m_loaders[LEV_MAX_ASSET_TYPES];
 		AssetListBase* m_assets[LEV_MAX_ASSET_TYPES];
 
-		AssetRegistry m_registry;
+		u16 m_counter = 0;
 	};
 
 	template <class Loader, class Asset, typename... Args>
 	void AssetMgr::register_loader(Args&&... args)
 	{
-		u16 id = m_registry.retrieve_id<Asset>();
+		u16 id = retrieve_asset_id<Asset>();
 		m_loaders[id] = new Loader(std::forward<Args>(args)...);
 	}
 
-	template <class Asset, typename... LoadData>
-	Ref<Asset> AssetMgr::load(const String& name, LoadData... data)
+	template <class Asset>
+	Ref<Asset> AssetMgr::load(const String& name, const String& path)
 	{
 		Ref<Asset> obj;
 
-		static_cast<AssetLoader<Asset, LoadData...>*>(
-			m_loaders[m_registry.retrieve_id<Asset>()]
-		)->load(obj, data...);
+		static_cast<AssetLoader<Asset>*>(
+			m_loaders[retrieve_asset_id<Asset>()]
+		)->load(obj, path);
 
-		AssetListBase* base = m_assets[m_registry.retrieve_id<Asset>()];
+		AssetListBase* base = m_assets[retrieve_asset_id<Asset>()];
 
 		if (!base)
 			base = new AssetList<Asset>();
@@ -145,7 +98,7 @@ namespace lev
 	void AssetMgr::unload(const String& name)
 	{
 		static_cast<AssetList<Asset>*>(
-			m_assets[m_registry.retrieve_id<Asset>()]
+			m_assets[retrieve_asset_id<Asset>()]
 		)->assets.remove(name);
 	}
 
@@ -153,7 +106,7 @@ namespace lev
 	Ref<Asset> AssetMgr::get(const String& name)
 	{
 		return static_cast<AssetList<Asset>*>(
-			m_assets[m_registry.retrieve_id<Asset>()]
+			m_assets[retrieve_asset_id<Asset>()]
 		)->assets.at(name);
 	}
 
@@ -161,7 +114,7 @@ namespace lev
 	bool AssetMgr::has(const String& name)
 	{
 		return static_cast<AssetList<Asset>*>(
-			m_assets[m_registry.retrieve_id<Asset>()]
+			m_assets[retrieve_asset_id<Asset>()]
 		)->assets.contains(name);
 	}
 }

@@ -402,12 +402,20 @@ public:
 
 		GLuint id = glCreateProgram();
 
-		if (data.type == SHADER_TYPE_COMPUTE)
+		if (data.type & SHADER_TYPE_SINGLE)
 		{
-			const char* computedata = data.compute_source.c_str();
+			LEV_ERROR("OpenGL backend doesn't support shaders in a single file");
+			return;
+		}
+
+		auto& compute_source = data.seperated.compute_source;
+
+		if (data.type & SHADER_TYPE_COMPUTE)
+		{
+			const char* compute_data = compute_source;
 
             GLuint compute = glCreateShader(GL_COMPUTE_SHADER);
-			glShaderSource(compute, 1, &computedata, NULL);
+			glShaderSource(compute, 1, &compute_data, nullptr);
 			glCompileShader(compute);
 			glAttachShader(id, compute);
 
@@ -416,7 +424,7 @@ public:
 			glGetProgramiv(id, GL_LINK_STATUS, &success);
 			if (!success)
 			{
-				glGetProgramInfoLog(id, 512, NULL, infolog);
+				glGetProgramInfoLog(id, 512, nullptr, infolog);
 				log::error("failed to link compute shader program: %s", infolog);
 			}
 
@@ -424,50 +432,44 @@ public:
 		}
 		else
 		{
-			const char* vertexdata = data.vertex_source.c_str();
-			const char* fragmentdata = data.fragment_source.c_str();
-			const char* geometrydata = data.geometry_source.c_str();
+			const char* vertex_data = data.seperated.vertex_source;
+			const char* fragment_data = data.seperated.fragment_source;
+			const char* geometry_data = data.seperated.geometry_source;
 
             GLuint vertex = glCreateShader(GL_VERTEX_SHADER);
-			if (data.type & SHADER_TYPE_VERTEX)
-			{
-				glShaderSource(vertex, 1, &vertexdata, NULL);
-				glCompileShader(vertex);
+			glShaderSource(vertex, 1, &vertex_data, nullptr);
+			glCompileShader(vertex);
 
-				glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
-				if (!success)
-				{
-					glGetShaderInfoLog(vertex, 512, NULL, infolog);
-					log::error("failed to compile vertex shader: %s", infolog);
-				}
+			glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
+			if (!success)
+			{
+				glGetShaderInfoLog(vertex, 512, nullptr, infolog);
+				log::error("failed to compile vertex shader: %s", infolog);
 			}
 
             GLuint fragment = glCreateShader(GL_FRAGMENT_SHADER);
-			if (data.type & SHADER_TYPE_FRAGMENT)
-			{
-				glShaderSource(fragment, 1, &fragmentdata, NULL);
-				glCompileShader(fragment);
+			glShaderSource(fragment, 1, &fragment_data, nullptr);
+			glCompileShader(fragment);
 
-				glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
-				if (!success)
-				{
-					glGetShaderInfoLog(fragment, 512, NULL, infolog);
-					log::error("failed to compile fragment shader: %s", infolog);
-				}
+			glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
+			if (!success)
+			{
+				glGetShaderInfoLog(fragment, 512, nullptr, infolog);
+				log::error("failed to compile fragment shader: %s", infolog);
 			}
 
             GLuint geometry = 0;
-			if (data.type & SHADER_TYPE_GEOMETRY)
+			if (data.seperated.has_geometry)
 			{
 				geometry = glCreateShader(GL_GEOMETRY_SHADER);
 
-				glShaderSource(geometry, 1, &geometrydata, NULL);
+				glShaderSource(geometry, 1, &geometry_data, nullptr);
 				glCompileShader(geometry);
 
 				glGetShaderiv(geometry, GL_COMPILE_STATUS, &success);
 				if (!success)
 				{
-					glGetShaderInfoLog(geometry, 512, NULL, infolog);
+					glGetShaderInfoLog(geometry, 512, nullptr, infolog);
 					log::error("failed to compile geometry shader: %s", infolog);
 				}
 			}
@@ -475,7 +477,7 @@ public:
 			glAttachShader(id, vertex);
 			glAttachShader(id, fragment);
 
-			if (data.type & SHADER_TYPE_GEOMETRY)
+			if (data.seperated.has_geometry)
 				glAttachShader(id, geometry);
 
 			glLinkProgram(id);
@@ -490,7 +492,7 @@ public:
 			glDeleteShader(vertex);
 			glDeleteShader(fragment);
 
-			if (data.type & SHADER_TYPE_GEOMETRY)
+			if (data.seperated.has_geometry)
 				glDeleteShader(geometry);
 		}
 

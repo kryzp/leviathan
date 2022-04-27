@@ -31,6 +31,11 @@ bool Input::down_key(int key)
 	return m_kb.down[key];
 }
 
+bool Input::down_button(int button)
+{
+	return m_joystick.down[button];
+}
+
 bool Input::released_mb(int mb)
 {
 	return !m_mouse.down[mb] && m_mouse_prev.down[mb];
@@ -41,6 +46,11 @@ bool Input::released_key(int key)
 	return !m_kb.down[key] && m_kb_prev.down[key];
 }
 
+bool Input::released_button(int button)
+{
+	return !m_joystick.down[button] && m_joystick_prev.down[button];
+}
+
 bool Input::pressed_mb(int mb)
 {
 	return m_mouse.down[mb] && !m_mouse_prev.down[mb];
@@ -49,6 +59,31 @@ bool Input::pressed_mb(int mb)
 bool Input::pressed_key(int key)
 {
 	return m_kb.down[key] && !m_kb_prev.down[key];
+}
+
+bool Input::pressed_button(int button)
+{
+	return m_joystick.down[button] && !m_joystick_prev.down[button];
+}
+
+Float2 Input::left_stick()
+{
+	return m_joystick.left_stick;
+}
+
+Float2 Input::right_stick()
+{
+	return m_joystick.right_stick;
+}
+
+float Input::left_trigger()
+{
+	return m_joystick.left_trigger;
+}
+
+float Input::right_trigger()
+{
+	return m_joystick.right_trigger;
 }
 
 bool Input::ctrl()
@@ -138,7 +173,7 @@ void Input::on_key_up(int key)
 
 void Input::on_text_utf8(const char* text)
 {
-	str::cncat(m_kb.text, text, LEV_MAX_TEXT_INPUT);
+	cstr::cncat(m_kb.text, text, LEV_MAX_TEXT_INPUT);
 }
 
 void Input::on_joystick_button_down(u8 button)
@@ -153,13 +188,24 @@ void Input::on_joystick_button_up(u8 button)
 
 void Input::on_joystick_ball(u8 ball)
 {
+	// todo
 }
 
 void Input::on_joystick_hat(u8 hat)
 {
+	// todo
 }
 
 void Input::on_joystick_motion(u8 axis, float value)
 {
-	
+	// todo
+	// todo
+	// todo
+
+	if (axis == JS_AXIS_H)
+	{
+	}
+	else if (axis == JS_AXIS_V)
+	{
+	}
 }

@@ -35,7 +35,7 @@ int main()
 	Ref<Font> nokiafc;
 
 	Ref<ShaderBuffer> particle_buf;
-	Particle* particles = new Particle[PARTICLE_COUNT];
+	auto* particles = new Particle[PARTICLE_COUNT];
 	for (int i = 0; i < PARTICLE_COUNT; i++)
 	{
 		particles[i] = {
@@ -61,28 +61,10 @@ int main()
 			particle_buf = ShaderBuffer::create(sizeof(Particle) * PARTICLE_COUNT);
 			particle_buf->set(particles);
 
-			nokiafc = assets.load<Font>(
-				"nokia",
-				FontLoadData(20, "D:\\leviathan\\testing\\res\\fonts\\nokiafc22.ttf")
-			);
-
-			compute_shader_part = assets.load<Shader>(
-				"compute_particle",
-				ShaderLoadData("D:\\leviathan\\testing\\res\\shaders\\particle.comp")
-			);
-
-			compute_shader_post = assets.load<Shader>(
-				"compute_post",
-				ShaderLoadData("D:\\leviathan\\testing\\res\\shaders\\post.comp")
-			);
-
-			shader_colourize = assets.load<Shader>(
-				"colourize",
-				ShaderLoadData(
-					"D:\\leviathan\\testing\\res\\shaders\\colourize.vert",
-					"D:\\leviathan\\testing\\res\\shaders\\colourize.frag"
-				)
-			);
+			nokiafc = assets.load<Font>("nokia", "res\\fonts\\nokiafc.levfont");
+			compute_shader_part = assets.load<Shader>("compute_particle", "res\\shaders\\particle.levshader");
+			compute_shader_post = assets.load<Shader>("compute_post", "res\\shaders\\post.levshader");
+			shader_colourize = assets.load<Shader>("colourize", "res\\shaders\\colourize.levshader");
 		};
 
 		conf.on_update = [&]()

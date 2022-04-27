@@ -1,0 +1,4 @@
+# opengl
+    vert: res/shaders/colourize.vert
+    frag: res/shaders/colourize.frag
+# end

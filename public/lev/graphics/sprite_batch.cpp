@@ -28,7 +28,8 @@ void SpriteBatch::initialize()
 	// generic shader
 	{
 #ifdef LEV_USE_OPENGL
-		const char* vertex =
+
+		char vertex[512] =
 			"#version 330 core\n"
 			"layout (location = 0) in vec2 a_pos;\n"
 			"layout (location = 1) in vec2 a_uv;\n"
@@ -45,7 +46,7 @@ void SpriteBatch::initialize()
 			"	frag_mode = a_mode;\n"
 			"}";
 
-		const char* fragment =
+		char fragment[512] =
 			"#version 330 core\n"
 			"out vec4 frag_colour;\n"
 			"in vec2 frag_coord;\n"
@@ -59,9 +60,15 @@ void SpriteBatch::initialize()
 			"                 frag_mode.b * texcol.r * frag_mod_colour + "
 			"                 frag_mode.a * frag_mod_colour;\n"
 			"}";
-#endif
 
-		m_material_stack[0].shader() = Shader::create(vertex, fragment, nullptr, true);
+		ShaderData data = {0};
+		data.type = SHADER_TYPE_SEPERATED | SHADER_TYPE_RENDER;
+
+		cstr::copy(data.seperated.vertex_source, vertex, 512);
+		cstr::copy(data.seperated.fragment_source, fragment, 512);
+
+		m_material_stack[0].shader() = Renderer::inst()->create_shader(data);
+#endif
 	}
 
 	m_initialized = true;
@@ -218,12 +225,25 @@ void SpriteBatch::push_texture(const Ref<Texture>& tex, const Colour& colour, u8
 	push_vertices(vertices, 4, indices, 6);
 }
 
-void SpriteBatch::push_string(const char* str, const Ref<Font>& font, TextAlign align, const Colour& colour)
+void SpriteBatch::push_string(
+	const char* str,
+	const Ref<Font>& font,
+	u8 align,
+	const Colour& colour,
+	int monospaced
+)
 {
 	push_string(str, font, [&](Font::Character c, int idx) -> lev::Vec2F { return Vec2F::zero(); }, align, colour);
 }
 
-void SpriteBatch::push_string(const char* str, const Ref<Font>& font, const std::function<Vec2F(Font::Character,int)>& offsetfn, TextAlign align, const Colour& colour)
+void SpriteBatch::push_string(
+	const char* str,
+	const Ref<Font>& font,
+	const std::function<Vec2F(Font::Character,int)>& offsetfn,
+	u8 align,
+	const Colour& colour,
+	int monospaced
+)
 {
 	// todo: new line support
 
@@ -245,7 +265,7 @@ void SpriteBatch::push_string(const char* str, const Ref<Font>& font, const std:
 	}
 
 	int cursorx = 0;
-	for (int i = 0; i < str::length(str); i++)
+	for (int i = 0; i < cstr::length(str); i++)
 	{
 		auto c = font->character(str[i]);
 
@@ -258,9 +278,14 @@ void SpriteBatch::push_string(const char* str, const Ref<Font>& font, const std:
 
 		pop_matrix();
 
-		cursorx +=
-			c.advance_x +
-			font->kern_advance(str[i], str[i+1]);
+		if (monospaced)
+		{
+			cursorx += monospaced;
+		}
+		else
+		{
+			cursorx += c.advance_x + font->kern_advance(str[i], str[i + 1]);
+		}
 	}
 
 	pop_matrix();

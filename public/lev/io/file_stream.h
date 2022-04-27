@@ -2,6 +2,7 @@
 
 #include <lev/core/util.h>
 #include <lev/io/stream.h>
+#include <lev/containers/string.h>
 
 namespace lev
 {
@@ -11,5 +12,7 @@ namespace lev
 		FileStream();
 		FileStream(const char* filename, const char* mode);
 		FileStream& open(const char* filename, const char* mode);
+
+		bool get_line(lev::String& str, s32& cache);
 	};
 }

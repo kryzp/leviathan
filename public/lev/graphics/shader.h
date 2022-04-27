@@ -15,20 +15,36 @@ namespace lev
 {
 	enum ShaderType
 	{
-		SHADER_TYPE_FRAGMENT	= 1 << 0,
-		SHADER_TYPE_VERTEX		= 1 << 1,
-		SHADER_TYPE_GEOMETRY	= 1 << 2,
-		SHADER_TYPE_COMPUTE		= 1 << 3,
+		SHADER_TYPE_NONE,
+		SHADER_TYPE_SEPERATED 	= 1 << 0,
+		SHADER_TYPE_SINGLE 		= 1 << 1,
+		SHADER_TYPE_RENDER 		= 1 << 2,
+		SHADER_TYPE_COMPUTE 	= 1 << 3,
 		SHADER_TYPE_MAX
 	};
 
 	struct ShaderData
 	{
 		u8 type;
-		Str<LEV_SHADER_MAX_SIZE> vertex_source;
-		Str<LEV_SHADER_MAX_SIZE> fragment_source;
-		Str<LEV_SHADER_MAX_SIZE> geometry_source;
-		Str<LEV_SHADER_MAX_SIZE> compute_source;
+
+		union
+		{
+			union
+			{
+				struct
+				{
+					bool has_geometry;
+					char vertex_source[LEV_SHADER_MAX_SIZE];
+					char fragment_source[LEV_SHADER_MAX_SIZE];
+					char geometry_source[LEV_SHADER_MAX_SIZE];
+				};
+
+				char compute_source[LEV_SHADER_MAX_SIZE * 3];
+			}
+			seperated;
+
+			char single_source[LEV_SHADER_MAX_SIZE * 3];
+		};
 	};
 
 	class ShaderBuffer
@@ -53,11 +69,12 @@ namespace lev
 		static constexpr const char* PROJECTION = "lev_projection";
 		static constexpr const char* RESOLUTION = "lev_resolution";
 
-		Shader();
-		virtual ~Shader();
+		Shader() = default;
+		virtual ~Shader() = default;
 
-		static Ref<Shader> create(const char* vertex, const char* fragment, const char* geometry = nullptr, bool is_source = false);
-		static Ref<Shader> create_compute(const char* compute, bool is_source = false);
+		static Ref<Shader> create_single(const lev::String& file);
+		static Ref<Shader> create_seperated(const lev::String& vertex, const lev::String& fragment, const lev::String& geometry = nullptr);
+		static Ref<Shader> create_compute_seperated(const lev::String& compute);
 
 		static void unbind();
 

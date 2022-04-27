@@ -3,6 +3,7 @@
 #include <lev/core/util.h>
 #include <lev/math/rect.h>
 #include <lev/math/vec2.h>
+#include <lev/containers/string.h>
 
 // i dont know what would be the best size for these so this is just a guess
 #define LEV_FONT_ATLAS_W 1024
@@ -16,6 +17,7 @@ namespace lev
 
 	enum FontType
 	{
+		FONT_TYPE_NONE = 0,
 		FONT_TYPE_TTF,
 		FONT_TYPE_OTF,
 		FONT_TYPE_MAX
@@ -31,7 +33,7 @@ namespace lev
 			int descent;
 			int line_gap;
 			RectI bbox;
-			int type;
+			u8 type;
 		};
 
 		struct Kerning
@@ -57,10 +59,10 @@ namespace lev
 		};
 
 		Font();
-		Font(float size, const char* path, int type = FONT_TYPE_TTF);
+		Font(float size, const String& path);
 		~Font();
 
-		void load(float size, const char* path, int type = FONT_TYPE_TTF);
+		void load(float size, const String& path);
 		void free();
 
 		float string_width(const char* str) const;

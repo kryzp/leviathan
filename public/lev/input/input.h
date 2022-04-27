@@ -307,12 +307,21 @@ namespace lev
 
 		bool down_mb(int mb);
 		bool down_key(int key);
-		
+		bool down_button(int button);
+
 		bool released_mb(int mb);
 		bool released_key(int key);
+		bool released_button(int button);
 		
 		bool pressed_mb(int mb);
 		bool pressed_key(int key);
+		bool pressed_button(int button);
+
+		Float2 left_stick();
+		Float2 right_stick();
+
+		float left_trigger();
+		float right_trigger();
 
 		bool ctrl();
 		bool shift();

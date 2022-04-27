@@ -34,13 +34,18 @@ namespace lev
 		Str trim_start() const;
 		Str trim_end() const;
 
-		Vector<Str> split(char seperator = ' ') const;
+		Str strip_newline() const;
+
+		Vector<Str> split(const char* delimiter = " ") const;
 
 		int index_of(const Str& str) const;
 
 		bool starts_with(const Str& str) const;
 		bool ends_with(const Str& str) const;
 		bool contains(const Str& str) const;
+
+		void push_front(char c);
+		void push_back(char c);
 
 		void pop_front();
 		void pop_back();
@@ -74,15 +79,15 @@ namespace lev
 	Str<Size>::Str()
 		: m_length(0)
 	{
-		mem::set(m_buf, 0, m_length);
+		mem::set(m_buf, 0, Size);
 	}
 
 	template <u64 Size>
 	Str<Size>::Str(const char* str)
-		: m_length(str::length(str))
+		: m_length(cstr::length(str))
 	{
 		LEV_ASSERT(m_length < (Size - 1), "Length must not exceed maximum size"); // -1 for '\0'
-		str::copy(m_buf, str, m_length);
+		cstr::copy(m_buf, str, m_length);
 		m_buf[m_length] = '\0';
 	}
 	
@@ -92,7 +97,7 @@ namespace lev
 		LEV_ASSERT(other.m_length < (Size - 1), "Length must not exceed maximum size");
 
 		m_length = other.m_length;
-		str::copy(m_buf, other.m_buf, other.m_length);
+		cstr::copy(m_buf, other.m_buf, other.m_length);
 		m_buf[m_length] = '\0';
 	}
 	
@@ -105,7 +110,7 @@ namespace lev
 			mem::set(m_buf, 0, m_length);
 
 		m_length = std::move(other.m_length);
-		str::copy(m_buf, std::move(other.m_buf), m_length);
+		cstr::copy(m_buf, std::move(other.m_buf), m_length);
 		m_buf[m_length] = '\0';
 
 		other.m_length = 0;
@@ -121,7 +126,7 @@ namespace lev
 			mem::set(m_buf, 0, m_length);
 
 		m_length = other.m_length;
-		str::copy(m_buf, other.m_buf, other.m_length);
+		cstr::copy(m_buf, other.m_buf, other.m_length);
 		m_buf[m_length] = '\0';
 
 		return *this;
@@ -136,7 +141,7 @@ namespace lev
 			mem::set(m_buf, 0, m_length);
 
 		m_length = std::move(other.m_length);
-		str::copy(m_buf, std::move(other.m_buf), other.m_length);
+		cstr::copy(m_buf, std::move(other.m_buf), other.m_length);
 		m_buf[m_length] = '\0';
 
 		other.m_length = 0;
@@ -161,7 +166,7 @@ namespace lev
 	template <u64 Size>
 	bool Str<Size>::empty() const
 	{
-		return str::compare(m_buf, "") == 0;
+		return cstr::compare(m_buf, "") == 0;
 	}
 
 	template <u64 Size>
@@ -174,6 +179,22 @@ namespace lev
 		strncat(result.m_buf, str.m_buf, str.length());
 
 		return result;
+	}
+
+	template <u64 Size>
+	void Str<Size>::push_front(char c)
+	{
+		mem::move(m_buf + 1, m_buf, m_length);
+		m_buf[0] = c;
+		m_length++;
+	}
+
+	template <u64 Size>
+	void Str<Size>::push_back(char c)
+	{
+		m_buf[m_length] = c;
+		m_length++;
+		m_buf[m_length] = '\0';
 	}
 
 	template <u64 Size>
@@ -224,7 +245,7 @@ namespace lev
 	Str<Size> Str<Size>::trim_start() const
 	{
 		const char* buffer = m_buf;
-		while (str::is_space(*buffer)) buffer++;
+		while (cstr::is_space(*buffer)) buffer++;
 		int whitespace = buffer - m_buf;
 
 		Str trimmed = *this;
@@ -237,57 +258,121 @@ namespace lev
 	template <u64 Size>
 	Str<Size> Str<Size>::trim_end() const
 	{
-		const char* buffer = m_buf + str::length(m_buf) - 1;
-		while (buffer > m_buf && str::is_space(*buffer)) buffer--;
-		int whitespace = buffer - m_buf;
+		const char* end = m_buf + m_length - 1;
+
+		const char* buffer = end;
+		while (buffer > m_buf && cstr::is_space(*buffer)) buffer--;
+		int whitespace = buffer - end;
 
 		Str<Size> trimmed = *this;
 		trimmed.m_length -= whitespace;
-		trimmed.m_buf[trimmed.m_length + whitespace] = '\0';
+		trimmed.m_buf[trimmed.m_length] = '\0';
 
-		return trimmed;
+		return trimmed.strip_newline();
 	}
 
 	template <u64 Size>
-	Vector<Str<Size>> Str<Size>::split(char seperator) const
+	Str<Size> Str<Size>::strip_newline() const
 	{
-		return Vector<Str>(); // todo
+		Str<Size> cpy = *this;
+		cpy.m_buf[cstr::cspan(cpy.m_buf, "\n")] = 0;
+		cpy.m_buf[cstr::cspan(cpy.m_buf, "\r\n")] = 0;
+		return cpy;
+	}
+
+	template <u64 Size>
+	Vector<Str<Size>> Str<Size>::split(const char* delimiter) const
+	{
+		Vector<Str<Size>> tokens;
+
+		char tokenbuf[Size] = { 0 };
+		mem::copy(tokenbuf, m_buf, m_length);
+
+		char* token = cstr::token(tokenbuf, delimiter);
+
+		while (token)
+		{
+			tokens.push_back(token);
+			token = cstr::token(nullptr, delimiter);
+		}
+
+		return tokens;
 	}
 
 	template <u64 Size>
 	Str<Size> Str<Size>::to_upper() const
 	{
-		return Str(); // todo
+		Str<Size> copy = *this;
+
+		for (auto& c : copy)
+			c = cstr::to_upper(c);
+
+		return copy;
 	}
 
 	template <u64 Size>
 	Str<Size> Str<Size>::to_lower() const
 	{
-		return Str(); // todo
+		Str<Size> copy = *this;
+
+		for (auto& c : copy)
+			c = cstr::to_lower(c);
+
+		return copy;
 	}
 
+	// todo: check if this works haven't tested it
 	template <u64 Size>
 	int Str<Size>::index_of(const Str& str) const
 	{
-		return 0; // todo
+		for (int j = 0; j < m_length - str.length(); j++)
+		{
+			bool cont = true;
+
+			for (int i = 0; i < str.length(); i++)
+			{
+				if (m_buf[j+i] != str[i])
+				{
+					cont = false;
+					break;
+				}
+			}
+
+			if (cont)
+				return j;
+		}
+
+		return -1;
 	}
 
 	template <u64 Size>
 	bool Str<Size>::starts_with(const Str& str) const
 	{
-		return false; // todo
+		for (int i = 0; i < str.length(); i++)
+		{
+			if (m_buf[i] != str[i])
+				return false;
+		}
+
+		return true;
 	}
 
 	template <u64 Size>
 	bool Str<Size>::ends_with(const Str& str) const
 	{
-		return false; // todo
+		for (int i = 0; i < str.length(); i++)
+		{
+			if (m_buf[m_length - str.length() + i] != str[i])
+				return false;
+		}
+
+		return true;
 	}
 
 	template <u64 Size>
 	bool Str<Size>::contains(const Str& str) const
 	{
-		return false; // todo
+		return index_of(str) != -1;
 	}
 
 	template <u64 Size>
@@ -320,7 +405,7 @@ namespace lev
 	template <u64 Size>
 	bool Str<Size>::operator == (const Str& other) const
 	{
-		return str::compare(m_buf, other.m_buf) == 0;
+		return cstr::compare(m_buf, other.m_buf) == 0;
 	}
 
 	template <u64 Size>

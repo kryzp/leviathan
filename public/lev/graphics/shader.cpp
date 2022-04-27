@@ -17,87 +17,58 @@ void ShaderBuffer::unbind()
 
 //////////////////////////////////////////////////////////
 
-Shader::Shader()
+Ref<Shader> Shader::create_single(const lev::String& file)
 {
+	LEV_ASSERT(file, "Data must not be nullptr")
+
+	ShaderData data = {0};
+	data.type = SHADER_TYPE_SINGLE;
+
+	auto fs = FileStream(file.c_str(), "r");
+	LEV_ASSERT(fs.size() <= LEV_SHADER_MAX_SIZE, "Compute shader file size must not be above LEV_SHADER_MAX_SIZE");
+	fs.read(data.single_source, fs.size());
+
+	return Renderer::inst()->create_shader(data);
 }
 
-Shader::~Shader()
-{
-}
-
-Ref<Shader> Shader::create(const char* vertex, const char* fragment, const char* geometry, bool is_source)
+Ref<Shader> Shader::create_seperated(const lev::String& vertex, const lev::String& fragment, const lev::String& geometry)
 {
 	LEV_ASSERT(vertex, "Vertex shader must not be nullptr");
 	LEV_ASSERT(fragment, "Fragment shader must not be nullptr");
 
 	ShaderData data = {0};
+	data.type = SHADER_TYPE_SEPERATED | SHADER_TYPE_RENDER;
 
-	data.type =
-		SHADER_TYPE_FRAGMENT |
-		SHADER_TYPE_VERTEX;
+	auto vtxfs = FileStream(vertex.c_str(), "r");
+	auto frgfs = FileStream(fragment.c_str(), "r");
 
-	if (geometry)
-		data.type |= SHADER_TYPE_GEOMETRY;
+	LEV_ASSERT(vtxfs.size() <= LEV_SHADER_MAX_SIZE, "Vertex shader file size must not be above LEV_SHADER_MAX_SIZE");
+	LEV_ASSERT(frgfs.size() <= LEV_SHADER_MAX_SIZE, "Fragment shader file size must not be above LEV_SHADER_MAX_SIZE");
 
-	if (is_source)
+	vtxfs.read(data.seperated.vertex_source, vtxfs.size());
+	frgfs.read(data.seperated.fragment_source, frgfs.size());
+
+	if (!geometry.empty())
 	{
-		data.vertex_source = vertex;
-		data.fragment_source = fragment;
-
-		if (geometry)
-			data.geometry_source = geometry;
-	}
-	else
-	{
-		char vtxsrc[LEV_SHADER_MAX_SIZE] = {0};
-		char frgsrc[LEV_SHADER_MAX_SIZE] = {0};
-
-		auto vtxfs = FileStream(vertex, "r");
-		auto frgfs = FileStream(fragment, "r");
-
-		LEV_ASSERT(vtxfs.size() <= LEV_SHADER_MAX_SIZE, "Vertex shader file size must not be above LEV_SHADER_MAX_SIZE");
-		LEV_ASSERT(frgfs.size() <= LEV_SHADER_MAX_SIZE, "Fragment shader file size must not be above LEV_SHADER_MAX_SIZE");
-
-		vtxfs.read(vtxsrc, vtxfs.size());
-		frgfs.read(frgsrc, frgfs.size());
-
-		data.vertex_source = vtxsrc;
-		data.fragment_source = frgsrc;
-
-		if (geometry)
-		{
-			char geosrc[LEV_SHADER_MAX_SIZE];
-			auto geofs = FileStream(geometry, "r");
-
-			LEV_ASSERT(geofs.size() <= LEV_SHADER_MAX_SIZE-1, "Geometry shader file size must not be above LEV_SHADER_MAX_SIZE");
-
-			geofs.read(geosrc, geofs.size());
-			data.geometry_source = geosrc;
-		}
+		data.seperated.has_geometry = true;
+		auto geofs = FileStream(geometry.c_str(), "r");
+		LEV_ASSERT(geofs.size() <= LEV_SHADER_MAX_SIZE-1, "Geometry shader file size must not be above LEV_SHADER_MAX_SIZE");
+		geofs.read(data.seperated.geometry_source, geofs.size());
 	}
 
 	return Renderer::inst()->create_shader(data);
 }
 
-Ref<Shader> Shader::create_compute(const char* compute, bool is_source)
+Ref<Shader> Shader::create_compute_seperated(const lev::String& compute)
 {
 	LEV_ASSERT(compute, "Compute shader must not be nullptr");
 
-	ShaderData data = {0};
-	data.type = SHADER_TYPE_COMPUTE;
+	ShaderData data = {0};;
+	data.type = SHADER_TYPE_SEPERATED | SHADER_TYPE_COMPUTE;
 
-	if (is_source)
-		data.compute_source = compute;
-	else
-	{
-		char cmpsrc[LEV_SHADER_MAX_SIZE] = {0};
-		auto cmpfs = FileStream(compute, "r");
-		
-		LEV_ASSERT(cmpfs.size() <= LEV_SHADER_MAX_SIZE, "Compute shader file size must not be above LEV_SHADER_MAX_SIZE");
-		
-		cmpfs.read(cmpsrc, cmpfs.size());
-		data.compute_source = cmpsrc;
-	}
+	auto cmpfs = FileStream(compute.c_str(), "r");
+	LEV_ASSERT(cmpfs.size() <= LEV_SHADER_MAX_SIZE, "Compute shader file size must not be above LEV_SHADER_MAX_SIZE");
+	cmpfs.read(data.seperated.compute_source, cmpfs.size());
 
 	return Renderer::inst()->create_shader(data);
 }
