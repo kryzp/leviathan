@@ -22,6 +22,11 @@ namespace lev
 
 		~Str();
 
+		char* begin();
+		const char* begin() const;
+		char* end();
+		const char* end() const;
+
 		void clear();
 		bool empty() const;
 
@@ -154,6 +159,30 @@ namespace lev
 	Str<Size>::~Str()
 	{
 		m_length = 0;
+	}
+
+	template <u64 Size>
+	char* Str<Size>::begin()
+	{
+		return m_buf;
+	}
+
+	template <u64 Size>
+	const char* Str<Size>::begin() const
+	{
+		return m_buf;
+	}
+
+	template <u64 Size>
+	char* Str<Size>::end()
+	{
+		return m_buf + m_length - 1;
+	}
+
+	template <u64 Size>
+	const char* Str<Size>::end() const
+	{
+		return m_buf + m_length - 1;
 	}
 
 	template <u64 Size>

@@ -59,7 +59,6 @@ void ShaderLoader::load(Ref<Shader>& obj, const String& path)
 				gl_field_content.push_back(opengl_line);
 			}
 
-
 			for (auto& content : gl_field_content)
 			{
 				auto trimmed = content.trim();
@@ -104,7 +103,7 @@ void FontLoader::load(Ref<Font>& obj, const String& path)
 		auto tokens = line.split(":");
 		for (auto& str : tokens) { str = str.trim(); }
 
-		if (trimmed.starts_with("data"))
+		if (trimmed.starts_with("path"))
 		{
 			font_path = tokens[1];
 		}

@@ -140,6 +140,9 @@ void Font::free()
 
 int Font::kern_advance(int curr, int next) const
 {
+	// todo: make this fubnction not crap and slow and bad
+	// lookup table?
+
 	for (int i = 0; i < m_kerning_count; i++)
 	{
 		auto kern = m_kerning[i];
@@ -157,12 +160,11 @@ float Font::string_width(const char* str) const
 
 	for (int i = 0; i < cstr::length(str); i++)
 	{
-		auto c = m_characters[str[i]];
+		auto c = character(str[i]);
 
 		result +=
 			c.advance_x +
-			c.draw_offset.x +
-			kern_advance(str[i], str[i+1]);
+			kern_advance(str[i], str[i + 1]);
 	}
 
 	return result;

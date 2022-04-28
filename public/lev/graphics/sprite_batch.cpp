@@ -233,7 +233,7 @@ void SpriteBatch::push_string(
 	int monospaced
 )
 {
-	push_string(str, font, [&](Font::Character c, int idx) -> lev::Vec2F { return Vec2F::zero(); }, align, colour);
+	push_string(str, font, [&](Font::Character c, int idx) -> lev::Vec2F { return Vec2F::zero(); }, align, colour, monospaced);
 }
 
 void SpriteBatch::push_string(
@@ -264,13 +264,14 @@ void SpriteBatch::push_string(
 			break;
 	}
 
-	int cursorx = 0;
+	float cursorx = 0.0f;
+
 	for (int i = 0; i < cstr::length(str); i++)
 	{
 		auto c = font->character(str[i]);
 
 		push_matrix(Mat3x2::create_translation(
-			Vec2F(cursorx + c.draw_offset.x, c.draw_offset.y) +
+			Vec2F(cursorx, c.draw_offset.y) +
 			offsetfn(c, i)
 		));
 
@@ -284,7 +285,9 @@ void SpriteBatch::push_string(
 		}
 		else
 		{
-			cursorx += c.advance_x + font->kern_advance(str[i], str[i + 1]);
+			cursorx +=
+				c.advance_x +
+				font->kern_advance(str[i], str[i + 1]);
 		}
 	}
 
