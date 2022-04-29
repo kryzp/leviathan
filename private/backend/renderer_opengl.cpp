@@ -817,9 +817,9 @@ public:
 
 		glBindVertexArray(m_id);
 		{
+			glBindBuffer(GL_ARRAY_BUFFER, m_vertex_buffer);
 			u64 size = gen_gl_vertex_attribs();
 
-			glBindBuffer(GL_ARRAY_BUFFER, m_vertex_buffer);
 			glBufferData(GL_ARRAY_BUFFER, count * size, vertices, GL_DYNAMIC_DRAW);
 		}
 		glBindVertexArray(0);
@@ -843,9 +843,9 @@ public:
 
 		glBindVertexArray(m_id);
 		{
+			glBindBuffer(GL_ARRAY_BUFFER, m_instance_buffer);
 			u64 size = gen_gl_vertex_attribs();
 
-			glBindBuffer(GL_ARRAY_BUFFER, m_instance_buffer);
 			glBufferData(GL_ARRAY_BUFFER, count * size, instances, GL_DYNAMIC_DRAW);
 		}
 		glBindVertexArray(0);
@@ -1049,7 +1049,7 @@ public:
 			glDrawElementsInstanced(
 				GL_TRIANGLES,
 				pass.mesh->index_count(),
-				get_gl_index_type(pass.mesh->index_format()),
+				GL_UNSIGNED_INT,
 				0,
 				pass.instance_count
 			);
@@ -1059,7 +1059,7 @@ public:
         	glDrawElements(
 				GL_TRIANGLES,
 				pass.mesh->index_count(),
-				get_gl_index_type(pass.mesh->index_format()),
+				GL_UNSIGNED_INT,
 				0
 			);
 		}

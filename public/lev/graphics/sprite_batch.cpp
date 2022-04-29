@@ -89,6 +89,7 @@ void SpriteBatch::render(const Mat4x4& proj, const Ref<Framebuffer>& framebuffer
 		initialize();
 
 	RenderPass pass;
+	pass.instance_count = 0; // for now
 	pass.target = framebuffer;
 
 	// todo: sort by layers
@@ -99,12 +100,12 @@ void SpriteBatch::render(const Mat4x4& proj, const Ref<Framebuffer>& framebuffer
 		if (!b.material.shader())
 			b.material.shader() = m_material_stack[0].shader();
 
-		b.material.shader()->use();
-		b.material.shader()->set(Shader::PROJECTION, proj);
-		b.material.shader()->set(Shader::RESOLUTION, Vec2F(
-			framebuffer ? framebuffer->width() : App::inst()->draw_width(),
-			framebuffer ? framebuffer->height() : App::inst()->draw_height()
-		));
+		b.material.shader()->use()
+			.set(Shader::PROJECTION, proj)
+			.set(Shader::RESOLUTION, Vec2F(
+				framebuffer ? framebuffer->width() : App::inst()->draw_width(),
+				framebuffer ? framebuffer->height() : App::inst()->draw_height()
+			));
 
 		render_batch(pass, b);
 	}
