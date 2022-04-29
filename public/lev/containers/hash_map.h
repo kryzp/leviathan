@@ -1,7 +1,7 @@
 #pragma once
 
 #include <lev/core/util.h>
-#include <functional>
+#include <lev/containers/vector.h>
 
 namespace lev
 {
@@ -37,8 +37,15 @@ namespace lev
 		void insert(const Key& key, const Value& value);
 		Value at(const Key& key);
 		void remove(const Key& key);
+
 		bool contains(const Key& key) const;
 		int index_of(const Key& key) const;
+
+		Entry* begin();
+		const Entry* begin() const;
+
+		lev::Vector<Key> keys() const;
+		lev::Vector<Value> values() const;
 
 	private:
 		void reallocate();
@@ -198,9 +205,51 @@ namespace lev
 	}
 
 	template <typename Key, typename Value>
-	int HashMap<Key, Value>::index_of(const Key& key) const
+	int HashMap<Key, Value>::index_of(const Key& k) const
 	{
-		std::hash<Key> keyhash;
-		return keyhash(key) % m_size;
+		std::hash<Key> H;
+		return H(k) % m_size;
+	}
+
+	template <typename Key, typename Value>
+	typename HashMap<Key, Value>::Entry* HashMap<Key, Value>::begin()
+	{
+		return m_entrys;
+	}
+
+	template <typename Key, typename Value>
+	const typename HashMap<Key, Value>::Entry* HashMap<Key, Value>::begin() const
+	{
+		return m_entrys;
+	}
+
+	template <typename Key, typename Value>
+	lev::Vector<Key> HashMap<Key, Value>::keys() const
+	{
+		lev::Vector<Key> result;
+		Entry* entry = m_entrys;
+
+		while (entry)
+		{
+			result.push_back(entry->key);
+			entry = entry->next;
+		}
+
+		return result;
+	}
+
+	template <typename Key, typename Value>
+	Vector<Value> HashMap<Key, Value>::values() const
+	{
+		lev::Vector<Value> result;
+		Entry* entry = m_entrys;
+
+		while (entry)
+		{
+			result.push_back(entry->value);
+			entry = entry->next;
+		}
+
+		return result;
 	}
 };

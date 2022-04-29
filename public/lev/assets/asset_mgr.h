@@ -44,7 +44,7 @@ namespace lev
 
 		struct AssetListBase { };
 		template <typename T>
-		struct AssetList : public AssetListBase { Vector<T*> assets; };
+		struct AssetList : public AssetListBase { HashMap<lev::String, T*> assets; };
 
 		template <class Asset>
 		u16 retrieve_asset_id()
@@ -69,16 +69,21 @@ namespace lev
 	template <class Asset>
 	Asset* AssetMgr::load(const String& path)
 	{
-		Asset* obj = static_cast<AssetLoader<Asset>*>(
-			m_loaders[retrieve_asset_id<Asset>()]
-		)->load(path);
-
 		AssetListBase* base = m_assets[retrieve_asset_id<Asset>()];
 
 		if (!base)
 			base = new AssetList<Asset>();
 
-		static_cast<AssetList<Asset>*>(base)->assets.push_back(obj);
+		auto* asset_list = static_cast<AssetList<Asset>*>(base);
+
+		if (asset_list->assets.contains(path))
+			return asset_list->assets.at(path);
+
+		Asset* obj = static_cast<AssetLoader<Asset>*>(
+			m_loaders[retrieve_asset_id<Asset>()]
+		)->load(path);
+
+		asset_list->assets.insert(path, obj);
 
 		return obj;
 	}
@@ -91,8 +96,8 @@ namespace lev
 			if (!list)
 				continue;
 
-			for (auto& asset : static_cast<AssetList<Asset>*>(list)->assets)
-				delete asset;
+			for (auto entry = static_cast<AssetList<Asset>*>(list)->assets.begin(); entry; entry = entry->next)
+				delete entry->value;
 		}
 	}
 
