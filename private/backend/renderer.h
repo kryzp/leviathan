@@ -23,6 +23,7 @@ namespace lev
 		u8 depth;
 		RectI viewport;
 		RectI scissor;
+		int instance_count;
 	};
 
 	class Renderer

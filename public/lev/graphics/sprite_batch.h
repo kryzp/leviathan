@@ -38,14 +38,14 @@ namespace lev
 		TEXT_ALIGN_RIGHT
 	};
 
-    enum SBFragMode
+    enum SpriteBatchRenderMode
     {
-        SB_FRAGMODE_NONE,
-        SB_FRAGMODE_ALL        = 1 << 0,
-        SB_FRAGMODE_ALPHA      = 1 << 1,
-        SB_FRAGMODE_RED        = 1 << 2,
-        SB_FRAGMODE_SILHOUETTE = 1 << 3,
-        SB_FRAGMODE_MAX
+        SB_RENDER_MODE_NONE,
+        SB_RENDER_MODE_ALL        = 1 << 0,
+        SB_RENDER_MODE_ALPHA      = 1 << 1,
+        SB_RENDER_MODE_RED        = 1 << 2,
+        SB_RENDER_MODE_SILHOUETTE = 1 << 3,
+        SB_RENDER_MODE_MAX
     };
 
 	class SpriteBatch
@@ -62,10 +62,10 @@ namespace lev
 		///////////////////////////////////////////////////////
 
 		void push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx, u64 idxcount);
-		void push_texture(const TextureRegion& tex, const Colour& colour = Colour::white(), u8 mode = SB_FRAGMODE_ALL);
-		void push_texture(const Ref<Texture>& tex, const Colour& colour = Colour::white(), u8 mode = SB_FRAGMODE_ALL);
-		void push_quad(const Quad& quad, const Colour& colour = Colour::white(), u8 mode = SB_FRAGMODE_ALL);
-		void push_triangle(const Triangle& tri, const Colour& colour = Colour::white(), u8 mode = SB_FRAGMODE_ALL);
+		void push_texture(const TextureRegion& tex, const Colour& colour = Colour::white(), u8 mode = SB_RENDER_MODE_ALL);
+		void push_texture(const Ref<Texture>& tex, const Colour& colour = Colour::white(), u8 mode = SB_RENDER_MODE_ALL);
+		void push_quad(const Quad& quad, const Colour& colour = Colour::white(), u8 mode = SB_RENDER_MODE_ALL);
+		void push_triangle(const Triangle& tri, const Colour& colour = Colour::white(), u8 mode = SB_RENDER_MODE_ALL);
 		void push_string(const char* str, const Ref<Font>& font, u8 align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white(), int monospaced = 0);
 		void push_string(const char* str, const Ref<Font>& font, const std::function<Vec2F(Font::Character,int)>& offsetfn, u8 align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white(), int monospaced = 0);
 		void push_circle(const Circle& circle, u32 accuracy = 40U, const Colour& colour = Colour::white());

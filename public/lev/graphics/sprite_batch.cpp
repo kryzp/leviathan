@@ -12,7 +12,7 @@ SpriteBatch::SpriteBatch()
 {
 	m_layer_stack.push_back(0.0f);
 	m_blend_stack.push_back(BlendMode::generic());
-	m_depth_stack.push_back(LEV_COMPARE_ALWAYS);
+	m_depth_stack.push_back(COMPARE_ALWAYS);
 	m_stencil_stack.push_back(Compare::none());
 	m_scissor_stack.push_back(RectI::zero());
 	m_viewport_stack.push_back(RectI::zero());
@@ -264,28 +264,28 @@ void SpriteBatch::push_string(
 			break;
 	}
 
-	float cursorx = 0.0f;
+	float cursor_x = 0.0f;
 
 	for (int i = 0; i < cstr::length(str); i++)
 	{
 		auto c = font->character(str[i]);
 
 		push_matrix(Mat3x2::create_translation(
-			Vec2F(cursorx + c.draw_offset.x, c.draw_offset.y) +
+			Vec2F(cursor_x + c.draw_offset.x, c.draw_offset.y) +
 			offsetfn(c, i)
 		));
 
-		push_texture(atlas.region(c.bbox), colour, SB_FRAGMODE_RED);
+		push_texture(atlas.region(c.bbox), colour, SB_RENDER_MODE_RED);
 
 		pop_matrix();
 
 		if (monospaced)
 		{
-			cursorx += monospaced;
+			cursor_x += monospaced;
 		}
 		else
 		{
-			cursorx +=
+			cursor_x +=
 				c.advance_x +
 				font->kern_advance(str[i], str[i + 1]);
 		}
@@ -305,7 +305,7 @@ void SpriteBatch::push_circle(const Circle& circle, u32 accuracy, const Colour& 
 		triangle.b = Vec2F::from_angle(theta         , circle.radius) + circle.position;
 		triangle.c = Vec2F::from_angle(theta + dtheta, circle.radius) + circle.position;
 
-		push_triangle(triangle, colour, SB_FRAGMODE_SILHOUETTE);
+		push_triangle(triangle, colour, SB_RENDER_MODE_SILHOUETTE);
 	}
 }
 
@@ -321,7 +321,7 @@ void SpriteBatch::push_line(const Line& line, float thickness, const Colour& col
 		line.b + perp + (Vec2F( thickness,  thickness)*dir)
 	);
 
-	push_quad(quad, colour, SB_FRAGMODE_SILHOUETTE);
+	push_quad(quad, colour, SB_RENDER_MODE_SILHOUETTE);
 }
 
 void SpriteBatch::set_texture(const Ref<Texture>& tex, int idx)

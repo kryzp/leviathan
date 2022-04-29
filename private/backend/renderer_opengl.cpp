@@ -13,6 +13,23 @@
 
 using namespace lev;
 
+static u64 gen_gl_vertex_attribs()
+{
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(0 * sizeof(float)));
+	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(2 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(4 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(8 * sizeof(float)));
+	glEnableVertexAttribArray(3);
+
+	return sizeof(Vertex);
+}
+
 static u32 get_gl_texture_fmt(u8 fmt)
 {
 	switch (fmt)
@@ -159,9 +176,9 @@ static u32 get_gl_compare_face(u8 face)
 {
 	switch (face)
 	{
-		case LEV_FACE_FRONT:			return GL_FRONT;
-		case LEV_FACE_BACK:				return GL_BACK;
-		case LEV_FACE_FRONT_AND_BACK: 	return GL_FRONT_AND_BACK;
+		case FACE_FRONT:			return GL_FRONT;
+		case FACE_BACK:				return GL_BACK;
+		case FACE_FRONT_AND_BACK: 	return GL_FRONT_AND_BACK;
 	}
 
 	return 0;
@@ -171,14 +188,14 @@ static u32 get_gl_compare_func(u8 func)
 {
 	switch (func)
 	{
-		case LEV_COMPARE_NEVER:		return GL_NEVER;
-		case LEV_COMPARE_LESS:		return GL_LESS;
-		case LEV_COMPARE_LEQUAL:	return GL_LEQUAL;
-		case LEV_COMPARE_GREATER:	return GL_GREATER;
-		case LEV_COMPARE_GEQUAL:	return GL_GEQUAL;
-		case LEV_COMPARE_EQUAL:		return GL_EQUAL;
-		case LEV_COMPARE_NOTEQUAL:	return GL_NOTEQUAL;
-		case LEV_COMPARE_ALWAYS:	return GL_ALWAYS;
+		case COMPARE_NEVER:		return GL_NEVER;
+		case COMPARE_LESS:		return GL_LESS;
+		case COMPARE_LEQUAL:	return GL_LEQUAL;
+		case COMPARE_GREATER:	return GL_GREATER;
+		case COMPARE_GEQUAL:	return GL_GEQUAL;
+		case COMPARE_EQUAL:		return GL_EQUAL;
+		case COMPARE_NOTEQUAL:	return GL_NOTEQUAL;
+		case COMPARE_ALWAYS:	return GL_ALWAYS;
 	}
 
 	return 0;
@@ -188,14 +205,14 @@ static u32 get_gl_compare_fail(u8 fail)
 {
 	switch (fail)
 	{
-		case LEV_COMPARE_FAIL_KEEP: 		return GL_KEEP;
-		case LEV_COMPARE_FAIL_ZERO: 		return GL_ZERO;
-		case LEV_COMPARE_FAIL_REPLACE: 		return GL_REPLACE;
-		case LEV_COMPARE_FAIL_INCR: 		return GL_INCR;
-		case LEV_COMPARE_FAIL_INCR_WRAP: 	return GL_INCR_WRAP;
-		case LEV_COMPARE_FAIL_DECR: 		return GL_DECR;
-		case LEV_COMPARE_FAIL_DECR_WRAP: 	return GL_DECR_WRAP;
-		case LEV_COMPARE_FAIL_INVERT: 		return GL_INVERT;
+		case COMPARE_FAIL_KEEP: 		return GL_KEEP;
+		case COMPARE_FAIL_ZERO: 		return GL_ZERO;
+		case COMPARE_FAIL_REPLACE: 		return GL_REPLACE;
+		case COMPARE_FAIL_INCR: 		return GL_INCR;
+		case COMPARE_FAIL_INCR_WRAP: 	return GL_INCR_WRAP;
+		case COMPARE_FAIL_DECR: 		return GL_DECR;
+		case COMPARE_FAIL_DECR_WRAP: 	return GL_DECR_WRAP;
+		case COMPARE_FAIL_INVERT: 		return GL_INVERT;
 	}
 
 	return 0;
@@ -767,6 +784,9 @@ class OpenGLMesh : public Mesh
 	u32 m_index_buffer;
 	u64 m_index_count;
 
+	u32 m_instance_buffer;
+	u64 m_instance_count;
+
 public:
 	OpenGLMesh()
 		: m_id(0)
@@ -774,10 +794,13 @@ public:
 		, m_vertex_count(0)
 		, m_index_buffer(0)
 		, m_index_count(0)
+		, m_instance_buffer(0)
+		, m_instance_count(0)
 	{
 		glGenVertexArrays(1, &m_id);
 		glGenBuffers(1, &m_vertex_buffer);
 		glGenBuffers(1, &m_index_buffer);
+		glGenBuffers(1, &m_instance_buffer);
 	}
 
 	~OpenGLMesh() override
@@ -785,6 +808,7 @@ public:
 		glDeleteVertexArrays(1, &m_id);
 		glDeleteBuffers(1, &m_vertex_buffer);
 		glDeleteBuffers(1, &m_index_buffer);
+		glDeleteBuffers(1, &m_instance_buffer);
 	}
 
 	void vertex_data(const Vertex* vertices, u64 count) override
@@ -793,20 +817,10 @@ public:
 
 		glBindVertexArray(m_id);
 		{
+			u64 size = gen_gl_vertex_attribs();
+
 			glBindBuffer(GL_ARRAY_BUFFER, m_vertex_buffer);
-			glBufferData(GL_ARRAY_BUFFER, count * sizeof(Vertex), vertices, GL_DYNAMIC_DRAW);
-
-			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(0 * sizeof(float)));
-			glEnableVertexAttribArray(0);
-
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(2 * sizeof(float)));
-			glEnableVertexAttribArray(1);
-
-			glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(4 * sizeof(float)));
-			glEnableVertexAttribArray(2);
-
-			glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(8 * sizeof(float)));
-			glEnableVertexAttribArray(3);
+			glBufferData(GL_ARRAY_BUFFER, count * size, vertices, GL_DYNAMIC_DRAW);
 		}
 		glBindVertexArray(0);
 	}
@@ -823,9 +837,39 @@ public:
 		glBindVertexArray(0);
 	}
 
-	u64 vertex_count() const override { return m_vertex_count; }
-	u64 index_count() const override { return m_index_count; }
-	u32 id() const { return m_id; }
+	void instance_data(const Vertex* vertices, const void* instances, u64 count) override
+	{
+		m_instance_count = count;
+
+		glBindVertexArray(m_id);
+		{
+			u64 size = gen_gl_vertex_attribs();
+
+			glBindBuffer(GL_ARRAY_BUFFER, m_instance_buffer);
+			glBufferData(GL_ARRAY_BUFFER, count * size, instances, GL_DYNAMIC_DRAW);
+		}
+		glBindVertexArray(0);
+	}
+
+	u64 vertex_count() const override
+	{
+		return m_vertex_count;
+	}
+
+	u64 index_count() const override
+	{
+		return m_index_count;
+	}
+
+	u64 instance_count() const override
+	{
+		return m_instance_count;
+	}
+
+	u32 id() const
+	{
+		return m_id;
+	}
 };
 
 /*********************************************************/
@@ -969,12 +1013,18 @@ public:
 
 		if (pass.viewport != RectI::zero())
 		{
-			glViewport(pass.viewport.x, pass.viewport.y, pass.viewport.w, pass.viewport.h);
+			glViewport(
+				pass.viewport.x, pass.viewport.y,
+				pass.viewport.w, pass.viewport.h
+			);
 		}
 
 		if (pass.scissor != RectI::zero())
 		{
-			glScissor(pass.scissor.x, pass.scissor.y, pass.scissor.w, pass.scissor.h);
+			glScissor(
+				pass.scissor.x, pass.scissor.y,
+				pass.scissor.w, pass.scissor.h
+			);
 		}
 
 		// blending
@@ -993,7 +1043,27 @@ public:
 		}
 
         glBindVertexArray(mesh->id());
-        glDrawElements(GL_TRIANGLES, pass.mesh->index_count(), GL_UNSIGNED_INT, 0);
+
+		if (pass.instance_count > 0)
+		{
+			glDrawElementsInstanced(
+				GL_TRIANGLES,
+				pass.mesh->index_count(),
+				get_gl_index_type(pass.mesh->index_format()),
+				0,
+				pass.instance_count
+			);
+		}
+		else
+		{
+        	glDrawElements(
+				GL_TRIANGLES,
+				pass.mesh->index_count(),
+				get_gl_index_type(pass.mesh->index_format()),
+				0
+			);
+		}
+
         glBindVertexArray(0);
     }
 
@@ -1001,12 +1071,14 @@ public:
     {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, App::inst()->draw_width(), App::inst()->draw_height());
+
         glClearColor(
                 colour.r,
                 colour.g,
                 colour.b,
                 colour.a
         );
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
 

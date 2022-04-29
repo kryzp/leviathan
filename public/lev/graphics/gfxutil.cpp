@@ -7,10 +7,10 @@ using namespace lev;
 static Colour get_vtx_mode(u8 mode)
 {
     Colour c = 0;
-    c.r = (mode & SB_FRAGMODE_ALL) != 0;
-    c.g = (mode & SB_FRAGMODE_ALPHA) != 0;
-    c.b = (mode & SB_FRAGMODE_RED) != 0;
-    c.a = (mode & SB_FRAGMODE_SILHOUETTE) != 0;
+    c.r = (mode & SB_RENDER_MODE_ALL) != 0;
+    c.g = (mode & SB_RENDER_MODE_ALPHA) != 0;
+    c.b = (mode & SB_RENDER_MODE_RED) != 0;
+    c.a = (mode & SB_RENDER_MODE_SILHOUETTE) != 0;
     return c;
 }
 
