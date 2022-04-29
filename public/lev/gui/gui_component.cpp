@@ -3,8 +3,15 @@
 
 using namespace lev;
 
+GUIComponent::GUIComponent()
+	: use_constraints(false)
+	, enabled(true)
+{
+}
+
 GUIComponent::GUIComponent(const GUIConstraints& c)
 	: constraints(c)
+	, use_constraints(true)
     , enabled(true)
 {
 	this->constraints.constrain(*this);
@@ -23,7 +30,8 @@ void GUIComponent::update()
     if (!enabled)
         return;
 
-	this->constraints.constrain(*this);
+	if (use_constraints)
+		this->constraints.constrain(*this);
 	
 	for (auto& n : components)
         n->update();

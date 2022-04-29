@@ -99,12 +99,12 @@ Transform2D& Transform2D::move(float x, float y)
 	return move(Vec2F(x, y));
 }
 
-Vec2F Transform2D::scale() const
+Size2 Transform2D::scale() const
 {
 	return m_scale;
 }
 
-Transform2D& Transform2D::scale(const Vec2F& v)
+Transform2D& Transform2D::scale(const Size2& v)
 {
 	if (v != m_scale)
 	{
@@ -120,7 +120,7 @@ Transform2D& Transform2D::scale(const Vec2F& v)
 
 Transform2D& Transform2D::scale(float x, float y)
 {
-	return scale(Vec2F(x, y));
+	return scale(Size2(x, y));
 }
 
 float Transform2D::rotation() const

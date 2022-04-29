@@ -4,7 +4,7 @@
 
 using namespace lev;
 
-Ref<ShaderBuffer> ShaderBuffer::create(u64 size)
+ShaderBuffer* ShaderBuffer::create(u64 size)
 {
 	LEV_ASSERT(size > 0, "Size must be > 0");
 	return Renderer::inst()->create_shader_buffer(size);
@@ -17,7 +17,7 @@ void ShaderBuffer::unbind()
 
 //////////////////////////////////////////////////////////
 
-Ref<Shader> Shader::create_single(const lev::String& file)
+Shader* Shader::create_single(const lev::String& file)
 {
 	LEV_ASSERT(file, "Data must not be nullptr")
 
@@ -31,7 +31,7 @@ Ref<Shader> Shader::create_single(const lev::String& file)
 	return Renderer::inst()->create_shader(data);
 }
 
-Ref<Shader> Shader::create_seperated(const lev::String& vertex, const lev::String& fragment, const lev::String& geometry)
+Shader* Shader::create_seperated(const lev::String& vertex, const lev::String& fragment, const lev::String& geometry)
 {
 	LEV_ASSERT(vertex, "Vertex shader must not be nullptr");
 	LEV_ASSERT(fragment, "Fragment shader must not be nullptr");
@@ -59,7 +59,7 @@ Ref<Shader> Shader::create_seperated(const lev::String& vertex, const lev::Strin
 	return Renderer::inst()->create_shader(data);
 }
 
-Ref<Shader> Shader::create_compute_seperated(const lev::String& compute)
+Shader* Shader::create_compute_seperated(const lev::String& compute)
 {
 	LEV_ASSERT(compute, "Compute shader must not be nullptr");
 

@@ -362,7 +362,7 @@ public:
 		release();
 	}
 
-	void bind(int idx) override
+	void bind(int idx) const override
 	{
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, idx, m_id);
 	}
@@ -547,7 +547,7 @@ public:
 		return *this;
 	}
 
-	Shader& set_buffer(const Ref<ShaderBuffer>& buf, int binding) override
+	Shader& set_buffer(const ShaderBuffer* buf, int binding) override
 	{
 		buf->bind(binding);
 		return *this;
@@ -668,7 +668,7 @@ class OpenGLFramebuffer : public Framebuffer
 {
 	u32 m_id;
 	
-	Vector<Ref<Texture>> m_attachments;
+	Vector<Texture*> m_attachments;
 	Vector<GLenum> m_gl_attachments;
 
 	int m_width;
@@ -685,20 +685,20 @@ public:
 
 		for (int i = 0; i < data.attachments.size(); i++)
 		{
-			auto& [texturedata, texturesampler] = data.attachments[i];
+			auto& [texture_data, texture_sampler] = data.attachments[i];
 
 			auto tex = Texture::create(
                 m_width, m_height,
-				texturedata.format,
-				texturedata.internal_format,
-				texturedata.type,
+				texture_data.format,
+				texture_data.internal_format,
+				texture_data.type,
                 nullptr
             );
 
-			auto gltex = (OpenGLTexture*)tex.get();
-			gltex->update(texturesampler);
+			auto gltex = (OpenGLTexture*)tex;
+			gltex->update(texture_sampler);
 
-			if (texturedata.format == TEX_FMT_DEPTH_STENCIL)
+			if (texture_data.format == TEX_FMT_DEPTH_STENCIL)
 			{
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, gltex->id(), 0);
 				m_gl_attachments.push_back(GL_DEPTH_STENCIL_ATTACHMENT);
@@ -739,7 +739,7 @@ public:
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	}
 
-	const Vector<Ref<Texture>>& attachments() const override
+	const Vector<Texture*>& attachments() const override
     {
         return m_attachments;
     }
@@ -956,9 +956,9 @@ public:
 
     void render(const RenderPass& pass) override
     {
-        auto shader = (OpenGLShader*)pass.material.shader().get();
-        auto target = (OpenGLFramebuffer*)pass.target.get();
-        auto mesh = (OpenGLMesh*)pass.mesh.get();
+        auto shader = (OpenGLShader*)pass.material.shader();
+        auto target = (OpenGLFramebuffer*)pass.target;
+        auto mesh = (OpenGLMesh*)pass.mesh;
         auto& blend = pass.blend;
 
         if (target)
@@ -978,7 +978,7 @@ public:
 
         for (int i = 0; i < LEV_MAT_TEXTURES; i++)
         {
-            auto texture = (OpenGLTexture*)pass.material.texture(i).get();
+            auto texture = (OpenGLTexture*)pass.material.texture(i);
             auto sampler = pass.material.sampler(i);
 
 			if (!texture)
@@ -1082,30 +1082,31 @@ public:
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     }
 
-	Ref<Texture> create_texture(const TextureData& data) override
+	Texture* create_texture(const TextureData& data) override
     {
-        return create_ref<OpenGLTexture>(data);
+        return new OpenGLTexture(data);
     }
 
-    Ref<ShaderBuffer> create_shader_buffer(u64 size) override
+    ShaderBuffer* create_shader_buffer(u64 size) override
     {
-        return create_ref<OpenGLShaderBuffer>(size);
+        return new OpenGLShaderBuffer(size);
     }
 
-    Ref<Shader> create_shader(const ShaderData& data) override
+    Shader* create_shader(const ShaderData& data) override
     {
-        return create_ref<OpenGLShader>(data);
+        return new OpenGLShader(data);
     }
 
-    Ref<Framebuffer> create_framebuffer(const FramebufferData& data) override
+    Framebuffer* create_framebuffer(const FramebufferData& data) override
     {
-        return create_ref<OpenGLFramebuffer>(data);
+		return new OpenGLFramebuffer(data);
     }
 
-    Ref<Mesh> create_mesh() override
+    Mesh* create_mesh() override
     {
-        return create_ref<OpenGLMesh>();
+        return new OpenGLMesh();
     }
+
     void unbind_texture() override
     {
         glBindTexture(GL_TEXTURE_2D, 0);

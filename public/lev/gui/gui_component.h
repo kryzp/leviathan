@@ -12,6 +12,7 @@ namespace lev
 	class GUIComponent
 	{
 	public:
+		GUIComponent();
         GUIComponent(const GUIConstraints& c);
 		virtual ~GUIComponent();
 
@@ -39,7 +40,9 @@ namespace lev
 		int height() const;
 		void height(int h);
 
+		bool use_constraints;
 		GUIConstraints constraints;
+
         GUIComponent* parent;
         Vector<GUIComponent*> components;
 

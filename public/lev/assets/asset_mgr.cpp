@@ -9,34 +9,36 @@ using namespace lev;
 class TextureLoader : public AssetLoader<Texture>
 {
 public:
-	void load(Ref<Texture>& obj, const String& path) override;
+	Texture* load(const String& path) override;
 };
 
 class ShaderLoader : public AssetLoader<Shader>
 {
 public:
-	void load(Ref<Shader>& obj, const String& path) override;
+	Shader* load(const String& path) override;
 };
 
 class FontLoader : public AssetLoader<Font>
 {
 public:
-	void load(Ref<Font>& obj, const String& path) override;
+	Font* load(const String& path) override;
 };
 
-void TextureLoader::load(Ref<Texture>& obj, const String& path)
+Texture* TextureLoader::load(const String& path)
 {
 	LEV_ASSERT(!obj, "Object being initialized must not currently exist");
-	obj = Texture::create(path.c_str());
+	return Texture::create(path.c_str());
 }
 
-void ShaderLoader::load(Ref<Shader>& obj, const String& path)
+Shader* ShaderLoader::load(const String& path)
 {
 	LEV_ASSERT(!obj, "Object being initialized must not currently exist");
 
 	FileStream file(path.c_str(), "r");
 	String line = "";
 	s32 getline_cache = 0;
+
+	Shader* result = nullptr;
 
 	float size;
 
@@ -75,16 +77,20 @@ void ShaderLoader::load(Ref<Shader>& obj, const String& path)
 			}
 
 			if (!comp.empty())
-				obj = Shader::create_compute_seperated(comp);
+				result = Shader::create_compute_seperated(comp);
 			else
-				obj = Shader::create_seperated(vert, frag, geom);
+				result = Shader::create_seperated(vert, frag, geom);
 
 			break;
 		}
 	}
+
+	file.close();
+
+	return result;
 }
 
-void FontLoader::load(Ref<Font>& obj, const String& path)
+Font* FontLoader::load(const String& path)
 {
 	LEV_ASSERT(!obj, "Object being initialized must not currently exist");
 
@@ -113,7 +119,7 @@ void FontLoader::load(Ref<Font>& obj, const String& path)
 		}
 	}
 
-	obj = create_ref<Font>(size, font_path.c_str());
+	return new Font(size, font_path.c_str());
 }
 
 AssetMgr::AssetMgr()
@@ -124,4 +130,15 @@ AssetMgr::AssetMgr()
 	register_loader<TextureLoader, Texture>();
 	register_loader<ShaderLoader, Shader>();
 	register_loader<FontLoader, Font>();
+}
+
+AssetMgr::~AssetMgr()
+{
+	unload_all<Texture>();
+	unload_all<Shader>();
+	unload_all<Font>();
+
+	free_load_data<Texture>();
+	free_load_data<Shader>();
+	free_load_data<Font>();
 }

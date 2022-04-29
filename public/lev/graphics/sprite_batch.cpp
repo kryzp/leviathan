@@ -2,6 +2,8 @@
 #include <lev/graphics/gfxutil.h>
 #include <lev/graphics/texture.h>
 #include <lev/graphics/font.h>
+#include <lev/graphics/shader.h>
+
 #include <backend/renderer.h>
 
 using namespace lev;
@@ -9,6 +11,12 @@ using namespace lev;
 SpriteBatch::SpriteBatch()
 	: m_initialized(false)
 	, m_transform_matrix(Mat3x2::identity())
+	, m_material_stack()
+	, m_layer_stack()
+	, m_depth_stack()
+	, m_stencil_stack()
+	, m_scissor_stack()
+	, m_viewport_stack()
 {
 	m_layer_stack.push_back(0.0f);
 	m_blend_stack.push_back(BlendMode::generic());
@@ -17,10 +25,17 @@ SpriteBatch::SpriteBatch()
 	m_scissor_stack.push_back(RectI::zero());
 	m_viewport_stack.push_back(RectI::zero());
 
-	Material mat;
-	mat.texture(0) = nullptr;
-	mat.sampler(0) = TextureSampler::pixel();
-	m_material_stack.push_back(mat);
+	m_material_stack.push_back(Material());
+	m_material_stack.back().set_shader(nullptr);
+	m_material_stack.back().set_texture(0, nullptr);
+	m_material_stack.back().set_sampler(0, TextureSampler::pixel());
+}
+
+SpriteBatch::~SpriteBatch()
+{
+	if (m_material_stack[0].shader())
+		delete m_material_stack[0].shader();
+	m_material_stack[0].set_shader(nullptr);
 }
 
 void SpriteBatch::initialize()
@@ -67,14 +82,14 @@ void SpriteBatch::initialize()
 		cstr::copy(data.seperated.vertex_source, vertex, 512);
 		cstr::copy(data.seperated.fragment_source, fragment, 512);
 
-		m_material_stack[0].shader() = Renderer::inst()->create_shader(data);
+		m_material_stack[0].set_shader(Renderer::inst()->create_shader(data));
 #endif
 	}
 
 	m_initialized = true;
 }
 
-void SpriteBatch::render(const Ref<Framebuffer>& framebuffer, int sort_mode)
+void SpriteBatch::render(const Framebuffer* framebuffer, int sort_mode)
 {
 	render(Mat4x4::create_orthographic(
 		framebuffer ? framebuffer->width() : App::inst()->draw_width(),
@@ -83,7 +98,7 @@ void SpriteBatch::render(const Ref<Framebuffer>& framebuffer, int sort_mode)
 	), framebuffer, sort_mode);
 }
 
-void SpriteBatch::render(const Mat4x4& proj, const Ref<Framebuffer>& framebuffer, int sort_mode)
+void SpriteBatch::render(const Mat4x4& proj, const Framebuffer* framebuffer, int sort_mode)
 {
 	if (!m_initialized)
 		initialize();
@@ -98,7 +113,7 @@ void SpriteBatch::render(const Mat4x4& proj, const Ref<Framebuffer>& framebuffer
 	for (auto& b : m_batches)
 	{
 		if (!b.material.shader())
-			b.material.shader() = m_material_stack[0].shader();
+			b.material.set_shader(m_material_stack[0].shader());
 
 		b.material.shader()->use()
 			.set(Shader::PROJECTION, proj)
@@ -108,6 +123,8 @@ void SpriteBatch::render(const Mat4x4& proj, const Ref<Framebuffer>& framebuffer
 			));
 
 		render_batch(pass, b);
+
+		delete b.mesh;
 	}
 
 	m_batches.clear();
@@ -208,7 +225,7 @@ void SpriteBatch::push_texture(const TextureRegion& tex, const Colour& colour, u
 	push_vertices(vertices, 4, indices, 6);
 }
 
-void SpriteBatch::push_texture(const Ref<Texture>& tex, const Colour& colour, u8 mode)
+void SpriteBatch::push_texture(Texture* tex, const Colour& colour, u8 mode)
 {
 	set_texture(tex);
 
@@ -228,7 +245,7 @@ void SpriteBatch::push_texture(const Ref<Texture>& tex, const Colour& colour, u8
 
 void SpriteBatch::push_string(
 	const char* str,
-	const Ref<Font>& font,
+	const Font* font,
 	u8 align,
 	const Colour& colour,
 	int monospaced
@@ -239,8 +256,8 @@ void SpriteBatch::push_string(
 
 void SpriteBatch::push_string(
 	const char* str,
-	const Ref<Font>& font,
-	const std::function<Vec2F(Font::Character,int)>& offsetfn,
+	const Font* font,
+	const std::function<Vec2F(Font::Character,int)>& offset_fn,
 	u8 align,
 	const Colour& colour,
 	int monospaced
@@ -273,7 +290,7 @@ void SpriteBatch::push_string(
 
 		push_matrix(Mat3x2::create_translation(
 			Vec2F(cursor_x + c.draw_offset.x, c.draw_offset.y) +
-			offsetfn(c, i)
+			offset_fn(c, i)
 		));
 
 		push_texture(atlas.region(c.bbox), colour, SB_RENDER_MODE_RED);
@@ -325,22 +342,22 @@ void SpriteBatch::push_line(const Line& line, float thickness, const Colour& col
 	push_quad(quad, colour, SB_RENDER_MODE_SILHOUETTE);
 }
 
-void SpriteBatch::set_texture(const Ref<Texture>& tex, int idx)
+void SpriteBatch::set_texture(Texture* tex, int idx)
 {
-	m_material_stack.back().texture(idx) = tex;
+	peek_material().set_texture(idx, tex);
 }
 
 void SpriteBatch::set_sampler(const TextureSampler& sampler, int idx)
 {
-	m_material_stack.back().sampler(idx) = sampler;
+	peek_material().set_sampler(idx, sampler);
 }
 
 void SpriteBatch::reset_texture(int idx)
 {
-	m_material_stack.back().texture(idx).reset();
+	peek_material().set_texture(idx, nullptr);
 }
 
-Ref<Texture> SpriteBatch::peek_texture(int idx)
+Texture* SpriteBatch::peek_texture(int idx)
 {
 	return peek_material().texture(idx);
 }
@@ -348,6 +365,39 @@ Ref<Texture> SpriteBatch::peek_texture(int idx)
 const TextureSampler& SpriteBatch::peek_sampler(int idx)
 {
 	return peek_material().sampler(idx);
+}
+
+void SpriteBatch::set_shader(Shader* shd)
+{
+	peek_material().set_shader(shd);
+}
+
+void SpriteBatch::reset_shader()
+{
+	peek_material().set_shader(nullptr);
+}
+
+Shader* SpriteBatch::peek_shader()
+{
+	return peek_material().shader();
+}
+
+void SpriteBatch::push_material(const Material& material)
+{
+	m_material_stack.push_back(material);
+}
+
+Material SpriteBatch::pop_material()
+{
+	if (m_material_stack.size() > 1)
+		return m_material_stack.pop_back();
+
+	return m_material_stack.back();
+}
+
+Material& SpriteBatch::peek_material()
+{
+	return m_material_stack.back();
 }
 
 void SpriteBatch::push_stencil(Compare stencil)
@@ -447,24 +497,6 @@ Mat3x2 SpriteBatch::pop_matrix()
 Mat3x2& SpriteBatch::peek_matrix()
 {
 	return m_transform_matrix;
-}
-
-void SpriteBatch::push_material(const Material& material)
-{
-	m_material_stack.push_back(material);
-}
-
-Material SpriteBatch::pop_material()
-{
-	if (m_material_stack.size() > 1)
-		return m_material_stack.pop_back();
-
-	return m_material_stack.back();
-}
-
-Material& SpriteBatch::peek_material()
-{
-	return m_material_stack.back();
 }
 
 void SpriteBatch::push_blend(const BlendMode& blend)

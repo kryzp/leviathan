@@ -20,40 +20,31 @@ namespace lev
 		AssetLoader() = default;
 		virtual ~AssetLoader() = default;
 
-		virtual void load(Ref<Asset>& obj, const String& path) = 0;
+		virtual Asset* load(const String& path) = 0;
 	};
 
 	class AssetMgr
 	{
 	public:
 		AssetMgr();
+		~AssetMgr();
 
-		template <class Loader, class Asset, typename... Args>
-		void register_loader(Args&&... args);
-
-		template <class Asset>
-		Ref<Asset> load(const String& name, const String& path);
+		template <class Loader, class Asset>
+		void register_loader();
 
 		template <class Asset>
-		void unload(const String& name);
+		Asset* load(const String& path);
 
 		template <class Asset>
-		Ref<Asset> get(const String& name);
-
-		template <class Asset>
-		bool has(const String& name);
+		void unload_all();
 
 	private:
+		template <class Asset>
+		void free_load_data();
+
 		struct AssetListBase { };
-
 		template <typename T>
-		struct AssetList : public AssetListBase
-		{
-			HashMap<String, Ref<T>> assets;
-
-			AssetList() = default;
-			~AssetList() = default;
-		};
+		struct AssetList : public AssetListBase { Vector<T*> assets; };
 
 		template <class Asset>
 		u16 retrieve_asset_id()
@@ -68,53 +59,47 @@ namespace lev
 		u16 m_counter = 0;
 	};
 
-	template <class Loader, class Asset, typename... Args>
-	void AssetMgr::register_loader(Args&&... args)
+	template <class Loader, class Asset>
+	void AssetMgr::register_loader()
 	{
 		u16 id = retrieve_asset_id<Asset>();
-		m_loaders[id] = new Loader(std::forward<Args>(args)...);
+		m_loaders[id] = new Loader();
 	}
 
 	template <class Asset>
-	Ref<Asset> AssetMgr::load(const String& name, const String& path)
+	Asset* AssetMgr::load(const String& path)
 	{
-		Ref<Asset> obj;
-
-		static_cast<AssetLoader<Asset>*>(
+		Asset* obj = static_cast<AssetLoader<Asset>*>(
 			m_loaders[retrieve_asset_id<Asset>()]
-		)->load(obj, path);
+		)->load(path);
 
 		AssetListBase* base = m_assets[retrieve_asset_id<Asset>()];
 
 		if (!base)
 			base = new AssetList<Asset>();
 
-		static_cast<AssetList<Asset>*>(base)->assets.insert(name, obj);
+		static_cast<AssetList<Asset>*>(base)->assets.push_back(obj);
 
 		return obj;
 	}
 
 	template <class Asset>
-	void AssetMgr::unload(const String& name)
+	void AssetMgr::unload_all()
 	{
-		static_cast<AssetList<Asset>*>(
-			m_assets[retrieve_asset_id<Asset>()]
-		)->assets.remove(name);
+		for (auto& list : m_assets)
+		{
+			if (!list)
+				continue;
+
+			for (auto& asset : static_cast<AssetList<Asset>*>(list)->assets)
+				delete asset;
+		}
 	}
 
 	template <class Asset>
-	Ref<Asset> AssetMgr::get(const String& name)
+	void AssetMgr::free_load_data()
 	{
-		return static_cast<AssetList<Asset>*>(
-			m_assets[retrieve_asset_id<Asset>()]
-		)->assets.at(name);
-	}
-
-	template <class Asset>
-	bool AssetMgr::has(const String& name)
-	{
-		return static_cast<AssetList<Asset>*>(
-			m_assets[retrieve_asset_id<Asset>()]
-		)->assets.contains(name);
+		delete static_cast<AssetList<Asset>*>(m_assets[retrieve_asset_id<Asset>()]);
+		delete static_cast<AssetLoader<Asset>*>(m_loaders[retrieve_asset_id<Asset>()]);
 	}
 }

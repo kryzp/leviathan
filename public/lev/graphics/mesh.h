@@ -10,7 +10,7 @@ namespace lev
 	public:
 		virtual ~Mesh() = default;
 
-		static Ref<Mesh> create();
+		static Mesh* create();
 
 		virtual void vertex_data(const Vertex* vertices, u64 count) = 0;
 		virtual void index_data(const u32* indices, u64 count) = 0;

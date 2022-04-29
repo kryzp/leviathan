@@ -25,8 +25,8 @@ namespace lev
         Transform2D& move(const Vec2F& v);
         Transform2D& move(float x, float y);
 
-        Vec2F scale() const;
-        Transform2D& scale(const Vec2F& v);
+		Size2 scale() const;
+        Transform2D& scale(const Size2& v);
         Transform2D& scale(float x, float y);
 
         float rotation() const;
@@ -44,7 +44,7 @@ namespace lev
         Mat3x2 m_matrix;
         Vec2F m_origin;
         Vec2F m_position;
-        Vec2F m_scale;
+        Size2 m_scale;
         float m_rotation;
         bool m_dirty;
     };

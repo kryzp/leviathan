@@ -169,9 +169,9 @@ namespace lev
 		Texture() = default;
 		virtual ~Texture() = default;
 
-		static Ref<Texture> create(const char* path);
-		static Ref<Texture> create(const Image& image, u8 format, u8 internal_format, u8 type);
-		static Ref<Texture> create(u32 width, u32 height, u8 format, u8 internal_format, u8 type, const byte* data);
+		static Texture* create(const char* path);
+		static Texture* create(const Image& image, u8 format, u8 internal_format, u8 type);
+		static Texture* create(u32 width, u32 height, u8 format, u8 internal_format, u8 type, const byte* data);
 
 		static void unbind();
 		static void unbind_image();
@@ -194,7 +194,7 @@ namespace lev
 
     struct TextureRegion
     {
-        Ref<Texture> source;
+        Texture* source;
         RectI bounds;
 
         TextureRegion()
@@ -203,7 +203,7 @@ namespace lev
         {
         }
 
-        TextureRegion(const Ref<Texture>& source, const RectI& bounds = RectI::zero())
+        TextureRegion(Texture* source, const RectI& bounds = RectI::zero())
             : source(source)
             , bounds(bounds)
         {

@@ -22,17 +22,17 @@ namespace lev
 	public:
 		virtual ~Framebuffer() = default;
 
-		static Ref<Framebuffer> create(u32 width, u32 height);
-		static Ref<Framebuffer> create(const FramebufferAttachments& attachments);
+		static Framebuffer* create(u32 width, u32 height);
+		static Framebuffer* create(const FramebufferAttachments& attachments);
 
 		static void unbind();
 
 		virtual void clear(const Colour& colour = Colour::empty()) = 0;
-		virtual const Vector<Ref<Texture>>& attachments() const = 0;
+		virtual const Vector<Texture*>& attachments() const = 0;
 		virtual int attachment_count() const = 0;
 		virtual int width() const = 0;
 		virtual int height() const = 0;
 
-		const Ref<Texture>& attachment(int i) const;
+		const Texture* attachment(int i) const;
 	};
 }

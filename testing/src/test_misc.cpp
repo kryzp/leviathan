@@ -27,14 +27,14 @@ int main()
 
 	AssetMgr assets;
 
-	Ref<Shader> compute_shader_part;
-	Ref<Shader> compute_shader_post;
-	Ref<Shader> shader_colourize;
+	Shader* compute_shader_part;
+	Shader* compute_shader_post;
+	Shader* shader_colourize;
 
-	Ref<Texture> trail_map;
-	Ref<Font> nokiafc;
+	Texture* trail_map;
+	Font* nokiafc;
 
-	Ref<ShaderBuffer> particle_buf;
+	ShaderBuffer* particle_buf;
 	auto* particles = new Particle[PARTICLE_COUNT];
 	for (int i = 0; i < PARTICLE_COUNT; i++)
 	{
@@ -61,10 +61,10 @@ int main()
 			particle_buf = ShaderBuffer::create(sizeof(Particle) * PARTICLE_COUNT);
 			particle_buf->set(particles);
 
-			nokiafc = assets.load<Font>("nokia", "res\\fonts\\nokiafc.levfont");
-			compute_shader_part = assets.load<Shader>("compute_particle", "res\\shaders\\particle.levshader");
-			compute_shader_post = assets.load<Shader>("compute_post", "res\\shaders\\post.levshader");
-			shader_colourize = assets.load<Shader>("colourize", "res\\shaders\\colourize.levshader");
+			nokiafc = assets.load<Font>("res\\fonts\\nokiafc.levfont");
+			compute_shader_part = assets.load<Shader>("res\\shaders\\particle.levshader");
+			compute_shader_post = assets.load<Shader>("res\\shaders\\post.levshader");
+			shader_colourize = assets.load<Shader>("res\\shaders\\colourize.levshader");
 		};
 
 		conf.on_update = [&]()
@@ -89,9 +89,9 @@ int main()
 			App::inst()->clear();
 
 			batch.push_matrix(Mat3x2::create_scale(SCALE));
-			batch.peek_material().shader() = shader_colourize;
+			batch.set_shader(shader_colourize);
 			batch.push_texture(trail_map);
-			batch.peek_material().shader() = nullptr;
+			batch.reset_shader();
 			batch.pop_matrix();
 			
 			batch.render();

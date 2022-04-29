@@ -27,20 +27,20 @@ const TextureSampler& TextureSampler::linear()
 
 ////////////////////////////////////////////////////////////////////////////
 
-Ref<Texture> Texture::create(const char* path)
+Texture* Texture::create(const char* path)
 {
 	LEV_ASSERT(path, "Path must not be nullptr");
 	return create(Image(path), TEX_FMT_RGBA, I_TEX_FMT_RGBA32F, TEX_TYPE_UNSIGNED_BYTE);
 }
 
-Ref<Texture> Texture::create(const Image& image, u8 format, u8 internal_format, u8 type)
+Texture* Texture::create(const Image& image, u8 format, u8 internal_format, u8 type)
 {
 	return create(image.width(), image.height(), format, internal_format, type, image.raw_pixel_data());
 }
 
-Ref<Texture> Texture::create(u32 width, u32 height, u8 format, u8 internal_format, u8 type, const byte* data)
+Texture* Texture::create(u32 width, u32 height, u8 format, u8 internal_format, u8 type, const byte* data)
 {
-	Ref<Texture> result = Renderer::inst()->create_texture(
+	Texture* result = Renderer::inst()->create_texture(
 		TextureData(width, height, format, internal_format, type)
 	);
 

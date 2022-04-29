@@ -52,10 +52,10 @@ namespace lev
 	{
 	public:
 		SpriteBatch();
-		~SpriteBatch() = default;
+		~SpriteBatch();
 
-		void render(const Ref<Framebuffer>& framebuffer = nullptr, int sort_mode = SPRITE_SORT_FTB);
-		void render(const Mat4x4& proj, const Ref<Framebuffer>& framebuffer = nullptr, int sort_mode = SPRITE_SORT_FTB);
+		void render(const Framebuffer* framebuffer = nullptr, int sort_mode = SPRITE_SORT_FTB);
+		void render(const Mat4x4& proj, const Framebuffer* framebuffer = nullptr, int sort_mode = SPRITE_SORT_FTB);
 
 		///////////////////////////////////////////////////////
 		//  W E L C O M E   T O   T H E   P U S H   Z O N E  // (kind of a vibe ngl)
@@ -63,22 +63,29 @@ namespace lev
 
 		void push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx, u64 idxcount);
 		void push_texture(const TextureRegion& tex, const Colour& colour = Colour::white(), u8 mode = SB_RENDER_MODE_ALL);
-		void push_texture(const Ref<Texture>& tex, const Colour& colour = Colour::white(), u8 mode = SB_RENDER_MODE_ALL);
+		void push_texture(Texture* tex, const Colour& colour = Colour::white(), u8 mode = SB_RENDER_MODE_ALL);
 		void push_quad(const Quad& quad, const Colour& colour = Colour::white(), u8 mode = SB_RENDER_MODE_SILHOUETTE);
 		void push_triangle(const Triangle& tri, const Colour& colour = Colour::white(), u8 mode = SB_RENDER_MODE_SILHOUETTE);
-		void push_string(const char* str, const Ref<Font>& font, u8 align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white(), int monospaced = 0);
-		void push_string(const char* str, const Ref<Font>& font, const std::function<Vec2F(Font::Character,int)>& offsetfn, u8 align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white(), int monospaced = 0);
+		void push_string(const char* str, const Font* font, u8 align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white(), int monospaced = 0);
+		void push_string(const char* str, const Font* font, const std::function<Vec2F(Font::Character,int)>& offset_fn, u8 align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white(), int monospaced = 0);
 		void push_circle(const Circle& circle, u32 accuracy = 40U, const Colour& colour = Colour::white());
 		void push_line(const Line& line, float thickness, const Colour& colour = Colour::white());
 
 		///////////////////////////////////////////////////////
 
-		void set_texture(const Ref<Texture>& tex, int idx = 0);
+		void set_texture(Texture* tex, int idx = 0);
 		void set_sampler(const TextureSampler& sampler, int idx = 0);
 		void reset_texture(int idx = 0);
-
-		Ref<Texture> peek_texture(int idx = 0);
+		Texture* peek_texture(int idx = 0);
 		const TextureSampler& peek_sampler(int idx = 0);
+
+		void set_shader(Shader* shd);
+		void reset_shader();
+		Shader* peek_shader();
+
+		void push_material(const Material& material);
+		Material pop_material();
+		Material& peek_material();
 
 		void push_stencil(Compare stencil);
 		Compare pop_stencil();
@@ -104,10 +111,6 @@ namespace lev
 		Mat3x2 pop_matrix();
 		Mat3x2& peek_matrix();
 
-		void push_material(const Material& material);
-		Material pop_material();
-		Material& peek_material();
-
 		void push_blend(const BlendMode& blend);
 		BlendMode pop_blend();
 		BlendMode& peek_blend();
@@ -115,7 +118,7 @@ namespace lev
 	private:
 		struct RenderBatch
 		{
-			Ref<Mesh> mesh;
+			Mesh* mesh;
 			Material material;
 			BlendMode blend;
 			u8 depth;
