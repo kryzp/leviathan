@@ -69,12 +69,10 @@ namespace lev
 	template <class Asset>
 	Asset* AssetMgr::load(const String& path)
 	{
-		AssetListBase* base = m_assets[retrieve_asset_id<Asset>()];
+		if (!m_assets[retrieve_asset_id<Asset>()])
+			m_assets[retrieve_asset_id<Asset>()] = new AssetList<Asset>();
 
-		if (!base)
-			base = new AssetList<Asset>();
-
-		auto* asset_list = static_cast<AssetList<Asset>*>(base);
+		auto* asset_list = static_cast<AssetList<Asset>*>(m_assets[retrieve_asset_id<Asset>()]);
 
 		if (asset_list->assets.contains(path))
 			return asset_list->assets.at(path);
