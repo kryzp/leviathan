@@ -271,7 +271,7 @@ void SpriteBatch::push_string(
 		auto c = font->character(str[i]);
 
 		push_matrix(Mat3x2::create_translation(
-			Vec2F(cursorx, c.draw_offset.y) +
+			Vec2F(cursorx + c.draw_offset.x, c.draw_offset.y) +
 			offsetfn(c, i)
 		));
 
