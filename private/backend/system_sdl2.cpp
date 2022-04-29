@@ -77,6 +77,8 @@ public:
 				log::error("unable to open joystick");
 		}
 
+		show_cursor(cfg.cursor_visible);
+
         return true;
     }
 
@@ -249,6 +251,23 @@ public:
     {
         return SDL_GetTicks64();
     }
+
+	void show_cursor(bool toggle) override
+	{
+		SDL_ShowCursor(toggle ? SDL_ENABLE : SDL_DISABLE);
+	}
+
+	bool cursor_visible() override
+	{
+		int result = SDL_ShowCursor(SDL_QUERY);
+
+		if (result == SDL_ENABLE)
+			return true;
+		else if (result == SDL_DISABLE)
+			return false;
+
+		return true;
+	}
 
     void* stream_from_file(const char* filepath, const char* mode) override
     {

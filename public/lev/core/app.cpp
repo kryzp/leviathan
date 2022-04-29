@@ -160,6 +160,16 @@ const Config& App::config()
 	return m_config;
 }
 
+void App::show_cursor(bool toggle)
+{
+	System::inst()->show_cursor(toggle);
+}
+
+bool App::cursor_visible()
+{
+	return System::inst()->cursor_visible();
+}
+
 int App::window_width()
 {
 	return System::inst()->window_width();

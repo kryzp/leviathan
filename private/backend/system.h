@@ -27,6 +27,9 @@ namespace lev
 		virtual int draw_width() = 0;
 		virtual int draw_height() = 0;
 
+		virtual void show_cursor(bool toggle) = 0;
+		virtual bool cursor_visible() = 0;
+
 		virtual void sleep(u32 ms) = 0;
 		virtual u64 ticks() = 0;
 

@@ -19,6 +19,7 @@ namespace lev
 		int target_fps = 60;
 		bool resizable = false;
 		bool vsync = true;
+		bool cursor_visible = true;
 
 		std::function<void(void)> on_init = nullptr;
 		std::function<void(void)> on_exit = nullptr;
@@ -46,6 +47,9 @@ namespace lev
 		void exit();
 		bool is_running();
 		const Config& config();
+
+		void show_cursor(bool toggle);
+		bool cursor_visible();
 
 		int window_width();
 		int window_height();
