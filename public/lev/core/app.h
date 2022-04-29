@@ -17,6 +17,7 @@ namespace lev
 		int width = 1280;
 		int height = 720;
 		int target_fps = 60;
+		int max_updates = 5;
 		bool resizable = false;
 		bool vsync = true;
 		bool cursor_visible = true;

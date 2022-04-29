@@ -100,7 +100,8 @@ namespace lev
 		extern float elapsed;
 		extern float prev_elapsed;
 		extern float delta;
-		extern u64 loops;
+		extern u64 step_count;
+		extern u64 run_loops;
 	};
 
 	namespace mem

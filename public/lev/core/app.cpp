@@ -73,13 +73,15 @@ void App::run()
 
 	const u64 TIME_TGT = static_cast<u64>(1000.0f / (float)m_config.target_fps);
 
+	time::delta = 1.0f / m_config.target_fps;
+
 	while (m_running)
 	{
 		System::inst()->update();
 
 		// time + update
 		{
-			time::loops++;
+			time::run_loops++;
 
 			u64 ticks = System::inst()->ticks();
 			u64 diff = ticks - prev_ticks;
@@ -94,23 +96,28 @@ void App::run()
                 prev_ticks = ticks;
                 lag += diff;
             }
-			
+
+			uint64_t time_maximum = m_config.max_updates * TIME_TGT;
+			if (lag > time_maximum)
+				lag = time_maximum;
+
 			while (lag >= TIME_TGT)
 			{
 				lag -= TIME_TGT;
-				time::delta = 1.0f / m_config.target_fps;
-				
+
 				time::prev_milliseconds = time::milliseconds;
 				time::milliseconds += TIME_TGT;
 
 				time::prev_elapsed = time::elapsed;
 				time::elapsed += time::delta;
 
+				time::step_count++;
+
 				if (m_config.on_update)
 					m_config.on_update();
-				
-				Input::inst()->update();
 			}
+
+			Input::inst()->update();
 		}
 
 		// render
