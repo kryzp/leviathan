@@ -30,7 +30,7 @@ namespace lev
 		void clear();
 		bool empty() const;
 
-		Str append(const Str& str) const;
+		Str& append(const Str& str);
 
 		Str to_upper() const;
 		Str to_lower() const;
@@ -74,7 +74,7 @@ namespace lev
 		explicit operator const char* () const;
 
 	private:
-		char m_buf[Size];//{0};
+		char* m_buf;
 		u64 m_length;
 	};
 
@@ -84,7 +84,7 @@ namespace lev
 	Str<Size>::Str()
 		: m_length(0)
 	{
-		mem::set(m_buf, 0, Size);
+		m_buf = new char[Size];
 	}
 
 	template <u64 Size>
@@ -92,6 +92,8 @@ namespace lev
 		: m_length(cstr::length(str))
 	{
 		LEV_ASSERT(m_length < (Size - 1), "Length must not exceed maximum size"); // -1 for '\0'
+
+		m_buf = new char[Size];
 		cstr::copy(m_buf, str, m_length);
 		m_buf[m_length] = '\0';
 	}
@@ -101,6 +103,7 @@ namespace lev
 	{
 		LEV_ASSERT(other.m_length < (Size - 1), "Length must not exceed maximum size");
 
+		m_buf = new char[Size];
 		m_length = other.m_length;
 		cstr::copy(m_buf, other.m_buf, other.m_length);
 		m_buf[m_length] = '\0';
@@ -110,22 +113,23 @@ namespace lev
 	Str<Size>::Str(Str&& other) noexcept
 	{
 		LEV_ASSERT(other.m_length < (Size - 1), "Length must not exceed maximum size");
-		
-		if (m_length > other.m_length)
-			mem::set(m_buf, 0, m_length);
+
+		m_buf = new char[Size];
 
 		m_length = std::move(other.m_length);
-		cstr::copy(m_buf, std::move(other.m_buf), m_length);
-		m_buf[m_length] = '\0';
+		m_buf = std::move(other.m_buf);
 
 		other.m_length = 0;
-		mem::set(other.m_buf, 0, other.size());
+		other.m_buf = nullptr;
 	}
 	
 	template <u64 Size>
 	Str<Size>& Str<Size>::operator = (const Str& other)
 	{
 		LEV_ASSERT(other.m_length < (Size - 1), "Length must not exceed maximum size");
+
+		if (!m_buf)
+			m_buf = new char[Size];
 		
 		if (m_length > other.m_length)
 			mem::set(m_buf, 0, m_length);
@@ -141,16 +145,15 @@ namespace lev
 	Str<Size>& Str<Size>::operator = (Str&& other) noexcept
 	{
 		LEV_ASSERT(other.m_length < (Size - 1), "Length must not exceed maximum size");
-		
-		if (m_length > other.m_length)
-			mem::set(m_buf, 0, m_length);
+
+		if (!m_buf)
+			m_buf = new char[Size];
 
 		m_length = std::move(other.m_length);
-		cstr::copy(m_buf, std::move(other.m_buf), other.m_length);
-		m_buf[m_length] = '\0';
+		m_buf = std::move(other.m_buf);
 
 		other.m_length = 0;
-		mem::set(other.m_buf, 0, other.size());
+		other.m_buf = nullptr;
 
 		return *this;
 	}
@@ -159,6 +162,7 @@ namespace lev
 	Str<Size>::~Str()
 	{
 		m_length = 0;
+		delete[] m_buf;
 	}
 
 	template <u64 Size>
@@ -199,15 +203,14 @@ namespace lev
 	}
 
 	template <u64 Size>
-	Str<Size> Str<Size>::append(const Str<Size>& str) const
+	Str<Size>& Str<Size>::append(const Str<Size>& str)
 	{
 		LEV_ASSERT((m_length + str.m_length) < (Size - 1), "Final length must not exceed maximum size");
 
-		Str result = *this;
-		result.m_length += str.length();
-		strncat(result.m_buf, str.m_buf, str.length());
+		m_length += str.length();
+		cstr::cncat(m_buf, str.m_buf, str.length());
 
-		return result;
+		return *this;
 	}
 
 	template <u64 Size>
@@ -421,14 +424,15 @@ namespace lev
 	template <u64 Size>
 	Str<Size> Str<Size>::operator + (const Str<Size>& other) const
 	{
-		return this->append(other);
+		Str str = *this;
+		str.append(other);
+		return str;
 	}
 
 	template <u64 Size>
 	Str<Size>& Str<Size>::operator += (const Str<Size>& other)
 	{
-		*this = this->append(other);
-		return *this;
+		return append(other);
 	}
 
 	template <u64 Size>

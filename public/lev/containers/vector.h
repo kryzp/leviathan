@@ -193,6 +193,7 @@ namespace lev
                 newsize *= 2;
 
 		    T* new_buf = (T*)::operator new (sizeof(T) * newsize);
+			mem::set(new_buf, 0, sizeof(T) * newsize);
 
             for (int i = 0; i < m_count; i++)
             {
