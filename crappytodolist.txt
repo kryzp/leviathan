@@ -1,10 +1,6 @@
 
 * !!! NOT FINISHED THE JOYPAD INPUT ITS CRAP !!!
 
-* .lev asset files since some assets get loaded in differently like e.g shaders
-
 * sounds / music
-
-* actually make the spritebatch 'batch' the data together instead of individually drawing each Batch
 
 * lua???

@@ -41,12 +41,14 @@ namespace lev
         virtual void clear(const Colour& colour = Colour::empty()) = 0;
 
 		virtual Texture* create_texture(const TextureData& data) = 0;
+		virtual ArrayTexture* create_array_texture(const TextureData& data, u32 depth) = 0;
 		virtual Shader* create_shader(const ShaderData& data) = 0;
 		virtual ShaderBuffer* create_shader_buffer(u64 size) = 0;
 		virtual Framebuffer* create_framebuffer(const FramebufferData& data) = 0;
 		virtual Mesh* create_mesh() = 0;
 
 		virtual void unbind_texture() = 0;
+		virtual void unbind_array_texture() = 0;
 		virtual void unbind_texture_image() = 0;
 		virtual void unbind_shader() = 0;
 		virtual void unbind_shader_buffer() = 0;

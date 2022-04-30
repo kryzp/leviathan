@@ -48,67 +48,67 @@ static u32 get_gl_texture_internal_fmt(u8 fmt)
 {
 	switch (fmt)
 	{
-		case I_TEX_FMT_R8: 					return GL_R8;
-		case I_TEX_FMT_R8_SNORM: 			return GL_R8_SNORM;
-		case I_TEX_FMT_R16: 				return GL_R16;
-		case I_TEX_FMT_R16_SNORM: 			return GL_R16_SNORM;
-		case I_TEX_FMT_RG8: 				return GL_RG8;
-		case I_TEX_FMT_RG8_SNORM: 			return GL_RG8_SNORM;
-		case I_TEX_FMT_RG16: 				return GL_RG16;
-		case I_TEX_FMT_RG16_SNORM: 			return GL_RG16_SNORM;
-		case I_TEX_FMT_R3_G3_B2: 			return GL_R3_G3_B2;
-		case I_TEX_FMT_RGB4: 				return GL_RGB4;
-		case I_TEX_FMT_RGB5: 				return GL_RGB5;
-		case I_TEX_FMT_RGB8: 				return GL_RGB8;
-		case I_TEX_FMT_RGB8_SNORM: 			return GL_RGB8_SNORM;
-		case I_TEX_FMT_RGB10: 				return GL_RGB10;
-		case I_TEX_FMT_RGB12: 				return GL_RGB12;
-		case I_TEX_FMT_RGB16_SNORM: 		return GL_RGB16_SNORM;
-		case I_TEX_FMT_RGBA2: 				return GL_RGBA2;
-		case I_TEX_FMT_RGBA4: 				return GL_RGBA4;
-		case I_TEX_FMT_RGB5_A1: 			return GL_RGB5_A1;
-		case I_TEX_FMT_RGBA8: 				return GL_RGBA8;
-		case I_TEX_FMT_RGBA8_SNORM: 		return GL_RGBA8_SNORM;
-		case I_TEX_FMT_RGB10_A2: 			return GL_RGB10_A2;
-		case I_TEX_FMT_RGB10_A2UI: 			return GL_RGB10_A2UI;
-		case I_TEX_FMT_RGBA12: 				return GL_RGBA12;
-		case I_TEX_FMT_RGBA16: 				return GL_RGBA16;
-		case I_TEX_FMT_SRGB8: 				return GL_SRGB8;
-		case I_TEX_FMT_SRGB8_ALPHA8: 		return GL_SRGB8_ALPHA8;
-		case I_TEX_FMT_R16F: 				return GL_R16F;
-		case I_TEX_FMT_RG16F: 				return GL_RG16F;
-		case I_TEX_FMT_RGB16F: 				return GL_RGB16F;
-		case I_TEX_FMT_RGBA16F: 			return GL_RGBA16F;
-		case I_TEX_FMT_R32F: 				return GL_R32F;
-		case I_TEX_FMT_RG32F: 				return GL_RG32F;
-		case I_TEX_FMT_RGB32F: 				return GL_RGB32F;
-		case I_TEX_FMT_RGBA32F: 			return GL_RGBA32F;
-		case I_TEX_FMT_R11F_G11F_B10F: 		return GL_R11F_G11F_B10F;
-		case I_TEX_FMT_RGB9_E5: 			return GL_RGB9_E5;
-		case I_TEX_FMT_R8I: 				return GL_R8I;
-		case I_TEX_FMT_R8UI: 				return GL_R8UI;
-		case I_TEX_FMT_R16I: 				return GL_R16I;
-		case I_TEX_FMT_R16UI: 				return GL_R16UI;
-		case I_TEX_FMT_R32I: 				return GL_R32I;
-		case I_TEX_FMT_R32UI: 				return GL_R32UI;
-		case I_TEX_FMT_RG8I: 				return GL_RG8I;
-		case I_TEX_FMT_RG8UI: 				return GL_RG8UI;
-		case I_TEX_FMT_RG16I: 				return GL_RG16I;
-		case I_TEX_FMT_RG16UI: 				return GL_RG16UI;
-		case I_TEX_FMT_RG32I: 				return GL_RG32I;
-		case I_TEX_FMT_RG32UI: 				return GL_RG32UI;
-		case I_TEX_FMT_RGB8I: 				return GL_RGB8I;
-		case I_TEX_FMT_RGB8UI: 				return GL_RGB8UI;
-		case I_TEX_FMT_RGB16I: 				return GL_RGB16I;
-		case I_TEX_FMT_RGB16UI: 			return GL_RGB16UI;
-		case I_TEX_FMT_RGB32I: 				return GL_RGB32I;
-		case I_TEX_FMT_RGB32UI: 			return GL_RGB32UI;
-		case I_TEX_FMT_RGBA8I: 				return GL_RGBA8I;
-		case I_TEX_FMT_RGBA8UI: 			return GL_RGBA8UI;
-		case I_TEX_FMT_RGBA16I: 			return GL_RGBA16I;
-		case I_TEX_FMT_RGBA16UI: 			return GL_RGBA16UI;
-		case I_TEX_FMT_RGBA32I: 			return GL_RGBA32I;
-		case I_TEX_FMT_RGBA32UI: 			return GL_RGBA32UI;
+		case TEX_I_FMT_R8: 					return GL_R8;
+		case TEX_I_FMT_R8_SNORM: 			return GL_R8_SNORM;
+		case TEX_I_FMT_R16: 				return GL_R16;
+		case TEX_I_FMT_R16_SNORM: 			return GL_R16_SNORM;
+		case TEX_I_FMT_RG8: 				return GL_RG8;
+		case TEX_I_FMT_RG8_SNORM: 			return GL_RG8_SNORM;
+		case TEX_I_FMT_RG16: 				return GL_RG16;
+		case TEX_I_FMT_RG16_SNORM: 			return GL_RG16_SNORM;
+		case TEX_I_FMT_R3_G3_B2: 			return GL_R3_G3_B2;
+		case TEX_I_FMT_RGB4: 				return GL_RGB4;
+		case TEX_I_FMT_RGB5: 				return GL_RGB5;
+		case TEX_I_FMT_RGB8: 				return GL_RGB8;
+		case TEX_I_FMT_RGB8_SNORM: 			return GL_RGB8_SNORM;
+		case TEX_I_FMT_RGB10: 				return GL_RGB10;
+		case TEX_I_FMT_RGB12: 				return GL_RGB12;
+		case TEX_I_FMT_RGB16_SNORM: 		return GL_RGB16_SNORM;
+		case TEX_I_FMT_RGBA2: 				return GL_RGBA2;
+		case TEX_I_FMT_RGBA4: 				return GL_RGBA4;
+		case TEX_I_FMT_RGB5_A1: 			return GL_RGB5_A1;
+		case TEX_I_FMT_RGBA8: 				return GL_RGBA8;
+		case TEX_I_FMT_RGBA8_SNORM: 		return GL_RGBA8_SNORM;
+		case TEX_I_FMT_RGB10_A2: 			return GL_RGB10_A2;
+		case TEX_I_FMT_RGB10_A2UI: 			return GL_RGB10_A2UI;
+		case TEX_I_FMT_RGBA12: 				return GL_RGBA12;
+		case TEX_I_FMT_RGBA16: 				return GL_RGBA16;
+		case TEX_I_FMT_SRGB8: 				return GL_SRGB8;
+		case TEX_I_FMT_SRGB8_ALPHA8: 		return GL_SRGB8_ALPHA8;
+		case TEX_I_FMT_R16F: 				return GL_R16F;
+		case TEX_I_FMT_RG16F: 				return GL_RG16F;
+		case TEX_I_FMT_RGB16F: 				return GL_RGB16F;
+		case TEX_I_FMT_RGBA16F: 			return GL_RGBA16F;
+		case TEX_I_FMT_R32F: 				return GL_R32F;
+		case TEX_I_FMT_RG32F: 				return GL_RG32F;
+		case TEX_I_FMT_RGB32F: 				return GL_RGB32F;
+		case TEX_I_FMT_RGBA32F: 			return GL_RGBA32F;
+		case TEX_I_FMT_R11F_G11F_B10F: 		return GL_R11F_G11F_B10F;
+		case TEX_I_FMT_RGB9_E5: 			return GL_RGB9_E5;
+		case TEX_I_FMT_R8I: 				return GL_R8I;
+		case TEX_I_FMT_R8UI: 				return GL_R8UI;
+		case TEX_I_FMT_R16I: 				return GL_R16I;
+		case TEX_I_FMT_R16UI: 				return GL_R16UI;
+		case TEX_I_FMT_R32I: 				return GL_R32I;
+		case TEX_I_FMT_R32UI: 				return GL_R32UI;
+		case TEX_I_FMT_RG8I: 				return GL_RG8I;
+		case TEX_I_FMT_RG8UI: 				return GL_RG8UI;
+		case TEX_I_FMT_RG16I: 				return GL_RG16I;
+		case TEX_I_FMT_RG16UI: 				return GL_RG16UI;
+		case TEX_I_FMT_RG32I: 				return GL_RG32I;
+		case TEX_I_FMT_RG32UI: 				return GL_RG32UI;
+		case TEX_I_FMT_RGB8I: 				return GL_RGB8I;
+		case TEX_I_FMT_RGB8UI: 				return GL_RGB8UI;
+		case TEX_I_FMT_RGB16I: 				return GL_RGB16I;
+		case TEX_I_FMT_RGB16UI: 			return GL_RGB16UI;
+		case TEX_I_FMT_RGB32I: 				return GL_RGB32I;
+		case TEX_I_FMT_RGB32UI: 			return GL_RGB32UI;
+		case TEX_I_FMT_RGBA8I: 				return GL_RGBA8I;
+		case TEX_I_FMT_RGBA8UI: 			return GL_RGBA8UI;
+		case TEX_I_FMT_RGBA16I: 			return GL_RGBA16I;
+		case TEX_I_FMT_RGBA16UI: 			return GL_RGBA16UI;
+		case TEX_I_FMT_RGBA32I: 			return GL_RGBA32I;
+		case TEX_I_FMT_RGBA32UI: 			return GL_RGBA32UI;
 	}
 
 	return 0;
@@ -251,6 +251,7 @@ public:
 		, m_gl_type(get_gl_texture_type(m_type))
 	{
 		glGenTextures(1, &m_id);
+		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, m_id);
 		glTexImage2D(GL_TEXTURE_2D, 0, m_gl_internal_format, m_width, m_height, 0, m_gl_format, m_gl_type, nullptr);
 		update(TextureSampler::pixel()); // dont remove its needed for compute shaders lol
@@ -278,16 +279,33 @@ public:
 	void generate(const void* data) override
 	{
 		LEV_ASSERT(data, "Data must not be nullptr");
-		glTexImage2D(GL_TEXTURE_2D, 0, m_gl_internal_format, m_width, m_height, 0, m_gl_format, m_gl_type, data);
+
+		glTexImage2D(
+			GL_TEXTURE_2D,
+			0,
+			m_gl_internal_format,
+			m_width, m_height,
+			0,
+			m_gl_format,
+			m_gl_type,
+			data
+		);
 	}
 
 	void get_data(float* buf) override
 	{
 		LEV_ASSERT(buf, "Buffer must not be nullptr");
-		glGetTexImage(GL_TEXTURE_2D, 0, m_gl_format, m_gl_type, buf);
+
+		glGetTexImage(
+			GL_TEXTURE_2D,
+			0,
+			m_gl_format,
+			m_gl_type,
+			buf
+		);
 	}
 
-	void update(const TextureSampler& sampler)
+	void update(const TextureSampler& sampler) const
 	{
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (sampler.wrap_x == TEX_WRAP_CLAMP) ? GL_CLAMP_TO_EDGE : GL_REPEAT); // can we just take a moment to appreciate how nicely the spacing lines up here oh my god
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (sampler.wrap_y == TEX_WRAP_CLAMP) ? GL_CLAMP_TO_EDGE : GL_REPEAT);
@@ -337,6 +355,129 @@ public:
     }
 };
 
+// todo: could this be merged with 'Texture'?
+// lots of duplicate code
+
+class OpenGLArrayTexture : public ArrayTexture
+{
+	u32 m_id;
+
+	u32 m_width;
+	u32 m_height;
+	u32 m_depth;
+
+	u8 m_format;
+	u8 m_internal_format;
+	u8 m_type;
+
+	u32 m_gl_format;
+	u32 m_gl_internal_format;
+	u32 m_gl_type;
+
+public:
+	OpenGLArrayTexture(const TextureData& data, u32 depth)
+		: ArrayTexture()
+		, m_id(0)
+		, m_width(data.width)
+		, m_height(data.height)
+		, m_format(data.format)
+		, m_internal_format(data.internal_format)
+		, m_type(data.type)
+		, m_gl_format(get_gl_texture_fmt(m_format))
+		, m_gl_internal_format(get_gl_texture_internal_fmt(m_internal_format))
+		, m_gl_type(get_gl_texture_type(m_type))
+	{
+		glGenTextures(1, &m_id);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D_ARRAY, m_id);
+
+		glTexImage3D(
+			GL_TEXTURE_2D_ARRAY,
+			0,
+			m_gl_internal_format,
+			data.width, data.height,
+			depth,
+			0,
+			m_gl_format,
+			m_gl_type,
+			nullptr
+		);
+
+		update(TextureSampler::pixel());
+	}
+
+	~OpenGLArrayTexture() override
+	{
+		glDeleteTextures(1, &m_id);
+	}
+
+	void bind(int idx) const override
+	{
+		glActiveTexture(GL_TEXTURE0 + idx);
+		glBindTexture(GL_TEXTURE_2D_ARRAY, m_id);
+	}
+
+	void generate(const void* data) override
+	{
+		LEV_ASSERT(data, "Data must not be nullptr");
+
+		glTexImage3D(
+			GL_TEXTURE_2D_ARRAY,
+			0,
+			m_gl_internal_format,
+			m_width, m_height,
+			m_depth,
+			0,
+			m_gl_format,
+			m_gl_type,
+			data
+		);
+	}
+
+	void update(const TextureSampler& sampler) const
+	{
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (sampler.wrap_x == TEX_WRAP_CLAMP) ? GL_CLAMP_TO_EDGE : GL_REPEAT); // can we just take a moment to appreciate how nicely the spacing lines up here oh my god
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (sampler.wrap_y == TEX_WRAP_CLAMP) ? GL_CLAMP_TO_EDGE : GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sampler.filter == TEX_FILTER_LINEAR) ? GL_LINEAR : GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sampler.filter == TEX_FILTER_LINEAR) ? GL_LINEAR : GL_NEAREST);
+	}
+
+	u32 width() const override
+	{
+		return m_width;
+	}
+
+	u32 height() const override
+	{
+		return m_height;
+	}
+
+	u32 image_count() const override
+	{
+		return m_depth;
+	}
+
+	u8 format() const override
+	{
+		return m_format;
+	}
+
+	u8 internal_format() const override
+	{
+		return m_internal_format;
+	}
+
+	u8 texture_type() const override
+	{
+		return m_type;
+	}
+
+	u32 id() const
+	{
+		return m_id;
+	}
+};
+
 /*********************************************************/
 /* SHADER                                                */
 /*********************************************************/
@@ -348,7 +489,8 @@ class OpenGLShaderBuffer : public ShaderBuffer
 
 public:
 	OpenGLShaderBuffer(u64 size)
-		: m_id(0)
+		: ShaderBuffer()
+		, m_id(0)
 		, m_size(size)
 	{
 		glGenBuffers(1, &m_id);
@@ -357,9 +499,9 @@ public:
 		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	}
 
-	~OpenGLShaderBuffer()
+	~OpenGLShaderBuffer() override
 	{
-		release();
+		glDeleteBuffers(1, &m_id);
 	}
 
 	void bind(int idx) const override
@@ -676,7 +818,8 @@ class OpenGLFramebuffer : public Framebuffer
 
 public:
 	OpenGLFramebuffer(const FramebufferData& data)
-		: m_id(0)
+		: Framebuffer()
+		, m_id(0)
 		, m_width(data.width)
 		, m_height(data.height)
 	{
@@ -789,7 +932,8 @@ class OpenGLMesh : public Mesh
 
 public:
 	OpenGLMesh()
-		: m_id(0)
+		: Mesh()
+		, m_id(0)
 		, m_vertex_buffer(0)
 		, m_vertex_count(0)
 		, m_index_buffer(0)
@@ -1087,6 +1231,11 @@ public:
         return new OpenGLTexture(data);
     }
 
+	ArrayTexture* create_array_texture(const TextureData& data, u32 depth) override
+	{
+		return new OpenGLArrayTexture(data, depth);
+	}
+
     ShaderBuffer* create_shader_buffer(u64 size) override
     {
         return new OpenGLShaderBuffer(size);
@@ -1111,6 +1260,11 @@ public:
     {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
+
+	void unbind_array_texture() override
+	{
+		glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
+	}
 
     void unbind_texture_image() override
     {

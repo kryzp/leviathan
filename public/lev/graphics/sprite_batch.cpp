@@ -43,7 +43,6 @@ void SpriteBatch::initialize()
 	// generic shader
 	{
 #ifdef LEV_USE_OPENGL
-
 		char vertex[512] =
 			"#version 330 core\n"
 			"layout (location = 0) in vec2 a_pos;\n"

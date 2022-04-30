@@ -20,68 +20,68 @@ namespace lev
 
     enum InternalTextureFormat
     {
-        I_TEX_FMT_R8,
-        I_TEX_FMT_R8_SNORM,
-        I_TEX_FMT_R16,
-        I_TEX_FMT_R16_SNORM,
-        I_TEX_FMT_RG8,
-        I_TEX_FMT_RG8_SNORM,
-        I_TEX_FMT_RG16,
-        I_TEX_FMT_RG16_SNORM,
-        I_TEX_FMT_R3_G3_B2,
-        I_TEX_FMT_RGB4,
-        I_TEX_FMT_RGB5,
-        I_TEX_FMT_RGB8,
-        I_TEX_FMT_RGB8_SNORM,
-        I_TEX_FMT_RGB10,
-        I_TEX_FMT_RGB12,
-        I_TEX_FMT_RGB16_SNORM,
-        I_TEX_FMT_RGBA2,
-        I_TEX_FMT_RGBA4,
-        I_TEX_FMT_RGB5_A1,
-        I_TEX_FMT_RGBA8,
-        I_TEX_FMT_RGBA8_SNORM,
-        I_TEX_FMT_RGB10_A2,
-        I_TEX_FMT_RGB10_A2UI,
-        I_TEX_FMT_RGBA12,
-        I_TEX_FMT_RGBA16,
-        I_TEX_FMT_SRGB8,
-        I_TEX_FMT_SRGB8_ALPHA8,
-        I_TEX_FMT_R16F,
-        I_TEX_FMT_RG16F,
-        I_TEX_FMT_RGB16F,
-        I_TEX_FMT_RGBA16F,
-        I_TEX_FMT_R32F,
-        I_TEX_FMT_RG32F,
-        I_TEX_FMT_RGB32F,
-        I_TEX_FMT_RGBA32F,
-        I_TEX_FMT_R11F_G11F_B10F,
-        I_TEX_FMT_RGB9_E5,
-        I_TEX_FMT_R8I,
-        I_TEX_FMT_R8UI,
-        I_TEX_FMT_R16I,
-        I_TEX_FMT_R16UI,
-        I_TEX_FMT_R32I,
-        I_TEX_FMT_R32UI,
-        I_TEX_FMT_RG8I,
-        I_TEX_FMT_RG8UI,
-        I_TEX_FMT_RG16I,
-        I_TEX_FMT_RG16UI,
-        I_TEX_FMT_RG32I,
-        I_TEX_FMT_RG32UI,
-        I_TEX_FMT_RGB8I,
-        I_TEX_FMT_RGB8UI,
-        I_TEX_FMT_RGB16I,
-        I_TEX_FMT_RGB16UI,
-        I_TEX_FMT_RGB32I,
-        I_TEX_FMT_RGB32UI,
-        I_TEX_FMT_RGBA8I,
-        I_TEX_FMT_RGBA8UI,
-        I_TEX_FMT_RGBA16I,
-        I_TEX_FMT_RGBA16UI,
-        I_TEX_FMT_RGBA32I,
-        I_TEX_FMT_RGBA32UI,
-        I_TEX_FMT_MAX
+        TEX_I_FMT_R8,
+        TEX_I_FMT_R8_SNORM,
+        TEX_I_FMT_R16,
+        TEX_I_FMT_R16_SNORM,
+        TEX_I_FMT_RG8,
+        TEX_I_FMT_RG8_SNORM,
+        TEX_I_FMT_RG16,
+        TEX_I_FMT_RG16_SNORM,
+        TEX_I_FMT_R3_G3_B2,
+        TEX_I_FMT_RGB4,
+        TEX_I_FMT_RGB5,
+        TEX_I_FMT_RGB8,
+        TEX_I_FMT_RGB8_SNORM,
+        TEX_I_FMT_RGB10,
+        TEX_I_FMT_RGB12,
+        TEX_I_FMT_RGB16_SNORM,
+        TEX_I_FMT_RGBA2,
+        TEX_I_FMT_RGBA4,
+        TEX_I_FMT_RGB5_A1,
+        TEX_I_FMT_RGBA8,
+        TEX_I_FMT_RGBA8_SNORM,
+        TEX_I_FMT_RGB10_A2,
+        TEX_I_FMT_RGB10_A2UI,
+        TEX_I_FMT_RGBA12,
+        TEX_I_FMT_RGBA16,
+        TEX_I_FMT_SRGB8,
+        TEX_I_FMT_SRGB8_ALPHA8,
+        TEX_I_FMT_R16F,
+        TEX_I_FMT_RG16F,
+        TEX_I_FMT_RGB16F,
+        TEX_I_FMT_RGBA16F,
+        TEX_I_FMT_R32F,
+        TEX_I_FMT_RG32F,
+        TEX_I_FMT_RGB32F,
+        TEX_I_FMT_RGBA32F,
+        TEX_I_FMT_R11F_G11F_B10F,
+        TEX_I_FMT_RGB9_E5,
+        TEX_I_FMT_R8I,
+        TEX_I_FMT_R8UI,
+        TEX_I_FMT_R16I,
+        TEX_I_FMT_R16UI,
+        TEX_I_FMT_R32I,
+        TEX_I_FMT_R32UI,
+        TEX_I_FMT_RG8I,
+        TEX_I_FMT_RG8UI,
+        TEX_I_FMT_RG16I,
+        TEX_I_FMT_RG16UI,
+        TEX_I_FMT_RG32I,
+        TEX_I_FMT_RG32UI,
+        TEX_I_FMT_RGB8I,
+        TEX_I_FMT_RGB8UI,
+        TEX_I_FMT_RGB16I,
+        TEX_I_FMT_RGB16UI,
+        TEX_I_FMT_RGB32I,
+        TEX_I_FMT_RGB32UI,
+        TEX_I_FMT_RGBA8I,
+        TEX_I_FMT_RGBA8UI,
+        TEX_I_FMT_RGBA16I,
+        TEX_I_FMT_RGBA16UI,
+        TEX_I_FMT_RGBA32I,
+        TEX_I_FMT_RGBA32UI,
+        TEX_I_FMT_MAX
     };
 
 	enum TextureType
@@ -148,7 +148,7 @@ namespace lev
             : width(0)
             , height(0)
             , format(TEX_FMT_RGBA)
-            , internal_format(I_TEX_FMT_RGBA32F)
+            , internal_format(TEX_I_FMT_RGBA32F)
             , type(TEX_TYPE_UNSIGNED_BYTE)
         {
         }
@@ -182,8 +182,10 @@ namespace lev
 
 		virtual void bind(int idx) const = 0;
 		virtual void bind_image(int idx) const = 0;
+
 		virtual void generate(const void* data) = 0;
 		virtual void get_data(float* buf) = 0;
+
 		virtual u32 width() const = 0;
 		virtual u32 height() const = 0;
 
@@ -192,23 +194,48 @@ namespace lev
         virtual u8 texture_type() const = 0;
 	};
 
-    struct TextureRegion
-    {
-        Texture* source;
-        RectI bounds;
+	struct TextureRegion
+	{
+		Texture* source;
+		RectI bounds;
 
-        TextureRegion()
-            : source(nullptr)
-            , bounds(RectI::zero())
-        {
-        }
+		TextureRegion()
+			: source(nullptr)
+			, bounds(RectI::zero())
+		{
+		}
 
-        TextureRegion(Texture* source, const RectI& bounds = RectI::zero())
-            : source(source)
-            , bounds(bounds)
-        {
-            if (bounds == RectI::zero())
-                this->bounds = RectI(source->width(), source->height());
-        }
-    };
+		TextureRegion(Texture* source, const RectI& bounds = RectI::zero())
+			: source(source)
+			, bounds(bounds)
+		{
+			if (bounds == RectI::zero())
+				this->bounds = RectI(source->width(), source->height());
+		}
+	};
+
+	class ArrayTexture
+	{
+	public:
+		ArrayTexture() = default;
+		virtual ~ArrayTexture() = default;
+
+		static ArrayTexture* create(const char* path, u32 image_count);
+		static ArrayTexture* create(const Image& image, u8 format, u8 internal_format, u8 type, u32 image_count);
+		static ArrayTexture* create(u32 width, u32 height, u8 format, u8 internal_format, u8 type, u32 image_count, const byte* data);
+
+		static void unbind();
+
+		virtual void bind(int idx) const = 0;
+
+		virtual void generate(const void* data) = 0;
+
+		virtual u32 width() const = 0;
+		virtual u32 height() const = 0;
+		virtual u32 image_count() const = 0;
+
+		virtual u8 format() const = 0;
+		virtual u8 internal_format() const = 0;
+		virtual u8 texture_type() const = 0;
+	};
 }

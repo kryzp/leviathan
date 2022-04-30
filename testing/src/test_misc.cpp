@@ -56,7 +56,7 @@ int main()
 
 		conf.on_init = [&]()
 		{
-			trail_map = Texture::create(SIM_WIDTH, SIM_HEIGHT, TEX_FMT_RGBA, I_TEX_FMT_RGBA32F, TEX_TYPE_UNSIGNED_BYTE, nullptr);
+			trail_map = Texture::create(SIM_WIDTH, SIM_HEIGHT, TEX_FMT_RGBA, TEX_I_FMT_RGBA32F, TEX_TYPE_UNSIGNED_BYTE, nullptr);
 
 			particle_buf = ShaderBuffer::create(sizeof(Particle) * PARTICLE_COUNT);
 			particle_buf->set(particles);

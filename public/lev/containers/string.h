@@ -85,6 +85,7 @@ namespace lev
 		: m_length(0)
 	{
 		m_buf = new char[Size];
+		mem::set(m_buf, 0, Size);
 	}
 
 	template <u64 Size>
@@ -104,8 +105,10 @@ namespace lev
 		LEV_ASSERT(other.m_length < (Size - 1), "Length must not exceed maximum size");
 
 		m_buf = new char[Size];
+
 		m_length = other.m_length;
 		cstr::copy(m_buf, other.m_buf, other.m_length);
+
 		m_buf[m_length] = '\0';
 	}
 	

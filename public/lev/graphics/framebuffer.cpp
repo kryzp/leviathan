@@ -6,7 +6,7 @@ using namespace lev;
 Framebuffer* Framebuffer::create(u32 width, u32 height)
 {
 	static const FramebufferAttachments attachment = {
-        Pair(TextureData(width, height, TEX_FMT_RGBA, I_TEX_FMT_RGBA32F, TEX_TYPE_UNSIGNED_BYTE), TextureSampler::pixel())
+        Pair(TextureData(width, height, TEX_FMT_RGBA, TEX_I_FMT_RGBA32F, TEX_TYPE_UNSIGNED_BYTE), TextureSampler::pixel())
     };
 
 	return create(attachment);
