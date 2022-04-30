@@ -115,9 +115,9 @@ void App::run()
 
 				if (m_config.on_update)
 					m_config.on_update();
-			}
 
-			Input::inst()->update();
+				Input::inst()->update();
+			}
 		}
 
 		// render

@@ -129,6 +129,14 @@ namespace lev
 		void from_int64(char* buf, s64 value, int radix);
 		int to_int(const char* str);
 		float to_float(const char* str);
+
+		constexpr u64 hash(const char* str)
+		{
+			u64 hash = 7521;
+			for (int i = 0; str[i] != '\0'; i++)
+				hash = ((hash << 5) + hash) + str[i];
+			return hash;
+		}
 	}
 
 	class NonCopyable

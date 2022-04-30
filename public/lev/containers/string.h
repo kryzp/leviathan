@@ -464,10 +464,7 @@ namespace std
 	{
 		std::size_t operator()(const lev::String& k) const
 		{
-			std::size_t hash = 7521;
-			for (int i = 0; i < k.length(); i++)
-				hash = ((hash << 5) + hash) + k[i];
-			return hash;
+			return lev::cstr::hash(k.c_str());
 		}
 	};
 }
