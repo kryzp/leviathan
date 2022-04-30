@@ -47,7 +47,7 @@ char cstr::to_upper(int c)
 
 char cstr::to_lower(int c)
 {
-	return ::toupper(c);
+	return ::tolower(c);
 }
 
 void cstr::from_int(char* buf, s32 value, int radix)
