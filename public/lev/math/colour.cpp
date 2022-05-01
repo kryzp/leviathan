@@ -27,7 +27,7 @@ Colour::Colour(u32 packed)
 {
 }
 
-Colour Colour::from_hsv(float hue, float sat, float val, float alpha)
+Colour Colour::from_hsv(float hue, float sat, float val, u8 alpha)
 {
 	float C = sat * val;
 	float X = C * (1 - calc::abs(calc::mod(hue / 60.0f, 2) - 1));
@@ -72,7 +72,7 @@ Colour Colour::from_hsv(float hue, float sat, float val, float alpha)
 		b = X;
 	}
 
-	return Colour(r, g, b, alpha);
+	return Colour(r * 255.0f, g * 255.0f, b * 255.0f, alpha);
 }
 
 void Colour::premultiply()

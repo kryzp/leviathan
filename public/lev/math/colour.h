@@ -33,7 +33,7 @@ namespace lev
 		static const Colour& magenta();
 		static const Colour& cyan();
 
-		static Colour from_hsv(float hue, float sat, float val, float alpha = 1.0f);
+		static Colour from_hsv(float hue, float sat, float val, u8 alpha = 255);
 
 		void premultiply();
 		Colour premultiplied() const;
