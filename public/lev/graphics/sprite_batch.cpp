@@ -24,11 +24,7 @@ SpriteBatch::SpriteBatch()
 	m_stencil_stack.push_back(Compare::none());
 	m_scissor_stack.push_back(RectI::zero());
 	m_viewport_stack.push_back(RectI::zero());
-
 	m_material_stack.push_back(Material());
-	m_material_stack.back().set_shader(nullptr);
-	m_material_stack.back().set_texture(0, nullptr);
-	m_material_stack.back().set_sampler(0, TextureSampler::pixel());
 }
 
 SpriteBatch::~SpriteBatch()
@@ -82,6 +78,8 @@ void SpriteBatch::initialize()
 		cstr::copy(data.seperated.fragment_source, fragment, 512);
 
 		m_material_stack[0].set_shader(Renderer::inst()->create_shader(data));
+		m_material_stack[0].set_texture(0, nullptr);
+		m_material_stack[0].set_sampler(0, TextureSampler::pixel());
 #endif
 	}
 
@@ -366,14 +364,15 @@ const TextureSampler& SpriteBatch::peek_sampler(int idx)
 	return peek_material().sampler(idx);
 }
 
-void SpriteBatch::set_shader(Shader* shd)
+void SpriteBatch::push_shader(Shader* shd)
 {
+	push_material(peek_material());
 	peek_material().set_shader(shd);
 }
 
-void SpriteBatch::reset_shader()
+Shader* SpriteBatch::pop_shader()
 {
-	peek_material().set_shader(nullptr);
+	return pop_material().shader();
 }
 
 Shader* SpriteBatch::peek_shader()

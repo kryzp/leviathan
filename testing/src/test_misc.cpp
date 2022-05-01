@@ -102,9 +102,9 @@ int main()
 			App::inst()->clear();
 
 			batch.push_matrix(Mat3x2::create_scale(SCALE));
-			batch.set_shader(shader_colourize);
+			batch.push_shader(shader_colourize);
 			batch.push_texture(trail_map);
-			batch.reset_shader();
+			batch.pop_shader();
 			batch.pop_matrix();
 			
 			batch.render();

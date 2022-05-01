@@ -79,8 +79,8 @@ namespace lev
 		Texture* peek_texture(int idx = 0);
 		const TextureSampler& peek_sampler(int idx = 0);
 
-		void set_shader(Shader* shd);
-		void reset_shader();
+		void push_shader(Shader* shd);
+		Shader* pop_shader();
 		Shader* peek_shader();
 
 		void push_material(const Material& material);
