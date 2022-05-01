@@ -12,8 +12,8 @@ namespace lev
 	{
 		Vec2F pos;
 		Vec2F uv;
-		Colour col;
-		Colour mode;
+		float col[4];
+		float mode[4];
 	};
 
 	namespace GfxUtil

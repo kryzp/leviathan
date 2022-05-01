@@ -226,16 +226,16 @@ class OpenGLTexture : public Texture
 {
 	u32 m_id;
 
-    u32 m_width;
-    u32 m_height;
+	u32 m_width;
+	u32 m_height;
 
 	u8 m_format;
 	u8 m_internal_format;
 	u8 m_type;
 
-    u32 m_gl_format;
-    u32 m_gl_internal_format;
-    u32 m_gl_type;
+	u32 m_gl_format;
+	u32 m_gl_internal_format;
+	u32 m_gl_type;
 
 public:
 	OpenGLTexture(const TextureData& data)
@@ -319,40 +319,40 @@ public:
 
 		glCopyImageSubData(
 			m_id,				  GL_TEXTURE_2D, 0, 0, 0, 0,
-            cast_other_ptr->m_id, GL_TEXTURE_2D, 0, 0, 0, 0,
+			cast_other_ptr->m_id, GL_TEXTURE_2D, 0, 0, 0, 0,
 			m_width, m_height, 1
 		);
 	}
 
-    u32 width() const override
-    {
-        return m_width;
-    }
+	u32 width() const override
+	{
+		return m_width;
+	}
 
-    u32 height() const override
-    {
-        return m_height;
-    }
+	u32 height() const override
+	{
+		return m_height;
+	}
 
 	u8 format() const override
-    {
-        return m_format;
-    }
+	{
+		return m_format;
+	}
 
-    u8 internal_format() const override
-    {
-        return m_internal_format;
-    }
+	u8 internal_format() const override
+	{
+		return m_internal_format;
+	}
 
-    u8 texture_type() const override
-    {
-        return m_type;
-    }
+	u8 texture_type() const override
+	{
+		return m_type;
+	}
 
 	u32 id() const
-    {
-        return m_id;
-    }
+	{
+		return m_id;
+	}
 };
 
 // todo: could this be merged with 'Texture'?
@@ -523,28 +523,28 @@ public:
 	}
 
 	u64 size() const override
-    {
-        return m_size;
-    }
+	{
+		return m_size;
+	}
 
 	u32 id() const
-    {
-        return m_id;
-    }
+	{
+		return m_id;
+	}
 };
 
 class OpenGLShader : public Shader
 {
-    GLuint m_id;
+	GLuint m_id;
 	u8 m_type;
-    HashMap<String, GLint> m_gl_uniforms;
+	HashMap<String, GLint> m_gl_uniforms;
 
-    GLint get_uniform_location(const String& name)
-    {
-        if (!m_gl_uniforms.contains(name))
-            m_gl_uniforms.insert(name, glGetUniformLocation(m_id, name.c_str()));
-        return m_gl_uniforms.at(name);
-    }
+	GLint get_uniform_location(const String& name)
+	{
+		if (!m_gl_uniforms.contains(name))
+			m_gl_uniforms.insert(name, glGetUniformLocation(m_id, name.c_str()));
+		return m_gl_uniforms.at(name);
+	}
 
 public:
 	OpenGLShader(const ShaderData& data)
@@ -573,7 +573,7 @@ public:
 		{
 			const char* compute_data = compute_source;
 
-            GLuint compute = glCreateShader(GL_COMPUTE_SHADER);
+			GLuint compute = glCreateShader(GL_COMPUTE_SHADER);
 			glShaderSource(compute, 1, &compute_data, nullptr);
 			glCompileShader(compute);
 			glAttachShader(id, compute);
@@ -595,7 +595,7 @@ public:
 			const char* fragment_data = data.seperated.fragment_source;
 			const char* geometry_data = data.seperated.geometry_source;
 
-            GLuint vertex = glCreateShader(GL_VERTEX_SHADER);
+			GLuint vertex = glCreateShader(GL_VERTEX_SHADER);
 			glShaderSource(vertex, 1, &vertex_data, nullptr);
 			glCompileShader(vertex);
 
@@ -606,7 +606,7 @@ public:
 				log::error("failed to compile vertex shader: %s", infolog);
 			}
 
-            GLuint fragment = glCreateShader(GL_FRAGMENT_SHADER);
+			GLuint fragment = glCreateShader(GL_FRAGMENT_SHADER);
 			glShaderSource(fragment, 1, &fragment_data, nullptr);
 			glCompileShader(fragment);
 
@@ -617,7 +617,7 @@ public:
 				log::error("failed to compile fragment shader: %s", infolog);
 			}
 
-            GLuint geometry = 0;
+			GLuint geometry = 0;
 			if (data.seperated.has_geometry)
 			{
 				geometry = glCreateShader(GL_GEOMETRY_SHADER);
@@ -706,100 +706,100 @@ public:
 	}
 
 	Shader& set(const char* name, bool value) override
-    {
-        glUniform1i(get_uniform_location(name), value);
-        return *this;
-    }
+	{
+		glUniform1i(get_uniform_location(name), value);
+		return *this;
+	}
 
 	Shader& set(const char* name, bool* values, int count) override
-    {
-        glUniform1iv(get_uniform_location(name), count, (GLint*)values);
-        return *this;
-    }
+	{
+		glUniform1iv(get_uniform_location(name), count, (GLint*)values);
+		return *this;
+	}
 
 	Shader& set(const char* name, int value) override
-    {
-        glUniform1i(get_uniform_location(name), value);
-        return *this;
-    }
+	{
+		glUniform1i(get_uniform_location(name), value);
+		return *this;
+	}
 
 	Shader& set(const char* name, int* values, int count) override
-    {
-        glUniform1iv(get_uniform_location(name), count, (GLint*)values);
-        return *this;
-    }
+	{
+		glUniform1iv(get_uniform_location(name), count, (GLint*)values);
+		return *this;
+	}
 
 	Shader& set(const char* name, float value) override
-    {
-        glUniform1f(get_uniform_location(name), value);
-        return *this;
-    }
+	{
+		glUniform1f(get_uniform_location(name), value);
+		return *this;
+	}
 
 	Shader& set(const char* name, float* values, int count) override
-    {
-        glUniform1fv(get_uniform_location(name), count, values);
-        return *this;
-    }
+	{
+		glUniform1fv(get_uniform_location(name), count, values);
+		return *this;
+	}
 
 	Shader& set(const char* name, const Vec2I& value) override
-    {
-        glUniform2i(get_uniform_location(name), value.x, value.y);
-        return *this;
-    }
+	{
+		glUniform2i(get_uniform_location(name), value.x, value.y);
+		return *this;
+	}
 
 	Shader& set(const char* name, const Vec2I* values, int count) override
-    {
-        glUniform2iv(get_uniform_location(name), count, (GLint*)values);
-        return *this;
-    }
+	{
+		glUniform2iv(get_uniform_location(name), count, (GLint*)values);
+		return *this;
+	}
 
 	Shader& set(const char* name, const Vec2F& value) override
-    {
-        glUniform2f(get_uniform_location(name), value.x, value.y);
-        return *this;
-    }
+	{
+		glUniform2f(get_uniform_location(name), value.x, value.y);
+		return *this;
+	}
 
 	Shader& set(const char* name, const Vec2F* values, int count) override
-    {
-        glUniform2fv(get_uniform_location(name), count, (GLfloat*)values);
-        return *this;
-    }
+	{
+		glUniform2fv(get_uniform_location(name), count, (GLfloat*)values);
+		return *this;
+	}
 
 	Shader& set(const char* name, const Vec3I& value) override
-    {
-        glUniform3i(get_uniform_location(name), value.x, value.y, value.z);
-        return *this;
-    }
+	{
+		glUniform3i(get_uniform_location(name), value.x, value.y, value.z);
+		return *this;
+	}
 
 	Shader& set(const char* name, const Vec3I* values, int count) override
-    {
-        glUniform3iv(get_uniform_location(name), count, (GLint*)values);
-        return *this;
-    }
+	{
+		glUniform3iv(get_uniform_location(name), count, (GLint*)values);
+		return *this;
+	}
 
 	Shader& set(const char* name, const Vec3F& value) override
-    {
-        glUniform3f(get_uniform_location(name), value.x, value.y, value.z);
-        return *this;
-    }
+	{
+		glUniform3f(get_uniform_location(name), value.x, value.y, value.z);
+		return *this;
+	}
 
 	Shader& set(const char* name, const Vec3F* values, int count) override
-    {
-        glUniform3fv(get_uniform_location(name), count, (GLfloat*)values);
-        return *this;
-    }
+	{
+		glUniform3fv(get_uniform_location(name), count, (GLfloat*)values);
+		return *this;
+	}
 
 	Shader& set(const char* name, const Mat3x2& value) override
-    {
-        glUniformMatrix3x2fv(get_uniform_location(name), 1, GL_FALSE, value.value_ptr());
-        return *this;
-    }
+	{
+		glUniformMatrix3x2fv(get_uniform_location(name), 1, GL_FALSE, value.value_ptr());
+		return *this;
+	}
 
 	Shader& set(const char* name, const Mat4x4& value) override
-    {
-        glUniformMatrix4fv(get_uniform_location(name), 1, GL_FALSE, value.value_ptr());
-        return *this;
-    }
+	{
+		glUniformMatrix4fv(get_uniform_location(name), 1, GL_FALSE, value.value_ptr());
+		return *this;
+	}
 };
 
 /*********************************************************/
@@ -831,12 +831,12 @@ public:
 			auto& [texture_data, texture_sampler] = data.attachments[i];
 
 			auto tex = Texture::create(
-                m_width, m_height,
+				m_width, m_height,
 				texture_data.format,
 				texture_data.internal_format,
 				texture_data.type,
-                nullptr
-            );
+				nullptr
+			);
 
 			auto gltex = (OpenGLTexture*)tex;
 			gltex->update(texture_sampler);
@@ -873,44 +873,44 @@ public:
 		glViewport(0, 0, m_width, m_height);
 
 		glClearColor(
-			colour.r,
-			colour.g,
-			colour.b,
-			colour.a
+			(float)colour.r / 255.0f,
+			(float)colour.g / 255.0f,
+			(float)colour.b / 255.0f,
+			(float)colour.a / 255.0f
 		);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	}
 
 	const Vector<Texture*>& attachments() const override
-    {
-        return m_attachments;
-    }
+	{
+		return m_attachments;
+	}
 
 	const Vector<GLenum>& gl_attachments() const
-    {
-        return m_gl_attachments;
-    }
+	{
+		return m_gl_attachments;
+	}
 
 	int attachment_count() const override
-    {
-        return m_attachments.size();
-    }
+	{
+		return m_attachments.size();
+	}
 
 	int width() const override
-    {
-        return m_width;
-    }
+	{
+		return m_width;
+	}
 
 	int height() const override
-    {
-        return m_height;
-    }
+	{
+		return m_height;
+	}
 
 	u32 id() const
-    {
-        return m_id;
-    }
+	{
+		return m_id;
+	}
 };
 
 /*********************************************************/
@@ -1025,113 +1025,113 @@ static const GLenum COLOUR_ATTACHMENT_0 = GL_COLOR_ATTACHMENT0;
 
 // yes pt.2
 static const char* UNIFORM_TEXTURE_NAMES[] = {
-        "lev_texture_0",
-        "lev_texture_1",
-        "lev_texture_2",
-        "lev_texture_3",
-        "lev_texture_4",
-        "lev_texture_5",
-        "lev_texture_6",
-        "lev_texture_7",
-        "lev_texture_8",
-        "lev_texture_9",
-        "lev_texture_10",
-        "lev_texture_11",
-        "lev_texture_12",
-        "lev_texture_13",
-        "lev_texture_14",
-        "lev_texture_15",
-        "lev_texture_16",
-        "lev_texture_17",
-        "lev_texture_18",
-        "lev_texture_19",
-        "lev_texture_20",
-        "lev_texture_21",
-        "lev_texture_22",
-        "lev_texture_23",
-        "lev_texture_24",
-        "lev_texture_25",
-        "lev_texture_26",
-        "lev_texture_27",
-        "lev_texture_28",
-        "lev_texture_29",
-        "lev_texture_30",
-        "lev_texture_31",
+		"lev_texture_0",
+		"lev_texture_1",
+		"lev_texture_2",
+		"lev_texture_3",
+		"lev_texture_4",
+		"lev_texture_5",
+		"lev_texture_6",
+		"lev_texture_7",
+		"lev_texture_8",
+		"lev_texture_9",
+		"lev_texture_10",
+		"lev_texture_11",
+		"lev_texture_12",
+		"lev_texture_13",
+		"lev_texture_14",
+		"lev_texture_15",
+		"lev_texture_16",
+		"lev_texture_17",
+		"lev_texture_18",
+		"lev_texture_19",
+		"lev_texture_20",
+		"lev_texture_21",
+		"lev_texture_22",
+		"lev_texture_23",
+		"lev_texture_24",
+		"lev_texture_25",
+		"lev_texture_26",
+		"lev_texture_27",
+		"lev_texture_28",
+		"lev_texture_29",
+		"lev_texture_30",
+		"lev_texture_31",
 };
 
 class OpenGLRenderer : public Renderer
 {
-    void* m_context = nullptr;
+	void* m_context = nullptr;
 
 public:
-    bool init() override
-    {
-        m_context = System::inst()->gl_context_create();
-        System::inst()->gl_context_make_current(m_context);
+	bool init() override
+	{
+		m_context = System::inst()->gl_context_create();
+		System::inst()->gl_context_make_current(m_context);
 
-        if (!System::inst()->gl_load_glad_loader())
-        {
-            std::cout << "failed to initialize glad" << std::endl;
-            return false;
-        }
+		if (!System::inst()->gl_load_glad_loader())
+		{
+			std::cout << "failed to initialize glad" << std::endl;
+			return false;
+		}
 
 		glEnable(GL_BLEND);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_STENCIL_TEST);
 		glEnable(GL_SCISSOR_TEST);
 
-        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-        return true;
-    }
+		return true;
+	}
 
-    void destroy() override
-    {
-        System::inst()->gl_context_destroy(m_context);
-    }
+	void destroy() override
+	{
+		System::inst()->gl_context_destroy(m_context);
+	}
 
-    void before_render() override
-    {
-    }
+	void before_render() override
+	{
+	}
 
-    void after_render() override
-    {
-    }
+	void after_render() override
+	{
+	}
 
-    void render(const RenderPass& pass) override
-    {
-        auto shader = (OpenGLShader*)pass.material.shader();
-        auto target = (OpenGLFramebuffer*)pass.target;
-        auto mesh = (OpenGLMesh*)pass.mesh;
-        auto& blend = pass.blend;
+	void render(const RenderPass& pass) override
+	{
+		auto shader = (OpenGLShader*)pass.material.shader();
+		auto target = (OpenGLFramebuffer*)pass.target;
+		auto mesh = (OpenGLMesh*)pass.mesh;
+		auto& blend = pass.blend;
 
-        if (target)
-        {
-            target->bind();
-            glDrawBuffers(target->gl_attachments().size(), target->gl_attachments().begin());
-            glViewport(0, 0, target->width(), target->height());
-        }
-        else
-        {
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            glDrawBuffers(1, &COLOUR_ATTACHMENT_0);
-            glViewport(0, 0, App::inst()->draw_width(), App::inst()->draw_height());
-        }
+		if (target)
+		{
+			target->bind();
+			glDrawBuffers(target->gl_attachments().size(), target->gl_attachments().begin());
+			glViewport(0, 0, target->width(), target->height());
+		}
+		else
+		{
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glDrawBuffers(1, &COLOUR_ATTACHMENT_0);
+			glViewport(0, 0, App::inst()->draw_width(), App::inst()->draw_height());
+		}
 
-        shader->use();
+		shader->use();
 
-        for (int i = 0; i < LEV_MAT_TEXTURES; i++)
-        {
-            auto texture = (OpenGLTexture*)pass.material.texture(i);
-            auto sampler = pass.material.sampler(i);
+		for (int i = 0; i < LEV_MAT_TEXTURES; i++)
+		{
+			auto texture = (OpenGLTexture*)pass.material.texture(i);
+			auto sampler = pass.material.sampler(i);
 
 			if (!texture)
 				continue;
 
-            texture->bind(i);
-            texture->update(sampler);
-            shader->set(UNIFORM_TEXTURE_NAMES[i], i);
-        }
+			texture->bind(i);
+			texture->update(sampler);
+			shader->set(UNIFORM_TEXTURE_NAMES[i], i);
+		}
 
 		// depth stencil
 		{
@@ -1186,7 +1186,7 @@ public:
 			);
 		}
 
-        glBindVertexArray(mesh->id());
+		glBindVertexArray(mesh->id());
 
 		if (pass.instance_count > 0)
 		{
@@ -1200,7 +1200,7 @@ public:
 		}
 		else
 		{
-        	glDrawElements(
+			glDrawElements(
 				GL_TRIANGLES,
 				pass.mesh->index_count(),
 				GL_UNSIGNED_INT,
@@ -1208,90 +1208,90 @@ public:
 			);
 		}
 
-        glBindVertexArray(0);
-    }
+		glBindVertexArray(0);
+	}
 
-    void clear(const Colour& colour) override
-    {
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, App::inst()->draw_width(), App::inst()->draw_height());
+	void clear(const Colour& colour) override
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glViewport(0, 0, App::inst()->draw_width(), App::inst()->draw_height());
 
-        glClearColor(
-                colour.r,
-                colour.g,
-                colour.b,
-                colour.a
-        );
+		glClearColor(
+			(float)colour.r / 255.0f,
+			(float)colour.g / 255.0f,
+			(float)colour.b / 255.0f,
+			(float)colour.a / 255.0f
+		);
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-    }
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	}
 
 	Texture* create_texture(const TextureData& data) override
-    {
-        return new OpenGLTexture(data);
-    }
+	{
+		return new OpenGLTexture(data);
+	}
 
 	ArrayTexture* create_array_texture(const TextureData& data, u32 depth) override
 	{
 		return new OpenGLArrayTexture(data, depth);
 	}
 
-    ShaderBuffer* create_shader_buffer(u64 size) override
-    {
-        return new OpenGLShaderBuffer(size);
-    }
+	ShaderBuffer* create_shader_buffer(u64 size) override
+	{
+		return new OpenGLShaderBuffer(size);
+	}
 
-    Shader* create_shader(const ShaderData& data) override
-    {
-        return new OpenGLShader(data);
-    }
+	Shader* create_shader(const ShaderData& data) override
+	{
+		return new OpenGLShader(data);
+	}
 
-    Framebuffer* create_framebuffer(const FramebufferData& data) override
-    {
+	Framebuffer* create_framebuffer(const FramebufferData& data) override
+	{
 		return new OpenGLFramebuffer(data);
-    }
+	}
 
-    Mesh* create_mesh() override
-    {
-        return new OpenGLMesh();
-    }
+	Mesh* create_mesh() override
+	{
+		return new OpenGLMesh();
+	}
 
-    void unbind_texture() override
-    {
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
+	void unbind_texture() override
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 
 	void unbind_array_texture() override
 	{
 		glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
 	}
 
-    void unbind_texture_image() override
-    {
-        glBindImageTexture(0, 0, 0, 0, 0, 0, 0);
-    }
+	void unbind_texture_image() override
+	{
+		glBindImageTexture(0, 0, 0, 0, 0, 0, 0);
+	}
 
-    void unbind_shader() override
-    {
-        glUseProgram(0);
-    }
+	void unbind_shader() override
+	{
+		glUseProgram(0);
+	}
 
-    void unbind_shader_buffer() override
-    {
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-    }
+	void unbind_shader_buffer() override
+	{
+		glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	}
 
-    void unbind_framebuffer() override
-    {
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    }
+	void unbind_framebuffer() override
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
 };
 
 Renderer* Renderer::inst()
 {
-    static OpenGLRenderer* instance = nullptr;
-    if (!instance) { instance = new OpenGLRenderer(); }
-    return instance;
+	static OpenGLRenderer* instance = nullptr;
+	if (!instance) { instance = new OpenGLRenderer(); }
+	return instance;
 }
 
 #endif

@@ -109,8 +109,6 @@ public:
     {
         SDL_Event e;
 
-		Float2 joy_motion;
-
         while (SDL_PollEvent(&e))
         {
             switch (e.type)
@@ -168,11 +166,8 @@ public:
 
 				case SDL_JOYAXISMOTION:
 					float value;
-					if (e.jaxis.value >= 0)
-						value = static_cast<float>(e.jaxis.value) / 32767.0f;
-					else
-						value = static_cast<float>(e.jaxis.value) / 32768.0f;
-
+					if (e.jaxis.value >= 0) value = static_cast<float>(e.jaxis.value) / 32767.0f;
+					else value = static_cast<float>(e.jaxis.value) / 32768.0f;
 					Input::inst()->on_joystick_motion((e.jaxis.axis == 0) ? JS_AXIS_H : JS_AXIS_V, value);
 					break;
 

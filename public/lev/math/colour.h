@@ -10,17 +10,17 @@ namespace lev
 		{
 			struct
 			{
-				float r;
-				float g;
-				float b;
-				float a;
+				u8 r;
+				u8 g;
+				u8 b;
+				u8 a;
 			};
 
-			float elements[4];
+			u8 elements[4];
 		};
 
 		Colour();
-		Colour(float r, float g, float b, float a = 1.0f);
+		Colour(u8 r, u8 g, u8 b, u8 a = 255);
 		Colour(u32 packed);
 
 		static const Colour& empty();
@@ -33,11 +33,7 @@ namespace lev
 		static const Colour& magenta();
 		static const Colour& cyan();
 
-		// packs all floats into a single 32-bit unsigned integer, loses precision
-		static u32 pack(const Colour& colour);
-
 		static Colour from_hsv(float hue, float sat, float val, float alpha = 1.0f);
-		static Colour from_u8(u8 r, u8 g, u8 b, u8 a = 255);
 
 		void premultiply();
 		Colour premultiplied() const;
@@ -46,8 +42,10 @@ namespace lev
 		bool operator != (const Colour& other) const;
 
 		Colour operator - () const;
-		Colour operator * (float mult) const;
-		Colour& operator *= (float mult);
+		Colour operator * (float factor) const;
+		Colour operator / (float factor) const;
+
+		Colour& operator *= (float factor);
 	};
 
 	// hamburjger spelling

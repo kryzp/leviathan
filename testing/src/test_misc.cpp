@@ -7,7 +7,7 @@
 
 using namespace lev;
 
-#define PARTICLE_COUNT 25000
+#define PARTICLE_COUNT 250000
 #define SCALE 1
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720
@@ -65,6 +65,19 @@ int main()
 			compute_shader_part = assets.load<Shader>("res\\shaders\\particle.levshader");
 			compute_shader_post = assets.load<Shader>("res\\shaders\\post.levshader");
 			shader_colourize = assets.load<Shader>("res\\shaders\\colourize.levshader");
+
+			Image img(100, 100);
+			img.paint([&](u32 x, u32 y) -> Colour
+			{
+				return Colour(
+					(float)x * 2.55f,
+					(float)y * 2.55f,
+					10,
+					255
+				);
+			});
+
+			img.save_png("lol.png");
 		};
 
 		conf.on_update = [&]()

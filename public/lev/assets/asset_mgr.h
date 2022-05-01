@@ -38,10 +38,10 @@ namespace lev
 		template <class Asset>
 		void unload_all();
 
-	private:
 		template <class Asset>
 		void free_load_data();
 
+	private:
 		struct AssetListBase { };
 		template <typename T>
 		struct AssetList : public AssetListBase { HashMap<lev::String, T*> assets; };

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <lev/io/stream.h>
 #include <lev/core/util.h>
 #include <lev/math/colour.h>
 #include <lev/math/rect.h>
@@ -27,6 +28,11 @@ namespace lev
 		void pixels(const Colour* data);
 		void pixels(const Colour* data, u64 pixel_count);
 		void pixels(const Colour* data, u64 offset, u64 pixel_count);
+
+		bool save_png(const char* file) const;
+		bool save_png(Stream& stream) const;
+		bool save_jpg(const char* file, int quality) const;
+		bool save_jpg(Stream& stream, int quality) const;
 
 		Colour* pixels();
 		const Colour* pixels() const;

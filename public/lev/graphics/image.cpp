@@ -1,9 +1,18 @@
 #include <lev/graphics/image.h>
+#include <lev/io/file_stream.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <third_party/stb/stb_image.h>
 
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <third_party/stb/stb_image_write.h>
+
 using namespace lev;
+
+static void lev_stbi_write(void* context, void* data, int size)
+{
+	((Stream*)context)->write((char*)data, size);
+}
 
 Image::Image()
 	: m_pixels(nullptr)
@@ -89,6 +98,58 @@ void Image::pixels(const Colour* data, u64 pixel_count)
 void Image::pixels(const Colour* data, u64 offset, u64 pixel_count)
 {
 	mem::copy(m_pixels, data + offset, sizeof(Colour) * pixel_count);
+}
+
+bool Image::save_png(const char* file) const
+{
+	FileStream fs(file, "wb");
+	return save_png(fs);
+}
+
+bool Image::save_png(Stream& stream) const
+{
+	LEV_ASSERT(m_pixels, "Pixel data cannot be null");
+	LEV_ASSERT(m_width > 0 && m_height > 0, "Width and Height must be > 0");
+
+	stbi_write_force_png_filter = 0;
+	stbi_write_png_compression_level = 0;
+
+	if (stbi_write_png_to_func(lev_stbi_write, &stream, m_width, m_height, 4, m_pixels, m_width * 4) != 0)
+		return true;
+	else
+		LEV_ERROR("stbi_write_png_to_func(...) failed");
+
+	return false;
+}
+
+bool Image::save_jpg(const char* file, int quality) const
+{
+	FileStream fs(file, "wb");
+	return save_jpg(fs, quality);
+}
+
+bool Image::save_jpg(Stream& stream, int quality) const
+{
+	LEV_ASSERT(m_pixels, "Pixel data cannot be null");
+	LEV_ASSERT(m_width > 0 && m_height > 0, "Width and Height must be > 0");
+
+	if (quality < 1)
+	{
+		log::warn("JPG quality value should be between [1 -> 100]");
+		quality = 1;
+	}
+	else if (quality > 100)
+	{
+		log::warn("JPG quality value should be between [1 -> 100]");
+		quality = 100;
+	}
+
+	if (stbi_write_jpg_to_func(lev_stbi_write, &stream, m_width, m_height, 4, m_pixels, quality) != 0)
+		return true;
+	else
+		LEV_ERROR("stbi_write_jpg_to_func(...) failed");
+
+	return false;
 }
 
 Colour* Image::pixels()
