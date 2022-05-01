@@ -47,7 +47,7 @@ void Image::load(const char* path)
 	m_stbi_management = true;
 
 	int w, h, nrc;
-	m_pixels = (Colour*)stbi_load(path, &w, &h, &nrc, 0);
+	m_pixels = (Colour*)stbi_load(path, &w, &h, &nrc, 4);
 	m_width = w;
 	m_height = h;
 	m_nr_channels = nrc;
@@ -150,6 +150,11 @@ bool Image::save_jpg(Stream& stream, int quality) const
 		LEV_ERROR("stbi_write_jpg_to_func(...) failed");
 
 	return false;
+}
+
+Colour Image::pixel_at(u32 x, u32 y) const
+{
+	return m_pixels[(y * m_width) + x];
 }
 
 Colour* Image::pixels()

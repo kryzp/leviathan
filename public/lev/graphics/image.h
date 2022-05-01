@@ -34,6 +34,8 @@ namespace lev
 		bool save_jpg(const char* file, int quality) const;
 		bool save_jpg(Stream& stream, int quality) const;
 
+		Colour pixel_at(u32 x, u32 y) const;
+
 		Colour* pixels();
 		const Colour* pixels() const;
 
