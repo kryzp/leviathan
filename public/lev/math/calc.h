@@ -12,6 +12,8 @@ namespace lev
 		constexpr float RAD2DEG = 180.0f / PI;
 		constexpr float DEG2RAD = PI / 180.0f;
 
+		bool is_prime(unsigned x);
+
 		float abs(float x);
 		float mod(float x, float y);
 		float sqrt(float x);

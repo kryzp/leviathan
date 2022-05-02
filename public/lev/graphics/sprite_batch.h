@@ -25,6 +25,7 @@ namespace lev
 
 	enum SpriteSort
 	{
+		SPRITE_SORT_NONE = 0,
 		SPRITE_SORT_FTB, // front to back - drawn in front to back order of layer
 		SPRITE_SORT_BTF, // back to front - drawn in back to front order of layers
 		SPRITE_SORT_DEFERRED, // deferred - drawn in order of render calls individually
@@ -55,7 +56,7 @@ namespace lev
 		~SpriteBatch();
 
 		void render(const Framebuffer* framebuffer = nullptr, int sort_mode = SPRITE_SORT_FTB);
-		void render(const Mat4x4& proj, const Framebuffer* framebuffer = nullptr, int sort_mode = SPRITE_SORT_FTB);
+		void render(const Mat4x4& proj, const Framebuffer* framebuffer = nullptr, u8 sort_mode = SPRITE_SORT_FTB);
 
 		///////////////////////////////////////////////////////
 		//  W E L C O M E   T O   T H E   P U S H   Z O N E  // (kind of a vibe ngl)

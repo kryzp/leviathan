@@ -4,6 +4,8 @@
 #include <lev/graphics/font.h>
 #include <lev/graphics/shader.h>
 
+#include <algorithm>
+
 #include <backend/renderer.h>
 
 using namespace lev;
@@ -95,7 +97,7 @@ void SpriteBatch::render(const Framebuffer* framebuffer, int sort_mode)
 	), framebuffer, sort_mode);
 }
 
-void SpriteBatch::render(const Mat4x4& proj, const Framebuffer* framebuffer, int sort_mode)
+void SpriteBatch::render(const Mat4x4& proj, const Framebuffer* framebuffer, u8 sort_mode)
 {
 	if (!m_initialized)
 		initialize();
@@ -103,6 +105,23 @@ void SpriteBatch::render(const Mat4x4& proj, const Framebuffer* framebuffer, int
 	RenderPass pass;
 	pass.instance_count = 0; // for now
 	pass.target = framebuffer;
+
+	switch (sort_mode)
+	{
+		// front to back
+		case SPRITE_SORT_FTB:
+			std::sort(m_batches.begin(), m_batches.end(), [](const RenderBatch& a, const RenderBatch& b) -> bool { return a.layer < b.layer; });
+			break;
+
+		// back to front
+		case SPRITE_SORT_BTF:
+			std::sort(m_batches.begin(), m_batches.end(), [](const RenderBatch& a, const RenderBatch& b) -> bool { return a.layer > b.layer; });
+			break;
+
+		// dont do anything - order of render calls
+		case SPRITE_SORT_DEFERRED:
+			break;
+	}
 
 	// todo: sort by layers
 	// [sort_mode]

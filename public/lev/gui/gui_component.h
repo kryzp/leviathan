@@ -4,7 +4,6 @@
 #include <lev/graphics/sprite_batch.h>
 #include <lev/math/vec2.h>
 #include <lev/math/rect.h>
-#include <lev/math/transform_2d.h>
 #include <lev/input/input.h>
 
 namespace lev

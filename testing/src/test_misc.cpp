@@ -45,6 +45,12 @@ int main()
 		};
 	}
 
+	for (int i = 0; i < 100; i++)
+	{
+		int prime = calc::is_prime(i);
+		log::print("%d is prime: %d", i, prime);
+	}
+
 	Config conf;
 	{
 		conf.name = "ah yes: p a r t i c l e";

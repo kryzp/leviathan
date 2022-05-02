@@ -4,6 +4,20 @@
 
 using namespace lev;
 
+bool calc::is_prime(unsigned x)
+{
+	if (x == 0 || x == 1)
+		return false;
+
+	for (unsigned i = 2; i < (x / 2) + 1; i++)
+	{
+		if (x % i == 0)
+			return false;
+	}
+
+	return true;
+}
+
 float calc::abs(float x)
 {
 	return ::fabsf(x);

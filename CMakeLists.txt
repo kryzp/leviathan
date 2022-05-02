@@ -42,7 +42,6 @@ add_library(${PROJECT_NAME}
 	public/lev/math/quad.cpp
 	public/lev/math/triangle.cpp
 	public/lev/math/polygon.cpp
-	public/lev/math/transform_2d.cpp
 	public/lev/math/timer.cpp
 	public/lev/math/quaternion.cpp
 
