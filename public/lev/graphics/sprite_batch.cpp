@@ -123,9 +123,6 @@ void SpriteBatch::render(const Mat4x4& proj, const Framebuffer* framebuffer, u8 
 			break;
 	}
 
-	// todo: sort by layers
-	// [sort_mode]
-
 	for (auto& b : m_batches)
 	{
 		if (!b.material.shader())
