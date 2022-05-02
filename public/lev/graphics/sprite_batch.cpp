@@ -34,6 +34,8 @@ SpriteBatch::~SpriteBatch()
 	if (m_material_stack[0].shader())
 		delete m_material_stack[0].shader();
 	m_material_stack[0].set_shader(nullptr);
+
+	delete m_mesh;
 }
 
 void SpriteBatch::initialize()
@@ -85,6 +87,8 @@ void SpriteBatch::initialize()
 #endif
 	}
 
+	m_mesh = Renderer::inst()->create_mesh();
+
 	m_initialized = true;
 }
 
@@ -110,12 +114,18 @@ void SpriteBatch::render(const Mat4x4& proj, const Framebuffer* framebuffer, u8 
 	{
 		// front to back
 		case SPRITE_SORT_FTB:
-			std::sort(m_batches.begin(), m_batches.end(), [](const RenderBatch& a, const RenderBatch& b) -> bool { return a.layer < b.layer; });
+			std::sort(m_batches.begin(), m_batches.end(), [](const RenderBatch& a, const RenderBatch& b) -> bool
+			{
+				return a.layer < b.layer;
+			});
 			break;
 
 		// back to front
 		case SPRITE_SORT_BTF:
-			std::sort(m_batches.begin(), m_batches.end(), [](const RenderBatch& a, const RenderBatch& b) -> bool { return a.layer > b.layer; });
+			std::sort(m_batches.begin(), m_batches.end(), [](const RenderBatch& a, const RenderBatch& b) -> bool
+			{
+				return a.layer > b.layer;
+			});
 			break;
 
 		// dont do anything - order of render calls
@@ -136,8 +146,6 @@ void SpriteBatch::render(const Mat4x4& proj, const Framebuffer* framebuffer, u8 
 			));
 
 		render_batch(pass, b);
-
-		delete b.mesh;
 	}
 
 	m_batches.clear();
@@ -147,11 +155,16 @@ void SpriteBatch::render_batch(RenderPass& pass, const RenderBatch& b)
 {
 	pass.blend = b.blend;
 	pass.material = b.material;
-	pass.mesh = b.mesh;
 	pass.depth = b.depth;
 	pass.stencil = b.stencil;
 	pass.viewport = b.viewport;
 	pass.scissor = b.scissor;
+
+	{
+		m_mesh->vertex_data(b.vertices.begin(), b.vertices.size());
+		m_mesh->index_data(b.indices.begin(), b.indices.size());
+	}
+	pass.mesh = m_mesh;
 
 	Renderer::inst()->render(pass);
 }
@@ -167,16 +180,20 @@ void SpriteBatch::push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx,
 	batch.viewport = peek_viewport();
 	batch.scissor = peek_scissor();
 
-	batch.mesh = Renderer::inst()->create_mesh();
+	// mesh
 	{
-        Vertex transformed[vtxcount]; // note: will only work on some compilers. MSVC wont allow this so compiling with msvc would mean using 'new' or just Vector<Vertex>
-        mem::copy(transformed, vtx, sizeof(Vertex) * vtxcount); // i have no clue why this is necessary but it doesnt work without it lol sssskssksskssksksksksksk
+		int i;
 
-        for (int i = 0; i < vtxcount; i++)
-            transformed[i].pos = Vec2F::transform(vtx[i].pos, m_transform_matrix);
+        for (i = 0; i < vtxcount; i++)
+		{
+			batch.vertices.push_back(vtx[i]);
+			batch.vertices[i].pos = (Vec2F::transform(vtx[i].pos, m_transform_matrix));
+		}
 
-        batch.mesh->vertex_data(transformed, vtxcount);
-        batch.mesh->index_data(idx, idxcount);
+		for (i = 0; i < idxcount; i++)
+		{
+			batch.indices.push_back(idx[i]);
+		}
 	}
 
 	m_batches.push_back(batch);

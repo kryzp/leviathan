@@ -119,7 +119,6 @@ namespace lev
 	private:
 		struct RenderBatch
 		{
-			Mesh* mesh;
 			Material material;
 			BlendMode blend;
 			u8 depth;
@@ -127,7 +126,12 @@ namespace lev
 			RectI viewport;
 			RectI scissor;
 			float layer;
+
+			Vector<Vertex> vertices;
+			Vector<u32> indices;
 		};
+
+		Mesh* m_mesh;
 
 		void initialize();
 		bool m_initialized;
