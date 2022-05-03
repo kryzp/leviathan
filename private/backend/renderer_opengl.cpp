@@ -711,21 +711,9 @@ public:
 		return *this;
 	}
 
-	Shader& set(const char* name, bool* values, int count) override
-	{
-		glUniform1iv(get_uniform_location(name), count, (GLint*)values);
-		return *this;
-	}
-
 	Shader& set(const char* name, int value) override
 	{
 		glUniform1i(get_uniform_location(name), value);
-		return *this;
-	}
-
-	Shader& set(const char* name, int* values, int count) override
-	{
-		glUniform1iv(get_uniform_location(name), count, (GLint*)values);
 		return *this;
 	}
 
@@ -735,21 +723,9 @@ public:
 		return *this;
 	}
 
-	Shader& set(const char* name, float* values, int count) override
-	{
-		glUniform1fv(get_uniform_location(name), count, values);
-		return *this;
-	}
-
 	Shader& set(const char* name, const Vec2I& value) override
 	{
 		glUniform2i(get_uniform_location(name), value.x, value.y);
-		return *this;
-	}
-
-	Shader& set(const char* name, const Vec2I* values, int count) override
-	{
-		glUniform2iv(get_uniform_location(name), count, (GLint*)values);
 		return *this;
 	}
 
@@ -759,33 +735,15 @@ public:
 		return *this;
 	}
 
-	Shader& set(const char* name, const Vec2F* values, int count) override
-	{
-		glUniform2fv(get_uniform_location(name), count, (GLfloat*)values);
-		return *this;
-	}
-
 	Shader& set(const char* name, const Vec3I& value) override
 	{
 		glUniform3i(get_uniform_location(name), value.x, value.y, value.z);
 		return *this;
 	}
 
-	Shader& set(const char* name, const Vec3I* values, int count) override
-	{
-		glUniform3iv(get_uniform_location(name), count, (GLint*)values);
-		return *this;
-	}
-
 	Shader& set(const char* name, const Vec3F& value) override
 	{
 		glUniform3f(get_uniform_location(name), value.x, value.y, value.z);
-		return *this;
-	}
-
-	Shader& set(const char* name, const Vec3F* values, int count) override
-	{
-		glUniform3fv(get_uniform_location(name), count, (GLfloat*)values);
 		return *this;
 	}
 

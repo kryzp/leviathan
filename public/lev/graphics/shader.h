@@ -112,6 +112,5 @@ namespace lev
 		virtual Shader& set(const char* name, const Vec3F& value)				= 0;
 		virtual Shader& set(const char* name, const Mat3x2& value)				= 0;
 		virtual Shader& set(const char* name, const Mat4x4& value)				= 0;
-		virtual Shader& set(const char* name, const Texture* value, int idx)	= 0;
 	};
 }

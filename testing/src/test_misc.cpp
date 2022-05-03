@@ -103,10 +103,6 @@ int main()
 
 			batch.push_matrix(Mat3x2::create_scale(SCALE));
 			batch.set_shader(shader_colourize);
-
-			shader_colourize->use()
-				.set("u_texture", trail_map, 0);
-
 			batch.push_texture(trail_map);
 			batch.reset_shader();
 			batch.pop_matrix();

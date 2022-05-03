@@ -8,6 +8,8 @@ in vec4 frag_mode;
 
 uniform sampler2D lev_texture_0;
 
+#define u_texture lev_texture_0
+
 float brightness(vec3 col)
 {
 	return (0.299*col.r) + (0.587*col.g) + (0.114*col.b);
@@ -20,7 +22,7 @@ float weight(float x)
 
 void main()
 {
-	vec3 texcol = texture(lev_texture_0, frag_coord).rgb;
+	vec3 texcol = texture(u_texture, frag_coord).rgb;
 
 	float grayscale = brightness(texcol);
 
