@@ -67,8 +67,8 @@ namespace lev
 		void push_texture(Texture* tex, const Colour& colour = Colour::white(), u8 mode = SB_RENDER_MODE_ALL);
 		void push_quad(const Quad& quad, const Colour& colour = Colour::white(), u8 mode = SB_RENDER_MODE_SILHOUETTE);
 		void push_triangle(const Triangle& tri, const Colour& colour = Colour::white(), u8 mode = SB_RENDER_MODE_SILHOUETTE);
-		void push_string(const char* str, const Font* font, u8 align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white(), int monospaced = 0);
-		void push_string(const char* str, const Font* font, const std::function<Vec2F(Font::Character,int)>& offset_fn, u8 align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white(), int monospaced = 0);
+		void push_string(const char* str, const Font* font, u8 align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white());
+		void push_string(const char* str, const Font* font, const std::function<Vec2F(Font::Character,int)>& offset_fn, u8 align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white());
 		void push_circle(const Circle& circle, u32 accuracy = 40U, const Colour& colour = Colour::white());
 		void push_line(const Line& line, float thickness, const Colour& colour = Colour::white());
 
@@ -80,8 +80,8 @@ namespace lev
 		Texture* peek_texture(int idx = 0);
 		const TextureSampler& peek_sampler(int idx = 0);
 
-		void push_shader(Shader* shd);
-		Shader* pop_shader();
+		void set_shader(Shader* shd);
+		void reset_shader();
 		Shader* peek_shader();
 
 		void push_material(const Material& material);
@@ -132,6 +132,7 @@ namespace lev
 		};
 
 		Mesh* m_mesh;
+		Shader* m_default_shader;
 
 		void initialize();
 		bool m_initialized;

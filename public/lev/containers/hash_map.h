@@ -44,6 +44,9 @@ namespace lev
 		Entry* begin();
 		const Entry* begin() const;
 
+		Entry* end();
+		const Entry* end() const;
+
 		lev::Vector<Key> keys() const;
 		lev::Vector<Value> values() const;
 
@@ -221,6 +224,18 @@ namespace lev
 	const typename HashMap<Key, Value>::Entry* HashMap<Key, Value>::begin() const
 	{
 		return m_entrys;
+	}
+
+	template <typename Key, typename Value>
+	typename HashMap<Key, Value>::Entry* HashMap<Key, Value>::end()
+	{
+		return m_entrys + m_count;
+	}
+
+	template <typename Key, typename Value>
+	const typename HashMap<Key, Value>::Entry* HashMap<Key, Value>::end() const
+	{
+		return m_entrys + m_count;
 	}
 
 	template <typename Key, typename Value>

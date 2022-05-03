@@ -12,6 +12,7 @@ using namespace lev;
 
 SpriteBatch::SpriteBatch()
 	: m_initialized(false)
+	, m_default_shader(nullptr)
 	, m_transform_matrix(Mat3x2::identity())
 	, m_material_stack()
 	, m_layer_stack()
@@ -31,10 +32,7 @@ SpriteBatch::SpriteBatch()
 
 SpriteBatch::~SpriteBatch()
 {
-	if (m_material_stack[0].shader())
-		delete m_material_stack[0].shader();
-	m_material_stack[0].set_shader(nullptr);
-
+	delete m_default_shader;
 	delete m_mesh;
 }
 
@@ -66,9 +64,9 @@ void SpriteBatch::initialize()
 			"in vec2 frag_coord;\n"
 			"in vec4 frag_mod_colour;\n"
 			"in vec4 frag_mode;\n"
-			"uniform sampler2D lev_texture_0;\n"
+			"uniform sampler2D u_texture;\n"
 			"void main() {\n"
-			"	vec4 texcol = texture(lev_texture_0, frag_coord);\n"
+			"	vec4 texcol = texture(u_texture, frag_coord);\n"
 			"	frag_colour = frag_mode.r * texcol   * frag_mod_colour + "
 			"                 frag_mode.g * texcol.a * frag_mod_colour + "
 			"                 frag_mode.b * texcol.r * frag_mod_colour + "
@@ -81,7 +79,9 @@ void SpriteBatch::initialize()
 		cstr::copy(data.seperated.vertex_source, vertex, 512);
 		cstr::copy(data.seperated.fragment_source, fragment, 512);
 
-		m_material_stack[0].set_shader(Renderer::inst()->create_shader(data));
+		m_default_shader = Renderer::inst()->create_shader(data);
+
+		m_material_stack[0].set_shader(m_default_shader);
 		m_material_stack[0].set_texture(0, nullptr);
 		m_material_stack[0].set_sampler(0, TextureSampler::pixel());
 #endif
@@ -114,18 +114,12 @@ void SpriteBatch::render(const Mat4x4& proj, const Framebuffer* framebuffer, u8 
 	{
 		// front to back
 		case SPRITE_SORT_FTB:
-			std::sort(m_batches.begin(), m_batches.end(), [](const RenderBatch& a, const RenderBatch& b) -> bool
-			{
-				return a.layer < b.layer;
-			});
+			std::sort(m_batches.begin(), m_batches.end(), [](const RenderBatch& a, const RenderBatch& b) -> bool { return a.layer < b.layer; });
 			break;
 
 		// back to front
 		case SPRITE_SORT_BTF:
-			std::sort(m_batches.begin(), m_batches.end(), [](const RenderBatch& a, const RenderBatch& b) -> bool
-			{
-				return a.layer > b.layer;
-			});
+			std::sort(m_batches.begin(), m_batches.end(), [](const RenderBatch& a, const RenderBatch& b) -> bool { return a.layer > b.layer; });
 			break;
 
 		// dont do anything - order of render calls
@@ -136,9 +130,10 @@ void SpriteBatch::render(const Mat4x4& proj, const Framebuffer* framebuffer, u8 
 	for (auto& b : m_batches)
 	{
 		if (!b.material.shader())
-			b.material.set_shader(m_material_stack[0].shader());
+			b.material.set_shader(m_default_shader);
 
 		b.material.shader()->use()
+			.set("u_texture", b.material.texture(0))
 			.set(Shader::PROJECTION, proj)
 			.set(Shader::RESOLUTION, Vec2F(
 				framebuffer ? framebuffer->width() : App::inst()->draw_width(),
@@ -160,10 +155,8 @@ void SpriteBatch::render_batch(RenderPass& pass, const RenderBatch& b)
 	pass.viewport = b.viewport;
 	pass.scissor = b.scissor;
 
-	{
-		m_mesh->vertex_data(b.vertices.begin(), b.vertices.size());
-		m_mesh->index_data(b.indices.begin(), b.indices.size());
-	}
+	m_mesh->vertex_data(b.vertices.begin(), b.vertices.size());
+	m_mesh->index_data(b.indices.begin(), b.indices.size());
 	pass.mesh = m_mesh;
 
 	Renderer::inst()->render(pass);
@@ -277,11 +270,10 @@ void SpriteBatch::push_string(
 	const char* str,
 	const Font* font,
 	u8 align,
-	const Colour& colour,
-	int monospaced
+	const Colour& colour
 )
 {
-	push_string(str, font, [&](Font::Character c, int idx) -> lev::Vec2F { return Vec2F::zero(); }, align, colour, monospaced);
+	push_string(str, font, [&](Font::Character c, int idx) -> lev::Vec2F { return Vec2F::zero(); }, align, colour);
 }
 
 void SpriteBatch::push_string(
@@ -289,8 +281,7 @@ void SpriteBatch::push_string(
 	const Font* font,
 	const std::function<Vec2F(Font::Character,int)>& offset_fn,
 	u8 align,
-	const Colour& colour,
-	int monospaced
+	const Colour& colour
 )
 {
 	// todo: new line support
@@ -327,16 +318,9 @@ void SpriteBatch::push_string(
 
 		pop_matrix();
 
-		if (monospaced)
-		{
-			cursor_x += monospaced;
-		}
-		else
-		{
-			cursor_x +=
-				c.advance_x +
-				font->kern_advance(str[i], str[i + 1]);
-		}
+		cursor_x +=
+			c.advance_x +
+			font->kern_advance(str[i], str[i + 1]);
 	}
 
 	pop_matrix();
@@ -397,15 +381,14 @@ const TextureSampler& SpriteBatch::peek_sampler(int idx)
 	return peek_material().sampler(idx);
 }
 
-void SpriteBatch::push_shader(Shader* shd)
+void SpriteBatch::set_shader(Shader* shd)
 {
-	push_material(peek_material());
 	peek_material().set_shader(shd);
 }
 
-Shader* SpriteBatch::pop_shader()
+void SpriteBatch::reset_shader()
 {
-	return pop_material().shader();
+	peek_material().set_shader(nullptr);
 }
 
 Shader* SpriteBatch::peek_shader()

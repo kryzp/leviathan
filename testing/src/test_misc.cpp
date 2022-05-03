@@ -45,12 +45,6 @@ int main()
 		};
 	}
 
-	for (int i = 0; i < 100; i++)
-	{
-		int prime = calc::is_prime(i);
-		log::print("%d is prime: %d", i, prime);
-	}
-
 	Config conf;
 	{
 		conf.name = "ah yes: p a r t i c l e";
@@ -108,9 +102,13 @@ int main()
 			App::inst()->clear();
 
 			batch.push_matrix(Mat3x2::create_scale(SCALE));
-			batch.push_shader(shader_colourize);
+			batch.set_shader(shader_colourize);
+
+			shader_colourize->use()
+				.set("u_texture", trail_map, 0);
+
 			batch.push_texture(trail_map);
-			batch.pop_shader();
+			batch.reset_shader();
 			batch.pop_matrix();
 			
 			batch.render();

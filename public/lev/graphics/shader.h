@@ -23,6 +23,22 @@ namespace lev
 		SHADER_TYPE_MAX
 	};
 
+	enum UniformType
+	{
+		SHADER_UNIFORM_NONE,
+		SHADER_UNIFORM_BOOL,
+		SHADER_UNIFORM_INT,
+		SHADER_UNIFORM_FLOAT,
+		SHADER_UNIFORM_VEC2I,
+		SHADER_UNIFORM_VEC2F,
+		SHADER_UNIFORM_VEC3I,
+		SHADER_UNIFORM_VEC3F,
+		SHADER_UNIFORM_MAT3X2,
+		SHADER_UNIFORM_MAT4X4,
+		SHADER_UNIFORM_SAMPLER,
+		SHADER_UNIFORM_MAX
+	};
+
 	struct ShaderData
 	{
 		u8 type;
@@ -88,20 +104,14 @@ namespace lev
 		virtual Shader& set_buffer(const ShaderBuffer* buf, int binding) = 0;
 
 		virtual Shader& set(const char* name, bool value)						= 0;
-		virtual Shader& set(const char* name, bool* values, int count)			= 0;
 		virtual Shader& set(const char* name, int value)						= 0;
-		virtual Shader& set(const char* name, int* values, int count)			= 0;
 		virtual Shader& set(const char* name, float value)						= 0;
-		virtual Shader& set(const char* name, float* values, int count)			= 0;
 		virtual Shader& set(const char* name, const Vec2I& value)				= 0;
-		virtual Shader& set(const char* name, const Vec2I* values, int count)	= 0;
 		virtual Shader& set(const char* name, const Vec2F& value)				= 0;
-		virtual Shader& set(const char* name, const Vec2F* values, int count)	= 0;
 		virtual Shader& set(const char* name, const Vec3I& value)				= 0;
-		virtual Shader& set(const char* name, const Vec3I* values, int count)	= 0;
 		virtual Shader& set(const char* name, const Vec3F& value)				= 0;
-		virtual Shader& set(const char* name, const Vec3F* values, int count)	= 0;
 		virtual Shader& set(const char* name, const Mat3x2& value)				= 0;
 		virtual Shader& set(const char* name, const Mat4x4& value)				= 0;
+		virtual Shader& set(const char* name, const Texture* value, int idx)	= 0;
 	};
 }
