@@ -6,63 +6,63 @@ using namespace lev;
 Material::Material()
 	: m_shader(nullptr)
 {
-	mem::set(m_textures, 0, sizeof(Texture*) * LEV_MAT_TEXTURES);
+	mem::set(m_textures, 0, sizeof(Ref<Texture>) * LEV_MAT_TEXTURES);
 	mem::set(m_samplers, 0, sizeof(TextureSampler) * LEV_MAT_TEXTURES);
 }
 
 Material::Material(
-	Shader* shader,
-	Texture** textures,
-	TextureSampler* samplers,
-	u32 texture_count
+	const Ref<Shader>& shader,
+	const Ref<Texture>* textures,
+	const TextureSampler* samplers,
+	unsigned texture_count
 )
 	: m_shader(shader)
 {
-	mem::copy(m_textures, textures, sizeof(Texture*) * texture_count);
+	mem::copy(m_textures, textures, sizeof(Ref<Texture>) * texture_count);
 	mem::copy(m_samplers, samplers, sizeof(TextureSampler) * texture_count);
 }
 
-Shader* Material::shader()
+Ref<Shader> Material::shader()
 {
 	return m_shader;
 }
 
-const Shader* Material::shader() const
+const Ref<Shader> Material::shader() const
 {
 	return m_shader;
 }
 
-void Material::set_shader(Shader* shader)
+void Material::set_shader(const Ref<Shader>& shader)
 {
 	m_shader = shader;
 }
 
-Texture* Material::texture(u32 idx)
+Ref<Texture> Material::texture(unsigned idx)
 {
 	return m_textures[idx];
 }
 
-const Texture* Material::texture(u32 idx) const
+const Ref<Texture> Material::texture(unsigned idx) const
 {
 	return m_textures[idx];
 }
 
-void Material::set_texture(u32 idx, Texture* texture)
+void Material::set_texture(const Ref<Texture>& texture, unsigned idx)
 {
 	m_textures[idx] = texture;
 }
 
-TextureSampler& Material::sampler(u32 idx)
+TextureSampler& Material::sampler(unsigned idx)
 {
 	return m_samplers[idx];
 }
 
-const TextureSampler& Material::sampler(u32 idx) const
+const TextureSampler& Material::sampler(unsigned idx) const
 {
 	return m_samplers[idx];
 }
 
-void Material::set_sampler(u32 idx, TextureSampler sampler)
+void Material::set_sampler(const TextureSampler& sampler, unsigned idx)
 {
 	m_samplers[idx] = sampler;
 }

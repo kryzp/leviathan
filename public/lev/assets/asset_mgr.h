@@ -20,11 +20,15 @@ namespace lev
 		AssetLoader() = default;
 		virtual ~AssetLoader() = default;
 
-		virtual Asset* load(const String& path) = 0;
+		virtual Ref<Asset> load(const String& path) = 0;
 	};
 
 	class AssetMgr
 	{
+		struct AssetListBase { };
+		template <typename Asset>
+		struct AssetList : public AssetListBase { HashMap<lev::String, Weak<Asset>> assets; };
+
 	public:
 		AssetMgr();
 		~AssetMgr();
@@ -33,19 +37,12 @@ namespace lev
 		void register_loader();
 
 		template <class Asset>
-		Asset* load(const String& path);
-
-		template <class Asset>
-		void unload_all();
+		Ref<Asset> load(const String& path);
 
 		template <class Asset>
 		void free_load_data();
 
 	private:
-		struct AssetListBase { };
-		template <typename T>
-		struct AssetList : public AssetListBase { HashMap<lev::String, T*> assets; };
-
 		template <class Asset>
 		u16 retrieve_asset_id()
 		{
@@ -67,36 +64,27 @@ namespace lev
 	}
 
 	template <class Asset>
-	Asset* AssetMgr::load(const String& path)
+	Ref<Asset> AssetMgr::load(const String& path)
 	{
 		if (!m_assets[retrieve_asset_id<Asset>()])
 			m_assets[retrieve_asset_id<Asset>()] = new AssetList<Asset>();
 
 		auto* asset_list = static_cast<AssetList<Asset>*>(m_assets[retrieve_asset_id<Asset>()]);
 
+		// return the requested asset if its already loaded
 		if (asset_list->assets.contains(path))
-			return asset_list->assets.at(path);
+			return Ref<Asset>(asset_list->assets.at(path));
 
-		Asset* obj = static_cast<AssetLoader<Asset>*>(
+		// otherwise load a new asset
+		Ref<Asset> obj = static_cast<AssetLoader<Asset>*>(
 			m_loaders[retrieve_asset_id<Asset>()]
 		)->load(path);
 
-		asset_list->assets.insert(path, obj);
+		// store it as a weak ptr
+		Weak<Asset> weakptr = obj;
+		asset_list->assets.insert(path, weakptr);
 
 		return obj;
-	}
-
-	template <class Asset>
-	void AssetMgr::unload_all()
-	{
-		for (auto& list : m_assets)
-		{
-			if (!list)
-				continue;
-
-			for (auto entry = static_cast<AssetList<Asset>*>(list)->assets.begin(); entry; entry = entry->next)
-				delete entry->value;
-		}
 	}
 
 	template <class Asset>

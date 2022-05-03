@@ -30,12 +30,6 @@ SpriteBatch::SpriteBatch()
 	m_material_stack.push_back(Material());
 }
 
-SpriteBatch::~SpriteBatch()
-{
-	delete m_default_shader;
-	delete m_mesh;
-}
-
 void SpriteBatch::initialize()
 {
 	// generic shader
@@ -82,8 +76,8 @@ void SpriteBatch::initialize()
 		m_default_shader = Renderer::inst()->create_shader(data);
 
 		m_material_stack[0].set_shader(m_default_shader);
-		m_material_stack[0].set_texture(0, nullptr);
-		m_material_stack[0].set_sampler(0, TextureSampler::pixel());
+		m_material_stack[0].set_texture(nullptr, 0);
+		m_material_stack[0].set_sampler(TextureSampler::pixel(), 0);
 #endif
 	}
 
@@ -92,7 +86,7 @@ void SpriteBatch::initialize()
 	m_initialized = true;
 }
 
-void SpriteBatch::render(const Framebuffer* framebuffer, int sort_mode)
+void SpriteBatch::render(const Ref<Framebuffer>& framebuffer, u8 sort_mode)
 {
 	render(Mat4x4::create_orthographic(
 		framebuffer ? framebuffer->width() : App::inst()->draw_width(),
@@ -101,7 +95,7 @@ void SpriteBatch::render(const Framebuffer* framebuffer, int sort_mode)
 	), framebuffer, sort_mode);
 }
 
-void SpriteBatch::render(const Mat4x4& proj, const Framebuffer* framebuffer, u8 sort_mode)
+void SpriteBatch::render(const Mat4x4& proj, const Ref<Framebuffer>& framebuffer, u8 sort_mode)
 {
 	if (!m_initialized)
 		initialize();
@@ -127,6 +121,9 @@ void SpriteBatch::render(const Mat4x4& proj, const Framebuffer* framebuffer, u8 
 			break;
 	}
 
+	float res_x = framebuffer ? framebuffer->width() : App::inst()->draw_width();
+	float res_y = framebuffer ? framebuffer->height() : App::inst()->draw_height();
+
 	for (auto& b : m_batches)
 	{
 		if (!b.material.shader())
@@ -134,10 +131,7 @@ void SpriteBatch::render(const Mat4x4& proj, const Framebuffer* framebuffer, u8 
 
 		b.material.shader()->use()
 			.set(Shader::PROJECTION, proj)
-			.set(Shader::RESOLUTION, Vec2F(
-				framebuffer ? framebuffer->width() : App::inst()->draw_width(),
-				framebuffer ? framebuffer->height() : App::inst()->draw_height()
-			));
+			.set(Shader::RESOLUTION, Vec2F(res_x, res_y));
 
 		render_batch(pass, b);
 	}
@@ -247,7 +241,7 @@ void SpriteBatch::push_texture(const TextureRegion& tex, const Colour& colour, u
 	push_vertices(vertices, 4, indices, 6);
 }
 
-void SpriteBatch::push_texture(Texture* tex, const Colour& colour, u8 mode)
+void SpriteBatch::push_texture(const Ref<Texture>& tex, const Colour& colour, u8 mode)
 {
 	set_texture(tex);
 
@@ -267,7 +261,7 @@ void SpriteBatch::push_texture(Texture* tex, const Colour& colour, u8 mode)
 
 void SpriteBatch::push_string(
 	const char* str,
-	const Font* font,
+	const Ref<Font>& font,
 	u8 align,
 	const Colour& colour
 )
@@ -277,7 +271,7 @@ void SpriteBatch::push_string(
 
 void SpriteBatch::push_string(
 	const char* str,
-	const Font* font,
+	const Ref<Font>& font,
 	const std::function<Vec2F(Font::Character,int)>& offset_fn,
 	u8 align,
 	const Colour& colour
@@ -355,32 +349,32 @@ void SpriteBatch::push_line(const Line& line, float thickness, const Colour& col
 	push_quad(quad, colour, SB_RENDER_MODE_SILHOUETTE);
 }
 
-void SpriteBatch::set_texture(Texture* tex, int idx)
+void SpriteBatch::set_texture(const Ref<Texture>& tex, unsigned idx)
 {
-	peek_material().set_texture(idx, tex);
+	peek_material().set_texture(tex, idx);
 }
 
-void SpriteBatch::set_sampler(const TextureSampler& sampler, int idx)
+void SpriteBatch::set_sampler(const TextureSampler& sampler, unsigned idx)
 {
-	peek_material().set_sampler(idx, sampler);
+	peek_material().set_sampler(sampler, idx);
 }
 
-void SpriteBatch::reset_texture(int idx)
+void SpriteBatch::reset_texture(unsigned idx)
 {
-	peek_material().set_texture(idx, nullptr);
+	peek_material().set_texture(nullptr, idx);
 }
 
-Texture* SpriteBatch::peek_texture(int idx)
+Ref<Texture> SpriteBatch::peek_texture(unsigned idx)
 {
 	return peek_material().texture(idx);
 }
 
-const TextureSampler& SpriteBatch::peek_sampler(int idx)
+const TextureSampler& SpriteBatch::peek_sampler(unsigned idx)
 {
 	return peek_material().sampler(idx);
 }
 
-void SpriteBatch::set_shader(Shader* shd)
+void SpriteBatch::set_shader(const Ref<Shader>& shd)
 {
 	peek_material().set_shader(shd);
 }
@@ -390,7 +384,7 @@ void SpriteBatch::reset_shader()
 	peek_material().set_shader(nullptr);
 }
 
-Shader* SpriteBatch::peek_shader()
+Ref<Shader> SpriteBatch::peek_shader()
 {
 	return peek_material().shader();
 }

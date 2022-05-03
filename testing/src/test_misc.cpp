@@ -27,14 +27,14 @@ int main()
 
 	AssetMgr assets;
 
-	Shader* compute_shader_part;
-	Shader* compute_shader_post;
-	Shader* shader_colourize;
+	Ref<Shader> compute_shader_part;
+	Ref<Shader> compute_shader_post;
+	Ref<Shader> shader_colourize;
 
-	Texture* trail_map;
-	Font* nokiafc;
+	Ref<Texture> trail_map;
+	Ref<Font> nokiafc;
 
-	ShaderBuffer* particle_buf;
+	Ref<ShaderBuffer> particle_buf;
 	auto* particles = new Particle[PARTICLE_COUNT];
 	for (int i = 0; i < PARTICLE_COUNT; i++)
 	{

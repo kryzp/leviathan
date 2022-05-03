@@ -54,7 +54,7 @@ namespace lev
 
 		struct Atlas
 		{
-			Texture* texture;
+			Ref<Texture> texture;
 			TextureRegion region(const RectI& rect) const;
 		};
 

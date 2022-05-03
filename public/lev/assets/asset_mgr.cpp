@@ -9,28 +9,28 @@ using namespace lev;
 class TextureLoader : public AssetLoader<Texture>
 {
 public:
-	Texture* load(const String& path) override;
+	Ref<Texture> load(const String& path) override;
 };
 
 class ShaderLoader : public AssetLoader<Shader>
 {
 public:
-	Shader* load(const String& path) override;
+	Ref<Shader> load(const String& path) override;
 };
 
 class FontLoader : public AssetLoader<Font>
 {
 public:
-	Font* load(const String& path) override;
+	Ref<Font> load(const String& path) override;
 };
 
-Texture* TextureLoader::load(const String& path)
+Ref<Texture> TextureLoader::load(const String& path)
 {
 	LEV_ASSERT(!obj, "Object being initialized must not currently exist");
 	return Texture::create(path.c_str());
 }
 
-Shader* ShaderLoader::load(const String& path)
+Ref<Shader> ShaderLoader::load(const String& path)
 {
 	LEV_ASSERT(!obj, "Object being initialized must not currently exist");
 
@@ -38,9 +38,8 @@ Shader* ShaderLoader::load(const String& path)
 	String line = "";
 	s32 getline_cache = 0;
 
-	Shader* result = nullptr;
-
-	float size;
+	float size = 0.0f;
+	Ref<Shader> result = nullptr;
 
 	while (file.get_line(line, getline_cache))
 	{
@@ -90,7 +89,7 @@ Shader* ShaderLoader::load(const String& path)
 	return result;
 }
 
-Font* FontLoader::load(const String& path)
+Ref<Font> FontLoader::load(const String& path)
 {
 	LEV_ASSERT(!obj, "Object being initialized must not currently exist");
 
@@ -119,7 +118,7 @@ Font* FontLoader::load(const String& path)
 		}
 	}
 
-	return new Font(size, font_path.c_str());
+	return create_ref<Font>(size, font_path.c_str());
 }
 
 AssetMgr::AssetMgr()
@@ -134,10 +133,6 @@ AssetMgr::AssetMgr()
 
 AssetMgr::~AssetMgr()
 {
-	unload_all<Texture>();
-	unload_all<Shader>();
-	unload_all<Font>();
-
 	free_load_data<Texture>();
 	free_load_data<Shader>();
 	free_load_data<Font>();

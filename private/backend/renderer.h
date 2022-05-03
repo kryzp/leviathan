@@ -16,8 +16,8 @@ namespace lev
 	struct RenderPass
 	{
 		Material material;
-		const Mesh* mesh;
-		const Framebuffer* target;
+		Ref<Mesh> mesh;
+		Ref<Framebuffer> target;
 		BlendMode blend;
 		Compare stencil;
 		u8 depth;
@@ -40,12 +40,12 @@ namespace lev
 
         virtual void clear(const Colour& colour = Colour::empty()) = 0;
 
-		virtual Texture* create_texture(const TextureData& data) = 0;
-		virtual ArrayTexture* create_array_texture(const TextureData& data, u32 depth) = 0;
-		virtual Shader* create_shader(const ShaderData& data) = 0;
-		virtual ShaderBuffer* create_shader_buffer(u64 size) = 0;
-		virtual Framebuffer* create_framebuffer(const FramebufferData& data) = 0;
-		virtual Mesh* create_mesh() = 0;
+		virtual Ref<Texture> create_texture(const TextureData& data) = 0;
+		virtual Ref<ArrayTexture> create_array_texture(const TextureData& data, u32 depth) = 0;
+		virtual Ref<Shader> create_shader(const ShaderData& data) = 0;
+		virtual Ref<ShaderBuffer> create_shader_buffer(u64 size) = 0;
+		virtual Ref<Framebuffer> create_framebuffer(const FramebufferData& data) = 0;
+		virtual Ref<Mesh> create_mesh() = 0;
 
 		virtual void unbind_texture() = 0;
 		virtual void unbind_array_texture() = 0;

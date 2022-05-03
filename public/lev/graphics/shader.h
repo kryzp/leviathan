@@ -69,7 +69,7 @@ namespace lev
 		ShaderBuffer() = default;
 		virtual ~ShaderBuffer() = default;
 
-		static ShaderBuffer* create(u64 size);
+		static Ref<ShaderBuffer> create(u64 size);
 
 		static void unbind();
 
@@ -88,9 +88,9 @@ namespace lev
 		Shader() = default;
 		virtual ~Shader() = default;
 
-		static Shader* create_single(const lev::String& file);
-		static Shader* create_seperated(const lev::String& vertex, const lev::String& fragment, const lev::String& geometry = nullptr);
-		static Shader* create_compute_seperated(const lev::String& compute);
+		static Ref<Shader> create_single(const lev::String& file);
+		static Ref<Shader> create_seperated(const lev::String& vertex, const lev::String& fragment, const lev::String& geometry = nullptr);
+		static Ref<Shader> create_compute_seperated(const lev::String& compute);
 
 		static void unbind();
 
@@ -101,7 +101,7 @@ namespace lev
 		virtual Shader& dispatch_compute(s64 indirect) = 0;
 		virtual Shader& wait_compute() = 0;
 
-		virtual Shader& set_buffer(const ShaderBuffer* buf, int binding) = 0;
+		virtual Shader& set_buffer(const Ref<ShaderBuffer>& buf, int binding) = 0;
 
 		virtual Shader& set(const char* name, bool value)						= 0;
 		virtual Shader& set(const char* name, int value)						= 0;

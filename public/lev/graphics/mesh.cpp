@@ -3,7 +3,7 @@
 
 using namespace lev;
 
-Mesh* Mesh::create()
+Ref<Mesh> Mesh::create()
 {
 	return Renderer::inst()->create_mesh();
 }

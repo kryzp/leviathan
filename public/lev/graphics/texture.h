@@ -169,16 +169,16 @@ namespace lev
 		Texture() = default;
 		virtual ~Texture() = default;
 
-		static Texture* create(const char* path);
-		static Texture* create(const Image& image, u8 format, u8 internal_format, u8 type);
-		static Texture* create(u32 width, u32 height, u8 format, u8 internal_format, u8 type, const byte* data);
+		static Ref<Texture> create(const char* path);
+		static Ref<Texture> create(const Image& image, u8 format, u8 internal_format, u8 type);
+		static Ref<Texture> create(u32 width, u32 height, u8 format, u8 internal_format, u8 type, const byte* data);
 
 		static void unbind();
 		static void unbind_image();
 
 		inline Int2 size() const { return Int2(width(), height()); }
 
-		virtual void copy_to(Ref<Texture>& other) = 0;
+		virtual void copy_to(const Ref<Texture>& other) = 0;
 
 		virtual void bind(int idx) const = 0;
 		virtual void bind_image(int idx) const = 0;
@@ -196,7 +196,7 @@ namespace lev
 
 	struct TextureRegion
 	{
-		Texture* source;
+		Ref<Texture> source;
 		RectI bounds;
 
 		TextureRegion()
@@ -205,7 +205,7 @@ namespace lev
 		{
 		}
 
-		TextureRegion(Texture* source, const RectI& bounds = RectI::zero())
+		TextureRegion(const Ref<Texture>& source, const RectI& bounds = RectI::zero())
 			: source(source)
 			, bounds(bounds)
 		{
@@ -220,9 +220,9 @@ namespace lev
 		ArrayTexture() = default;
 		virtual ~ArrayTexture() = default;
 
-		static ArrayTexture* create(const char* path, u32 image_count);
-		static ArrayTexture* create(const Image& image, u8 format, u8 internal_format, u8 type, u32 image_count);
-		static ArrayTexture* create(u32 width, u32 height, u8 format, u8 internal_format, u8 type, u32 image_count, const byte* data);
+		static Ref<ArrayTexture> create(const char* path, u32 image_count);
+		static Ref<ArrayTexture> create(const Image& image, u8 format, u8 internal_format, u8 type, u32 image_count);
+		static Ref<ArrayTexture> create(u32 width, u32 height, u8 format, u8 internal_format, u8 type, u32 image_count, const byte* data);
 
 		static void unbind();
 

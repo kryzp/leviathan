@@ -13,29 +13,29 @@ namespace lev
 	public:
 		Material();
 		Material(
-			Shader* shaders,
-			Texture** textures,
-			TextureSampler* samplers,
-            u32 texture_count
+			const Ref<Shader>& shader,
+			const Ref<Texture>* textures,
+			const TextureSampler* samplers,
+			unsigned texture_count
 		);
 
-		Shader* shader();
-		const Shader* shader() const;
-		void set_shader(Shader* shader);
+		Ref<Shader> shader();
+		const Ref<Shader> shader() const;
+		void set_shader(const Ref<Shader>& shader);
 
-		Texture* texture(u32 idx);
-		const Texture* texture(u32 idx) const;
-		void set_texture(u32 idx, Texture* texture);
+		Ref<Texture> texture(unsigned idx);
+		const Ref<Texture> texture(unsigned idx) const;
+		void set_texture(const Ref<Texture>& texture, unsigned idx);
 
-		TextureSampler& sampler(u32 idx);
-		const TextureSampler& sampler(u32 idx) const;
-		void set_sampler(u32 idx, TextureSampler sampler);
+		TextureSampler& sampler(unsigned idx);
+		const TextureSampler& sampler(unsigned idx) const;
+		void set_sampler(const TextureSampler& sampler, unsigned idx);
 
 	private:
-		Shader* m_shader;
+		Ref<Shader> m_shader;
 
 		// todo Vector<T>???
-		Texture* m_textures[LEV_MAT_TEXTURES];
+		Ref<Texture> m_textures[LEV_MAT_TEXTURES];
 		TextureSampler m_samplers[LEV_MAT_TEXTURES];
 	};
 }

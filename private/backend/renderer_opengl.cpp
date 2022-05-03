@@ -313,7 +313,7 @@ public:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sampler.filter == TEX_FILTER_LINEAR) ? GL_LINEAR : GL_NEAREST);
 	}
 
-	void copy_to(Ref<Texture>& other) override
+	void copy_to(const Ref<Texture>& other) override
 	{
 		OpenGLTexture* cast_other_ptr = (OpenGLTexture*)other.get();
 
@@ -689,7 +689,7 @@ public:
 		return *this;
 	}
 
-	Shader& set_buffer(const ShaderBuffer* buf, int binding) override
+	Shader& set_buffer(const Ref<ShaderBuffer>& buf, int binding) override
 	{
 		buf->bind(binding);
 		return *this;
@@ -768,7 +768,7 @@ class OpenGLFramebuffer : public Framebuffer
 {
 	u32 m_id;
 	
-	Vector<Texture*> m_attachments;
+	Vector<Ref<Texture>> m_attachments;
 	Vector<GLenum> m_gl_attachments;
 
 	int m_width;
@@ -796,7 +796,7 @@ public:
 				nullptr
 			);
 
-			auto gltex = (OpenGLTexture*)tex;
+			auto gltex = (OpenGLTexture*)tex.get();
 			gltex->update(texture_sampler);
 
 			if (texture_data.format == TEX_FMT_DEPTH_STENCIL)
@@ -840,7 +840,7 @@ public:
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	}
 
-	const Vector<Texture*>& attachments() const override
+	const Vector<Ref<Texture>>& attachments() const override
 	{
 		return m_attachments;
 	}
@@ -1058,9 +1058,9 @@ public:
 
 	void render(const RenderPass& pass) override
 	{
-		auto shader = (OpenGLShader*)pass.material.shader();
-		auto target = (OpenGLFramebuffer*)pass.target;
-		auto mesh = (OpenGLMesh*)pass.mesh;
+		auto shader = (OpenGLShader*)pass.material.shader().get();
+		auto target = (OpenGLFramebuffer*)pass.target.get();
+		auto mesh = (OpenGLMesh*)pass.mesh.get();
 		auto& blend = pass.blend;
 
 		if (target)
@@ -1080,7 +1080,7 @@ public:
 
 		for (int i = 0; i < LEV_MAT_TEXTURES; i++)
 		{
-			auto texture = (OpenGLTexture*)pass.material.texture(i);
+			auto texture = (OpenGLTexture*)pass.material.texture(i).get();
 			auto sampler = pass.material.sampler(i);
 
 			if (!texture)
@@ -1184,34 +1184,34 @@ public:
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	}
 
-	Texture* create_texture(const TextureData& data) override
+	Ref<Texture> create_texture(const TextureData& data) override
 	{
-		return new OpenGLTexture(data);
+		return create_ref<OpenGLTexture>(data);
 	}
 
-	ArrayTexture* create_array_texture(const TextureData& data, u32 depth) override
+	Ref<ArrayTexture> create_array_texture(const TextureData& data, u32 depth) override
 	{
-		return new OpenGLArrayTexture(data, depth);
+		return create_ref<OpenGLArrayTexture>(data, depth);
 	}
 
-	ShaderBuffer* create_shader_buffer(u64 size) override
+	Ref<ShaderBuffer> create_shader_buffer(u64 size) override
 	{
-		return new OpenGLShaderBuffer(size);
+		return create_ref<OpenGLShaderBuffer>(size);
 	}
 
-	Shader* create_shader(const ShaderData& data) override
+	Ref<Shader> create_shader(const ShaderData& data) override
 	{
-		return new OpenGLShader(data);
+		return create_ref<OpenGLShader>(data);
 	}
 
-	Framebuffer* create_framebuffer(const FramebufferData& data) override
+	Ref<Framebuffer> create_framebuffer(const FramebufferData& data) override
 	{
-		return new OpenGLFramebuffer(data);
+		return create_ref<OpenGLFramebuffer>(data);
 	}
 
-	Mesh* create_mesh() override
+	Ref<Mesh> create_mesh() override
 	{
-		return new OpenGLMesh();
+		return create_ref<OpenGLMesh>();
 	}
 
 	void unbind_texture() override

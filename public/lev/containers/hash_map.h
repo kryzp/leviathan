@@ -1,7 +1,9 @@
 #pragma once
 
 #include <lev/core/util.h>
+
 #include <lev/containers/vector.h>
+#include <lev/containers/optional.h>
 
 namespace lev
 {
@@ -11,8 +13,8 @@ namespace lev
 		struct Entry
 		{
 			Key key;
-			Value value;
-			Entry* next;
+			Optional<Value> value;
+			Entry* next; // todo is this necessary, cant i just increment by sizeof(Entry)??
 
 			Entry()
 				: key()
@@ -21,7 +23,7 @@ namespace lev
 			{
 			}
 
-			Entry(const Key& key, const Value& value, Entry* next)
+			Entry(const Key& key, const Optional<Value>& value, Entry* next)
 				: key(key)
 				, value(value)
 				, next(next)
@@ -91,16 +93,16 @@ namespace lev
 
 		Entry& existing = m_entrys[index_of(key)];
 
-		if (existing.value == Value())
+		if (!existing.value.enabled)
 		{
-			m_entrys[index_of(key)] = Entry(key, value, nullptr);
+			m_entrys[index_of(key)] = Entry(key, Optional<Value>(value), nullptr);
 			m_count++;
 		}
 		else
 		{
 			if (existing.key == key)
 			{
-				existing.value = value;
+				existing.value.value = value;
 				return;
 			}
 			else
@@ -161,7 +163,7 @@ namespace lev
 		while (entry)
 		{
 			if (entry->key == key)
-				return entry->value;
+				return entry->value.value;
 
 			entry = entry->next;
 		}

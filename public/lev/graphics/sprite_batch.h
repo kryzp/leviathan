@@ -53,10 +53,10 @@ namespace lev
 	{
 	public:
 		SpriteBatch();
-		~SpriteBatch();
+		~SpriteBatch() = default;
 
-		void render(const Framebuffer* framebuffer = nullptr, int sort_mode = SPRITE_SORT_FTB);
-		void render(const Mat4x4& proj, const Framebuffer* framebuffer = nullptr, u8 sort_mode = SPRITE_SORT_FTB);
+		void render(const Ref<Framebuffer>& framebuffer = nullptr, u8 sort_mode = SPRITE_SORT_FTB);
+		void render(const Mat4x4& proj, const Ref<Framebuffer>& framebuffer = nullptr, u8 sort_mode = SPRITE_SORT_FTB);
 
 		///////////////////////////////////////////////////////
 		//  W E L C O M E   T O   T H E   P U S H   Z O N E  // (kind of a vibe ngl)
@@ -64,25 +64,25 @@ namespace lev
 
 		void push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx, u64 idxcount);
 		void push_texture(const TextureRegion& tex, const Colour& colour = Colour::white(), u8 mode = SB_RENDER_MODE_ALL);
-		void push_texture(Texture* tex, const Colour& colour = Colour::white(), u8 mode = SB_RENDER_MODE_ALL);
+		void push_texture(const Ref<Texture>& tex, const Colour& colour = Colour::white(), u8 mode = SB_RENDER_MODE_ALL);
 		void push_quad(const Quad& quad, const Colour& colour = Colour::white(), u8 mode = SB_RENDER_MODE_SILHOUETTE);
 		void push_triangle(const Triangle& tri, const Colour& colour = Colour::white(), u8 mode = SB_RENDER_MODE_SILHOUETTE);
-		void push_string(const char* str, const Font* font, u8 align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white());
-		void push_string(const char* str, const Font* font, const std::function<Vec2F(Font::Character,int)>& offset_fn, u8 align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white());
+		void push_string(const char* str, const Ref<Font>& font, u8 align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white());
+		void push_string(const char* str, const Ref<Font>& font, const std::function<Vec2F(Font::Character,int)>& offset_fn, u8 align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white());
 		void push_circle(const Circle& circle, u32 accuracy = 40U, const Colour& colour = Colour::white());
 		void push_line(const Line& line, float thickness, const Colour& colour = Colour::white());
 
 		///////////////////////////////////////////////////////
 
-		void set_texture(Texture* tex, int idx = 0);
-		void set_sampler(const TextureSampler& sampler, int idx = 0);
-		void reset_texture(int idx = 0);
-		Texture* peek_texture(int idx = 0);
-		const TextureSampler& peek_sampler(int idx = 0);
+		void set_texture(const Ref<Texture>& tex, unsigned idx = 0);
+		void set_sampler(const TextureSampler& sampler, unsigned idx = 0);
+		void reset_texture(unsigned idx = 0);
+		Ref<Texture> peek_texture(unsigned idx = 0);
+		const TextureSampler& peek_sampler(unsigned idx = 0);
 
-		void set_shader(Shader* shd);
+		void set_shader(const Ref<Shader>& shd);
 		void reset_shader();
-		Shader* peek_shader();
+		Ref<Shader> peek_shader();
 
 		void push_material(const Material& material);
 		Material pop_material();
@@ -131,8 +131,8 @@ namespace lev
 			Vector<u32> indices;
 		};
 
-		Mesh* m_mesh;
-		Shader* m_default_shader;
+		Ref<Mesh> m_mesh;
+		Ref<Shader> m_default_shader;
 
 		void initialize();
 		bool m_initialized;

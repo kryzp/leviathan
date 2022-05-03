@@ -3,7 +3,7 @@
 
 using namespace lev;
 
-Framebuffer* Framebuffer::create(u32 width, u32 height)
+Ref<Framebuffer> Framebuffer::create(unsigned width, unsigned height)
 {
 	static const FramebufferAttachments attachment = {
         Pair(TextureData(width, height, TEX_FMT_RGBA, TEX_I_FMT_RGBA32F, TEX_TYPE_UNSIGNED_BYTE), TextureSampler::pixel())
@@ -12,7 +12,7 @@ Framebuffer* Framebuffer::create(u32 width, u32 height)
 	return create(attachment);
 }
 
-Framebuffer* Framebuffer::create(const FramebufferAttachments& attachments)
+Ref<Framebuffer> Framebuffer::create(const FramebufferAttachments& attachments)
 {
 	LEV_ASSERT(attachments.begin(), "Attachments must not be null");
 	LEV_ASSERT(attachments.size() > 0, "Attachment count must be higher than 0");
@@ -41,7 +41,7 @@ void Framebuffer::unbind()
 	Renderer::inst()->unbind_framebuffer();
 }
 
-const Texture* Framebuffer::attachment(int i) const
+Ref<Texture> Framebuffer::attachment(int i) const
 {
 	return attachments()[i];
 }
