@@ -133,7 +133,6 @@ void SpriteBatch::render(const Mat4x4& proj, const Framebuffer* framebuffer, u8 
 			b.material.set_shader(m_default_shader);
 
 		b.material.shader()->use()
-			.set("u_texture", b.material.texture(0))
 			.set(Shader::PROJECTION, proj)
 			.set(Shader::RESOLUTION, Vec2F(
 				framebuffer ? framebuffer->width() : App::inst()->draw_width(),
