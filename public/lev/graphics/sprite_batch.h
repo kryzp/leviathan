@@ -116,6 +116,9 @@ namespace lev
 		BlendMode pop_blend();
 		BlendMode& peek_blend();
 
+		// snaps all drawing coords to integers
+		bool pixel_snap = false;
+
 	private:
 		struct RenderBatch
 		{

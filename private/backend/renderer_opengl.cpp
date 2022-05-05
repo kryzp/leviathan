@@ -1033,11 +1033,6 @@ public:
 			return false;
 		}
 
-		glEnable(GL_BLEND);
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_STENCIL_TEST);
-		glEnable(GL_SCISSOR_TEST);
-
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 		return true;
@@ -1067,13 +1062,11 @@ public:
 		{
 			target->bind();
 			glDrawBuffers(target->gl_attachments().size(), target->gl_attachments().begin());
-			glViewport(0, 0, target->width(), target->height());
 		}
 		else
 		{
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			glDrawBuffers(1, &COLOUR_ATTACHMENT_0);
-			glViewport(0, 0, App::inst()->draw_width(), App::inst()->draw_height());
 		}
 
 		shader->use();
@@ -1093,24 +1086,42 @@ public:
 
 		// depth stencil
 		{
-			u32 gl_face = get_gl_compare_face(pass.stencil.face);
+			if (pass.stencil.face != FACE_NONE)
+			{
+				glEnable(GL_STENCIL_TEST);
 
-			glStencilFuncSeparate(
-				gl_face,
-				get_gl_compare_func(pass.stencil.func),
-				pass.stencil.ref,
-				pass.stencil.mask
-			);
+				u32 gl_face = get_gl_compare_face(pass.stencil.face);
 
-			glStencilOpSeparate(
-				gl_face,
-				get_gl_compare_fail(pass.stencil.s_fail),
-				get_gl_compare_fail(pass.stencil.dp_fail),
-				get_gl_compare_fail(pass.stencil.dp_pass)
-			);
+				glStencilFuncSeparate(
+					gl_face,
+					get_gl_compare_func(pass.stencil.func),
+					pass.stencil.ref,
+					pass.stencil.mask
+				);
 
-			glDepthFunc(get_gl_compare_func(pass.depth));
-			//glDepthMask(pass.depth_mask_toggle);
+				glStencilOpSeparate(
+					gl_face,
+					get_gl_compare_fail(pass.stencil.s_fail),
+					get_gl_compare_fail(pass.stencil.dp_fail),
+					get_gl_compare_fail(pass.stencil.dp_pass)
+				);
+			}
+			else
+			{
+				glDisable(GL_STENCIL_TEST);
+			}
+
+			if (pass.depth != COMPARE_NONE)
+			{
+				glEnable(GL_DEPTH_TEST);
+
+				glDepthFunc(get_gl_compare_func(pass.depth));
+				//glDepthMask(pass.depth_mask_toggle);
+			}
+			else
+			{
+				glDisable(GL_DEPTH_TEST);
+			}
 		}
 
 		if (pass.viewport != RectI::zero())
@@ -1123,14 +1134,22 @@ public:
 
 		if (pass.scissor != RectI::zero())
 		{
+			glEnable(GL_SCISSOR_TEST);
+
 			glScissor(
 				pass.scissor.x, pass.scissor.y,
 				pass.scissor.w, pass.scissor.h
 			);
 		}
+		else
+		{
+			glDisable(GL_SCISSOR_TEST);
+		}
 
 		// blending
 		{
+			glEnable(GL_BLEND);
+
 			glBlendEquationSeparate(
 				get_gl_blend_equation(blend.equation_rgb),
 				get_gl_blend_equation(blend.equation_alpha)

@@ -163,7 +163,7 @@ namespace lev
         }
     };
 
-	class Texture
+	class Texture : public NonCopyable, public NonMovable
 	{
 	public:
 		Texture() = default;

@@ -88,10 +88,13 @@ void SpriteBatch::initialize()
 
 void SpriteBatch::render(const Ref<Framebuffer>& framebuffer, u8 sort_mode)
 {
-	render(Mat4x4::create_orthographic(
+	render(Mat4x4::create_orthographic_ext(
+		0.0f,
 		framebuffer ? framebuffer->width() : App::inst()->draw_width(),
 		framebuffer ? framebuffer->height() : App::inst()->draw_height(),
-		0.0f, 10000.0f
+		0.0f,
+		0.01f,
+		10000.0f
 	), framebuffer, sort_mode);
 }
 
@@ -174,6 +177,12 @@ void SpriteBatch::push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx,
 		{
 			batch.vertices.push_back(vtx[i]);
 			batch.vertices[i].pos = (Vec2F::transform(vtx[i].pos, m_transform_matrix));
+
+			if (pixel_snap)
+			{
+				batch.vertices[i].pos.x = calc::floor(batch.vertices[i].pos.x);
+				batch.vertices[i].pos.y = calc::floor(batch.vertices[i].pos.y);
+			}
 		}
 
 		for (i = 0; i < idxcount; i++)

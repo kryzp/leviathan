@@ -79,7 +79,7 @@ namespace lev
 		virtual u64 size() const = 0;
 	};
 
-	class Shader
+	class Shader : public NonCopyable, public NonMovable
 	{
 	public:
 		static constexpr const char* PROJECTION = "lev_projection";
