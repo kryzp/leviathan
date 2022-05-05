@@ -151,6 +151,14 @@ void SpriteBatch::render_batch(RenderPass& pass, const RenderBatch& b)
 	pass.viewport = b.viewport;
 	pass.scissor = b.scissor;
 
+	if (pass.viewport == RectI::zero())
+	{
+		float res_x = pass.target ? pass.target->width() : App::inst()->draw_width();
+		float res_y = pass.target ? pass.target->height() : App::inst()->draw_height();
+
+		pass.viewport = RectI(0, 0, res_x, res_y);
+	}
+
 	m_mesh->vertex_data(b.vertices.begin(), b.vertices.size());
 	m_mesh->index_data(b.indices.begin(), b.indices.size());
 	pass.mesh = m_mesh;
