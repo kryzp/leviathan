@@ -62,7 +62,7 @@ namespace lev
 		//  W E L C O M E   T O   T H E   P U S H   Z O N E  // (kind of a vibe ngl)
 		///////////////////////////////////////////////////////
 
-		void push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx, u64 idxcount);
+		void push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx, u64 idxcount, bool flip_vertically = false);
 		void push_texture(const TextureRegion& tex, const Colour& colour = Colour::white(), u8 mode = SB_RENDER_MODE_ALL);
 		void push_texture(const Ref<Texture>& tex, const Colour& colour = Colour::white(), u8 mode = SB_RENDER_MODE_ALL);
 		void push_quad(const Quad& quad, const Colour& colour = Colour::white(), u8 mode = SB_RENDER_MODE_SILHOUETTE);
@@ -129,7 +129,6 @@ namespace lev
 			RectI viewport;
 			RectI scissor;
 			float layer;
-
 			Vector<Vertex> vertices;
 			Vector<u32> indices;
 		};

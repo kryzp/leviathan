@@ -26,10 +26,17 @@ namespace lev
 		int instance_count;
 	};
 
+	struct RendererProperties
+	{
+		bool origin_bottom_left;
+	};
+
 	class Renderer
 	{
 	public:
         static Renderer* inst();
+
+		virtual RendererProperties properties() = 0;
 
         virtual bool init() = 0;
         virtual void destroy() = 0;

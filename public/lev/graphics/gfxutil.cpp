@@ -37,9 +37,9 @@ void GfxUtil::quad(Vertex* vtx, u32* indices, const Quad& quad, const Quad& uv, 
 	get_vtx_mode(mode, arrvtx[3].mode);
 
     static const u32 arrindices[6] = {
-        0, 1, 3,
-        1, 2, 3
-    };
+        0, 1, 2,
+        0, 2, 3
+	};
     
     mem::copy(vtx, arrvtx, sizeof(arrvtx));
     mem::copy(indices, arrindices, sizeof(arrindices));

@@ -10,6 +10,7 @@ namespace lev
 
 	enum TextureFormat
 	{
+		TEX_FMT_NONE = 0,
 		TEX_FMT_RED,
 		TEX_FMT_RG,
 		TEX_FMT_RGB,
@@ -20,6 +21,7 @@ namespace lev
 
     enum InternalTextureFormat
     {
+		TEX_I_FMT_NONE = 0,
         TEX_I_FMT_R8,
         TEX_I_FMT_R8_SNORM,
         TEX_I_FMT_R16,
@@ -86,6 +88,7 @@ namespace lev
 
 	enum TextureType
 	{
+		TEX_TYPE_NONE = 0,
         TEX_TYPE_UNSIGNED_BYTE,
         TEX_TYPE_BYTE,
         TEX_TYPE_UNSIGNED_SHORT,
@@ -100,6 +103,7 @@ namespace lev
 
 	enum TextureFilter
 	{
+		TEX_FILTER_NONE = 0,
 		TEX_FILTER_NEAREST,
 		TEX_FILTER_LINEAR,
 		TEX_FILTER_MAX
@@ -107,6 +111,7 @@ namespace lev
 
 	enum TextureWrap
 	{
+		TEX_WRAP_NONE = 0,
 		TEX_WRAP_CLAMP,
 		TEX_WRAP_REPEAT,
 		TEX_WRAP_MAX
@@ -119,9 +124,9 @@ namespace lev
 		u8 wrap_y;
 
 		TextureSampler()
-			: filter(TEX_FILTER_NEAREST)
-			, wrap_x(TEX_WRAP_CLAMP)
-			, wrap_y(TEX_WRAP_CLAMP)
+			: filter(TEX_FILTER_NONE)
+			, wrap_x(TEX_WRAP_NONE)
+			, wrap_y(TEX_WRAP_NONE)
 		{
 		}
 
@@ -131,6 +136,9 @@ namespace lev
 			, wrap_y(wrap_y)
 		{
 		}
+
+		bool operator == (const TextureSampler& other) const { return this->filter == other.filter && this->wrap_x == other.wrap_x && this->wrap_y == other.wrap_y; }
+		bool operator != (const TextureSampler& other) const { return !(*this == other); }
 
 		static const TextureSampler& pixel();
 		static const TextureSampler& linear();
@@ -185,6 +193,8 @@ namespace lev
 
 		virtual void generate(const void* data) = 0;
 		virtual void get_data(float* buf) = 0;
+
+		virtual bool framebuffer_parent() = 0;
 
 		virtual u32 width() const = 0;
 		virtual u32 height() const = 0;

@@ -16,9 +16,9 @@ Quad::Quad(const Vec2F& a, const Vec2F& b, const Vec2F& c, const Vec2F& d)
 }
 
 Quad::Quad(const RectF& rect)
-	: a(rect.bottom_right())
+	: a(rect.top_left())
 	, b(rect.top_right())
-	, c(rect.top_left())
+	, c(rect.bottom_right())
 	, d(rect.bottom_left())
 {
 }

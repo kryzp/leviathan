@@ -6,10 +6,17 @@ namespace lev
 {
 	struct Config;
 
+	struct SystemProperties
+	{
+		int temp;
+	};
+
 	class System
 	{
 	public:
         static System* inst();
+
+		virtual SystemProperties properties() = 0;
 
 		virtual bool init(const Config& cfg) = 0;
 		virtual void postinit() = 0;

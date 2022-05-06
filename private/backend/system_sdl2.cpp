@@ -28,6 +28,14 @@ public:
 	{
 	}
 
+	SystemProperties properties() override
+	{
+		SystemProperties p = {0};
+		p.temp = 0;
+
+		return p;
+	}
+
     bool init(const Config& cfg) override
 	{
 #if _WIN32

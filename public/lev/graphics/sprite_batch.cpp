@@ -166,7 +166,7 @@ void SpriteBatch::render_batch(RenderPass& pass, const RenderBatch& b)
 	Renderer::inst()->render(pass);
 }
 
-void SpriteBatch::push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx, u64 idxcount)
+void SpriteBatch::push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx, u64 idxcount, bool flip_vertically)
 {
 	RenderBatch batch;
 	batch.layer = peek_layer();
@@ -185,6 +185,9 @@ void SpriteBatch::push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx,
 		{
 			batch.vertices.push_back(vtx[i]);
 			batch.vertices[i].pos = (Vec2F::transform(vtx[i].pos, m_transform_matrix));
+
+			if (flip_vertically)
+				batch.vertices[i].uv.y = 1.0f - batch.vertices[i].uv.y;
 
 			if (pixel_snap)
 			{
@@ -255,25 +258,12 @@ void SpriteBatch::push_texture(const TextureRegion& tex, const Colour& colour, u
 		mode
 	);
 
-	push_vertices(vertices, 4, indices, 6);
+	push_vertices(vertices, 4, indices, 6, tex.source->framebuffer_parent() && Renderer::inst()->properties().origin_bottom_left);
 }
 
 void SpriteBatch::push_texture(const Ref<Texture>& tex, const Colour& colour, u8 mode)
 {
-	set_texture(tex);
-
-	Vertex vertices[4];
-	u32 indices[6];
-
-	GfxUtil::quad(
-		vertices, indices,
-		Quad(RectF(0.0f, 0.0f, tex->width(), tex->height())),
-		Quad(RectF::one()),
-		colour,
-		mode
-	);
-
-	push_vertices(vertices, 4, indices, 6);
+	push_texture(TextureRegion(tex), colour, mode);
 }
 
 void SpriteBatch::push_string(

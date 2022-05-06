@@ -237,7 +237,11 @@ class OpenGLTexture : public Texture
 	u32 m_gl_internal_format;
 	u32 m_gl_type;
 
+	TextureSampler m_sampler;
+
 public:
+	bool fbo_parent = false;
+
 	OpenGLTexture(const TextureData& data)
 		: Texture()
 		, m_id(0)
@@ -305,8 +309,18 @@ public:
 		);
 	}
 
-	void update(const TextureSampler& sampler) const
+	bool framebuffer_parent() override
 	{
+		return fbo_parent;
+	}
+
+	void update(const TextureSampler& sampler)
+	{
+		if (m_sampler == sampler)
+			return;
+
+		m_sampler = sampler;
+
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (sampler.wrap_x == TEX_WRAP_CLAMP) ? GL_CLAMP_TO_EDGE : GL_REPEAT); // can we just take a moment to appreciate how nicely the spacing lines up here oh my god
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (sampler.wrap_y == TEX_WRAP_CLAMP) ? GL_CLAMP_TO_EDGE : GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sampler.filter == TEX_FILTER_LINEAR) ? GL_LINEAR : GL_NEAREST);
@@ -798,6 +812,7 @@ public:
 
 			auto gltex = (OpenGLTexture*)tex.get();
 			gltex->update(texture_sampler);
+			gltex->fbo_parent = true;
 
 			if (texture_data.format == TEX_FMT_DEPTH_STENCIL)
 			{
@@ -1022,6 +1037,14 @@ class OpenGLRenderer : public Renderer
 	void* m_context = nullptr;
 
 public:
+	RendererProperties properties() override
+	{
+		RendererProperties p = {0};
+		p.origin_bottom_left = true;
+
+		return p;
+	}
+
 	bool init() override
 	{
 		m_context = System::inst()->gl_context_create();
