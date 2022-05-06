@@ -23,7 +23,7 @@ SpriteBatch::SpriteBatch()
 {
 	m_layer_stack.push_back(0.0f);
 	m_blend_stack.push_back(BlendMode::generic());
-	m_depth_stack.push_back(COMPARE_ALWAYS);
+	m_depth_stack.push_back(COMPARE_NONE);
 	m_stencil_stack.push_back(Compare::none());
 	m_scissor_stack.push_back(RectI::zero());
 	m_viewport_stack.push_back(RectI::zero());

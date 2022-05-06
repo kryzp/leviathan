@@ -8,7 +8,7 @@
 
 namespace lev
 {
-	using FramebufferAttachments = Vector<Pair<TextureData, TextureSampler>>;
+	using FramebufferAttachments = Vector<Pair<TextureFormatInfo, TextureSampler>>;
 
 	struct FramebufferData
 	{
@@ -23,7 +23,7 @@ namespace lev
 		virtual ~Framebuffer() = default;
 
 		static Ref<Framebuffer> create(unsigned width, unsigned height);
-		static Ref<Framebuffer> create(const FramebufferAttachments& attachments);
+		static Ref<Framebuffer> create(unsigned width, unsigned height, const FramebufferAttachments& attachments);
 
 		static void unbind();
 

@@ -229,14 +229,11 @@ class OpenGLTexture : public Texture
 	u32 m_width;
 	u32 m_height;
 
-	u8 m_format;
-	u8 m_internal_format;
-	u8 m_type;
-
 	u32 m_gl_format;
 	u32 m_gl_internal_format;
 	u32 m_gl_type;
 
+	TextureFormatInfo m_format_info;
 	TextureSampler m_sampler;
 
 public:
@@ -247,12 +244,10 @@ public:
 		, m_id(0)
 		, m_width(data.width)
 		, m_height(data.height)
-		, m_format(data.format)
-		, m_internal_format(data.internal_format)
-		, m_type(data.type)
-		, m_gl_format(get_gl_texture_fmt(m_format))
-		, m_gl_internal_format(get_gl_texture_internal_fmt(m_internal_format))
-		, m_gl_type(get_gl_texture_type(m_type))
+		, m_format_info(data.format_info)
+		, m_gl_format(get_gl_texture_fmt(data.format_info.format))
+		, m_gl_internal_format(get_gl_texture_internal_fmt(data.format_info.internal))
+		, m_gl_type(get_gl_texture_type(data.format_info.type))
 	{
 		glGenTextures(1, &m_id);
 		glActiveTexture(GL_TEXTURE0);
@@ -348,19 +343,9 @@ public:
 		return m_height;
 	}
 
-	u8 format() const override
+	TextureFormatInfo format_info() const override
 	{
-		return m_format;
-	}
-
-	u8 internal_format() const override
-	{
-		return m_internal_format;
-	}
-
-	u8 texture_type() const override
-	{
-		return m_type;
+		return m_format_info;
 	}
 
 	u32 id() const
@@ -380,13 +365,12 @@ class OpenGLArrayTexture : public ArrayTexture
 	u32 m_height;
 	u32 m_depth;
 
-	u8 m_format;
-	u8 m_internal_format;
-	u8 m_type;
-
 	u32 m_gl_format;
 	u32 m_gl_internal_format;
 	u32 m_gl_type;
+
+	TextureFormatInfo m_format_info;
+	TextureSampler m_sampler;
 
 public:
 	OpenGLArrayTexture(const TextureData& data, u32 depth)
@@ -394,12 +378,10 @@ public:
 		, m_id(0)
 		, m_width(data.width)
 		, m_height(data.height)
-		, m_format(data.format)
-		, m_internal_format(data.internal_format)
-		, m_type(data.type)
-		, m_gl_format(get_gl_texture_fmt(m_format))
-		, m_gl_internal_format(get_gl_texture_internal_fmt(m_internal_format))
-		, m_gl_type(get_gl_texture_type(m_type))
+		, m_format_info(data.format_info)
+		, m_gl_format(get_gl_texture_fmt(data.format_info.format))
+		, m_gl_internal_format(get_gl_texture_internal_fmt(data.format_info.internal))
+		, m_gl_type(get_gl_texture_type(data.format_info.type))
 	{
 		glGenTextures(1, &m_id);
 		glActiveTexture(GL_TEXTURE0);
@@ -448,8 +430,13 @@ public:
 		);
 	}
 
-	void update(const TextureSampler& sampler) const
+	void update(const TextureSampler& sampler)
 	{
+		if (m_sampler == sampler)
+			return;
+
+		m_sampler = sampler;
+
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (sampler.wrap_x == TEX_WRAP_CLAMP) ? GL_CLAMP_TO_EDGE : GL_REPEAT); // can we just take a moment to appreciate how nicely the spacing lines up here oh my god
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (sampler.wrap_y == TEX_WRAP_CLAMP) ? GL_CLAMP_TO_EDGE : GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sampler.filter == TEX_FILTER_LINEAR) ? GL_LINEAR : GL_NEAREST);
@@ -471,19 +458,9 @@ public:
 		return m_depth;
 	}
 
-	u8 format() const override
+	TextureFormatInfo format_info() const override
 	{
-		return m_format;
-	}
-
-	u8 internal_format() const override
-	{
-		return m_internal_format;
-	}
-
-	u8 texture_type() const override
-	{
-		return m_type;
+		return m_format_info;
 	}
 
 	u32 id() const
@@ -805,7 +782,7 @@ public:
 			auto tex = Texture::create(
 				m_width, m_height,
 				texture_data.format,
-				texture_data.internal_format,
+				texture_data.internal,
 				texture_data.type,
 				nullptr
 			);

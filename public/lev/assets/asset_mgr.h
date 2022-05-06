@@ -11,7 +11,7 @@
 
 namespace lev
 {
-	class AssetLoaderBase { };
+	class AssetLoaderBase : public NonCopyable, public NonMovable { };
 
 	template <class Asset>
 	class AssetLoader : public AssetLoaderBase
@@ -23,7 +23,7 @@ namespace lev
 		virtual Ref<Asset> load(const String& path) = 0;
 	};
 
-	class AssetMgr
+	class AssetMgr : public NonCopyable, public NonMovable
 	{
 		struct AssetListBase { };
 		template <typename Asset>

@@ -144,29 +144,37 @@ namespace lev
 		static const TextureSampler& linear();
 	};
 
+	struct TextureFormatInfo
+	{
+		u8 format;
+		u8 internal;
+		u8 type;
+
+		TextureFormatInfo(u8 format, u8 internal, u8 type)
+			: format(format)
+			, internal(internal)
+			, type(type)
+		{
+		}
+	};
+
     struct TextureData
     {
         u32 width;
         u32 height;
-        u8 format;
-        u8 internal_format;
-        u8 type;
+		TextureFormatInfo format_info;
 
         TextureData()
             : width(0)
             , height(0)
-            , format(TEX_FMT_RGBA)
-            , internal_format(TEX_I_FMT_RGBA32F)
-            , type(TEX_TYPE_UNSIGNED_BYTE)
+            , format_info(TEX_FMT_RGBA, TEX_I_FMT_RGBA32F, TEX_TYPE_UNSIGNED_BYTE)
         {
         }
 
         TextureData(u32 width, u32 height, u8 format, u8 internal_format, u8 type)
             : width(width)
             , height(height)
-            , format(format)
-            , internal_format(internal_format)
-            , type(type)
+            , format_info(format, internal_format, type)
         {
         }
     };
@@ -199,9 +207,7 @@ namespace lev
 		virtual u32 width() const = 0;
 		virtual u32 height() const = 0;
 
-		virtual u8 format() const = 0;
-        virtual u8 internal_format() const = 0;
-        virtual u8 texture_type() const = 0;
+		virtual TextureFormatInfo format_info() const = 0;
 	};
 
 	struct TextureRegion
@@ -244,8 +250,6 @@ namespace lev
 		virtual u32 height() const = 0;
 		virtual u32 image_count() const = 0;
 
-		virtual u8 format() const = 0;
-		virtual u8 internal_format() const = 0;
-		virtual u8 texture_type() const = 0;
+		virtual TextureFormatInfo format_info() const = 0;
 	};
 }
