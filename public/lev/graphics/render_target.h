@@ -8,22 +8,15 @@
 
 namespace lev
 {
-	using FramebufferAttachments = Vector<Pair<TextureFormatInfo, TextureSampler>>;
-
-	struct FramebufferData
-	{
-        u32 width;
-        u32 height;
-		FramebufferAttachments attachments;
-	};
-
-	class Framebuffer : public NonCopyable, public NonMovable
+	class RenderTarget : public NonCopyable, public NonMovable
 	{
 	public:
-		virtual ~Framebuffer() = default;
+		using Attachments = Vector<Pair<TextureFormatInfo, TextureSampler>>;
 
-		static Ref<Framebuffer> create(unsigned width, unsigned height);
-		static Ref<Framebuffer> create(unsigned width, unsigned height, const FramebufferAttachments& attachments);
+		virtual ~RenderTarget() = default;
+
+		static Ref<RenderTarget> create(unsigned width, unsigned height);
+		static Ref<RenderTarget> create(unsigned width, unsigned height, const Attachments& attachments);
 
 		static void unbind();
 

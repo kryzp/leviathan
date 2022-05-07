@@ -15,7 +15,7 @@ add_library(${PROJECT_NAME}
 
 	public/lev/graphics/gfxutil.cpp
 	public/lev/graphics/sprite_batch.cpp
-	public/lev/graphics/framebuffer.cpp
+	public/lev/graphics/render_target.cpp
 	public/lev/graphics/image.cpp
 	public/lev/graphics/font.cpp
 	public/lev/graphics/mesh.cpp

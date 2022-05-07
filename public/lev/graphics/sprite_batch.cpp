@@ -86,7 +86,7 @@ void SpriteBatch::initialize()
 	m_initialized = true;
 }
 
-void SpriteBatch::render(const Ref<Framebuffer>& framebuffer, u8 sort_mode)
+void SpriteBatch::render(const Ref<RenderTarget>& framebuffer, u8 sort_mode)
 {
 	render(Mat4x4::create_orthographic_ext(
 		0.0f,
@@ -98,7 +98,7 @@ void SpriteBatch::render(const Ref<Framebuffer>& framebuffer, u8 sort_mode)
 	), framebuffer, sort_mode);
 }
 
-void SpriteBatch::render(const Mat4x4& proj, const Ref<Framebuffer>& framebuffer, u8 sort_mode)
+void SpriteBatch::render(const Mat4x4& proj, const Ref<RenderTarget>& framebuffer, u8 sort_mode)
 {
 	if (!m_initialized)
 		initialize();

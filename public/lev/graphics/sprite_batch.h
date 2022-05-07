@@ -5,7 +5,7 @@
 #include <lev/graphics/material.h>
 #include <lev/graphics/font.h>
 #include <lev/graphics/mesh.h>
-#include <lev/graphics/framebuffer.h>
+#include <lev/graphics/render_target.h>
 #include <lev/graphics/compare.h>
 #include <lev/math/mat3x2.h>
 #include <lev/math/mat4x4.h>
@@ -55,8 +55,8 @@ namespace lev
 		SpriteBatch();
 		~SpriteBatch() = default;
 
-		void render(const Ref<Framebuffer>& framebuffer = nullptr, u8 sort_mode = SPRITE_SORT_FTB);
-		void render(const Mat4x4& proj, const Ref<Framebuffer>& framebuffer = nullptr, u8 sort_mode = SPRITE_SORT_FTB);
+		void render(const Ref<RenderTarget>& framebuffer = nullptr, u8 sort_mode = SPRITE_SORT_FTB);
+		void render(const Mat4x4& proj, const Ref<RenderTarget>& framebuffer = nullptr, u8 sort_mode = SPRITE_SORT_FTB);
 
 		///////////////////////////////////////////////////////
 		//  W E L C O M E   T O   T H E   P U S H   Z O N E  // (kind of a vibe ngl)

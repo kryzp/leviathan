@@ -40,9 +40,7 @@ Ref<Texture> Texture::create(const Image& image, u8 format, u8 internal_format, 
 
 Ref<Texture> Texture::create(u32 width, u32 height, u8 format, u8 internal_format, u8 type, const byte* data)
 {
-	Ref<Texture> result = Renderer::inst()->create_texture(
-		TextureData(width, height, format, internal_format, type)
-	);
+	Ref<Texture> result = Renderer::inst()->create_texture(width, height, TextureFormatInfo(format, internal_format, type));
 
 	if (data)
 		result->generate(data);
@@ -76,7 +74,9 @@ Ref<ArrayTexture> ArrayTexture::create(const Image& image, u8 format, u8 interna
 Ref<ArrayTexture> ArrayTexture::create(u32 width, u32 height, u8 format, u8 internal_format, u8 type, u32 image_count, const byte* data)
 {
 	Ref<ArrayTexture> result = Renderer::inst()->create_array_texture(
-		TextureData(width, height, format, internal_format, type),
+		width,
+		height,
+		TextureFormatInfo(format, internal_format, type),
 		image_count
 	);
 

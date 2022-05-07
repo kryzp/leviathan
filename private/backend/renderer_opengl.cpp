@@ -239,15 +239,15 @@ class OpenGLTexture : public Texture
 public:
 	bool fbo_parent = false;
 
-	OpenGLTexture(const TextureData& data)
+	OpenGLTexture(u32 width, u32 height, const TextureFormatInfo& format_info)
 		: Texture()
 		, m_id(0)
-		, m_width(data.width)
-		, m_height(data.height)
-		, m_format_info(data.format_info)
-		, m_gl_format(get_gl_texture_fmt(data.format_info.format))
-		, m_gl_internal_format(get_gl_texture_internal_fmt(data.format_info.internal))
-		, m_gl_type(get_gl_texture_type(data.format_info.type))
+		, m_width(width)
+		, m_height(height)
+		, m_format_info(format_info)
+		, m_gl_format(get_gl_texture_fmt(format_info.format))
+		, m_gl_internal_format(get_gl_texture_internal_fmt(format_info.internal))
+		, m_gl_type(get_gl_texture_type(format_info.type))
 	{
 		glGenTextures(1, &m_id);
 		glActiveTexture(GL_TEXTURE0);
@@ -373,32 +373,21 @@ class OpenGLArrayTexture : public ArrayTexture
 	TextureSampler m_sampler;
 
 public:
-	OpenGLArrayTexture(const TextureData& data, u32 depth)
+	OpenGLArrayTexture(u32 width, u32 height, const TextureFormatInfo& format_info, u32 depth)
 		: ArrayTexture()
 		, m_id(0)
-		, m_width(data.width)
-		, m_height(data.height)
-		, m_format_info(data.format_info)
-		, m_gl_format(get_gl_texture_fmt(data.format_info.format))
-		, m_gl_internal_format(get_gl_texture_internal_fmt(data.format_info.internal))
-		, m_gl_type(get_gl_texture_type(data.format_info.type))
+		, m_width(width)
+		, m_height(height)
+		, m_format_info(format_info)
+		, m_depth(depth)
+		, m_gl_format(get_gl_texture_fmt(format_info.format))
+		, m_gl_internal_format(get_gl_texture_internal_fmt(format_info.internal))
+		, m_gl_type(get_gl_texture_type(format_info.type))
 	{
 		glGenTextures(1, &m_id);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D_ARRAY, m_id);
-
-		glTexImage3D(
-			GL_TEXTURE_2D_ARRAY,
-			0,
-			m_gl_internal_format,
-			data.width, data.height,
-			depth,
-			0,
-			m_gl_format,
-			m_gl_type,
-			nullptr
-		);
-
+		glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, m_gl_internal_format, width, height, depth, 0, m_gl_format, m_gl_type, nullptr);
 		update(TextureSampler::pixel());
 	}
 
@@ -755,7 +744,7 @@ public:
 /* FRAMEBUFFER                                           */
 /*********************************************************/
 
-class OpenGLFramebuffer : public Framebuffer
+class OpenGLFramebuffer : public RenderTarget
 {
 	u32 m_id;
 	
@@ -766,18 +755,18 @@ class OpenGLFramebuffer : public Framebuffer
 	int m_height;
 
 public:
-	OpenGLFramebuffer(const FramebufferData& data)
-		: Framebuffer()
+	OpenGLFramebuffer(u32 width, u32 height, const RenderTarget::Attachments& attachments)
+		: RenderTarget()
 		, m_id(0)
-		, m_width(data.width)
-		, m_height(data.height)
+		, m_width(width)
+		, m_height(height)
 	{
 		glGenFramebuffers(1, &m_id);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_id);
 
-		for (int i = 0; i < data.attachments.size(); i++)
+		for (int i = 0; i < attachments.size(); i++)
 		{
-			auto& [texture_data, texture_sampler] = data.attachments[i];
+			auto& [texture_data, texture_sampler] = attachments[i];
 
 			auto tex = Texture::create(
 				m_width, m_height,
@@ -1203,14 +1192,14 @@ public:
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	}
 
-	Ref<Texture> create_texture(const TextureData& data) override
+	Ref<Texture> create_texture(u32 width, u32 height, const TextureFormatInfo& format_info) override
 	{
-		return create_ref<OpenGLTexture>(data);
+		return create_ref<OpenGLTexture>(width, height, format_info);
 	}
 
-	Ref<ArrayTexture> create_array_texture(const TextureData& data, u32 depth) override
+	Ref<ArrayTexture> create_array_texture(u32 width, u32 height, const TextureFormatInfo& format_info, u32 depth) override
 	{
-		return create_ref<OpenGLArrayTexture>(data, depth);
+		return create_ref<OpenGLArrayTexture>(width, height, format_info, depth);
 	}
 
 	Ref<ShaderBuffer> create_shader_buffer(u64 size) override
@@ -1223,9 +1212,9 @@ public:
 		return create_ref<OpenGLShader>(data);
 	}
 
-	Ref<Framebuffer> create_framebuffer(const FramebufferData& data) override
+	Ref<RenderTarget> create_framebuffer(u32 width, u32 height, const RenderTarget::Attachments& attachments) override
 	{
-		return create_ref<OpenGLFramebuffer>(data);
+		return create_ref<OpenGLFramebuffer>(width, height, attachments);
 	}
 
 	Ref<Mesh> create_mesh() override

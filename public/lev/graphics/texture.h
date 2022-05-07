@@ -158,27 +158,6 @@ namespace lev
 		}
 	};
 
-    struct TextureData
-    {
-        u32 width;
-        u32 height;
-		TextureFormatInfo format_info;
-
-        TextureData()
-            : width(0)
-            , height(0)
-            , format_info(TEX_FMT_RGBA, TEX_I_FMT_RGBA32F, TEX_TYPE_UNSIGNED_BYTE)
-        {
-        }
-
-        TextureData(u32 width, u32 height, u8 format, u8 internal_format, u8 type)
-            : width(width)
-            , height(height)
-            , format_info(format, internal_format, type)
-        {
-        }
-    };
-
 	class Texture : public NonCopyable, public NonMovable
 	{
 	public:
