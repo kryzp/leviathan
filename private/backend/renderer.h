@@ -18,7 +18,7 @@ namespace lev::bknd
 		bool origin_bottom_left;
 	};
 
-	class Renderer
+	class Renderer : public NonCopyable, public NonMovable
 	{
 	public:
 		Renderer() = default;

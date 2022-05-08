@@ -11,7 +11,7 @@ namespace lev::bknd
 		int temp;
 	};
 
-	class System
+	class System : public NonCopyable, public NonMovable
 	{
 	public:
 		System() = default;

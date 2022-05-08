@@ -11,7 +11,7 @@ namespace lev::bknd
 		int temp;
 	};
 
-	class Audio
+	class Audio : public NonCopyable, public NonMovable
 	{
 	public:
 		Audio() = default;

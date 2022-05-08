@@ -22,6 +22,6 @@ namespace lev
 		RectI scissor;
 		int instance_count;
 
-		void perform();
+		void perform() const;
 	};
 }

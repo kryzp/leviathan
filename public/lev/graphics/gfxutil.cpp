@@ -6,10 +6,10 @@ using namespace lev;
 
 static void get_vtx_mode(u8 mode, float* buf)
 {
-    buf[0] = (mode & SB_RENDER_MODE_ALL) != 0;
-    buf[1] = (mode & SB_RENDER_MODE_ALPHA) != 0;
-    buf[2] = (mode & SB_RENDER_MODE_RED) != 0;
-    buf[3] = (mode & SB_RENDER_MODE_SILHOUETTE) != 0;
+    buf[0] = (mode & COLOUR_MODE_ALL) != 0;
+    buf[1] = (mode & COLOUR_MODE_ALPHA) != 0;
+    buf[2] = (mode & COLOUR_MODE_RED) != 0;
+    buf[3] = (mode & COLOUR_MODE_SILHOUETTE) != 0;
 }
 
 void GfxUtil::quad(Vertex* vtx, u32* indices, const Quad& quad, const Quad& uv, Colour colour, u8 mode)
@@ -20,8 +20,8 @@ void GfxUtil::quad(Vertex* vtx, u32* indices, const Quad& quad, const Quad& uv, 
     get_vtx_mode(mode, vtxmode);
 
 	float rr = (float)colour.r / 255.0f;
-	float bb = (float)colour.g / 255.0f;
-	float gg = (float)colour.b / 255.0f;
+	float gg = (float)colour.g / 255.0f;
+	float bb = (float)colour.b / 255.0f;
 	float aa = (float)colour.a / 255.0f;
 
 	Vertex arrvtx[4] = {
@@ -50,8 +50,8 @@ void GfxUtil::tri(Vertex* vtx, u32* indices, const Triangle& triangle, const Tri
     colour.premultiply();
 
 	float rr = (float)colour.r / 255.0f;
-	float bb = (float)colour.g / 255.0f;
-	float gg = (float)colour.b / 255.0f;
+	float gg = (float)colour.g / 255.0f;
+	float bb = (float)colour.b / 255.0f;
 	float aa = (float)colour.a / 255.0f;
 
 	Vertex arrvtx[3] = {

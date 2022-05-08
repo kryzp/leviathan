@@ -3,7 +3,7 @@
 
 using namespace lev;
 
-void RenderPass::perform()
+void RenderPass::perform() const
 {
 	bknd::Renderer::inst()->render(*this);
 }

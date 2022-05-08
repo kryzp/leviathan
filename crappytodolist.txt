@@ -4,5 +4,3 @@
 * array texture is more of a prototype-outline implementation probably doesnt even work lmaoooo havent tested it /shrug :sunglasses:
 
 * sounds / music
-
-* lua???

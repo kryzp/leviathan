@@ -143,21 +143,21 @@ void App::destroy()
 	if (m_config.on_destroy)
 		m_config.on_destroy();
 
-	log::print("destroying system backend");
-	bknd::System::inst()->destroy();
-	delete bknd::System::inst();
-
-	log::print("destroying renderer backend");
-	bknd::Renderer::inst()->destroy();
-	delete bknd::Renderer::inst();
+	log::print("destroying input manager");
+	Input::inst()->destroy();
+	delete Input::inst();
 
 	log::print("destroying audio backend");
 	bknd::Audio::inst()->destroy();
 	delete bknd::Audio::inst();
 
-	log::print("destroying input manager");
-    Input::inst()->destroy();
-	delete Input::inst();
+	log::print("destroying renderer backend");
+	bknd::Renderer::inst()->destroy();
+	delete bknd::Renderer::inst();
+
+	log::print("destroying system backend");
+	bknd::System::inst()->destroy();
+	delete bknd::System::inst();
 
 #ifdef LEV_DEBUG
 	log::print("destroying logger");

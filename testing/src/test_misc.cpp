@@ -16,6 +16,9 @@ using namespace lev;
 
 struct Particle
 {
+	// float = 4 bytes
+	// hence, no padding is needed
+
 	float x, y;
 	float ang;
 };

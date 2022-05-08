@@ -315,7 +315,7 @@ void SpriteBatch::push_string(
 			offset_fn(c, i)
 		));
 
-		push_texture(atlas.region(c.bbox), colour, SB_RENDER_MODE_RED);
+		push_texture(atlas.region(c.bbox), colour, COLOUR_MODE_RED);
 
 		pop_matrix();
 
@@ -338,23 +338,20 @@ void SpriteBatch::push_circle(const Circle& circle, u32 accuracy, const Colour& 
 		triangle.b = Vec2F::from_angle(theta         , circle.radius) + circle.position;
 		triangle.c = Vec2F::from_angle(theta + dtheta, circle.radius) + circle.position;
 
-		push_triangle(triangle, colour, SB_RENDER_MODE_SILHOUETTE);
+		push_triangle(triangle, colour, COLOUR_MODE_SILHOUETTE);
 	}
 }
 
 void SpriteBatch::push_line(const Line& line, float thickness, const Colour& colour)
 {
-	Vec2F dir  = line.direction();
-	Vec2F perp = dir.perpendicular() * thickness;
+	Vec2F direction = line.direction();
+	Vec2F perp = direction.perpendicular();
+	Vec2F pos0 = line.a + perp * thickness * 0.5f;
+	Vec2F pos1 = line.b + perp * thickness * 0.5f;
+	Vec2F pos2 = line.b - perp * thickness * 0.5f;
+	Vec2F pos3 = line.a - perp * thickness * 0.5f;
 
-	Quad quad(
-		line.a + perp + (Vec2F(-thickness,  thickness)*dir),
-		line.a - perp + (Vec2F(-thickness, -thickness)*dir),
-		line.b - perp + (Vec2F( thickness, -thickness)*dir),
-		line.b + perp + (Vec2F( thickness,  thickness)*dir)
-	);
-
-	push_quad(quad, colour, SB_RENDER_MODE_SILHOUETTE);
+	push_quad(Quad(pos0, pos1, pos2, pos3), colour, COLOUR_MODE_SILHOUETTE);
 }
 
 void SpriteBatch::set_texture(const Ref<Texture>& tex, unsigned idx)

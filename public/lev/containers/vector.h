@@ -228,31 +228,6 @@ namespace lev
 				m_buf[i].~T();
 
 			m_count -= amount;
-
-//			if (m_count < (m_size / 2))
-//			{
-//				u64 newsize = m_size;
-//
-//				while (m_count < (m_size / 2))
-//					newsize /= 2;
-//
-//				T* new_buf = (T*)::operator new(sizeof(T) * newsize);
-//				mem::set(new_buf, 0, sizeof(T) * newsize);
-//
-//				for (int i = 0; i < m_count; i++)
-//				{
-//					if (i < m_size)
-//						new(new_buf + i) T(std::move(m_buf[i]));
-//
-//					m_buf[i].~T();
-//				}
-//
-//				if (m_buf)
-//					::operator delete(m_buf, sizeof(T) * m_size);
-//
-//				m_buf = new_buf;
-//				m_size = newsize;
-//			}
 		}
     }
 

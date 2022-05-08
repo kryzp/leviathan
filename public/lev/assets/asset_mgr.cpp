@@ -2,6 +2,7 @@
 #include <lev/graphics/texture.h>
 #include <lev/graphics/shader.h>
 #include <lev/graphics/font.h>
+#include <lev/audio/sound.h>
 #include <lev/io/file_stream.h>
 
 using namespace lev;
@@ -22,6 +23,12 @@ class FontLoader : public AssetLoader<Font>
 {
 public:
 	Ref<Font> load(const String& path) override;
+};
+
+class SoundLoader : public AssetLoader<Sound>
+{
+public:
+	Ref<Sound> load(const String& path) override;
 };
 
 Ref<Texture> TextureLoader::load(const String& path)
@@ -116,6 +123,11 @@ Ref<Font> FontLoader::load(const String& path)
 	return create_ref<Font>(size, font_path.c_str());
 }
 
+Ref<Sound> SoundLoader::load(const String& path)
+{
+	return nullptr;
+}
+
 AssetMgr::AssetMgr()
 	: m_counter(0)
 	, m_loaders()
@@ -124,6 +136,7 @@ AssetMgr::AssetMgr()
 	register_loader<TextureLoader, Texture>();
 	register_loader<ShaderLoader, Shader>();
 	register_loader<FontLoader, Font>();
+	register_loader<SoundLoader, Sound>();
 }
 
 AssetMgr::~AssetMgr()
@@ -131,4 +144,5 @@ AssetMgr::~AssetMgr()
 	free_load_data<Texture>();
 	free_load_data<Shader>();
 	free_load_data<Font>();
+	free_load_data<Sound>();
 }
