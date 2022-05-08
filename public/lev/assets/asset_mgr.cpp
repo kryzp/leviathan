@@ -26,14 +26,11 @@ public:
 
 Ref<Texture> TextureLoader::load(const String& path)
 {
-	LEV_ASSERT(!obj, "Object being initialized must not currently exist");
 	return Texture::create(path.c_str());
 }
 
 Ref<Shader> ShaderLoader::load(const String& path)
 {
-	LEV_ASSERT(!obj, "Object being initialized must not currently exist");
-
 	FileStream file(path.c_str(), "r");
 	String line = "";
 	s32 getline_cache = 0;
@@ -91,8 +88,6 @@ Ref<Shader> ShaderLoader::load(const String& path)
 
 Ref<Font> FontLoader::load(const String& path)
 {
-	LEV_ASSERT(!obj, "Object being initialized must not currently exist");
-
 	FileStream file(path.c_str(), "r");
 	String line;
 

@@ -302,7 +302,6 @@ namespace lev
 
 		bool init();
 		void destroy();
-
 		void update();
 
 		bool down_mb(int mb);

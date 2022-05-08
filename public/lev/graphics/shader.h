@@ -88,9 +88,9 @@ namespace lev
 		Shader() = default;
 		virtual ~Shader() = default;
 
-		static Ref<Shader> create_single(const lev::String& file);
+		static Ref<Shader> create_single(const lev::String& path);
 		static Ref<Shader> create_seperated(const lev::String& vertex, const lev::String& fragment, const lev::String& geometry = nullptr);
-		static Ref<Shader> create_compute_seperated(const lev::String& compute);
+		static Ref<Shader> create_compute_seperated(const lev::String& path);
 
 		static void unbind();
 

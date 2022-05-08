@@ -15,6 +15,7 @@
 #include <SDL.h>
 
 using namespace lev;
+using namespace lev::bknd;
 
 class SDL2System : public System
 {

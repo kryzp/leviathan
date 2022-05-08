@@ -11,42 +11,42 @@ Stream::Stream()
 Stream::~Stream()
 {
 	if (p_stream)
-		System::inst()->stream_close(p_stream);
+		bknd::System::inst()->stream_close(p_stream);
 }
 
 Stream& Stream::read(void* buffer, s64 length)
 {
-	System::inst()->stream_read(p_stream, buffer, length);
+	bknd::System::inst()->stream_read(p_stream, buffer, length);
 	return *this;
 }
 
 Stream& Stream::write(void* data, s64 length)
 {
-	System::inst()->stream_write(p_stream, data, length);
+	bknd::System::inst()->stream_write(p_stream, data, length);
 	return *this;
 }
 
 Stream& Stream::seek(s64 offset)
 {
-	System::inst()->stream_seek(p_stream, offset);
+	bknd::System::inst()->stream_seek(p_stream, offset);
 	return *this;
 }
 
 Stream& Stream::close()
 {
-	System::inst()->stream_close(p_stream);
+	bknd::System::inst()->stream_close(p_stream);
 	p_stream = nullptr;
 	return *this;
 }
 
 s64 Stream::position()
 {
-	return System::inst()->stream_position(p_stream);
+	return bknd::System::inst()->stream_position(p_stream);
 }
 
 s64 Stream::size()
 {
-	return System::inst()->stream_size(p_stream);
+	return bknd::System::inst()->stream_size(p_stream);
 }
 
 void* Stream::stream()

@@ -2,10 +2,10 @@
 
 #include <lev/core/util.h>
 
-namespace lev
-{
-	struct Config;
+namespace lev { struct Config; }
 
+namespace lev::bknd
+{
 	struct SystemProperties
 	{
 		int temp;
@@ -14,6 +14,9 @@ namespace lev
 	class System
 	{
 	public:
+		System() = default;
+		virtual ~System() = default;
+
         static System* inst();
 
 		virtual SystemProperties properties() = 0;

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <lev/core/app.h>
 #include <lev/core/util.h>
 
+#include <lev/graphics/render_pass.h>
 #include <lev/graphics/blend.h>
 #include <lev/graphics/shader.h>
 #include <lev/graphics/texture.h>
@@ -11,21 +11,8 @@
 #include <lev/graphics/render_target.h>
 #include <lev/graphics/compare.h>
 
-namespace lev
+namespace lev::bknd
 {
-	struct RenderPass
-	{
-		Material material;
-		Ref<Mesh> mesh;
-		Ref<RenderTarget> target;
-		BlendMode blend;
-		Compare stencil;
-		u8 depth;
-		RectI viewport;
-		RectI scissor;
-		int instance_count;
-	};
-
 	struct RendererProperties
 	{
 		bool origin_bottom_left;
@@ -34,6 +21,9 @@ namespace lev
 	class Renderer
 	{
 	public:
+		Renderer() = default;
+		virtual ~Renderer() = default;
+
         static Renderer* inst();
 
 		virtual RendererProperties properties() = 0;

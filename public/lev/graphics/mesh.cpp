@@ -5,5 +5,5 @@ using namespace lev;
 
 Ref<Mesh> Mesh::create()
 {
-	return Renderer::inst()->create_mesh();
+	return bknd::Renderer::inst()->create_mesh();
 }

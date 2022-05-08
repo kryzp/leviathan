@@ -16,7 +16,7 @@ Ref<RenderTarget> RenderTarget::create(unsigned width, unsigned height, const At
 {
 	LEV_ASSERT(attachments.begin(), "Attachments must not be null");
 	LEV_ASSERT(attachments.size() > 0, "Attachment count must be higher than 0");
-	LEV_ASSERT(attachments[0].first.width > 0 && attachments[0].first.height > 0, "Width and Height must be higher than 0");
+	LEV_ASSERT(width > 0 && height > 0, "Width and Height must be higher than 0");
 
 	int depthstencilcount = 0;
 
@@ -25,16 +25,15 @@ Ref<RenderTarget> RenderTarget::create(unsigned width, unsigned height, const At
 		if (attachments[i].first.format == TEX_FMT_DEPTH_STENCIL)
 			depthstencilcount++;
 
-		LEV_ASSERT(attachments[0].first.width == attachments[i].first.width && attachments[0].first.height == attachments[i].first.height, "All textures must be of the same size");
 		LEV_ASSERT(depthstencilcount < 2, "There must not be 2 or more depth stencil attachments");
 	}
 
-	return Renderer::inst()->create_framebuffer(width, height, attachments);
+	return bknd::Renderer::inst()->create_framebuffer(width, height, attachments);
 }
 
 void RenderTarget::unbind()
 {
-	Renderer::inst()->unbind_framebuffer();
+	bknd::Renderer::inst()->unbind_framebuffer();
 }
 
 Ref<Texture> RenderTarget::attachment(int i) const

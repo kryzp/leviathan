@@ -9,7 +9,7 @@ struct Particle
 	float ang;
 };
 
-#define PARTICLE_COUNT 250000
+#define PARTICLE_COUNT 500000
 
 layout(std430, binding = 1) buffer particle_data
 {

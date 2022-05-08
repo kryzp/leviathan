@@ -12,6 +12,7 @@
 #include <stdlib.h>
 
 using namespace lev;
+using namespace lev::bknd;
 
 static u64 gen_gl_vertex_attribs()
 {

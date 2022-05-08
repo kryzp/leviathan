@@ -3,6 +3,7 @@
 #include <lev/graphics/texture.h>
 #include <lev/graphics/font.h>
 #include <lev/graphics/shader.h>
+#include <lev/core/app.h>
 
 #include <algorithm>
 
@@ -73,7 +74,7 @@ void SpriteBatch::initialize()
 		cstr::copy(data.seperated.vertex_source, vertex, 512);
 		cstr::copy(data.seperated.fragment_source, fragment, 512);
 
-		m_default_shader = Renderer::inst()->create_shader(data);
+		m_default_shader = bknd::Renderer::inst()->create_shader(data);
 
 		m_material_stack[0].set_shader(m_default_shader);
 		m_material_stack[0].set_texture(nullptr, 0);
@@ -81,7 +82,7 @@ void SpriteBatch::initialize()
 #endif
 	}
 
-	m_mesh = Renderer::inst()->create_mesh();
+	m_mesh = bknd::Renderer::inst()->create_mesh();
 
 	m_initialized = true;
 }
@@ -163,7 +164,7 @@ void SpriteBatch::render_batch(RenderPass& pass, const RenderBatch& b)
 	m_mesh->index_data(b.indices.begin(), b.indices.size());
 	pass.mesh = m_mesh;
 
-	Renderer::inst()->render(pass);
+	pass.perform();
 }
 
 void SpriteBatch::push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx, u64 idxcount, bool flip_vertically)
@@ -258,7 +259,7 @@ void SpriteBatch::push_texture(const TextureRegion& tex, const Colour& colour, u
 		mode
 	);
 
-	push_vertices(vertices, 4, indices, 6, tex.source->framebuffer_parent() && Renderer::inst()->properties().origin_bottom_left);
+	push_vertices(vertices, 4, indices, 6, tex.source->framebuffer_parent() && bknd::Renderer::inst()->properties().origin_bottom_left);
 }
 
 void SpriteBatch::push_texture(const Ref<Texture>& tex, const Colour& colour, u8 mode)

@@ -13,9 +13,12 @@ add_library(${PROJECT_NAME}
 
 	public/lev/assets/asset_mgr.cpp
 
+	public/lev/audio/sound.cpp
+
 	public/lev/graphics/gfxutil.cpp
 	public/lev/graphics/sprite_batch.cpp
 	public/lev/graphics/render_target.cpp
+	public/lev/graphics/render_pass.cpp
 	public/lev/graphics/image.cpp
 	public/lev/graphics/font.cpp
 	public/lev/graphics/mesh.cpp
@@ -50,6 +53,8 @@ add_library(${PROJECT_NAME}
 
 	private/backend/system_sdl2.cpp
 	private/backend/renderer_opengl.cpp
+	private/backend/audio_irrklang.cpp
+
 	private/third_party/glad/glad.c
 )
 
@@ -64,6 +69,8 @@ target_include_directories(${PROJECT_NAME}
 
 set(OPENGL_ENABLED true CACHE BOOL "Use OpenGL as the renderer implementation")
 set(SDL2_ENABLED true CACHE BOOL "Use SDL2 as the system implementation")
+set(IRRKLANG_ENABLED true CACHE BOOL "Use Irrklang as the audio implementation")
+
 set(SDL2_INCLUDE_DIRS "D:/_DEV/libs/SDL2-2.0.20/include/") # disgusting
 set(SDL2_LIBRARIES "D:/_DEV/libs/SDL2-2.0.20/lib/x64/SDL2.lib" "D:/_DEV/libs/SDL2-2.0.20/lib/x64/SDL2main.lib") # disgusting - the sequel
 
@@ -77,6 +84,10 @@ if (SDL2_ENABLED)
 	add_compile_definitions(LEV_USE_SDL2)
 	target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SDL2_INCLUDE_DIRS}>")
 	target_link_libraries(${PROJECT_NAME} PUBLIC ${SDL2_LIBRARIES})
+endif()
+
+if (IRRKLANG_ENABLED)
+	add_compile_definitions(LEV_USE_IRRKLANG)
 endif()
 
 add_executable(lv_test testing/src/test_misc.cpp)

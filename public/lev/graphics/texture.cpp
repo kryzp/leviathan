@@ -40,7 +40,7 @@ Ref<Texture> Texture::create(const Image& image, u8 format, u8 internal_format, 
 
 Ref<Texture> Texture::create(u32 width, u32 height, u8 format, u8 internal_format, u8 type, const byte* data)
 {
-	Ref<Texture> result = Renderer::inst()->create_texture(width, height, TextureFormatInfo(format, internal_format, type));
+	Ref<Texture> result = bknd::Renderer::inst()->create_texture(width, height, TextureFormatInfo(format, internal_format, type));
 
 	if (data)
 		result->generate(data);
@@ -50,12 +50,12 @@ Ref<Texture> Texture::create(u32 width, u32 height, u8 format, u8 internal_forma
 
 void Texture::unbind()
 {
-	Renderer::inst()->unbind_texture();
+	bknd::Renderer::inst()->unbind_texture();
 }
 
 void Texture::unbind_image()
 {
-	Renderer::inst()->unbind_texture_image();
+	bknd::Renderer::inst()->unbind_texture_image();
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -73,7 +73,7 @@ Ref<ArrayTexture> ArrayTexture::create(const Image& image, u8 format, u8 interna
 
 Ref<ArrayTexture> ArrayTexture::create(u32 width, u32 height, u8 format, u8 internal_format, u8 type, u32 image_count, const byte* data)
 {
-	Ref<ArrayTexture> result = Renderer::inst()->create_array_texture(
+	Ref<ArrayTexture> result = bknd::Renderer::inst()->create_array_texture(
 		width,
 		height,
 		TextureFormatInfo(format, internal_format, type),
@@ -88,5 +88,5 @@ Ref<ArrayTexture> ArrayTexture::create(u32 width, u32 height, u8 format, u8 inte
 
 void ArrayTexture::unbind()
 {
-	Renderer::inst()->unbind_array_texture();
+	bknd::Renderer::inst()->unbind_array_texture();
 }
