@@ -71,8 +71,8 @@ set(OPENGL_ENABLED true CACHE BOOL "Use OpenGL as the renderer implementation")
 set(SDL2_ENABLED true CACHE BOOL "Use SDL2 as the system implementation")
 set(IRRKLANG_ENABLED true CACHE BOOL "Use Irrklang as the audio implementation")
 
-set(SDL2_INCLUDE_DIRS "D:/_DEV/libs/SDL2-2.0.20/include/") # disgusting
-set(SDL2_LIBRARIES "D:/_DEV/libs/SDL2-2.0.20/lib/x64/SDL2.lib" "D:/_DEV/libs/SDL2-2.0.20/lib/x64/SDL2main.lib") # disgusting - the sequel
+set(SDL2_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/lib/SDL2-2.0.20/include/")
+set(SDL2_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/lib/SDL2-2.0.20/lib/x64/SDL2.lib" "${CMAKE_CURRENT_SOURCE_DIR}/lib/SDL2-2.0.20/lib/x64/SDL2main.lib")
 
 add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
 
@@ -90,7 +90,7 @@ if (IRRKLANG_ENABLED)
 	add_compile_definitions(LEV_USE_IRRKLANG)
 endif()
 
-add_executable(lv_test testing/src/le_word.cpp)
+add_executable(lv_test testing/src/yes.cpp)
 target_include_directories(lv_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/public)
 target_link_libraries(lv_test PUBLIC ${PROJECT_NAME})
 
