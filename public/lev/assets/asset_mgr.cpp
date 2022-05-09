@@ -47,6 +47,7 @@ Ref<Shader> ShaderLoader::load(const String& path)
 
 	while (file.get_line(line, getline_cache))
 	{
+#if LEV_USE_OPENGL
 		if (line.starts_with("# opengl"))
 		{
 			Vector<String> gl_field_content;
@@ -86,6 +87,7 @@ Ref<Shader> ShaderLoader::load(const String& path)
 
 			break;
 		}
+#endif
 	}
 
 	file.close();
