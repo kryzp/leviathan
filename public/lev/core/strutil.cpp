@@ -35,17 +35,17 @@ char* cstr::token(char* str, const char* delimiter)
 	return ::strtok(str, delimiter);
 }
 
-bool cstr::is_space(int c)
+bool cstr::is_space(char c)
 {
 	return ::isspace(c);
 }
 
-char cstr::to_upper(int c)
+char cstr::to_upper(char c)
 {
 	return ::toupper(c);
 }
 
-char cstr::to_lower(int c)
+char cstr::to_lower(char c)
 {
 	return ::tolower(c);
 }

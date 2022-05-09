@@ -125,9 +125,9 @@ namespace lv
 		int compare(const char* str1, const char* str2);
 		u64 cspan(const char* scan, const char* match);
 		char* token(char* str, const char* sep);
-		bool is_space(int c);
-		char to_upper(int c);
-		char to_lower(int c);
+		bool is_space(char c);
+		char to_upper(char c);
+		char to_lower(char c);
 		void from_int(char* buf, s32 value, int radix);
 		void from_int64(char* buf, s64 value, int radix);
 		int to_int(const char* str);
