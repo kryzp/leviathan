@@ -16,28 +16,6 @@ namespace lv
 				T z;
 			};
 
-			struct
-			{
-				T w;
-				T h;
-				T d;
-			};
-
-			struct
-			{
-				T first;
-				T second;
-				T third;
-			};
-
-			struct
-			{
-				T pitch;
-				T yaw;
-				T roll;
-			};
-			
-			T coords[3];
 			T data[3];
 		};
 
@@ -45,9 +23,12 @@ namespace lv
 		Vec3(T x);
 		Vec3(T x, T y, T z);
 
+		// enable implicit casting to other vectors
 		template <typename Y>
 		Vec3(const Vec3<Y>& other) noexcept
-			: x(other.x), y(other.y), z(other.z)
+			: x(other.x)
+			, y(other.y)
+			, z(other.z)
 		{
 		}
 

@@ -16,7 +16,7 @@ namespace lv
 				u8 a;
 			};
 
-			u8 elements[4];
+			u8 data[4];
 		};
 
 		Colour();

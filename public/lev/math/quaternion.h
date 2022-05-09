@@ -17,7 +17,7 @@ namespace lv
 				float k;
 			};
 
-			float elements[4];
+			float data[4];
 		};
 
 		Quaternion();

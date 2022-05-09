@@ -53,12 +53,12 @@ float calc::sigmoid(float x)
 	return 1.0f - (1.0f / (1.0f + calc::exp(x)));
 }
 
-float snap(float x, float delta)
+float calc::snap(float x, float interval)
 {
-	if (delta <= 1.0f)
-		return calc::floor(x) + (calc::round((x - calc::floor(x)) * (1.0f / delta)) * delta);
+	if (interval <= 1.0f)
+		return calc::floor(x) + (calc::round((x - calc::floor(x)) * (1.0f / interval)) * interval);
 	else
-		return calc::round(x / delta) * delta;
+		return calc::round(x / interval) * interval;
 }
 
 float calc::log(float x, float b)
@@ -135,6 +135,11 @@ float calc::approach(float from, float to, float amount)
 float calc::lerp(float from, float to, float amount)
 {
 	return from + ((to - from) * amount);
+}
+
+float calc::lerp_t(float from, float to, float amount, float t)
+{
+	return to + (from - to) * ::powf(1.0f - amount, t);
 }
 
 float calc::spring(float from, float to, float bounciness, float tension, float& intermediate)

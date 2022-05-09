@@ -16,7 +16,8 @@ namespace lv
 		Rect(T value);
 		Rect(T w, T h);
 		Rect(T x, T y, T w, T h);
-		
+
+		// enable implicit casting to other rects
 		template <typename Y>
 		Rect(const Rect<Y>& other) noexcept
 			: x(other.x)

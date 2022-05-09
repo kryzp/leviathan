@@ -42,7 +42,7 @@ namespace lv
 	Array<T, Size>::Array(std::initializer_list<T> data)
 	{
 		for (u64 i = 0; i < Size; i++)
-			m_buf[i] = data[i];
+			m_buf[i] = data.begin()[i];
 	}
 	
 	template <typename T, u64 Size>

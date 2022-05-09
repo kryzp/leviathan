@@ -1,13 +1,11 @@
 #include <lev/math/mat3x2.h>
-#include <lev/math/mat4x4.h>
-#include <lev/math/vec2.h>
 #include <lev/math/vec2.h>
 #include <lev/math/calc.h>
 
 // nice spelling of 'transformation' alan :/
 // https://www.alanzucconi.com/2016/02/10/tranfsormation-matrix/
 
-/* Heres how it works:
+/* Here's how it works:
 This is actually just a 2x2 transformation matrix + position (m31, m32)
 
 So, multiplication means doing 2x2 matrix multiplication then also applying

@@ -23,7 +23,7 @@ namespace lv
 		float exp(float x);
 		float sigmoid(float x);
 		float sign(float x);
-		float snap(float x, float delta);
+		float snap(float x, float interval);
 
 		float log(float x, float b);
 		float log2(float x);
@@ -42,6 +42,7 @@ namespace lv
 
 		float approach(float from, float to, float amount);
 		float lerp(float from, float to, float amount);
+		float lerp_t(float from, float to, float amount, float t);
 		float spring(float from, float to, float bounciness, float tension, float& intermediate);
 
 		float sin(float x);

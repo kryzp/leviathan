@@ -16,29 +16,18 @@ namespace lv
 				T y;
 			};
 
-			struct
-			{
-				T w;
-				T h;
-			};
-
-			struct
-			{
-				T first;
-				T second;
-			};
-
-			T coords[2];
 			T data[2];
 		};
 
 		Vec2();
 		Vec2(T x);
 		Vec2(T x, T y);
-		
+
+		// enable implicit casting to other vectors
 		template <typename Y>
 		Vec2(const Vec2<Y>& other) noexcept
-			: x(other.x), y(other.y)
+			: x(other.x)
+			, y(other.y)
 		{
 		}
 
