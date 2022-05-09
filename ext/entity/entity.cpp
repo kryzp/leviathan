@@ -1,6 +1,6 @@
 #include <lev/entity/entity.h>
 
-using namespace lev;
+using namespace lv;
 
 void Component::init()
 {

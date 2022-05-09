@@ -6,7 +6,7 @@
 #include <lev/math/rect.h>
 #include <lev/input/input.h>
 
-namespace lev
+namespace lv
 {
 	class GUIComponent
 	{

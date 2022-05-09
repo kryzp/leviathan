@@ -10,7 +10,7 @@
 
 #include <functional>
 
-namespace lev
+namespace lv
 {
 	class Collider2D;
 

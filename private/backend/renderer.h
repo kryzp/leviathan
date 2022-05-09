@@ -11,7 +11,7 @@
 #include <lev/graphics/render_target.h>
 #include <lev/graphics/compare.h>
 
-namespace lev::bknd
+namespace lv::bknd
 {
 	struct RendererProperties
 	{

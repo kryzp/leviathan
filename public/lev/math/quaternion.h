@@ -1,6 +1,6 @@
 #pragma once
 
-namespace lev
+namespace lv
 {
 	template <typename T> struct Vec3;
 	using Vec3F = Vec3<float>;

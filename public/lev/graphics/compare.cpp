@@ -1,6 +1,6 @@
 #include <lev/graphics/compare.h>
 
-using namespace lev;
+using namespace lv;
 
 const Compare& Compare::none()
 {

@@ -5,7 +5,7 @@
 
 // note: easier to manage a fixed size string than one which constantly re-allocs
 
-namespace lev
+namespace lv
 {
 	template <u64 Size>
 	class Str
@@ -467,11 +467,11 @@ namespace std
 {
 	// std::hash overload
 	template <>
-	struct hash<lev::String>
+	struct hash<lv::String>
 	{
-		std::size_t operator()(const lev::String& k) const
+		std::size_t operator()(const lv::String& k) const
 		{
-			return lev::cstr::hash(k.c_str());
+			return lv::cstr::hash(k.c_str());
 		}
 	};
 }

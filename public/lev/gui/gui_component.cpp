@@ -1,7 +1,7 @@
 #include <lev/gui/gui_component.h>
 #include <lev/input/input.h>
 
-using namespace lev;
+using namespace lv;
 
 GUIComponent::GUIComponent()
 	: use_constraints(false)

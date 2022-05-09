@@ -3,7 +3,7 @@
 #include <lev/math/vec2.h>
 #include <lev/math/rect.h>
 
-namespace lev
+namespace lv
 {
 	struct Quad
 	{

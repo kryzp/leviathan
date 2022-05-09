@@ -11,8 +11,8 @@
 #include <string>
 #include <stdlib.h>
 
-using namespace lev;
-using namespace lev::bknd;
+using namespace lv;
+using namespace lv::bknd;
 
 static u64 gen_gl_vertex_attribs()
 {

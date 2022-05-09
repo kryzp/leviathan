@@ -2,7 +2,7 @@
 #include <lev/io/file_stream.h>
 #include <backend/renderer.h>
 
-using namespace lev;
+using namespace lv;
 
 Ref<ShaderBuffer> ShaderBuffer::create(u64 size)
 {
@@ -17,7 +17,7 @@ void ShaderBuffer::unbind()
 
 //////////////////////////////////////////////////////////
 
-Ref<Shader> Shader::create_single(const lev::String& path)
+Ref<Shader> Shader::create_single(const String& path)
 {
 	LEV_ASSERT(path.empty(), "Path must not be empty")
 
@@ -31,7 +31,7 @@ Ref<Shader> Shader::create_single(const lev::String& path)
 	return bknd::Renderer::inst()->create_shader(data);
 }
 
-Ref<Shader> Shader::create_seperated(const lev::String& vertex, const lev::String& fragment, const lev::String& geometry)
+Ref<Shader> Shader::create_seperated(const String& vertex, const String& fragment, const String& geometry)
 {
 	LEV_ASSERT(!vertex.empty(), "Vertex path must not be empty");
 	LEV_ASSERT(!fragment.empty(), "Fragment path must not be empty");
@@ -59,7 +59,7 @@ Ref<Shader> Shader::create_seperated(const lev::String& vertex, const lev::Strin
 	return bknd::Renderer::inst()->create_shader(data);
 }
 
-Ref<Shader> Shader::create_compute_seperated(const lev::String& path)
+Ref<Shader> Shader::create_compute_seperated(const String& path)
 {
 	LEV_ASSERT(!path.empty(), "Path must not be empty");
 

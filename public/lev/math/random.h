@@ -5,7 +5,7 @@
 #include <random>
 #include <ctime>
 
-namespace lev
+namespace lv
 {
 	template <typename Engine = std::mt19937>
 	class Random

@@ -1,7 +1,7 @@
 #include <lev/math/colour.h>
 #include <lev/math/calc.h>
 
-using namespace lev;
+using namespace lv;
 
 Colour::Colour()
 	: r(0)

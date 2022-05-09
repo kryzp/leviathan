@@ -1,7 +1,7 @@
 #include <lev/graphics/material.h>
 #include <lev/core/util.h>
 
-using namespace lev;
+using namespace lv;
 
 Material::Material()
 	: m_shader(nullptr)

@@ -1,7 +1,7 @@
 #include <lev/graphics/mesh.h>
 #include <backend/renderer.h>
 
-using namespace lev;
+using namespace lv;
 
 Ref<Mesh> Mesh::create()
 {

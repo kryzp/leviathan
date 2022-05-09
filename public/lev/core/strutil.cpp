@@ -3,7 +3,7 @@
 
 #include <cctype>
 
-using namespace lev;
+using namespace lv;
 
 u64 cstr::length(const char* str)
 {

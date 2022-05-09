@@ -3,7 +3,7 @@
 #include <lev/core/util.h>
 #include <lev/graphics/gfxutil.h>
 
-namespace lev
+namespace lv
 {
 	class Mesh : public NonCopyable, public NonMovable
 	{

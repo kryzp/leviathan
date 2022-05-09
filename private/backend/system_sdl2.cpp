@@ -14,8 +14,8 @@
 #include <third_party/glad/glad.h>
 #include <SDL.h>
 
-using namespace lev;
-using namespace lev::bknd;
+using namespace lv;
+using namespace lv::bknd;
 
 class SDL2System : public System
 {

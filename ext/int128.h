@@ -20,7 +20,7 @@ Onto which I can then just do simple binary math
 NOTE: INDEXING GOES FROM RIGHT TO LEFT
 */
 
-namespace lev::ext
+namespace lv::ext
 {
 	class Int128
 	{

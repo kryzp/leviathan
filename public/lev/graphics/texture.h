@@ -4,7 +4,7 @@
 #include <lev/math/rect.h>
 #include <lev/graphics/image.h>
 
-namespace lev
+namespace lv
 {
 	class Texture;
 

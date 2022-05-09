@@ -1,15 +1,13 @@
 #include <lev/core/app.h>
 #include <lev/core/util.h>
-
 #include <lev/math/colour.h>
-
 #include <lev/input/input.h>
 
 #include <backend/system.h>
 #include <backend/renderer.h>
 #include <backend/audio.h>
 
-using namespace lev;
+using namespace lv;
 
 void App::start(const Config& cfg)
 {

@@ -4,7 +4,7 @@
 
 #include <lev/core/util.h>
 
-namespace lev
+namespace lv
 {
 	template <typename T, u64 Size>
 	class Array

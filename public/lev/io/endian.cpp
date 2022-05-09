@@ -1,7 +1,7 @@
 #include <lev/io/endian.h>
 #include <lev/core/util.h>
 
-using namespace lev;
+using namespace lv;
 
 Endianness Endian::get_endianness()
 {

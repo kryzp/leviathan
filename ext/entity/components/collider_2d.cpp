@@ -6,7 +6,7 @@
 #include <lev/math/vec2.h>
 #include <limits>
 
-using namespace lev;
+using namespace lv;
 
 Collider2D::Collider2D()
 	: polygon()

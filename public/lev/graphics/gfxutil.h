@@ -6,7 +6,7 @@
 #include <lev/math/quad.h>
 #include <lev/math/triangle.h>
 
-namespace lev
+namespace lv
 {
 	struct Vertex
 	{

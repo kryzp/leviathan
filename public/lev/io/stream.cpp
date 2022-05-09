@@ -1,7 +1,7 @@
 #include <lev/io/stream.h>
 #include <backend/system.h>
 
-using namespace lev;
+using namespace lv;
 
 Stream::Stream()
 	: p_stream(nullptr)

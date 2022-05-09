@@ -9,7 +9,7 @@
 
 #define LEV_MAX_ASSET_TYPES 16
 
-namespace lev
+namespace lv
 {
 	class AssetLoaderBase : public NonCopyable, public NonMovable { };
 
@@ -27,7 +27,7 @@ namespace lev
 	{
 		struct AssetListBase { };
 		template <typename Asset>
-		struct AssetList : public AssetListBase { HashMap<lev::String, Weak<Asset>> assets; };
+		struct AssetList : public AssetListBase { HashMap<String, Weak<Asset>> assets; };
 
 	public:
 		AssetMgr();

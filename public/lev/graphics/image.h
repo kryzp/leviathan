@@ -7,7 +7,7 @@
 
 #include <functional>
 
-namespace lev
+namespace lv
 {
 	class Image
 	{

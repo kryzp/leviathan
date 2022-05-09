@@ -1,7 +1,7 @@
 #include <lev/math/timer.h>
 #include <backend/system.h>
 
-using namespace lev;
+using namespace lv;
 
 Timer::Timer()
 	: m_start_ticks(0)

@@ -1,7 +1,7 @@
 #include <lev/graphics/texture.h>
 #include <backend/renderer.h>
 
-using namespace lev;
+using namespace lv;
 
 const TextureSampler& TextureSampler::pixel()
 {

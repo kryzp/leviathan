@@ -4,7 +4,7 @@
 
 #include <lev/audio/sound.h>
 
-namespace lev::bknd
+namespace lv::bknd
 {
 	struct AudioProperties
 	{

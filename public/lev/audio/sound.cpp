@@ -1,7 +1,7 @@
 #include <lev/audio/sound.h>
 #include <backend/audio.h>
 
-using namespace lev;
+using namespace lv;
 
 Ref<Sound> create(const char* path)
 {

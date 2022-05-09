@@ -2,7 +2,7 @@
 
 #include <lev/math/random.h>
 
-namespace lev
+namespace lv
 {
 	struct Range
 	{

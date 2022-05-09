@@ -8,7 +8,7 @@
 #include <lev/graphics/blend.h>
 #include <lev/graphics/compare.h>
 
-namespace lev
+namespace lv
 {
 	struct RenderPass
 	{

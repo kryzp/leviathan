@@ -5,7 +5,7 @@
 #include <lev/containers/vector.h>
 #include <lev/containers/optional.h>
 
-namespace lev
+namespace lv
 {
 	template <typename Key, typename Value>
 	class HashMap
@@ -49,8 +49,8 @@ namespace lev
 		Entry* end();
 		const Entry* end() const;
 
-		lev::Vector<Key> keys() const;
-		lev::Vector<Value> values() const;
+		Vector<Key> keys() const;
+		Vector<Value> values() const;
 
 	private:
 		void reallocate();
@@ -241,9 +241,9 @@ namespace lev
 	}
 
 	template <typename Key, typename Value>
-	lev::Vector<Key> HashMap<Key, Value>::keys() const
+	Vector<Key> HashMap<Key, Value>::keys() const
 	{
-		lev::Vector<Key> result;
+		Vector<Key> result;
 		Entry* entry = m_entrys;
 
 		while (entry)
@@ -258,7 +258,7 @@ namespace lev
 	template <typename Key, typename Value>
 	Vector<Value> HashMap<Key, Value>::values() const
 	{
-		lev::Vector<Value> result;
+		Vector<Value> result;
 		Entry* entry = m_entrys;
 
 		while (entry)

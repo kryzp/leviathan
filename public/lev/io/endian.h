@@ -1,6 +1,6 @@
 #pragma once
 
-namespace lev
+namespace lv
 {
 	enum Endianness
 	{

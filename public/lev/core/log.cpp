@@ -10,7 +10,7 @@
 
 #define FILE_EXT ".levlog"
 
-using namespace lev;
+using namespace lv;
 
 bool log::init()
 {

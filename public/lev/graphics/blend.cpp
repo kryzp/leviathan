@@ -1,6 +1,6 @@
 #include <lev/graphics/blend.h>
 
-using namespace lev;
+using namespace lv;
 
 const BlendMode& BlendMode::generic()
 {

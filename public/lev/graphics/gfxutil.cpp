@@ -2,7 +2,7 @@
 #include <lev/graphics/sprite_batch.h>
 #include <lev/core/util.h>
 
-using namespace lev;
+using namespace lv;
 
 static void get_vtx_mode(u8 mode, float* buf)
 {

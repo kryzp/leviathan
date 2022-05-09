@@ -5,7 +5,7 @@
 #include <lev/containers/bitset.h>
 #include <lev/assets/asset_mgr.h>
 
-using namespace lev;
+using namespace lv;
 
 #define PARTICLE_COUNT 500000
 #define SCALE 1

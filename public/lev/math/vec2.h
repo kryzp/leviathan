@@ -3,7 +3,7 @@
 #include <lev/math/calc.h>
 #include <lev/math/mat3x2.h>
 
-namespace lev
+namespace lv
 {
 	template <typename T>
 	struct Vec2

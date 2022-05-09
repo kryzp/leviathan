@@ -1,7 +1,7 @@
 #include <lev/math/ease.h>
 #include <lev/math/calc.h>
 
-using namespace lev;
+using namespace lv;
 
 float Ease::linear(float t)
 {

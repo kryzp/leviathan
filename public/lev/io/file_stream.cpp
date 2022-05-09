@@ -1,7 +1,7 @@
 #include <lev/io/file_stream.h>
 #include <backend/system.h>
 
-using namespace lev;
+using namespace lv;
 
 FileStream::FileStream()
 	: Stream()
@@ -20,7 +20,7 @@ FileStream& FileStream::open(const char* filename, const char* mode)
 	return *this;
 }
 
-bool FileStream::get_line(String& str, s32& cache)
+bool FileStream::get_line(String& str, s32& seek_cache)
 {
 	str.clear();
 
@@ -31,12 +31,12 @@ bool FileStream::get_line(String& str, s32& cache)
 		read(&c, 1);
 		str.push_back(c);
 
-		cache++;
+		seek_cache++;
 
-		if (cache > size())
+		if (seek_cache > size())
 			return false;
 
-		seek(cache);
+		seek(seek_cache);
 	}
 	while (c != '\n');
 

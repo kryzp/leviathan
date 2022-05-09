@@ -2,7 +2,7 @@
 
 #include <lev/math/calc.h>
 
-namespace lev
+namespace lv
 {
 	template <typename T>
 	struct Vec3

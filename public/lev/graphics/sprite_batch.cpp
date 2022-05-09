@@ -9,7 +9,7 @@
 
 #include <backend/renderer.h>
 
-using namespace lev;
+using namespace lv;
 
 SpriteBatch::SpriteBatch()
 	: m_initialized(false)
@@ -274,7 +274,7 @@ void SpriteBatch::push_string(
 	const Colour& colour
 )
 {
-	push_string(str, font, [&](Font::Character c, int idx) -> lev::Vec2F { return Vec2F::zero(); }, align, colour);
+	push_string(str, font, [&](Font::Character c, int idx) -> Vec2F { return Vec2F::zero(); }, align, colour);
 }
 
 void SpriteBatch::push_string(

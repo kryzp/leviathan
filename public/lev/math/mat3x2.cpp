@@ -14,7 +14,7 @@ So, multiplication means doing 2x2 matrix multiplication then also applying
 that 'other' matrix to the position vector!
 */
 
-using namespace lev;
+using namespace lv;
 
 Mat3x2::Mat3x2()
 	: m11(0), m12(0)

@@ -5,7 +5,7 @@
 #include <lev/graphics/font.h>
 #include <lev/containers/string.h>
 
-namespace lev
+namespace lv
 {
 	class GUIText : public GUIComponent
 	{

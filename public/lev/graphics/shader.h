@@ -11,7 +11,7 @@
 
 #define LEV_SHADER_MAX_SIZE LEV_KILOBYTES(5)
 
-namespace lev
+namespace lv
 {
 	enum ShaderType
 	{
@@ -88,9 +88,9 @@ namespace lev
 		Shader() = default;
 		virtual ~Shader() = default;
 
-		static Ref<Shader> create_single(const lev::String& path);
-		static Ref<Shader> create_seperated(const lev::String& vertex, const lev::String& fragment, const lev::String& geometry = nullptr);
-		static Ref<Shader> create_compute_seperated(const lev::String& path);
+		static Ref<Shader> create_single(const String& path);
+		static Ref<Shader> create_seperated(const String& vertex, const String& fragment, const String& geometry = nullptr);
+		static Ref<Shader> create_compute_seperated(const String& path);
 
 		static void unbind();
 
@@ -103,14 +103,14 @@ namespace lev
 
 		virtual Shader& set_buffer(const Ref<ShaderBuffer>& buf, int binding) = 0;
 
-		virtual Shader& set(const char* name, bool value)						= 0;
-		virtual Shader& set(const char* name, int value)						= 0;
-		virtual Shader& set(const char* name, float value)						= 0;
-		virtual Shader& set(const char* name, const Vec2I& value)				= 0;
-		virtual Shader& set(const char* name, const Vec2F& value)				= 0;
-		virtual Shader& set(const char* name, const Vec3I& value)				= 0;
-		virtual Shader& set(const char* name, const Vec3F& value)				= 0;
-		virtual Shader& set(const char* name, const Mat3x2& value)				= 0;
-		virtual Shader& set(const char* name, const Mat4x4& value)				= 0;
+		virtual Shader& set(const char* name, bool value)			= 0;
+		virtual Shader& set(const char* name, int value)			= 0;
+		virtual Shader& set(const char* name, float value)			= 0;
+		virtual Shader& set(const char* name, const Vec2I& value)	= 0;
+		virtual Shader& set(const char* name, const Vec2F& value)	= 0;
+		virtual Shader& set(const char* name, const Vec3I& value)	= 0;
+		virtual Shader& set(const char* name, const Vec3F& value)	= 0;
+		virtual Shader& set(const char* name, const Mat3x2& value)	= 0;
+		virtual Shader& set(const char* name, const Mat4x4& value)	= 0;
 	};
 }

@@ -2,7 +2,7 @@
 
 #include <lev/core/util.h>
 
-namespace lev
+namespace lv
 {
 	template <u64 Size>
 	class Bitset

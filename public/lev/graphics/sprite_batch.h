@@ -19,7 +19,7 @@
 
 #include <functional>
 
-namespace lev
+namespace lv
 {
 	struct RenderPass;
 
