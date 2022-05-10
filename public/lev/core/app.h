@@ -50,6 +50,9 @@ namespace lv
 		void show_cursor(bool toggle);
 		bool cursor_visible();
 
+		lv::Vec2I window_position();
+		void window_position(int x, int y);
+
 		int window_width();
 		int window_height();
 		Size2 window_size();

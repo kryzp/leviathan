@@ -34,13 +34,18 @@ public:
 
 	void solve_fabrik(const lv::Vec2F& target)
 	{
-		m_joints.last->data.position = target;
+		lv::Vec2F initial_position = m_joints.first->data.position;
 
 		auto* starting_point = m_joints.last->prev;
 		bool backwards = true;
 
 		for (int i = 0; i < ITERATIONS; i++)
 		{
+			if (backwards)
+				m_joints.last->data.position = target;
+			else
+				m_joints.first->data.position = initial_position;
+
 			for (auto* node = starting_point; node; node = (backwards) ? node->prev : node->next)
 			{
 				const auto* next_n = node->next;

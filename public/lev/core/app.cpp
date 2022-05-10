@@ -193,6 +193,18 @@ bool App::cursor_visible()
 	return bknd::System::inst()->cursor_visible();
 }
 
+lv::Vec2I App::window_position()
+{
+	lv::Vec2I pos;
+	bknd::System::inst()->get_window_position(&pos.x, &pos.y);
+	return pos;
+}
+
+void App::window_position(int x, int y)
+{
+	bknd::System::inst()->set_window_position(x, y);
+}
+
 int App::window_width()
 {
 	return bknd::System::inst()->window_width();
