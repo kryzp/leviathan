@@ -158,7 +158,7 @@ static void init()
 
 static void lv_exit()
 {
-	log::print("exitting...");
+	log::print("exiting...");
 }
 
 static void update()

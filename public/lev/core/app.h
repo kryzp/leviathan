@@ -39,27 +39,27 @@ namespace lv
 		}
 
 		void start(const Config& cfg);
-
-		float fps();
-		void clear(const Colour& colour = Colour::empty());
-
 		void exit();
-		bool is_running();
 		const Config& config();
 
-		void show_cursor(bool toggle);
-		bool cursor_visible();
+		float fps() const;
+		bool is_running() const;
 
-		lv::Vec2I window_position();
-		void window_position(int x, int y);
+		static void clear(const Colour& colour = Colour::empty());
 
-		int window_width();
-		int window_height();
-		Size2 window_size();
+		static void show_cursor(bool toggle);
+		static bool cursor_visible();
 
-		int draw_width();
-		int draw_height();
-		Size2 draw_size();
+		static Vec2I window_position();
+		static void window_position(int x, int y);
+
+		static int window_width();
+		static int window_height();
+		static Size2 window_size();
+
+		static int draw_width();
+		static int draw_height();
+		static Size2 draw_size();
 
 	private:
 		bool init();

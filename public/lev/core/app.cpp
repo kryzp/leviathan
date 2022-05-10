@@ -19,8 +19,8 @@ void App::start(const Config& cfg)
 		return;
 	}
 
-	App::run();
-	App::destroy();
+	run();
+	destroy();
 }
 
 bool App::init()
@@ -173,7 +173,7 @@ void App::exit()
 		m_config.on_exit();
 }
 
-bool App::is_running()
+bool App::is_running() const
 {
 	return m_running;
 }
@@ -193,9 +193,9 @@ bool App::cursor_visible()
 	return bknd::System::inst()->cursor_visible();
 }
 
-lv::Vec2I App::window_position()
+Vec2I App::window_position()
 {
-	lv::Vec2I pos;
+	Vec2I pos;
 	bknd::System::inst()->get_window_position(&pos.x, &pos.y);
 	return pos;
 }
@@ -241,7 +241,7 @@ Size2 App::draw_size()
 	);
 }
 
-float App::fps()
+float App::fps() const
 {
 	return m_config.target_fps;
 }
