@@ -5,6 +5,7 @@
 #include <lev/containers/string.h>
 #include <lev/math/vec2.h>
 #include <lev/math/vec3.h>
+#include <lev/math/colour.h>
 #include <lev/math/mat3x2.h>
 #include <lev/math/mat4x4.h>
 #include <lev/graphics/texture.h>
@@ -103,14 +104,15 @@ namespace lv
 
 		virtual Shader& set_buffer(const Ref<ShaderBuffer>& buf, int binding) = 0;
 
-		virtual Shader& set(const char* name, bool value)			= 0;
-		virtual Shader& set(const char* name, int value)			= 0;
-		virtual Shader& set(const char* name, float value)			= 0;
-		virtual Shader& set(const char* name, const Vec2I& value)	= 0;
-		virtual Shader& set(const char* name, const Vec2F& value)	= 0;
-		virtual Shader& set(const char* name, const Vec3I& value)	= 0;
-		virtual Shader& set(const char* name, const Vec3F& value)	= 0;
-		virtual Shader& set(const char* name, const Mat3x2& value)	= 0;
-		virtual Shader& set(const char* name, const Mat4x4& value)	= 0;
+		virtual Shader& set(const char* name, bool value)          = 0;
+		virtual Shader& set(const char* name, int value)           = 0;
+		virtual Shader& set(const char* name, float value)         = 0;
+		virtual Shader& set(const char* name, const Vec2I& value)  = 0;
+		virtual Shader& set(const char* name, const Vec2F& value)  = 0;
+		virtual Shader& set(const char* name, const Vec3I& value)  = 0;
+		virtual Shader& set(const char* name, const Vec3F& value)  = 0;
+		virtual Shader& set(const char* name, const Colour& value) = 0;
+		virtual Shader& set(const char* name, const Mat3x2& value) = 0;
+		virtual Shader& set(const char* name, const Mat4x4& value) = 0;
 	};
 }

@@ -189,26 +189,6 @@ namespace lv
 		virtual TextureFormatInfo format_info() const = 0;
 	};
 
-	struct TextureRegion
-	{
-		Ref<Texture> source;
-		RectI bounds;
-
-		TextureRegion()
-			: source(nullptr)
-			, bounds(RectI::zero())
-		{
-		}
-
-		TextureRegion(const Ref<Texture>& source, const RectI& bounds = RectI::zero())
-			: source(source)
-			, bounds(bounds)
-		{
-			if (bounds == RectI::zero())
-				this->bounds = RectI(source->width(), source->height());
-		}
-	};
-
 	class ArrayTexture
 	{
 	public:

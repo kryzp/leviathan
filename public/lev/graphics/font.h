@@ -13,7 +13,6 @@
 namespace lv
 {
     class Texture;
-	struct TextureRegion;
 
 	enum FontType
 	{
@@ -55,7 +54,6 @@ namespace lv
 		struct Atlas
 		{
 			Ref<Texture> texture;
-			TextureRegion region(const RectI& rect) const;
 		};
 
 		Font();

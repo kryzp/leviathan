@@ -42,9 +42,9 @@ namespace lv
     enum ColourMode
     {
         COLOUR_MODE_NONE,
-        COLOUR_MODE_ALL        = 1 << 0,
-        COLOUR_MODE_ALPHA      = 1 << 1,
-        COLOUR_MODE_RED        = 1 << 2,
+        COLOUR_MODE_NORMAL     = 1 << 0,
+        COLOUR_MODE_ALPHA_ONLY = 1 << 1,
+        COLOUR_MODE_RED_ONLY   = 1 << 2,
         COLOUR_MODE_SILHOUETTE = 1 << 3,
         COLOUR_MODE_MAX
     };
@@ -63,10 +63,10 @@ namespace lv
 		///////////////////////////////////////////////////////
 
 		void push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx, u64 idxcount, bool flip_vertically = false);
-		void push_texture(const TextureRegion& tex, const Colour& colour = Colour::white(), u8 mode = COLOUR_MODE_ALL);
-		void push_texture(const Ref<Texture>& tex, const Colour& colour = Colour::white(), u8 mode = COLOUR_MODE_ALL);
-		void push_quad(const Quad& quad, const Colour& colour = Colour::white(), u8 mode = COLOUR_MODE_SILHOUETTE);
-		void push_triangle(const Triangle& tri, const Colour& colour = Colour::white(), u8 mode = COLOUR_MODE_SILHOUETTE);
+		void push_texture(const Ref<Texture>& tex, const Colour& colour = Colour::white());
+		void push_texture(const Ref<Texture>& tex, const RectI& source, const Colour& colour = Colour::white());
+		void push_quad(const Quad& quad, const Colour& colour = Colour::white());
+		void push_triangle(const Triangle& tri, const Colour& colour = Colour::white());
 		void push_string(const char* str, const Ref<Font>& font, u8 align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white());
 		void push_string(const char* str, const Ref<Font>& font, const std::function<Vec2F(Font::Character,int)>& offset_fn, u8 align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white());
 		void push_circle(const Circle& circle, u32 accuracy = 40U, const Colour& colour = Colour::white());
@@ -116,6 +116,10 @@ namespace lv
 		BlendMode pop_blend();
 		BlendMode& peek_blend();
 
+		void push_colour_mode(u8 mode);
+		u8 pop_colour_mode();
+		u8& peek_colour_mode();
+
 		// snaps all drawing coords to integers
 		bool pixel_snap = false;
 
@@ -154,5 +158,6 @@ namespace lv
 		Vector<Compare> m_stencil_stack;
 		Vector<RectI> m_scissor_stack;
 		Vector<RectI> m_viewport_stack;
+		Vector<u8> m_colour_mode_stack;
 	};
 }

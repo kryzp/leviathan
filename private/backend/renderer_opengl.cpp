@@ -728,6 +728,17 @@ public:
 		return *this;
 	}
 
+	Shader& set(const char* name, const Colour& value) override
+	{
+		glUniform4f(get_uniform_location(name),
+			static_cast<float>(value.r) / 255.0f,
+			static_cast<float>(value.g) / 255.0f,
+			static_cast<float>(value.b) / 255.0f,
+			static_cast<float>(value.a) / 255.0f
+		);
+		return *this;
+	}
+
 	Shader& set(const char* name, const Mat3x2& value) override
 	{
 		glUniformMatrix3x2fv(get_uniform_location(name), 1, GL_FALSE, value.value_ptr());

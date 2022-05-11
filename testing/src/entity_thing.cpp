@@ -168,7 +168,7 @@ static void update()
 
 static void render()
 {
-	App::inst()->clear(0x101013FF);
+	App::clear(0x101013FF);
 	g_world.render(g_batch);
 }
 

@@ -11,13 +11,6 @@ using namespace lv;
 #define LEV_FONT_ATLAS_SIZE (LEV_FONT_ATLAS_W*LEV_FONT_ATLAS_H)
 #define M_INTERNAL_INFO ((stbtt_fontinfo*)m_internal_info)
 
-TextureRegion Font::Atlas::region(const RectI& rect) const
-{
-	return TextureRegion(texture, rect);
-}
-
-///////////////////////////////////////////////////
-
 Font::Font()
 	: m_info()
 	, m_internal_info(nullptr)

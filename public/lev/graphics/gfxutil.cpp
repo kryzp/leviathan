@@ -6,9 +6,9 @@ using namespace lv;
 
 static void get_vtx_mode(u8 mode, float* buf)
 {
-    buf[0] = (mode & COLOUR_MODE_ALL) != 0;
-    buf[1] = (mode & COLOUR_MODE_ALPHA) != 0;
-    buf[2] = (mode & COLOUR_MODE_RED) != 0;
+    buf[0] = (mode & COLOUR_MODE_NORMAL) != 0;
+    buf[1] = (mode & COLOUR_MODE_ALPHA_ONLY) != 0;
+    buf[2] = (mode & COLOUR_MODE_RED_ONLY) != 0;
     buf[3] = (mode & COLOUR_MODE_SILHOUETTE) != 0;
 }
 
