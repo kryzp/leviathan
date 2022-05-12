@@ -5,12 +5,12 @@ using namespace lv;
 
 Endianness Endian::get_endianness()
 {
-	return is_big_endian() ?
-		ENDIANNESS_BIG :
-		ENDIANNESS_LITTLE;
+	return is_big_endian()
+		? ENDIANNESS_BIG
+		: ENDIANNESS_LITTLE;
 }
 
-bool Endian::is_endian(Endianness endian)
+bool Endian::is_endian(u8 endian)
 {
 	return (
 		(endian == ENDIANNESS_LITTLE && is_little_endian()) ||

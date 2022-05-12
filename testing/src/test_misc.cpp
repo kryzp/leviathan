@@ -7,7 +7,7 @@
 
 using namespace lv;
 
-#define PARTICLE_COUNT 500000
+#define PARTICLE_COUNT 20000
 #define SCALE 1
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720
