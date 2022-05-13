@@ -34,11 +34,11 @@ void main()
 
 	float grayscale = brightness(texcol);
 
-	frag_colour = vec4(hsv2rgb(vec3(grayscale, 1.0, 1.0)), grayscale);
+	//frag_colour = vec4(hsv2rgb(vec3(grayscale, 1.0, 1.0)), grayscale);
 
 	// teal->dark blue
-//	vec3 col_a = vec3(0.1, 1.0, 0.75);
-//	vec3 col_b = vec3(0.35, 0.1, 0.75);
+	vec3 col_a = vec3(0.1, 1.0, 0.75);
+	vec3 col_b = vec3(0.35, 0.1, 0.75);
 
 	// yellow->red
 //	vec3 col_a = vec3(1.0, 0.85, 0.6);
@@ -46,6 +46,6 @@ void main()
 
 	////////////////////////////////////////////////////
 	
-//	vec3 final = mix(col_b, col_a, weight(grayscale));
-//	frag_colour = vec4(final, grayscale);
+	vec3 final = mix(col_b, col_a, weight(grayscale));
+	frag_colour = vec4(final, grayscale);
 }

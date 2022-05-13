@@ -34,9 +34,11 @@ namespace lv
 
 	enum TextAlign
 	{
+		TEXT_ALIGN_NONE = 0,
 		TEXT_ALIGN_LEFT,
 		TEXT_ALIGN_CENTRE,
-		TEXT_ALIGN_RIGHT
+		TEXT_ALIGN_RIGHT,
+		TEXT_ALIGN_MAX
 	};
 
     enum ColourMode
@@ -55,8 +57,9 @@ namespace lv
 		SpriteBatch();
 		~SpriteBatch() = default;
 
-		void render(const Ref<RenderTarget>& framebuffer = nullptr, u8 sort_mode = SPRITE_SORT_FTB);
-		void render(const Mat4x4& proj, const Ref<RenderTarget>& framebuffer = nullptr, u8 sort_mode = SPRITE_SORT_FTB);
+		void render(const Ref<RenderTarget>& target = nullptr, u8 sort_mode = SPRITE_SORT_FTB);
+		void render(const Mat4x4& proj, const Ref<RenderTarget>& target = nullptr, u8 sort_mode = SPRITE_SORT_FTB);
+		void clear();
 
 		///////////////////////////////////////////////////////
 		//  W E L C O M E   T O   T H E   P U S H   Z O N E  // (kind of a vibe ngl)
@@ -74,51 +77,51 @@ namespace lv
 
 		///////////////////////////////////////////////////////
 
-		void set_texture(const Ref<Texture>& tex, unsigned idx = 0);
-		void set_sampler(const TextureSampler& sampler, unsigned idx = 0);
-		void reset_texture(unsigned idx = 0);
-		Ref<Texture> peek_texture(unsigned idx = 0);
-		const TextureSampler& peek_sampler(unsigned idx = 0);
+		void set_texture(const Ref<Texture>& tex);
+		void set_sampler(const TextureSampler& sampler);
+		void reset_texture();
+		Ref<Texture> peek_texture() const;
+		const TextureSampler& peek_sampler() const;
 
 		void set_shader(const Ref<Shader>& shd);
 		void reset_shader();
-		Ref<Shader> peek_shader();
+		Ref<Shader> peek_shader() const;
 
-		void push_material(const Material& material);
-		Material pop_material();
-		Material& peek_material();
+		void push_material(const Ref<Material>& material);
+		Ref<Material> pop_material();
+		Ref<Material> peek_material() const;
 
 		void push_stencil(Compare stencil);
 		Compare pop_stencil();
-		Compare& peek_stencil();
+		const Compare& peek_stencil() const;
 
 		void push_depth(u8 depth);
 		u8 pop_depth();
-		u8& peek_depth();
+		u8 peek_depth() const;
 
 		void push_scissor(const RectI& scissor);
 		RectI pop_scissor();
-		RectI& peek_scissor();
+		const RectI& peek_scissor() const;
 
 		void push_viewport(const RectI& viewport);
 		RectI pop_viewport();
-		RectI& peek_viewport();
+		const RectI& peek_viewport() const;
 
 		void push_layer(float layer);
 		float pop_layer();
-		float& peek_layer();
+		float peek_layer() const;
 
 		void push_matrix(const Mat3x2& mat);
 		Mat3x2 pop_matrix();
-		Mat3x2& peek_matrix();
+		const Mat3x2& peek_matrix() const;
 
 		void push_blend(const BlendMode& blend);
 		BlendMode pop_blend();
-		BlendMode& peek_blend();
+		const BlendMode& peek_blend() const;
 
 		void push_colour_mode(u8 mode);
 		u8 pop_colour_mode();
-		u8& peek_colour_mode();
+		u8 peek_colour_mode() const;
 
 		// snaps all drawing coords to integers
 		bool pixel_snap = false;
@@ -126,33 +129,40 @@ namespace lv
 	private:
 		struct RenderBatch
 		{
-			Material material;
-			BlendMode blend;
+			Ref<Material> material;
+			Ref<Texture> texture;
+			TextureSampler sampler;
+			Ref<Shader> shader;
+
 			u8 depth;
 			Compare stencil;
+
+			BlendMode blend;
+			float layer;
+
 			RectI viewport;
 			RectI scissor;
-			float layer;
+
 			Vector<Vertex> vertices;
 			Vector<u32> indices;
 		};
 
 		Ref<Mesh> m_mesh;
-		Ref<Shader> m_default_shader;
+		Ref<Material> m_default_material;
 
 		void initialize();
 		bool m_initialized;
 
-		void render_batch(RenderPass& pass, const RenderBatch& b);
+		void render_batch(RenderPass& pass, const RenderBatch& b, const Mat4x4& proj);
 
+		RenderBatch m_curr_batch;
 		Vector<RenderBatch> m_batches;
 
+		Mat3x2 m_curr_matrix;
 		Vector<Mat3x2> m_matrix_stack;
-		Mat3x2 m_transform_matrix;
 
-		// todo: convert these into arrays?
 		Vector<float> m_layer_stack;
-		Vector<Material> m_material_stack;
+		Vector<Ref<Material>> m_material_stack;
 		Vector<BlendMode> m_blend_stack;
 		Vector<u8> m_depth_stack;
 		Vector<Compare> m_stencil_stack;

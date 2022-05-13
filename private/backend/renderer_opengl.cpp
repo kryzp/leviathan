@@ -1054,7 +1054,7 @@ public:
 
 	void render(const RenderPass& pass) override
 	{
-		auto shader = (OpenGLShader*)pass.material.shader().get();
+		auto shader = (OpenGLShader*)pass.material->shader().get();
 		auto target = (OpenGLFramebuffer*)pass.target.get();
 		auto mesh = (OpenGLMesh*)pass.mesh.get();
 		auto& blend = pass.blend;
@@ -1074,8 +1074,8 @@ public:
 
 		for (int i = 0; i < LEV_MAT_TEXTURES; i++)
 		{
-			auto texture = (OpenGLTexture*)pass.material.texture(i).get();
-			auto sampler = pass.material.sampler(i);
+			auto texture = (OpenGLTexture*)pass.material->texture(i).get();
+			auto sampler = pass.material->sampler(i);
 
 			if (!texture)
 				continue;

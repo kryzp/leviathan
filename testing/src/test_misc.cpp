@@ -7,7 +7,7 @@
 
 using namespace lv;
 
-#define PARTICLE_COUNT 20000
+#define PARTICLE_COUNT 300000
 #define SCALE 1
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720
@@ -102,7 +102,7 @@ int main()
 
 		conf.on_render = [&]()
 		{
-			App::inst()->clear();
+			App::clear();
 
 			batch.push_matrix(Mat3x2::create_scale(SCALE));
 			batch.set_shader(shader_colourize);

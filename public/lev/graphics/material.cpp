@@ -3,23 +3,13 @@
 
 using namespace lv;
 
-Material::Material()
-	: m_shader(nullptr)
+Ref<Material> Material::create(const Ref<Shader>& shader)
 {
-	mem::set(m_textures, 0, sizeof(Ref<Texture>) * LEV_MAT_TEXTURES);
-	mem::set(m_samplers, 0, sizeof(TextureSampler) * LEV_MAT_TEXTURES);
-}
-
-Material::Material(
-	const Ref<Shader>& shader,
-	const Ref<Texture>* textures,
-	const TextureSampler* samplers,
-	unsigned texture_count
-)
-	: m_shader(shader)
-{
-	mem::copy(m_textures, textures, sizeof(Ref<Texture>) * texture_count);
-	mem::copy(m_samplers, samplers, sizeof(TextureSampler) * texture_count);
+	auto result = create_ref<Material>();
+	result->m_shader = shader;
+	result->m_textures[0] = nullptr;
+	result->m_samplers[0] = TextureSampler::pixel(); // idk just default setting
+	return result;
 }
 
 Ref<Shader> Material::shader()

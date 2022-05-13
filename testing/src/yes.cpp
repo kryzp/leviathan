@@ -87,7 +87,7 @@ static void update()
 
 static void render()
 {
-	lv::App::inst()->clear(0x101013FF);
+	lv::App::clear(0x101013FF);
 	{
 		for (auto* node = g_skelly.joints().first; node; node = node->next)
 		{

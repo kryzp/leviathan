@@ -12,7 +12,7 @@ namespace lv
 {
 	struct RenderPass
 	{
-		Material material;
+		Ref<Material> material;
 		Ref<Mesh> mesh;
 		Ref<RenderTarget> target;
 		BlendMode blend;

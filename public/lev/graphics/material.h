@@ -11,13 +11,10 @@ namespace lv
 	class Material
 	{
 	public:
-		Material();
-		Material(
-			const Ref<Shader>& shader,
-			const Ref<Texture>* textures,
-			const TextureSampler* samplers,
-			unsigned texture_count
-		);
+		Material() = default;
+		~Material() = default;
+
+		static Ref<Material> create(const Ref<Shader>& shader);
 
 		Ref<Shader> shader();
 		const Ref<Shader> shader() const;
