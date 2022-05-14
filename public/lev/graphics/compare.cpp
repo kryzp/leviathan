@@ -5,7 +5,7 @@ using namespace lv;
 const Compare& Compare::none()
 {
 	static const Compare NONE = Compare(
-		FACE_NONE,
+		COMPARE_FACE_NONE,
 		COMPARE_NONE,
 		0, 0,
 		COMPARE_FAIL_NONE,

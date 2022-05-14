@@ -32,7 +32,7 @@ namespace lv
 			int descent;
 			int line_gap;
 			RectI bbox;
-			u8 type;
+			FontType type;
 		};
 
 		struct Kerning

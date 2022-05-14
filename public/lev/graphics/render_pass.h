@@ -17,7 +17,7 @@ namespace lv
 		Ref<RenderTarget> target;
 		BlendMode blend;
 		Compare stencil;
-		u8 depth;
+		CompareFunc depth;
 		RectI viewport;
 		RectI scissor;
 		int instance_count;

@@ -21,47 +21,47 @@ void Input::update()
 	m_mouse.wheel = Float2::zero();
 }
 
-bool Input::down_mb(int mb)
+bool Input::down_mb(MouseButton mb)
 {
 	return m_mouse.down[mb];
 }
 
-bool Input::down_key(int key)
+bool Input::down_key(Key key)
 {
 	return m_kb.down[key];
 }
 
-bool Input::down_button(int button)
+bool Input::down_button(JoystickButton button)
 {
 	return m_joystick.down[button];
 }
 
-bool Input::released_mb(int mb)
+bool Input::released_mb(MouseButton mb)
 {
 	return !m_mouse.down[mb] && m_mouse_prev.down[mb];
 }
 
-bool Input::released_key(int key)
+bool Input::released_key(Key key)
 {
 	return !m_kb.down[key] && m_kb_prev.down[key];
 }
 
-bool Input::released_button(int button)
+bool Input::released_button(JoystickButton button)
 {
 	return !m_joystick.down[button] && m_joystick_prev.down[button];
 }
 
-bool Input::pressed_mb(int mb)
+bool Input::pressed_mb(MouseButton mb)
 {
 	return m_mouse.down[mb] && !m_mouse_prev.down[mb];
 }
 
-bool Input::pressed_key(int key)
+bool Input::pressed_key(Key key)
 {
 	return m_kb.down[key] && !m_kb_prev.down[key];
 }
 
-bool Input::pressed_button(int button)
+bool Input::pressed_button(JoystickButton button)
 {
 	return m_joystick.down[button] && !m_joystick_prev.down[button];
 }
@@ -146,12 +146,12 @@ void Input::on_mouse_screen_move(float x, float y)
 	m_mouse.screen_position = Vec2F(x, y);
 }
 
-void Input::on_mouse_down(u8 button)
+void Input::on_mouse_down(MouseButton button)
 {
 	m_mouse.down[button] = true;
 }
 
-void Input::on_mouse_up(u8 button)
+void Input::on_mouse_up(MouseButton button)
 {
 	m_mouse.down[button] = false;
 }
@@ -161,12 +161,12 @@ void Input::on_mouse_wheel(float x, float y)
 	m_mouse.wheel = Float2(x, y);
 }
 
-void Input::on_key_down(int key)
+void Input::on_key_down(Key key)
 {
 	m_kb.down[key] = true;
 }
 
-void Input::on_key_up(int key)
+void Input::on_key_up(Key key)
 {
 	m_kb.down[key] = false;
 }
@@ -176,12 +176,12 @@ void Input::on_text_utf8(const char* text)
 	cstr::cncat(m_kb.text, text, LEV_MAX_TEXT_INPUT);
 }
 
-void Input::on_joystick_button_down(u8 button)
+void Input::on_joystick_button_down(JoystickButton button)
 {
 	m_joystick.down[button] = true;
 }
 
-void Input::on_joystick_button_up(u8 button)
+void Input::on_joystick_button_up(JoystickButton button)
 {
 	m_joystick.down[button] = false;
 }
@@ -196,7 +196,7 @@ void Input::on_joystick_hat(u8 hat)
 	// todo
 }
 
-void Input::on_joystick_motion(u8 axis, float value)
+void Input::on_joystick_motion(JoystickAxis axis, float value)
 {
 	// todo
 	// todo

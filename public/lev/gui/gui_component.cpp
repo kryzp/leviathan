@@ -68,7 +68,7 @@ bool GUIComponent::mouse_hovering_over(bool include_children)
 	return hovering;
 }
 
-bool GUIComponent::mouse_clicked_over(bool include_children, int mb)
+bool GUIComponent::mouse_clicked_over(bool include_children, MouseButton mb)
 {
 	return mouse_hovering_over(include_children) && Input::inst()->pressed_mb(mb);
 }

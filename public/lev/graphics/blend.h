@@ -40,14 +40,14 @@ namespace lv
 
 	struct BlendMode
 	{
-		u8 equation_rgb;
-		u8 equation_alpha;
+		BlendEquation equation_rgb;
+		BlendEquation equation_alpha;
 		
-		u8 func_src_rgb;
-		u8 func_dst_rgb;
+		BlendFunc func_src_rgb;
+		BlendFunc func_dst_rgb;
 
-		u8 func_src_alpha;
-		u8 func_dst_alpha;
+		BlendFunc func_src_alpha;
+		BlendFunc func_dst_alpha;
 
 		BlendMode()
 			: equation_rgb(BLEND_EQUATION_NONE)
@@ -60,9 +60,9 @@ namespace lv
 		}
 
 		BlendMode(
-			u8 eq_rgb, u8 eq_alp,
-			u8 fn_src_rgb, u8 fn_dst_rgb,
-			u8 fn_src_alp, u8 fn_dst_alp
+			BlendEquation eq_rgb, BlendEquation eq_alp,
+			BlendFunc fn_src_rgb, BlendFunc fn_dst_rgb,
+			BlendFunc fn_src_alp, BlendFunc fn_dst_alp
 		)
 			: equation_rgb(eq_rgb)
 			, equation_alpha(eq_alp)

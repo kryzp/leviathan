@@ -16,11 +16,11 @@ namespace lv
 {
 	enum ShaderType
 	{
-		SHADER_TYPE_NONE,
-		SHADER_TYPE_SEPERATED 	= 1 << 0,
-		SHADER_TYPE_SINGLE 		= 1 << 1,
-		SHADER_TYPE_RENDER 		= 1 << 2,
-		SHADER_TYPE_COMPUTE 	= 1 << 3,
+		SHADER_TYPE_NONE		= 0 << 0,
+		SHADER_TYPE_SINGLE 		= 1 << 0, // for backends where the entire shader is in one file (e.g metal or directx)
+		SHADER_TYPE_RENDER 		= 1 << 1, // vertex + fragment
+		SHADER_TYPE_GEOMETRY	= 1 << 2, // + geometry
+		SHADER_TYPE_COMPUTE 	= 1 << 3, // compute shader
 		SHADER_TYPE_MAX
 	};
 
@@ -42,23 +42,18 @@ namespace lv
 
 	struct ShaderData
 	{
-		u8 type;
+		u8 type_flags;
 
 		union
 		{
-			union
+			struct
 			{
-				struct
-				{
-					bool has_geometry;
-					char vertex_source[LEV_SHADER_MAX_SIZE];
-					char fragment_source[LEV_SHADER_MAX_SIZE];
-					char geometry_source[LEV_SHADER_MAX_SIZE];
-				};
+				char vertex_source[LEV_SHADER_MAX_SIZE];
+				char fragment_source[LEV_SHADER_MAX_SIZE];
+				char geometry_source[LEV_SHADER_MAX_SIZE];
+			};
 
-				char compute_source[LEV_SHADER_MAX_SIZE * 3];
-			}
-			seperated;
+			char compute_source[LEV_SHADER_MAX_SIZE * 3];
 
 			char single_source[LEV_SHADER_MAX_SIZE * 3];
 		};
@@ -95,7 +90,7 @@ namespace lv
 
 		static void unbind();
 
-		virtual u8 type() = 0;
+		virtual u8 type_flags() = 0;
 		virtual Shader& use() = 0;
 
 		virtual Shader& dispatch_compute(u32 n_groups_x, u32 n_groups_y, u32 n_groups_z) = 0;

@@ -25,7 +25,7 @@ namespace lv
 		std::function<void(void)> on_destroy = nullptr;
 		std::function<void(void)> on_update = nullptr;
 		std::function<void(void)> on_render = nullptr;
-		std::function<void(const char*, u8)> on_log = nullptr;
+		std::function<void(const char*, LogType)> on_log = nullptr;
 	};
 
 	class App

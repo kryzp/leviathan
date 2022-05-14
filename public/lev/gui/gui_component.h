@@ -20,7 +20,7 @@ namespace lv
 		virtual void render(SpriteBatch& b);
 
 		virtual bool mouse_hovering_over(bool include_children = true);
-		virtual bool mouse_clicked_over(bool include_children = true, int mb = MB_LEFT);
+		virtual bool mouse_clicked_over(bool include_children = true, MouseButton mb = MB_LEFT);
 
 		RectI bounding_box() const;
 

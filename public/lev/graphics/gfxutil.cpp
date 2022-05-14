@@ -4,7 +4,11 @@
 
 using namespace lv;
 
-static void get_vtx_mode(u8 mode, float* buf)
+/*
+ * TODO: this place is kinda hot garbage
+ */
+
+static void _get_vtx_mode(ColourMode mode, float* buf)
 {
     buf[0] = (mode & COLOUR_MODE_NORMAL) != 0;
     buf[1] = (mode & COLOUR_MODE_ALPHA_ONLY) != 0;
@@ -12,12 +16,9 @@ static void get_vtx_mode(u8 mode, float* buf)
     buf[3] = (mode & COLOUR_MODE_SILHOUETTE) != 0;
 }
 
-void GfxUtil::quad(Vertex* vtx, u32* indices, const Quad& quad, const Quad& uv, Colour colour, u8 mode)
+void gfxutil::quad(Vertex* vtx, u32* indices, const Quad& quad, const Quad& uv, Colour colour, ColourMode mode)
 {
     colour.premultiply();
-
-	float vtxmode[4];
-    get_vtx_mode(mode, vtxmode);
 
 	float rr = (float)colour.r / 255.0f;
 	float gg = (float)colour.g / 255.0f;
@@ -31,10 +32,10 @@ void GfxUtil::quad(Vertex* vtx, u32* indices, const Quad& quad, const Quad& uv, 
 		{ .pos = quad.d, .uv = uv.d, .col = { rr, gg, bb, aa } }
     };
 
-	get_vtx_mode(mode, arrvtx[0].mode);
-	get_vtx_mode(mode, arrvtx[1].mode);
-	get_vtx_mode(mode, arrvtx[2].mode);
-	get_vtx_mode(mode, arrvtx[3].mode);
+	_get_vtx_mode(mode, arrvtx[0].mode);
+	_get_vtx_mode(mode, arrvtx[1].mode);
+	_get_vtx_mode(mode, arrvtx[2].mode);
+	_get_vtx_mode(mode, arrvtx[3].mode);
 
     static const u32 arrindices[6] = {
         0, 1, 2,
@@ -45,7 +46,7 @@ void GfxUtil::quad(Vertex* vtx, u32* indices, const Quad& quad, const Quad& uv, 
     mem::copy(indices, arrindices, sizeof(arrindices));
 }
 
-void GfxUtil::tri(Vertex* vtx, u32* indices, const Triangle& triangle, const Triangle& uv, Colour colour, u8 mode)
+void gfxutil::tri(Vertex* vtx, u32* indices, const Triangle& triangle, const Triangle& uv, Colour colour, ColourMode mode)
 {
     colour.premultiply();
 
@@ -60,9 +61,9 @@ void GfxUtil::tri(Vertex* vtx, u32* indices, const Triangle& triangle, const Tri
 		{ .pos = triangle.c, .uv = uv.c, .col = { rr, gg, bb, aa }}
     };
 
-	get_vtx_mode(mode, arrvtx[0].mode);
-	get_vtx_mode(mode, arrvtx[1].mode);
-	get_vtx_mode(mode, arrvtx[2].mode);
+	_get_vtx_mode(mode, arrvtx[0].mode);
+	_get_vtx_mode(mode, arrvtx[1].mode);
+	_get_vtx_mode(mode, arrvtx[2].mode);
 
     static const u32 arrindices[3] = {
         0, 1, 2

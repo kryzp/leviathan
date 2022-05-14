@@ -23,6 +23,14 @@ namespace lv
 {
 	struct RenderPass;
 
+	struct Vertex
+	{
+		Vec2F pos;
+		Vec2F uv;
+		float col[4];
+		float mode[4];
+	};
+
 	enum SpriteSort
 	{
 		SPRITE_SORT_NONE = 0,
@@ -30,15 +38,6 @@ namespace lv
 		SPRITE_SORT_BTF, // back to front - drawn in back to front order of layers
 		SPRITE_SORT_DEFERRED, // deferred - drawn in order of render calls individually
 		SPRITE_SORT_MAX
-	};
-
-	enum TextAlign
-	{
-		TEXT_ALIGN_NONE = 0,
-		TEXT_ALIGN_LEFT,
-		TEXT_ALIGN_CENTRE,
-		TEXT_ALIGN_RIGHT,
-		TEXT_ALIGN_MAX
 	};
 
     enum ColourMode
@@ -51,14 +50,17 @@ namespace lv
         COLOUR_MODE_MAX
     };
 
+	// hamburgjer spellign #2
+	using ColorMode = ColourMode;
+
 	class SpriteBatch
 	{
 	public:
 		SpriteBatch();
 		~SpriteBatch() = default;
 
-		void render(const Ref<RenderTarget>& target = nullptr, u8 sort_mode = SPRITE_SORT_FTB);
-		void render(const Mat4x4& proj, const Ref<RenderTarget>& target = nullptr, u8 sort_mode = SPRITE_SORT_FTB);
+		void render(const Ref<RenderTarget>& target = nullptr, SpriteSort sort_mode = SPRITE_SORT_FTB);
+		void render(const Mat4x4& proj, const Ref<RenderTarget>& target = nullptr, SpriteSort sort_mode = SPRITE_SORT_FTB);
 		void clear();
 
 		///////////////////////////////////////////////////////
@@ -70,8 +72,8 @@ namespace lv
 		void push_texture(const Ref<Texture>& tex, const RectI& source, const Colour& colour = Colour::white());
 		void push_quad(const Quad& quad, const Colour& colour = Colour::white());
 		void push_triangle(const Triangle& tri, const Colour& colour = Colour::white());
-		void push_string(const char* str, const Ref<Font>& font, u8 align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white());
-		void push_string(const char* str, const Ref<Font>& font, const std::function<Vec2F(Font::Character,int)>& offset_fn, u8 align = TEXT_ALIGN_LEFT, const Colour& colour = Colour::white());
+		void push_string(const char* str, const Ref<Font>& font, const Colour& colour = Colour::white());
+		void push_string(const char* str, const Ref<Font>& font, const std::function<Vec2F(Font::Character,int)>& offset_fn, const Colour& colour = Colour::white());
 		void push_circle(const Circle& circle, u32 accuracy = 40U, const Colour& colour = Colour::white());
 		void push_line(const Line& line, float thickness, const Colour& colour = Colour::white());
 
@@ -95,9 +97,9 @@ namespace lv
 		Compare pop_stencil();
 		const Compare& peek_stencil() const;
 
-		void push_depth(u8 depth);
-		u8 pop_depth();
-		u8 peek_depth() const;
+		void push_depth(CompareFunc depth);
+		CompareFunc pop_depth();
+		CompareFunc peek_depth() const;
 
 		void push_scissor(const RectI& scissor);
 		RectI pop_scissor();
@@ -119,9 +121,9 @@ namespace lv
 		BlendMode pop_blend();
 		const BlendMode& peek_blend() const;
 
-		void push_colour_mode(u8 mode);
-		u8 pop_colour_mode();
-		u8 peek_colour_mode() const;
+		void push_colour_mode(ColourMode mode);
+		ColourMode pop_colour_mode();
+		ColourMode peek_colour_mode() const;
 
 		// snaps all drawing coords to integers
 		bool pixel_snap = false;
@@ -134,7 +136,7 @@ namespace lv
 			TextureSampler sampler;
 			Ref<Shader> shader;
 
-			u8 depth;
+			CompareFunc depth;
 			Compare stencil;
 
 			BlendMode blend;
@@ -164,10 +166,10 @@ namespace lv
 		Vector<float> m_layer_stack;
 		Vector<Ref<Material>> m_material_stack;
 		Vector<BlendMode> m_blend_stack;
-		Vector<u8> m_depth_stack;
+		Vector<CompareFunc> m_depth_stack;
 		Vector<Compare> m_stencil_stack;
 		Vector<RectI> m_scissor_stack;
 		Vector<RectI> m_viewport_stack;
-		Vector<u8> m_colour_mode_stack;
+		Vector<ColourMode> m_colour_mode_stack;
 	};
 }

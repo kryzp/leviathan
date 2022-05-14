@@ -10,7 +10,7 @@ Endianness Endian::get_endianness()
 		: ENDIANNESS_LITTLE;
 }
 
-bool Endian::is_endian(u8 endian)
+bool Endian::is_endian(Endianness endian)
 {
 	return (
 		(endian == ENDIANNESS_LITTLE && is_little_endian()) ||

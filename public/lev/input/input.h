@@ -304,17 +304,17 @@ namespace lv
 		void destroy();
 		void update();
 
-		bool down_mb(int mb);
-		bool down_key(int key);
-		bool down_button(int button);
+		bool down_mb(MouseButton mb);
+		bool pressed_mb(MouseButton mb);
+		bool released_mb(MouseButton mb);
 
-		bool released_mb(int mb);
-		bool released_key(int key);
-		bool released_button(int button);
-		
-		bool pressed_mb(int mb);
-		bool pressed_key(int key);
-		bool pressed_button(int button);
+		bool down_key(Key key);
+		bool pressed_key(Key key);
+		bool released_key(Key key);
+
+		bool down_button(JoystickButton button);
+		bool pressed_button(JoystickButton button);
+		bool released_button(JoystickButton button);
 
 		Float2 left_stick();
 		Float2 right_stick();
@@ -337,19 +337,19 @@ namespace lv
 		void on_mouse_move(float x, float y);
 		void on_mouse_screen_move(float x, float y);
 		
-		void on_mouse_down(u8 button);
-		void on_mouse_up(u8 button);
+		void on_mouse_down(MouseButton button);
+		void on_mouse_up(MouseButton button);
 		void on_mouse_wheel(float x, float y);
 		
-		void on_key_down(int key);
-		void on_key_up(int key);
+		void on_key_down(Key key);
+		void on_key_up(Key key);
 		void on_text_utf8(const char* text);
 
-		void on_joystick_button_down(u8 button);
-		void on_joystick_button_up(u8 button);
+		void on_joystick_button_down(JoystickButton button);
+		void on_joystick_button_up(JoystickButton button);
 		void on_joystick_ball(u8 ball);
 		void on_joystick_hat(u8 hat);
-		void on_joystick_motion(u8 axis, float value);
+		void on_joystick_motion(JoystickAxis axis, float value);
 
 	private:
 		KeyboardState m_kb;

@@ -6,11 +6,11 @@ namespace lv
 {
 	enum CompareFace
 	{
-		FACE_NONE = 0,
-		FACE_FRONT,
-		FACE_BACK,
-		FACE_FRONT_AND_BACK,
-		FACE_MAX
+		COMPARE_FACE_NONE = 0,
+		COMPARE_FACE_FRONT,
+		COMPARE_FACE_BACK,
+		COMPARE_FACE_FRONT_AND_BACK,
+		COMPARE_FACE_MAX
 	};
 
 	enum CompareFunc
@@ -43,18 +43,18 @@ namespace lv
 
 	struct Compare
 	{
-		u8 face;
+		CompareFace face;
 
-		u8 func;
+		CompareFunc func;
 		s32 ref;
 		u32 mask;
 
-		u8 s_fail;
-		u8 dp_fail;
-		u8 dp_pass;
+		CompareFail s_fail;
+		CompareFail dp_fail;
+		CompareFail dp_pass;
 
 		Compare()
-			: face(FACE_NONE)
+			: face(COMPARE_FACE_NONE)
 			, func(COMPARE_NONE)
 			, ref(0)
 			, mask(0)
@@ -65,13 +65,13 @@ namespace lv
 		}
 
 		Compare(
-			u8 face,
-			u8 func,
+			CompareFace face,
+			CompareFunc func,
 			s32 ref,
 			u32 mask,
-			u8 s_fail,
-			u8 dp_fail,
-			u8 dp_pass
+			CompareFail s_fail,
+			CompareFail dp_fail,
+			CompareFail dp_pass
 		)
 			: face(face)
 			, func(func)

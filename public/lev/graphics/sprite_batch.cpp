@@ -62,10 +62,10 @@ void SpriteBatch::initialize()
 			"}";
 
 		ShaderData data = {0};
-		data.type = SHADER_TYPE_SEPERATED | SHADER_TYPE_RENDER;
+		data.type_flags = SHADER_TYPE_RENDER;
 
-		cstr::copy(data.seperated.vertex_source, vertex, 512);
-		cstr::copy(data.seperated.fragment_source, fragment, 512);
+		cstr::copy(data.vertex_source, vertex, 512);
+		cstr::copy(data.fragment_source, fragment, 512);
 
 		m_default_material = Material::create(bknd::Renderer::inst()->create_shader(data));
 #endif
@@ -86,7 +86,7 @@ void SpriteBatch::initialize()
 	m_initialized = true;
 }
 
-void SpriteBatch::render(const Ref<RenderTarget>& target, u8 sort_mode)
+void SpriteBatch::render(const Ref<RenderTarget>& target, SpriteSort sort_mode)
 {
 	render(Mat4x4::create_orthographic_ext(
 		0.0f,
@@ -98,7 +98,7 @@ void SpriteBatch::render(const Ref<RenderTarget>& target, u8 sort_mode)
 	), target, sort_mode);
 }
 
-void SpriteBatch::render(const Mat4x4& proj, const Ref<RenderTarget>& target, u8 sort_mode)
+void SpriteBatch::render(const Mat4x4& proj, const Ref<RenderTarget>& target, SpriteSort sort_mode)
 {
 	if (!m_initialized)
 		initialize();
@@ -218,7 +218,7 @@ void SpriteBatch::push_quad(const Quad& quad, const Colour& colour)
 	Vertex vertices[4];
 	u32 indices[6];
 
-	GfxUtil::quad(
+	gfxutil::quad(
 		vertices, indices,
 		quad,
 		Quad(RectF::one()),
@@ -234,7 +234,7 @@ void SpriteBatch::push_triangle(const Triangle& tri, const Colour& colour)
 	Vertex vertices[3];
 	u32 indices[3];
 
-	GfxUtil::tri(
+	gfxutil::tri(
 		vertices, indices,
 		tri,
 		Triangle(
@@ -263,7 +263,7 @@ void SpriteBatch::push_texture(const Ref<Texture>& tex, const RectI& source, con
 	Vertex vertices[4];
 	u32 indices[6];
 
-	GfxUtil::quad(
+	gfxutil::quad(
 		vertices, indices,
 		Quad(source),
 		Quad(source) / tex->size(),
@@ -279,18 +279,16 @@ void SpriteBatch::push_texture(const Ref<Texture>& tex, const RectI& source, con
 void SpriteBatch::push_string(
 	const char* str,
 	const Ref<Font>& font,
-	u8 align,
 	const Colour& colour
 )
 {
-	push_string(str, font, [&](Font::Character c, int idx) -> Vec2F { return Vec2F::zero(); }, align, colour);
+	push_string(str, font, [&](Font::Character c, int idx) -> Vec2F { return Vec2F::zero(); }, colour);
 }
 
 void SpriteBatch::push_string(
 	const char* str,
 	const Ref<Font>& font,
 	const std::function<Vec2F(Font::Character,int)>& offset_fn,
-	u8 align,
 	const Colour& colour
 )
 {
@@ -298,24 +296,9 @@ void SpriteBatch::push_string(
 
 	const auto& atlas = font->atlas();
 
-	switch (align)
-	{
-		case TEXT_ALIGN_LEFT:
-			push_matrix(Mat3x2::identity());
-			break;
-		
-		case TEXT_ALIGN_CENTRE:
-			push_matrix(Mat3x2::create_translation(Vec2F(-font->string_width(str) / 2.0f, 0.0f)));
-			break;
-
-		case TEXT_ALIGN_RIGHT:
-			push_matrix(Mat3x2::create_translation(Vec2F(-font->string_width(str), 0.0f)));
-			break;
-	}
+	push_colour_mode(COLOUR_MODE_RED_ONLY);
 
 	float cursor_x = 0.0f;
-
-	push_colour_mode(COLOUR_MODE_RED_ONLY);
 
 	for (int i = 0; i < cstr::length(str); i++)
 	{
@@ -336,8 +319,6 @@ void SpriteBatch::push_string(
 	}
 
 	pop_colour_mode();
-
-	pop_matrix();
 }
 
 void SpriteBatch::push_circle(const Circle& circle, u32 accuracy, const Colour& colour)
@@ -457,20 +438,20 @@ const Compare& SpriteBatch::peek_stencil() const
 	return m_stencil_stack.back();
 }
 
-void SpriteBatch::push_depth(u8 depth)
+void SpriteBatch::push_depth(CompareFunc depth)
 {
 	m_depth_stack.push_back(depth);
 	m_curr_batch.depth = depth;
 }
 
-u8 SpriteBatch::pop_depth()
+CompareFunc SpriteBatch::pop_depth()
 {
 	auto result = m_depth_stack.pop_back();
 	m_curr_batch.depth = m_depth_stack.back();
 	return result;
 }
 
-u8 SpriteBatch::peek_depth() const
+CompareFunc SpriteBatch::peek_depth() const
 {
 	if (m_depth_stack.size() <= 0)
 		return COMPARE_NONE;
@@ -580,17 +561,17 @@ const BlendMode& SpriteBatch::peek_blend() const
 	return m_blend_stack.back();
 }
 
-void SpriteBatch::push_colour_mode(u8 mode)
+void SpriteBatch::push_colour_mode(ColourMode mode)
 {
 	m_colour_mode_stack.push_back(mode);
 }
 
-u8 SpriteBatch::pop_colour_mode()
+ColourMode SpriteBatch::pop_colour_mode()
 {
 	return m_colour_mode_stack.pop_back();
 }
 
-u8 SpriteBatch::peek_colour_mode() const
+ColourMode SpriteBatch::peek_colour_mode() const
 {
 	if (m_colour_mode_stack.size() <= 0)
 		return COLOUR_MODE_NORMAL;

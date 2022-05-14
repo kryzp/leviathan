@@ -3,6 +3,9 @@
 #include <lev/core/app.h>
 #include <lev/containers/hash_map.h>
 
+// struct vertex
+#include <lev/graphics/sprite_batch.h>
+
 #include <backend/renderer.h>
 #include <backend/system.h>
 
@@ -31,7 +34,7 @@ static u64 gen_gl_vertex_attribs()
 	return sizeof(Vertex);
 }
 
-static u32 get_gl_texture_fmt(u8 fmt)
+static u32 get_gl_texture_fmt(TextureFormat fmt)
 {
 	switch (fmt)
 	{
@@ -45,7 +48,7 @@ static u32 get_gl_texture_fmt(u8 fmt)
 	return 0;
 }
 
-static u32 get_gl_texture_internal_fmt(u8 fmt)
+static u32 get_gl_texture_internal_fmt(InternalTextureFormat fmt)
 {
 	switch (fmt)
 	{
@@ -115,7 +118,7 @@ static u32 get_gl_texture_internal_fmt(u8 fmt)
 	return 0;
 }
 
-static u32 get_gl_texture_type(u8 type)
+static u32 get_gl_texture_type(TextureType type)
 {
 	switch (type)
 	{
@@ -132,7 +135,7 @@ static u32 get_gl_texture_type(u8 type)
 	return 0;
 }
 
-static u32 get_gl_blend_equation(u8 func)
+static u32 get_gl_blend_equation(BlendEquation func)
 {
 	switch (func)
 	{
@@ -146,7 +149,7 @@ static u32 get_gl_blend_equation(u8 func)
 	return 0;
 }
 
-static u32 get_gl_blend_func(u8 func)
+static u32 get_gl_blend_func(BlendFunc func)
 {
 	switch (func)
 	{
@@ -173,19 +176,19 @@ static u32 get_gl_blend_func(u8 func)
 	return 0;
 }
 
-static u32 get_gl_compare_face(u8 face)
+static u32 get_gl_compare_face(CompareFace face)
 {
 	switch (face)
 	{
-		case FACE_FRONT:			return GL_FRONT;
-		case FACE_BACK:				return GL_BACK;
-		case FACE_FRONT_AND_BACK: 	return GL_FRONT_AND_BACK;
+		case COMPARE_FACE_FRONT:			return GL_FRONT;
+		case COMPARE_FACE_BACK:				return GL_BACK;
+		case COMPARE_FACE_FRONT_AND_BACK: 	return GL_FRONT_AND_BACK;
 	}
 
 	return 0;
 }
 
-static u32 get_gl_compare_func(u8 func)
+static u32 get_gl_compare_func(CompareFunc func)
 {
 	switch (func)
 	{
@@ -202,7 +205,7 @@ static u32 get_gl_compare_func(u8 func)
 	return 0;
 }
 
-static u32 get_gl_compare_fail(u8 fail)
+static u32 get_gl_compare_fail(CompareFail fail)
 {
 	switch (fail)
 	{
@@ -517,7 +520,7 @@ public:
 class OpenGLShader : public Shader
 {
 	GLuint m_id;
-	u8 m_type;
+	u8 m_type_flags;
 	HashMap<String, GLint> m_gl_uniforms;
 
 	GLint get_uniform_location(const String& name)
@@ -531,7 +534,7 @@ public:
 	OpenGLShader(const ShaderData& data)
 		: Shader()
 		, m_id(0)
-		, m_type(data.type)
+		, m_type_flags(data.type_flags)
 	{
 		/*
 		 * welcome to hell st. 5th avenue
@@ -542,25 +545,32 @@ public:
 
 		GLuint id = glCreateProgram();
 
-		if (data.type & SHADER_TYPE_SINGLE)
+		if (data.type_flags & SHADER_TYPE_SINGLE)
 		{
-			LEV_ERROR("OpenGL backend doesn't support shaders in a single file");
+			log::warn("OpenGL backend doesn't support shaders in a single file.");
 			return;
 		}
 
-		auto& compute_source = data.seperated.compute_source;
+		auto& compute_source = data.compute_source;
 
-		if (data.type & SHADER_TYPE_COMPUTE)
+		if (data.type_flags & SHADER_TYPE_COMPUTE)
 		{
 			const char* compute_data = compute_source;
 
 			GLuint compute = glCreateShader(GL_COMPUTE_SHADER);
 			glShaderSource(compute, 1, &compute_data, nullptr);
 			glCompileShader(compute);
-			glAttachShader(id, compute);
 
+			glGetShaderiv(compute, GL_COMPILE_STATUS, &success);
+			if (!success)
+			{
+				glGetShaderInfoLog(compute, 512, nullptr, infolog);
+				log::error("failed to compile compute shader: %s", infolog);
+			}
+
+			glAttachShader(id, compute);
 			glLinkProgram(id);
-			
+
 			glGetProgramiv(id, GL_LINK_STATUS, &success);
 			if (!success)
 			{
@@ -572,9 +582,9 @@ public:
 		}
 		else
 		{
-			const char* vertex_data = data.seperated.vertex_source;
-			const char* fragment_data = data.seperated.fragment_source;
-			const char* geometry_data = data.seperated.geometry_source;
+			const char* vertex_data = data.vertex_source;
+			const char* fragment_data = data.fragment_source;
+			const char* geometry_data = data.geometry_source;
 
 			GLuint vertex = glCreateShader(GL_VERTEX_SHADER);
 			glShaderSource(vertex, 1, &vertex_data, nullptr);
@@ -599,7 +609,7 @@ public:
 			}
 
 			GLuint geometry = 0;
-			if (data.seperated.has_geometry)
+			if (data.type_flags & SHADER_TYPE_GEOMETRY)
 			{
 				geometry = glCreateShader(GL_GEOMETRY_SHADER);
 
@@ -617,7 +627,7 @@ public:
 			glAttachShader(id, vertex);
 			glAttachShader(id, fragment);
 
-			if (data.seperated.has_geometry)
+			if (data.type_flags & SHADER_TYPE_GEOMETRY)
 				glAttachShader(id, geometry);
 
 			glLinkProgram(id);
@@ -632,7 +642,7 @@ public:
 			glDeleteShader(vertex);
 			glDeleteShader(fragment);
 
-			if (data.seperated.has_geometry)
+			if (data.type_flags & SHADER_TYPE_GEOMETRY)
 				glDeleteShader(geometry);
 		}
 
@@ -676,9 +686,9 @@ public:
 		return *this;
 	}
 
-	u8 type() override
+	u8 type_flags() override
 	{
-		return m_type;
+		return m_type_flags;
 	}
 
 	u32 id() const
@@ -1087,7 +1097,7 @@ public:
 
 		// depth stencil
 		{
-			if (pass.stencil.face != FACE_NONE)
+			if (pass.stencil.face != COMPARE_FACE_NONE)
 			{
 				glEnable(GL_STENCIL_TEST);
 

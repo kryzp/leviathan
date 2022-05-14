@@ -138,19 +138,19 @@ public:
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
-                    Input::inst()->on_mouse_down(e.button.button);
+                    Input::inst()->on_mouse_down((MouseButton)e.button.button);
                     break;
 
                 case SDL_MOUSEBUTTONUP:
-                    Input::inst()->on_mouse_up(e.button.button);
+                    Input::inst()->on_mouse_up((MouseButton)e.button.button);
                     break;
 
                 case SDL_KEYDOWN:
-                    Input::inst()->on_key_down(e.key.keysym.scancode);
+                    Input::inst()->on_key_down((Key)e.key.keysym.scancode);
                     break;
 
                 case SDL_KEYUP:
-                    Input::inst()->on_key_up(e.key.keysym.scancode);
+                    Input::inst()->on_key_up((Key)e.key.keysym.scancode);
                     break;
 
                 case SDL_TEXTINPUT:
@@ -158,11 +158,11 @@ public:
                     break;
 
 				case SDL_JOYBUTTONDOWN:
-					Input::inst()->on_joystick_button_down(e.jbutton.button);
+					Input::inst()->on_joystick_button_down((JoystickButton)e.jbutton.button);
 					break;
 
 				case SDL_JOYBUTTONUP:
-					Input::inst()->on_joystick_button_up(e.jbutton.button);
+					Input::inst()->on_joystick_button_up((JoystickButton)e.jbutton.button);
 					break;
 
 				case SDL_JOYBALLMOTION:

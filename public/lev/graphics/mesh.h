@@ -1,10 +1,11 @@
 #pragma once
 
 #include <lev/core/util.h>
-#include <lev/graphics/gfxutil.h>
 
 namespace lv
 {
+	struct Vertex;
+
 	class Mesh : public NonCopyable, public NonMovable
 	{
 	public:

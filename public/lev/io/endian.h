@@ -16,7 +16,7 @@ namespace lv
 	{
 		Endianness get_endianness();
 
-		bool is_endian(u8 endian);
+		bool is_endian(Endianness endian);
 		bool is_little_endian();
 		bool is_big_endian();
 	};

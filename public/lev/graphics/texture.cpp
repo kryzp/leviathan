@@ -33,12 +33,12 @@ Ref<Texture> Texture::create(const char* path)
 	return create(Image(path), TEX_FMT_RGBA, TEX_I_FMT_RGBA32F, TEX_TYPE_UNSIGNED_BYTE);
 }
 
-Ref<Texture> Texture::create(const Image& image, u8 format, u8 internal_format, u8 type)
+Ref<Texture> Texture::create(const Image& image, TextureFormat format, InternalTextureFormat internal_format, TextureType type)
 {
 	return create(image.width(), image.height(), format, internal_format, type, image.raw_pixel_data());
 }
 
-Ref<Texture> Texture::create(u32 width, u32 height, u8 format, u8 internal_format, u8 type, const byte* data)
+Ref<Texture> Texture::create(u32 width, u32 height, TextureFormat format, InternalTextureFormat internal_format, TextureType type, const byte* data)
 {
 	Ref<Texture> result = bknd::Renderer::inst()->create_texture(width, height, TextureFormatInfo(format, internal_format, type));
 
@@ -66,12 +66,12 @@ Ref<ArrayTexture> ArrayTexture::create(const char* path, u32 image_count)
 	return create(Image(path), TEX_FMT_RGBA, TEX_I_FMT_RGBA32F, TEX_TYPE_UNSIGNED_BYTE, image_count);
 }
 
-Ref<ArrayTexture> ArrayTexture::create(const Image& image, u8 format, u8 internal_format, u8 type, u32 image_count)
+Ref<ArrayTexture> ArrayTexture::create(const Image& image, TextureFormat format, InternalTextureFormat internal_format, TextureType type, u32 image_count)
 {
 	return create(image.width(), image.height(), format, internal_format, type, image_count, image.raw_pixel_data());
 }
 
-Ref<ArrayTexture> ArrayTexture::create(u32 width, u32 height, u8 format, u8 internal_format, u8 type, u32 image_count, const byte* data)
+Ref<ArrayTexture> ArrayTexture::create(u32 width, u32 height, TextureFormat format, InternalTextureFormat internal_format, TextureType type, u32 image_count, const byte* data)
 {
 	Ref<ArrayTexture> result = bknd::Renderer::inst()->create_array_texture(
 		width,

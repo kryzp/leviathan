@@ -119,9 +119,9 @@ namespace lv
 
 	struct TextureSampler
 	{
-		u8 filter;
-		u8 wrap_x;
-		u8 wrap_y;
+		TextureFilter filter;
+		TextureWrap wrap_x;
+		TextureWrap wrap_y;
 
 		TextureSampler()
 			: filter(TEX_FILTER_NONE)
@@ -130,7 +130,7 @@ namespace lv
 		{
 		}
 
-		TextureSampler(u8 filter, u8 wrap_x, u8 wrap_y)
+		TextureSampler(TextureFilter filter, TextureWrap wrap_x, TextureWrap wrap_y)
 			: filter(filter)
 			, wrap_x(wrap_x)
 			, wrap_y(wrap_y)
@@ -146,11 +146,11 @@ namespace lv
 
 	struct TextureFormatInfo
 	{
-		u8 format;
-		u8 internal;
-		u8 type;
+		TextureFormat format;
+		InternalTextureFormat internal;
+		TextureType type;
 
-		TextureFormatInfo(u8 format, u8 internal, u8 type)
+		TextureFormatInfo(TextureFormat format, InternalTextureFormat internal, TextureType type)
 			: format(format)
 			, internal(internal)
 			, type(type)
@@ -165,8 +165,8 @@ namespace lv
 		virtual ~Texture() = default;
 
 		static Ref<Texture> create(const char* path);
-		static Ref<Texture> create(const Image& image, u8 format, u8 internal_format, u8 type);
-		static Ref<Texture> create(u32 width, u32 height, u8 format, u8 internal_format, u8 type, const byte* data);
+		static Ref<Texture> create(const Image& image, TextureFormat format, InternalTextureFormat internal_format, TextureType type);
+		static Ref<Texture> create(u32 width, u32 height, TextureFormat format, InternalTextureFormat internal_format, TextureType type, const byte* data);
 
 		static void unbind();
 		static void unbind_image();
@@ -196,8 +196,8 @@ namespace lv
 		virtual ~ArrayTexture() = default;
 
 		static Ref<ArrayTexture> create(const char* path, u32 image_count);
-		static Ref<ArrayTexture> create(const Image& image, u8 format, u8 internal_format, u8 type, u32 image_count);
-		static Ref<ArrayTexture> create(u32 width, u32 height, u8 format, u8 internal_format, u8 type, u32 image_count, const byte* data);
+		static Ref<ArrayTexture> create(const Image& image, TextureFormat format, InternalTextureFormat internal_format, TextureType type, u32 image_count);
+		static Ref<ArrayTexture> create(u32 width, u32 height, TextureFormat format, InternalTextureFormat internal_format, TextureType type, u32 image_count, const byte* data);
 
 		static void unbind();
 

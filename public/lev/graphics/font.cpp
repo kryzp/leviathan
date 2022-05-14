@@ -37,7 +37,7 @@ void Font::load(float size, const String& path)
 	LEV_ASSERT(!path.empty(), "Path must not be empty");
 	LEV_ASSERT(size > 0.0f, "Size must be greater than 0");
 
-	u8 type = path.ends_with(".ttf") ? FONT_TYPE_TTF : FONT_TYPE_OTF;
+	FontType type = path.ends_with(".ttf") ? FONT_TYPE_TTF : FONT_TYPE_OTF;
 
 	m_info.size = size;
 	m_info.type = type;
