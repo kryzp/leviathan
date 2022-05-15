@@ -68,14 +68,26 @@ namespace lv
 		///////////////////////////////////////////////////////
 
 		void push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx, u64 idxcount, bool flip_vertically = false);
+
 		void push_texture(const Ref<Texture>& tex, const Colour& colour = Colour::white());
 		void push_texture(const Ref<Texture>& tex, const RectI& source, const Colour& colour = Colour::white());
-		void push_quad(const Quad& quad, const Colour& colour = Colour::white());
-		void push_triangle(const Triangle& tri, const Colour& colour = Colour::white());
-		void push_string(const char* str, const Ref<Font>& font, const Colour& colour = Colour::white());
-		void push_string(const char* str, const Ref<Font>& font, const std::function<Vec2F(Font::Character,int)>& offset_fn, const Colour& colour = Colour::white());
-		void push_circle(const Circle& circle, u32 accuracy = 40U, const Colour& colour = Colour::white());
-		void push_line(const Line& line, float thickness, const Colour& colour = Colour::white());
+		void push_texture_col(const Ref<Texture>& tex, const Colour& c0, const Colour& c1, const Colour& c2, const Colour& c3);
+		void push_texture_col(const Ref<Texture>& tex, const RectI& source, const Colour& c0, const Colour& c1, const Colour& c2, const Colour& c3);
+
+		void push_quad(const Quad& quad, const Colour& colour);
+		void push_quad_col(const Quad& quad, const Colour& c0, const Colour& c1, const Colour& c2, const Colour& c3);
+
+		void push_triangle(const Triangle& tri, const Colour& colour);
+		void push_triangle_col(const Triangle& tri, const Colour& c0, const Colour& c1, const Colour& c2);
+
+		void push_string(const char* str, const Ref<Font>& font, const Colour& colour);
+		void push_string(const char* str, const Ref<Font>& font, const std::function<Vec2F(Font::Character,int)>& offset_fn, const Colour& colour);
+
+		void push_circle(const Circle& circle, const Colour& colour, u32 accuracy = 40U);
+		void push_circle_col(const Circle& circle, const Colour& inner, const Colour& outer, u32 accuracy = 40U);
+
+		void push_line(const Line& line, float thickness, const Colour& colour);
+		void push_line_col(const Line& line, float thickness, const Colour& a, const Colour& b);
 
 		///////////////////////////////////////////////////////
 
@@ -159,10 +171,11 @@ namespace lv
 
 			Vector<Vertex> vertices;
 			Vector<u32> indices;
+
+			static const RenderBatch& empty();
 		};
 
 		static Ref<Material> m_default_material;
-		static RenderBatch m_empty_batch;
 
 		Ref<Mesh> m_mesh;
 

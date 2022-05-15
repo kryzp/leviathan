@@ -16,20 +16,18 @@ static void _get_vtx_mode(ColourMode mode, float* buf)
     buf[3] = (mode & COLOUR_MODE_SILHOUETTE) != 0;
 }
 
-void gfxutil::quad(Vertex* vtx, u32* indices, const Quad& quad, const Quad& uv, Colour colour, ColourMode mode)
+void gfxutil::quad(Vertex* vtx, u32* indices, const Quad& quad, const Quad& uv, Colour c0, Colour c1, Colour c2, Colour c3, ColourMode mode)
 {
-    colour.premultiply();
-
-	float rr = (float)colour.r / 255.0f;
-	float gg = (float)colour.g / 255.0f;
-	float bb = (float)colour.b / 255.0f;
-	float aa = (float)colour.a / 255.0f;
+	c0.premultiply();
+	c1.premultiply();
+	c2.premultiply();
+	c3.premultiply();
 
 	Vertex arrvtx[4] = {
-		{ .pos = quad.a, .uv = uv.a, .col = { rr, gg, bb, aa } },
-		{ .pos = quad.b, .uv = uv.b, .col = { rr, gg, bb, aa } },
-		{ .pos = quad.c, .uv = uv.c, .col = { rr, gg, bb, aa } },
-		{ .pos = quad.d, .uv = uv.d, .col = { rr, gg, bb, aa } }
+		{ .pos = quad.a, .uv = uv.a, .col = { (float)c0.r / 255.0f, (float)c0.g / 255.0f, (float)c0.b / 255.0f, (float)c0.a / 255.0f } },
+		{ .pos = quad.b, .uv = uv.b, .col = { (float)c1.r / 255.0f, (float)c1.g / 255.0f, (float)c1.b / 255.0f, (float)c1.a / 255.0f } },
+		{ .pos = quad.c, .uv = uv.c, .col = { (float)c2.r / 255.0f, (float)c2.g / 255.0f, (float)c2.b / 255.0f, (float)c2.a / 255.0f } },
+		{ .pos = quad.d, .uv = uv.d, .col = { (float)c3.r / 255.0f, (float)c3.g / 255.0f, (float)c3.b / 255.0f, (float)c3.a / 255.0f } }
     };
 
 	_get_vtx_mode(mode, arrvtx[0].mode);
@@ -46,19 +44,16 @@ void gfxutil::quad(Vertex* vtx, u32* indices, const Quad& quad, const Quad& uv, 
     mem::copy(indices, arrindices, sizeof(arrindices));
 }
 
-void gfxutil::tri(Vertex* vtx, u32* indices, const Triangle& triangle, const Triangle& uv, Colour colour, ColourMode mode)
+void gfxutil::tri(Vertex* vtx, u32* indices, const Triangle& triangle, const Triangle& uv, Colour c0, Colour c1, Colour c2, ColourMode mode)
 {
-    colour.premultiply();
-
-	float rr = (float)colour.r / 255.0f;
-	float gg = (float)colour.g / 255.0f;
-	float bb = (float)colour.b / 255.0f;
-	float aa = (float)colour.a / 255.0f;
+    c0.premultiply();
+    c1.premultiply();
+    c2.premultiply();
 
 	Vertex arrvtx[3] = {
-		{ .pos = triangle.a, .uv = uv.a, .col = { rr, gg, bb, aa }},
-		{ .pos = triangle.b, .uv = uv.b, .col = { rr, gg, bb, aa }},
-		{ .pos = triangle.c, .uv = uv.c, .col = { rr, gg, bb, aa }}
+		{ .pos = triangle.a, .uv = uv.a, .col = { (float)c0.r / 255.0f, (float)c0.g / 255.0f, (float)c0.b / 255.0f, (float)c0.a / 255.0f }},
+		{ .pos = triangle.b, .uv = uv.b, .col = { (float)c1.r / 255.0f, (float)c1.g / 255.0f, (float)c1.b / 255.0f, (float)c1.a / 255.0f }},
+		{ .pos = triangle.c, .uv = uv.c, .col = { (float)c2.r / 255.0f, (float)c2.g / 255.0f, (float)c2.b / 255.0f, (float)c2.a / 255.0f }}
     };
 
 	_get_vtx_mode(mode, arrvtx[0].mode);

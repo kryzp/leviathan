@@ -83,7 +83,7 @@ public:
 			m_joystick = SDL_JoystickOpen(0);
 
 			if (!m_joystick)
-				log::error("unable to open joystick");
+				log::print("no joystick opened");
 		}
 
 		show_cursor(cfg.cursor_visible);

@@ -12,16 +12,21 @@
 using namespace lv;
 
 Ref<Material> SpriteBatch::m_default_material = nullptr;
-SpriteBatch::RenderBatch SpriteBatch::m_empty_batch =
+
+const SpriteBatch::RenderBatch& SpriteBatch::RenderBatch::empty()
 {
-	.material = nullptr,
-	.depth = COMPARE_NONE,
-	.stencil = Compare::none(),
-	.blend = BlendMode::generic(),
-	.layer = 0.0f,
-	.viewport = RectI::zero(),
-	.scissor = RectI::zero()
-};
+	static const RenderBatch EMPTY = {
+		.material = nullptr,
+		.depth = COMPARE_NONE,
+		.stencil = Compare::none(),
+		.blend = BlendMode::generic(),
+		.layer = 0.0f,
+		.viewport = RectI::zero(),
+		.scissor = RectI::zero()
+	};
+
+	return EMPTY;
+}
 
 SpriteBatch::SpriteBatch()
 	: m_initialized(false)
@@ -33,6 +38,7 @@ SpriteBatch::SpriteBatch()
 	, m_scissor_stack()
 	, m_viewport_stack()
 {
+	m_curr_batch = RenderBatch::empty();
 }
 
 void SpriteBatch::initialize()
@@ -83,8 +89,6 @@ void SpriteBatch::initialize()
 	}
 
 	m_mesh = bknd::Renderer::inst()->create_mesh();
-
-	m_curr_batch = m_empty_batch;
 
 	m_initialized = true;
 }
@@ -140,9 +144,8 @@ void SpriteBatch::render(const Mat4x4& proj, const Ref<RenderTarget>& target, Sp
 
 void SpriteBatch::clear()
 {
+	m_curr_batch = RenderBatch::empty();
 	m_curr_matrix = Mat3x2::identity();
-
-	m_curr_batch = m_empty_batch;
 
 	m_batches.clear();
 	m_material_stack.clear();
@@ -442,6 +445,11 @@ void SpriteBatch::push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx,
 
 void SpriteBatch::push_quad(const Quad& quad, const Colour& colour)
 {
+	push_quad_col(quad, colour, colour, colour, colour);
+}
+
+void SpriteBatch::push_quad_col(const Quad& quad, const Colour& c0, const Colour& c1, const Colour& c2, const Colour& c3)
+{
 	Vertex vertices[4];
 	u32 indices[6];
 
@@ -449,36 +457,16 @@ void SpriteBatch::push_quad(const Quad& quad, const Colour& colour)
 		vertices, indices,
 		quad,
 		Quad(RectF::one()),
-		colour,
+		c0, c1, c2, c3,
 		peek_colour_mode()
 	);
 
 	push_vertices(vertices, 4, indices, 6);
 }
 
-void SpriteBatch::push_triangle(const Triangle& tri, const Colour& colour)
-{
-	Vertex vertices[3];
-	u32 indices[3];
-
-	gfxutil::tri(
-		vertices, indices,
-		tri,
-		Triangle(
-			Vec2F(0.0f, 0.0f),
-			Vec2F(0.5f, 1.0f),
-			Vec2F(1.0f, 0.0f)
-		),
-		colour,
-		peek_colour_mode()
-	);
-
-	push_vertices(vertices, 3, indices, 3);
-}
-
 void SpriteBatch::push_texture(const Ref<Texture>& tex, const Colour& colour)
 {
-	push_texture(tex, RectI(0, 0, tex->size().x, tex->size().y), colour);
+	push_texture(tex, RectI(0, 0, tex->width(), tex->height()), colour);
 }
 
 void SpriteBatch::push_texture(const Ref<Texture>& tex, const RectI& source, const Colour& colour)
@@ -494,13 +482,65 @@ void SpriteBatch::push_texture(const Ref<Texture>& tex, const RectI& source, con
 		vertices, indices,
 		Quad(source),
 		Quad(source) / tex->size(),
-		colour,
+		colour, colour, colour, colour,
 		peek_colour_mode()
 	);
 
 	push_vertices(vertices, 4, indices, 6, tex->framebuffer_parent() && bknd::Renderer::inst()->properties().origin_bottom_left);
 
 	pop_colour_mode();
+}
+
+void SpriteBatch::push_texture_col(const Ref<Texture>& tex, const Colour& c0, const Colour& c1, const Colour& c2, const Colour& c3)
+{
+	push_texture_col(tex, RectI(0, 0, tex->width(), tex->height()), c0, c1, c2, c3);
+}
+
+void SpriteBatch::push_texture_col(const Ref<Texture>& tex, const RectI& source, const Colour& c0, const Colour& c1, const Colour& c2, const Colour& c3)
+{
+	push_colour_mode(COLOUR_MODE_NORMAL);
+
+	set_texture(tex);
+
+	Vertex vertices[4];
+	u32 indices[6];
+
+	gfxutil::quad(
+		vertices, indices,
+		Quad(source),
+		Quad(source) / tex->size(),
+		c0, c1, c2, c3,
+		peek_colour_mode()
+	);
+
+	push_vertices(vertices, 4, indices, 6, tex->framebuffer_parent() && bknd::Renderer::inst()->properties().origin_bottom_left);
+
+	pop_colour_mode();
+}
+
+void SpriteBatch::push_triangle(const Triangle& tri, const Colour& colour)
+{
+	push_triangle_col(tri, colour, colour, colour);
+}
+
+void SpriteBatch::push_triangle_col(const Triangle& tri, const Colour& c0, const Colour& c1, const Colour& c2)
+{
+	Vertex vertices[3];
+	u32 indices[3];
+
+	gfxutil::tri(
+		vertices, indices,
+		tri,
+		Triangle(
+			Vec2F(0.0f, 0.0f),
+			Vec2F(0.5f, 1.0f),
+			Vec2F(1.0f, 0.0f)
+		),
+		c0, c1, c2,
+		peek_colour_mode()
+	);
+
+	push_vertices(vertices, 3, indices, 3);
 }
 
 void SpriteBatch::push_string(
@@ -548,7 +588,7 @@ void SpriteBatch::push_string(
 	pop_colour_mode();
 }
 
-void SpriteBatch::push_circle(const Circle& circle, u32 accuracy, const Colour& colour)
+void SpriteBatch::push_circle(const Circle& circle, const Colour& colour, u32 accuracy)
 {
 	push_colour_mode(COLOUR_MODE_SILHOUETTE);
 
@@ -567,7 +607,31 @@ void SpriteBatch::push_circle(const Circle& circle, u32 accuracy, const Colour& 
 	pop_colour_mode();
 }
 
+void SpriteBatch::push_circle_col(const Circle& circle, const Colour& inner, const Colour& outer, u32 accuracy)
+{
+	push_colour_mode(COLOUR_MODE_SILHOUETTE);
+
+	float dtheta = calc::TAU / accuracy;
+
+	for (float theta = 0.0f; theta < calc::TAU; theta += dtheta)
+	{
+		Triangle triangle;
+		triangle.a = circle.position;
+		triangle.b = Vec2F::from_angle(theta         , circle.radius) + circle.position;
+		triangle.c = Vec2F::from_angle(theta + dtheta, circle.radius) + circle.position;
+
+		push_triangle_col(triangle, inner, outer, outer);
+	}
+
+	pop_colour_mode();
+}
+
 void SpriteBatch::push_line(const Line& line, float thickness, const Colour& colour)
+{
+	push_line_col(line, thickness, colour, colour);
+}
+
+void SpriteBatch::push_line_col(const Line& line, float thickness, const Colour& a, const Colour& b)
 {
 	push_colour_mode(COLOUR_MODE_SILHOUETTE);
 
@@ -578,7 +642,8 @@ void SpriteBatch::push_line(const Line& line, float thickness, const Colour& col
 	Vec2F pos2 = line.b - perp * thickness * 0.5f;
 	Vec2F pos3 = line.a - perp * thickness * 0.5f;
 
-	push_quad(Quad(pos0, pos1, pos2, pos3), colour);
+	push_quad_col(Quad(pos0, pos1, pos2, pos3), a, b, b, a);
 
 	pop_colour_mode();
 }
+

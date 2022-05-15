@@ -37,8 +37,8 @@ namespace lv
 		~HashMap();
 
 		void insert(const Key& key, const Value& value);
-		Value at(const Key& key);
 		void remove(const Key& key);
+		Value at(const Key& key) const;
 
 		bool contains(const Key& key) const;
 		int index_of(const Key& key) const;
@@ -156,7 +156,7 @@ namespace lv
 	}
 
 	template <typename Key, typename Value>
-	Value HashMap<Key, Value>::at(const Key& key)
+	Value HashMap<Key, Value>::at(const Key& key) const
 	{
 		Entry* entry = &m_entrys[index_of(key)];
 

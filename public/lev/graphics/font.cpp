@@ -133,13 +133,10 @@ void Font::free()
 
 int Font::kern_advance(int curr, int next) const
 {
-	// todo: make this fubnction not crap and slow and bad
-	// lookup table?
-
 	for (int i = 0; i < m_kerning_count; i++)
 	{
 		auto kern = m_kerning[i];
-		
+
 		if (kern.glyph0 == curr && kern.glyph1 == next)
 			return kern.advance;
 	}

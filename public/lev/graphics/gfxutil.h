@@ -11,7 +11,7 @@ namespace lv
 {
 	namespace gfxutil
 	{
-		void quad(Vertex* vtx, u32* indices, const Quad& quad, const Quad& uv, Colour colour, ColourMode mode);
-		void tri(Vertex* vtx, u32* indices, const Triangle& triangle, const Triangle& uv, Colour colour, ColourMode mode);
+		void quad(Vertex* vtx, u32* indices, const Quad& quad, const Quad& uv, Colour c0, Colour c1, Colour c2, Colour c3, ColourMode mode);
+		void tri(Vertex* vtx, u32* indices, const Triangle& triangle, const Triangle& uv, Colour c0, Colour c1, Colour c2, ColourMode mode);
 	}
 };

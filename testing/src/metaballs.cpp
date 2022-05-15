@@ -18,8 +18,6 @@ struct Ball
 static lv::SpriteBatch g_batch;
 static lv::AssetMgr g_assets;
 static lv::Ref<lv::RenderTarget> g_target;
-static lv::Ref<lv::RenderTarget> g_blurred_target;
-static lv::Ref<lv::Shader> g_blur_shader;
 static lv::Ref<lv::Shader> g_metaball_shader;
 static Ball g_balls[BALL_COUNT];
 
@@ -34,7 +32,7 @@ static void init_balls()
 			lv::Rand<>::inst()->real(0.0f, WINDOW_HEIGHT)
 		);
 
-		b.shape.radius = lv::Rand<>::inst()->real(25.0f, 50.0f);
+		b.shape.radius = lv::Rand<>::inst()->real(100.0f, 200.0f);
 
 		b.velocity = lv::Vec2F::random_unit() * lv::Rand<>::inst()->real(20.0f, 40.0f);
 	}
@@ -42,10 +40,7 @@ static void init_balls()
 
 static void init_render_stuff()
 {
-	g_target         = lv::RenderTarget::create(WINDOW_WIDTH, WINDOW_HEIGHT);
-	g_blurred_target = lv::RenderTarget::create(WINDOW_WIDTH, WINDOW_HEIGHT);
-
-	g_blur_shader     = g_assets.load<lv::Shader>("res\\shaders\\blur_shader.levshader");
+	g_target          = lv::RenderTarget::create(WINDOW_WIDTH, WINDOW_HEIGHT);
 	g_metaball_shader = g_assets.load<lv::Shader>("res\\shaders\\metaballs_shader.levshader");
 }
 
@@ -68,26 +63,20 @@ static void render()
 		g_target->clear();
 
 		for (auto& b : g_balls)
-			g_batch.push_circle(b.shape);
+			g_batch.push_circle_col(b.shape, lv::Colour::white(), lv::Colour::empty());
 
 		g_batch.render(g_target);
-	}
-
-	// render to blurred target
-	{
-		g_blurred_target->clear();
-		g_batch.set_shader(g_blur_shader);
-		g_batch.push_texture(g_target->attachment(0));
-		g_batch.reset_shader();
-		g_batch.render(g_blurred_target);
 	}
 
 	// render to screen
 	{
 		lv::App::clear();
 		g_batch.set_shader(g_metaball_shader);
-		g_batch.push_texture(g_blurred_target->attachment(0));
+		g_batch.push_texture(g_target->attachment(0));
 		g_batch.reset_shader();
+
+		g_batch.push_line_col(lv::Line(lv::Vec2F(50, 50), 45.0f * lv::calc::DEG2RAD, 50.0f), 10.0f,  lv::Colour::red(), lv::Colour::blue());
+
 		g_batch.render();
 	}
 }
