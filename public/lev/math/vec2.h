@@ -2,6 +2,7 @@
 
 #include <lev/math/calc.h>
 #include <lev/math/mat3x2.h>
+#include <lev/math/rand.h>
 
 namespace lv
 {
@@ -31,6 +32,7 @@ namespace lv
 		{
 		}
 
+		static const Vec2& unit();
 		static const Vec2& zero();
 		static const Vec2& one();
 		static const Vec2& left();
@@ -38,6 +40,7 @@ namespace lv
 		static const Vec2& up();
 		static const Vec2& down();
 
+		static Vec2 random_unit();
 		static Vec2 transform(const Vec2& vec, const Mat3x2& mat);
 		static float dot(const Vec2& a, const Vec2& b);
 		static Vec2 from_angle(float angle, float length);
@@ -94,6 +97,12 @@ namespace lv
 	Vec2<T>::Vec2(T x, T y)
 		: x(x), y(y)
 	{
+	}
+
+	template <typename T>
+	Vec2<T> Vec2<T>::random_unit()
+	{
+		return from_angle(Rand<>::inst()->real(0.0f, calc::TAU), 1.0f);
 	}
 	
 	template <typename T>
@@ -186,6 +195,7 @@ namespace lv
 	template <typename T> Vec2<T>& Vec2<T>::operator *= (const Vec2& other) { this->x *= other.x; this->y *= other.y; return *this; }
 	template <typename T> Vec2<T>& Vec2<T>::operator /= (const Vec2& other) { this->x /= other.x; this->y /= other.y; return *this; }
 
+	template <typename T> const Vec2<T>& Vec2<T>::unit()	{ static const Vec2 UNIT	= Vec2( 1,  1); return UNIT;	}
 	template <typename T> const Vec2<T>& Vec2<T>::zero()	{ static const Vec2 ZERO	= Vec2( 0,  0); return ZERO;	}
 	template <typename T> const Vec2<T>& Vec2<T>::one()		{ static const Vec2 ONE		= Vec2( 1,  1); return ONE;		}
 	template <typename T> const Vec2<T>& Vec2<T>::left()	{ static const Vec2 LEFT	= Vec2(-1,  0); return LEFT;	}

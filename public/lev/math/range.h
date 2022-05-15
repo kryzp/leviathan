@@ -1,6 +1,6 @@
 #pragma once
 
-#include <lev/math/random.h>
+#include <lev/math/rand.h>
 
 namespace lv
 {

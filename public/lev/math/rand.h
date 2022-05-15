@@ -8,17 +8,17 @@
 namespace lv
 {
 	template <typename Engine = std::mt19937>
-	class Random
+	class Rand
 	{
 	public:
-		static Random* inst()
+		static Rand* inst()
 		{
-			static Random* instance = nullptr;
-			if (!instance) { instance = new Random(); }
+			static Rand* instance = nullptr;
+			if (!instance) { instance = new Rand(); }
 			return instance;
 		}
 
-		Random();
+		Rand();
 
 		int integer(int min, int max);
 		float real(float min, float max);
@@ -31,26 +31,26 @@ namespace lv
 	};
 
 	template <typename Engine>
-	Random<Engine>::Random()
+	Rand<Engine>::Rand()
 		: m_rng(std::time(nullptr))
 	{
 	}
 
 	template <typename Engine>
-	int Random<Engine>::integer(int min, int max)
+	int Rand<Engine>::integer(int min, int max)
 	{
 		return generic_range<std::uniform_int_distribution<int>>(min, max);
 	}
 
 	template <typename Engine>
-	float Random<Engine>::real(float min, float max)
+	float Rand<Engine>::real(float min, float max)
 	{
 		return generic_range<std::uniform_real_distribution<float>>(min, max);
 	}
 
 	template <typename Engine>
 	template <typename Dist, typename T>
-	T Random<Engine>::generic_range(T min, T max)
+	T Rand<Engine>::generic_range(T min, T max)
 	{
 		Dist dist = Dist(min, max);
 		return dist(m_rng);

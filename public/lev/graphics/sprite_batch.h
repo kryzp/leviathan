@@ -79,62 +79,74 @@ namespace lv
 
 		///////////////////////////////////////////////////////
 
+		// texture
 		void set_texture(const Ref<Texture>& tex);
-		void set_sampler(const TextureSampler& sampler);
-		void reset_texture();
 		Ref<Texture> peek_texture() const;
+
+		// sampler
+		void set_sampler(const TextureSampler& sampler);
 		const TextureSampler& peek_sampler() const;
 
+		// shader
 		void set_shader(const Ref<Shader>& shd);
 		void reset_shader();
 		Ref<Shader> peek_shader() const;
 
+		// material
 		void push_material(const Ref<Material>& material);
 		Ref<Material> pop_material();
 		Ref<Material> peek_material() const;
 
+		// stencil
 		void push_stencil(Compare stencil);
 		Compare pop_stencil();
 		const Compare& peek_stencil() const;
 
+		// depth
 		void push_depth(CompareFunc depth);
 		CompareFunc pop_depth();
 		CompareFunc peek_depth() const;
 
+		// scissor
 		void push_scissor(const RectI& scissor);
 		RectI pop_scissor();
 		const RectI& peek_scissor() const;
 
+		// viewport
 		void push_viewport(const RectI& viewport);
 		RectI pop_viewport();
 		const RectI& peek_viewport() const;
 
+		// layer
 		void push_layer(float layer);
 		float pop_layer();
 		float peek_layer() const;
 
+		// matrix
 		void push_matrix(const Mat3x2& mat);
 		Mat3x2 pop_matrix();
 		const Mat3x2& peek_matrix() const;
 
+		// blend
 		void push_blend(const BlendMode& blend);
 		BlendMode pop_blend();
 		const BlendMode& peek_blend() const;
 
+		// colour mode
 		void push_colour_mode(ColourMode mode);
 		ColourMode pop_colour_mode();
 		ColourMode peek_colour_mode() const;
 
-		// snaps all drawing coords to integers
+		// snaps all drawing coords to integers - useful in pixel perfect rendering (esp. pixel art games !)
 		bool pixel_snap = false;
 
 	private:
 		struct RenderBatch
 		{
 			Ref<Material> material;
+			Ref<Shader> shader;
 			Ref<Texture> texture;
 			TextureSampler sampler;
-			Ref<Shader> shader;
 
 			CompareFunc depth;
 			Compare stencil;
@@ -149,8 +161,10 @@ namespace lv
 			Vector<u32> indices;
 		};
 
+		static Ref<Material> m_default_material;
+		static RenderBatch m_empty_batch;
+
 		Ref<Mesh> m_mesh;
-		Ref<Material> m_default_material;
 
 		void initialize();
 		bool m_initialized;

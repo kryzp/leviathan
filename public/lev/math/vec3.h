@@ -1,6 +1,7 @@
 #pragma once
 
 #include <lev/math/calc.h>
+#include <lev/math/rand.h>
 
 namespace lv
 {
@@ -32,6 +33,7 @@ namespace lv
 		{
 		}
 
+		static const Vec3& unit();
 		static const Vec3& zero();
 		static const Vec3& one();
 		static const Vec3& left();
@@ -167,6 +169,7 @@ namespace lv
 	template <typename T> Vec3<T>& Vec3<T>::operator *= (const Vec3& other) { this->x *= other.x; this->y *= other.y; this->z *= other.z; return *this; }
 	template <typename T> Vec3<T>& Vec3<T>::operator /= (const Vec3& other) { this->x /= other.x; this->y /= other.y; this->z /= other.z; return *this; }
 
+	template <typename T> const Vec3<T>& Vec3<T>::unit()		{ static const Vec3 UNIT		= Vec3( 1,  1,  1); return UNIT;		}
 	template <typename T> const Vec3<T>& Vec3<T>::zero()		{ static const Vec3 ZERO		= Vec3( 0,  0,  0); return ZERO;		}
 	template <typename T> const Vec3<T>& Vec3<T>::one()			{ static const Vec3 ONE			= Vec3( 1,  1,  1); return ONE;			}
 	template <typename T> const Vec3<T>& Vec3<T>::left()		{ static const Vec3 LEFT		= Vec3(-1,  0,  0); return LEFT;		}

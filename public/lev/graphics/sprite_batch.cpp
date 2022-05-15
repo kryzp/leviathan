@@ -11,9 +11,20 @@
 
 using namespace lv;
 
+Ref<Material> SpriteBatch::m_default_material = nullptr;
+SpriteBatch::RenderBatch SpriteBatch::m_empty_batch =
+{
+	.material = nullptr,
+	.depth = COMPARE_NONE,
+	.stencil = Compare::none(),
+	.blend = BlendMode::generic(),
+	.layer = 0.0f,
+	.viewport = RectI::zero(),
+	.scissor = RectI::zero()
+};
+
 SpriteBatch::SpriteBatch()
 	: m_initialized(false)
-	, m_default_material(nullptr)
 	, m_curr_matrix(Mat3x2::identity())
 	, m_material_stack()
 	, m_layer_stack()
@@ -73,15 +84,7 @@ void SpriteBatch::initialize()
 
 	m_mesh = bknd::Renderer::inst()->create_mesh();
 
-	{
-		m_curr_batch.material = peek_material();
-		m_curr_batch.depth = peek_depth();
-		m_curr_batch.stencil = peek_stencil();
-		m_curr_batch.blend = peek_blend();
-		m_curr_batch.layer = peek_layer();
-		m_curr_batch.viewport = peek_viewport();
-		m_curr_batch.scissor = peek_scissor();
-	}
+	m_curr_batch = m_empty_batch;
 
 	m_initialized = true;
 }
@@ -90,8 +93,8 @@ void SpriteBatch::render(const Ref<RenderTarget>& target, SpriteSort sort_mode)
 {
 	render(Mat4x4::create_orthographic_ext(
 		0.0f,
-		target ? target->width() : App::inst()->draw_width(),
-		target ? target->height() : App::inst()->draw_height(),
+		target ? target->width() : App::draw_width(),
+		target ? target->height() : App::draw_height(),
 		0.0f,
 		0.01f,
 		10000.0f
@@ -125,7 +128,12 @@ void SpriteBatch::render(const Mat4x4& proj, const Ref<RenderTarget>& target, Sp
 	}
 
 	for (auto& b : m_batches)
+	{
+		if (b.shader)
+			b.material = Material::create(b.shader);
+
 		render_batch(pass, b, proj);
+	}
 
 	clear();
 }
@@ -133,6 +141,8 @@ void SpriteBatch::render(const Mat4x4& proj, const Ref<RenderTarget>& target, Sp
 void SpriteBatch::clear()
 {
 	m_curr_matrix = Mat3x2::identity();
+
+	m_curr_batch = m_empty_batch;
 
 	m_batches.clear();
 	m_material_stack.clear();
@@ -164,7 +174,6 @@ void SpriteBatch::render_batch(RenderPass& pass, const RenderBatch& b, const Mat
 		if (!pass.material)
 			pass.material = m_default_material;
 
-		pass.material->set_shader(b.shader);
 		pass.material->set_texture(b.texture, 0);
 		pass.material->set_sampler(b.sampler, 0);
 
@@ -183,179 +192,6 @@ void SpriteBatch::render_batch(RenderPass& pass, const RenderBatch& b, const Mat
 	pass.perform();
 }
 
-void SpriteBatch::push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx, u64 idxcount, bool flip_vertically)
-{
-	RenderBatch batch = m_curr_batch;
-
-	// mesh
-	{
-		int i;
-
-        for (i = 0; i < vtxcount; i++)
-		{
-			batch.vertices.push_back(vtx[i]);
-			batch.vertices[i].pos = (Vec2F::transform(vtx[i].pos, m_curr_matrix));
-
-			if (flip_vertically)
-				batch.vertices[i].uv.y = 1.0f - batch.vertices[i].uv.y;
-
-			if (pixel_snap)
-			{
-				batch.vertices[i].pos.x = calc::floor(batch.vertices[i].pos.x);
-				batch.vertices[i].pos.y = calc::floor(batch.vertices[i].pos.y);
-			}
-		}
-
-		for (i = 0; i < idxcount; i++)
-			batch.indices.push_back(idx[i]);
-	}
-
-	m_batches.push_back(batch);
-}
-
-void SpriteBatch::push_quad(const Quad& quad, const Colour& colour)
-{
-	Vertex vertices[4];
-	u32 indices[6];
-
-	gfxutil::quad(
-		vertices, indices,
-		quad,
-		Quad(RectF::one()),
-		colour,
-		peek_colour_mode()
-	);
-
-	push_vertices(vertices, 4, indices, 6);
-}
-
-void SpriteBatch::push_triangle(const Triangle& tri, const Colour& colour)
-{
-	Vertex vertices[3];
-	u32 indices[3];
-
-	gfxutil::tri(
-		vertices, indices,
-		tri,
-		Triangle(
-			Vec2F(0.0f, 0.0f),
-			Vec2F(0.5f, 1.0f),
-			Vec2F(1.0f, 0.0f)
-		),
-		colour,
-		peek_colour_mode()
-	);
-
-	push_vertices(vertices, 3, indices, 3);
-}
-
-void SpriteBatch::push_texture(const Ref<Texture>& tex, const Colour& colour)
-{
-	push_texture(tex, RectI(0, 0, tex->size().x, tex->size().y), colour);
-}
-
-void SpriteBatch::push_texture(const Ref<Texture>& tex, const RectI& source, const Colour& colour)
-{
-	push_colour_mode(COLOUR_MODE_NORMAL);
-
-	set_texture(tex);
-
-	Vertex vertices[4];
-	u32 indices[6];
-
-	gfxutil::quad(
-		vertices, indices,
-		Quad(source),
-		Quad(source) / tex->size(),
-		colour,
-		peek_colour_mode()
-	);
-
-	push_vertices(vertices, 4, indices, 6, tex->framebuffer_parent() && bknd::Renderer::inst()->properties().origin_bottom_left);
-
-	pop_colour_mode();
-}
-
-void SpriteBatch::push_string(
-	const char* str,
-	const Ref<Font>& font,
-	const Colour& colour
-)
-{
-	push_string(str, font, [&](Font::Character c, int idx) -> Vec2F { return Vec2F::zero(); }, colour);
-}
-
-void SpriteBatch::push_string(
-	const char* str,
-	const Ref<Font>& font,
-	const std::function<Vec2F(Font::Character,int)>& offset_fn,
-	const Colour& colour
-)
-{
-	// todo: new line support
-
-	const auto& atlas = font->atlas();
-
-	push_colour_mode(COLOUR_MODE_RED_ONLY);
-
-	float cursor_x = 0.0f;
-
-	for (int i = 0; i < cstr::length(str); i++)
-	{
-		auto c = font->character(str[i]);
-
-		push_matrix(Mat3x2::create_translation(
-			Vec2F(cursor_x + c.draw_offset.x, c.draw_offset.y) +
-			offset_fn(c, i)
-		));
-
-		push_texture(atlas.texture, c.bbox, colour);
-
-		pop_matrix();
-
-		cursor_x +=
-			c.advance_x +
-			font->kern_advance(str[i], str[i + 1]);
-	}
-
-	pop_colour_mode();
-}
-
-void SpriteBatch::push_circle(const Circle& circle, u32 accuracy, const Colour& colour)
-{
-	push_colour_mode(COLOUR_MODE_SILHOUETTE);
-
-	float dtheta = calc::TAU / accuracy;
-
-	for (float theta = 0.0f; theta < calc::TAU; theta += dtheta)
-	{
-		Triangle triangle;
-		triangle.a = circle.position;
-		triangle.b = Vec2F::from_angle(theta         , circle.radius) + circle.position;
-		triangle.c = Vec2F::from_angle(theta + dtheta, circle.radius) + circle.position;
-
-		push_triangle(triangle, colour);
-	}
-
-	pop_colour_mode();
-}
-
-void SpriteBatch::push_line(const Line& line, float thickness, const Colour& colour)
-{
-	push_colour_mode(COLOUR_MODE_SILHOUETTE);
-
-	Vec2F direction = line.direction();
-	Vec2F perp = direction.perpendicular();
-	Vec2F pos0 = line.a + perp * thickness * 0.5f;
-	Vec2F pos1 = line.b + perp * thickness * 0.5f;
-	Vec2F pos2 = line.b - perp * thickness * 0.5f;
-	Vec2F pos3 = line.a - perp * thickness * 0.5f;
-
-	push_quad(Quad(pos0, pos1, pos2, pos3), colour);
-
-	pop_colour_mode();
-}
-
 void SpriteBatch::set_texture(const Ref<Texture>& tex)
 {
 	m_curr_batch.texture = tex;
@@ -364,11 +200,6 @@ void SpriteBatch::set_texture(const Ref<Texture>& tex)
 void SpriteBatch::set_sampler(const TextureSampler& sampler)
 {
 	m_curr_batch.sampler = sampler;
-}
-
-void SpriteBatch::reset_texture()
-{
-	m_curr_batch.texture = nullptr;
 }
 
 Ref<Texture> SpriteBatch::peek_texture() const
@@ -577,4 +408,177 @@ ColourMode SpriteBatch::peek_colour_mode() const
 		return COLOUR_MODE_NORMAL;
 
 	return m_colour_mode_stack.back();
+}
+
+void SpriteBatch::push_vertices(const Vertex* vtx, u64 vtxcount, const u32* idx, u64 idxcount, bool flip_vertically)
+{
+	RenderBatch batch = m_curr_batch;
+
+	// mesh
+	{
+		int i;
+
+		for (i = 0; i < vtxcount; i++)
+		{
+			batch.vertices.push_back(vtx[i]);
+			batch.vertices[i].pos = (Vec2F::transform(vtx[i].pos, m_curr_matrix));
+
+			if (flip_vertically)
+				batch.vertices[i].uv.y = 1.0f - batch.vertices[i].uv.y;
+
+			if (pixel_snap)
+			{
+				batch.vertices[i].pos.x = calc::floor(batch.vertices[i].pos.x);
+				batch.vertices[i].pos.y = calc::floor(batch.vertices[i].pos.y);
+			}
+		}
+
+		for (i = 0; i < idxcount; i++)
+			batch.indices.push_back(idx[i]);
+	}
+
+	m_batches.push_back(batch);
+}
+
+void SpriteBatch::push_quad(const Quad& quad, const Colour& colour)
+{
+	Vertex vertices[4];
+	u32 indices[6];
+
+	gfxutil::quad(
+		vertices, indices,
+		quad,
+		Quad(RectF::one()),
+		colour,
+		peek_colour_mode()
+	);
+
+	push_vertices(vertices, 4, indices, 6);
+}
+
+void SpriteBatch::push_triangle(const Triangle& tri, const Colour& colour)
+{
+	Vertex vertices[3];
+	u32 indices[3];
+
+	gfxutil::tri(
+		vertices, indices,
+		tri,
+		Triangle(
+			Vec2F(0.0f, 0.0f),
+			Vec2F(0.5f, 1.0f),
+			Vec2F(1.0f, 0.0f)
+		),
+		colour,
+		peek_colour_mode()
+	);
+
+	push_vertices(vertices, 3, indices, 3);
+}
+
+void SpriteBatch::push_texture(const Ref<Texture>& tex, const Colour& colour)
+{
+	push_texture(tex, RectI(0, 0, tex->size().x, tex->size().y), colour);
+}
+
+void SpriteBatch::push_texture(const Ref<Texture>& tex, const RectI& source, const Colour& colour)
+{
+	push_colour_mode(COLOUR_MODE_NORMAL);
+
+	set_texture(tex);
+
+	Vertex vertices[4];
+	u32 indices[6];
+
+	gfxutil::quad(
+		vertices, indices,
+		Quad(source),
+		Quad(source) / tex->size(),
+		colour,
+		peek_colour_mode()
+	);
+
+	push_vertices(vertices, 4, indices, 6, tex->framebuffer_parent() && bknd::Renderer::inst()->properties().origin_bottom_left);
+
+	pop_colour_mode();
+}
+
+void SpriteBatch::push_string(
+	const char* str,
+	const Ref<Font>& font,
+	const Colour& colour
+)
+{
+	push_string(str, font, [&](Font::Character c, int idx) -> Vec2F { return Vec2F::zero(); }, colour);
+}
+
+void SpriteBatch::push_string(
+	const char* str,
+	const Ref<Font>& font,
+	const std::function<Vec2F(Font::Character,int)>& offset_fn,
+	const Colour& colour
+)
+{
+	// todo: new line support
+
+	const auto& atlas = font->atlas();
+
+	push_colour_mode(COLOUR_MODE_RED_ONLY);
+
+	float cursor_x = 0.0f;
+
+	for (int i = 0; i < cstr::length(str); i++)
+	{
+		auto c = font->character(str[i]);
+
+		push_matrix(Mat3x2::create_translation(
+			Vec2F(cursor_x + c.draw_offset.x, c.draw_offset.y) +
+				offset_fn(c, i)
+		));
+
+		push_texture(atlas.texture, c.bbox, colour);
+
+		pop_matrix();
+
+		cursor_x +=
+			c.advance_x +
+				font->kern_advance(str[i], str[i + 1]);
+	}
+
+	pop_colour_mode();
+}
+
+void SpriteBatch::push_circle(const Circle& circle, u32 accuracy, const Colour& colour)
+{
+	push_colour_mode(COLOUR_MODE_SILHOUETTE);
+
+	float dtheta = calc::TAU / accuracy;
+
+	for (float theta = 0.0f; theta < calc::TAU; theta += dtheta)
+	{
+		Triangle triangle;
+		triangle.a = circle.position;
+		triangle.b = Vec2F::from_angle(theta         , circle.radius) + circle.position;
+		triangle.c = Vec2F::from_angle(theta + dtheta, circle.radius) + circle.position;
+
+		push_triangle(triangle, colour);
+	}
+
+	pop_colour_mode();
+}
+
+void SpriteBatch::push_line(const Line& line, float thickness, const Colour& colour)
+{
+	push_colour_mode(COLOUR_MODE_SILHOUETTE);
+
+	Vec2F direction = line.direction();
+	Vec2F perp = direction.perpendicular();
+	Vec2F pos0 = line.a + perp * thickness * 0.5f;
+	Vec2F pos1 = line.b + perp * thickness * 0.5f;
+	Vec2F pos2 = line.b - perp * thickness * 0.5f;
+	Vec2F pos3 = line.a - perp * thickness * 0.5f;
+
+	push_quad(Quad(pos0, pos1, pos2, pos3), colour);
+
+	pop_colour_mode();
 }

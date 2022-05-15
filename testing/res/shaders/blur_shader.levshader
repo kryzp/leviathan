@@ -1,4 +1,4 @@
 # opengl
     vert: res/shaders/generic.vert
-    frag: res/shaders/colourize.frag
+    frag: res/shaders/blur_shader.frag
 # end
