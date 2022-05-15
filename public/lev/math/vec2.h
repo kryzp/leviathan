@@ -141,9 +141,10 @@ namespace lv
 	template <typename T>
 	Vec2<T> Vec2<T>::spring(const Vec2& from, const Vec2& to, float bounciness, float tension, Vec2& intermediate)
 	{
-		intermediate.x = calc::spring(from.x, to.x, bounciness, tension, intermediate.x);
-		intermediate.y = calc::spring(from.y, to.y, bounciness, tension, intermediate.y);
-		return intermediate;
+		return Vec2(
+			calc::spring(from.x, to.x, bounciness, tension, intermediate.x),
+			calc::spring(from.y, to.y, bounciness, tension, intermediate.y)
+		);
 	}
 	
 	template <typename T>

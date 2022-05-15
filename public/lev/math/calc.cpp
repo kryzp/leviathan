@@ -145,7 +145,7 @@ float calc::lerp_t(float from, float to, float amount, float t)
 float calc::spring(float from, float to, float bounciness, float tension, float& intermediate)
 {
 	intermediate = calc::lerp(intermediate, (to - from) * tension, 1.0f / bounciness);
-	return intermediate;
+	return from + intermediate;
 }
 
 float calc::sin(float x)

@@ -7,6 +7,7 @@
 #include <lev/graphics/sprite_batch.h>
 #include <lev/math/vec2.h>
 #include <lev/math/circle.h>
+#include <lev/math/calc.h>
 #include <lev/input/input.h>
 #include <lev/containers/linked_list.h>
 
@@ -71,8 +72,10 @@ private:
 	lv::LinkedList<Joint> m_joints;
 };
 
-Skeleton g_skelly;
-lv::SpriteBatch g_batch;
+static Skeleton g_skelly;
+static lv::SpriteBatch g_batch;
+static lv::Vec2F g_target;
+static lv::Vec2F g_intermediate;
 
 static void init()
 {
@@ -82,7 +85,8 @@ static void init()
 
 static void update()
 {
-	g_skelly.solve_fabrik(lv::Input::inst()->mouse_position());
+	g_target = lv::Vec2F::spring(g_target, lv::Input::inst()->mouse_position(), 8.0f, 0.4f, g_intermediate);
+	g_skelly.solve_fabrik(g_target);
 }
 
 static void render()
@@ -96,7 +100,7 @@ static void render()
 			if (node->next)
 				g_batch.push_line(lv::Line(joint.position, node->next->data.position), 2.0f, lv::Colour::blue());
 
-			g_batch.push_circle(lv::Circle(joint.position, 5.0f), 10U, lv::Colour::cyan());
+			g_batch.push_circle(lv::Circle(joint.position, 5.0f), lv::Colour::cyan(), 10U);
 		}
 	}
 	g_batch.render();
