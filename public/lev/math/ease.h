@@ -2,7 +2,7 @@
 
 namespace lv
 {
-	namespace Ease
+	namespace ease
 	{
 		float linear(float t);
 		

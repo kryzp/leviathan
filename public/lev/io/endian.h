@@ -12,7 +12,7 @@ namespace lv
 		ENDIANNESS_MAX
 	};
 
-	namespace Endian
+	namespace endian
 	{
 		Endianness get_endianness();
 
