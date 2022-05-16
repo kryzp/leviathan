@@ -253,14 +253,18 @@ namespace lv
 	Vector<Pair<Key, Value>> HashMap<Key, Value>::items() const
 	{
 		Vector<Pair<Key, Value>> result;
-		Entry* entry = m_entrys;
 
-		while (entry)
+		for (int i = 0; i < m_size; i++)
 		{
-			if (entry->value.enabled)
-				result.push_back(Pair(entry->key, entry->value.value));
+			Entry* entry = &m_entrys[i];
 
-			entry = entry->next;
+			while (entry)
+			{
+				if (entry->value.enabled)
+					result.push_back(Pair(entry->key, entry->value.value));
+
+				entry = entry->next;
+			}
 		}
 
 		return result;
@@ -270,14 +274,18 @@ namespace lv
 	Vector<Key> HashMap<Key, Value>::keys() const
 	{
 		Vector<Key> result;
-		Entry* entry = m_entrys;
 
-		while (entry)
+		for (int i = 0; i < m_size; i++)
 		{
-			if (entry->value.enabled)
-				result.push_back(entry->key);
+			Entry* entry = &m_entrys[i];
 
-			entry = entry->next;
+			while (entry)
+			{
+				if (entry->value.enabled)
+					result.push_back(entry->key);
+
+				entry = entry->next;
+			}
 		}
 
 		return result;
@@ -287,14 +295,18 @@ namespace lv
 	Vector<Value> HashMap<Key, Value>::values() const
 	{
 		Vector<Value> result;
-		Entry* entry = m_entrys;
 
-		while (entry)
+		for (int i = 0; i < m_size; i++)
 		{
-			if (entry->value.enabled)
-				result.push_back(entry->value.value);
+			Entry* entry = &m_entrys[i];
 
-			entry = entry->next;
+			while (entry)
+			{
+				if (entry->value.enabled)
+					result.push_back(entry->value.value);
+
+				entry = entry->next;
+			}
 		}
 
 		return result;
