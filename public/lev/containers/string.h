@@ -441,6 +441,9 @@ namespace lv
 	template <u64 Size>
 	bool Str<Size>::operator == (const Str& other) const
 	{
+		if (!other.m_buf || !this->m_buf)
+			return false;
+
 		return cstr::compare(m_buf, other.m_buf) == 0;
 	}
 

@@ -68,6 +68,7 @@ namespace lv
 		, m_count(0)
 	{
 		m_entrys = new Entry[m_size];
+		mem::set(m_entrys, 0, sizeof(Entry) * m_size);
 	}
 
 	template <typename Key, typename Value>
@@ -76,6 +77,7 @@ namespace lv
 		, m_count(0)
 	{
 		m_entrys = new Entry[m_size];
+		mem::set(m_entrys, 0, sizeof(Entry) * m_size);
 	}
 
 	template <typename Key, typename Value>
@@ -83,7 +85,7 @@ namespace lv
 	{
 		for (int i = 0; i < m_size; i++)
 		{
-			Entry* entry = &m_entrys[i];
+			Entry* entry = m_entrys[i].next;
 
 			while (entry)
 			{
@@ -116,7 +118,6 @@ namespace lv
 			if (existing.key == key)
 			{
 				existing.value.value = value;
-				return;
 			}
 			else
 			{
@@ -124,8 +125,16 @@ namespace lv
 				
 				if (entry)
 				{
-					while (entry->next)
+					while (entry)
+					{
+						if (entry->key == key)
+						{
+							entry->value = value;
+							return;
+						}
+
 						entry = entry->next;
+					}
 
 					entry->next = new Entry(key, value, nullptr);
 				}
@@ -133,20 +142,6 @@ namespace lv
 				{
 					existing.next = new Entry(key, value, nullptr);
 				}
-
-				return;
-			}
-
-			Entry* entry = existing.next;
-			while (entry)
-			{
-				if (entry->key == key)
-				{
-					entry->value = value;
-					return;
-				}
-
-				entry = entry->next;
 			}
 		}
 	}
@@ -198,9 +193,10 @@ namespace lv
 			return;
 		
 		Entry* newbuf = new Entry[m_size];
+		mem::set(newbuf, 0, sizeof(Entry) * m_size);
 
         for (int i = 0; i < oldsize; i++)
-			new (newbuf+ index_of(m_entrys[i].key)) Entry(std::move(m_entrys[i]));
+			new (newbuf + index_of(m_entrys[i].key)) Entry(std::move(m_entrys[i]));
 
 		delete[] m_entrys;
 		m_entrys = newbuf;
