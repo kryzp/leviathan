@@ -3,6 +3,7 @@
 #include <lev/core/util.h>
 
 #include <lev/containers/vector.h>
+#include <lev/containers/pair.h>
 #include <lev/containers/optional.h>
 
 namespace lv
@@ -14,7 +15,7 @@ namespace lv
 		{
 			Key key;
 			Optional<Value> value;
-			Entry* next; // todo is this necessary, cant i just increment by sizeof(Entry)??
+			Entry* next;
 
 			Entry()
 				: key()
@@ -49,6 +50,7 @@ namespace lv
 		Entry* end();
 		const Entry* end() const;
 
+		Vector<Pair<Key, Value>> items() const;
 		Vector<Key> keys() const;
 		Vector<Value> values() const;
 
@@ -79,8 +81,19 @@ namespace lv
 	template <typename Key, typename Value>
 	HashMap<Key, Value>::~HashMap()
 	{
-		if (m_entrys)
-			delete[] m_entrys;
+		for (int i = 0; i < m_size; i++)
+		{
+			Entry* entry = &m_entrys[i];
+
+			while (entry)
+			{
+				Entry* next = entry->next;
+				delete entry;
+				entry = next;
+			}
+		}
+
+		delete[] m_entrys;
 
 		m_size = 0;
 		m_count = 0;
@@ -95,7 +108,7 @@ namespace lv
 
 		if (!existing.value.enabled)
 		{
-			m_entrys[index_of(key)] = Entry(key, Optional<Value>(value), nullptr);
+			m_entrys[index_of(key)] = Entry(key, { value }, nullptr);
 			m_count++;
 		}
 		else
@@ -147,7 +160,7 @@ namespace lv
 		while (entry)
 		{
 			auto next = entry->next;
-			entry->value.~Value();
+			entry->value.value.~Value();
 			(*entry) = Entry();
 			entry = next;
 		}
@@ -241,6 +254,23 @@ namespace lv
 	}
 
 	template <typename Key, typename Value>
+	Vector<Pair<Key, Value>> HashMap<Key, Value>::items() const
+	{
+		Vector<Pair<Key, Value>> result;
+		Entry* entry = m_entrys;
+
+		while (entry)
+		{
+			if (entry->value.enabled)
+				result.push_back(Pair(entry->key, entry->value.value));
+
+			entry = entry->next;
+		}
+
+		return result;
+	}
+
+	template <typename Key, typename Value>
 	Vector<Key> HashMap<Key, Value>::keys() const
 	{
 		Vector<Key> result;
@@ -248,7 +278,9 @@ namespace lv
 
 		while (entry)
 		{
-			result.push_back(entry->key);
+			if (entry->value.enabled)
+				result.push_back(entry->key);
+
 			entry = entry->next;
 		}
 
@@ -263,7 +295,9 @@ namespace lv
 
 		while (entry)
 		{
-			result.push_back(entry->value);
+			if (entry->value.enabled)
+				result.push_back(entry->value.value);
+
 			entry = entry->next;
 		}
 
