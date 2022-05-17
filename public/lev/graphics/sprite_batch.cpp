@@ -471,8 +471,6 @@ void SpriteBatch::push_texture(const Ref<Texture>& tex, const Colour& colour)
 
 void SpriteBatch::push_texture(const Ref<Texture>& tex, const RectI& source, const Colour& colour)
 {
-	push_colour_mode(COLOUR_MODE_NORMAL);
-
 	set_texture(tex);
 
 	Vertex vertices[4];
@@ -480,15 +478,13 @@ void SpriteBatch::push_texture(const Ref<Texture>& tex, const RectI& source, con
 
 	gfxutil::quad(
 		vertices, indices,
-		Quad(source),
+		Quad(RectI(0, 0, source.w, source.h)),
 		Quad(source) / tex->size(),
 		colour, colour, colour, colour,
 		peek_colour_mode()
 	);
 
 	push_vertices(vertices, 4, indices, 6, tex->framebuffer_parent() && bknd::Renderer::inst()->properties().origin_bottom_left);
-
-	pop_colour_mode();
 }
 
 void SpriteBatch::push_texture_col(const Ref<Texture>& tex, const Colour& c0, const Colour& c1, const Colour& c2, const Colour& c3)
@@ -498,8 +494,6 @@ void SpriteBatch::push_texture_col(const Ref<Texture>& tex, const Colour& c0, co
 
 void SpriteBatch::push_texture_col(const Ref<Texture>& tex, const RectI& source, const Colour& c0, const Colour& c1, const Colour& c2, const Colour& c3)
 {
-	push_colour_mode(COLOUR_MODE_NORMAL);
-
 	set_texture(tex);
 
 	Vertex vertices[4];
@@ -507,15 +501,13 @@ void SpriteBatch::push_texture_col(const Ref<Texture>& tex, const RectI& source,
 
 	gfxutil::quad(
 		vertices, indices,
-		Quad(source),
+		Quad(RectI(0, 0, source.w, source.h)),
 		Quad(source) / tex->size(),
 		c0, c1, c2, c3,
 		peek_colour_mode()
 	);
 
 	push_vertices(vertices, 4, indices, 6, tex->framebuffer_parent() && bknd::Renderer::inst()->properties().origin_bottom_left);
-
-	pop_colour_mode();
 }
 
 void SpriteBatch::push_triangle(const Triangle& tri, const Colour& colour)
@@ -582,7 +574,7 @@ void SpriteBatch::push_string(
 
 		cursor_x +=
 			c.advance_x +
-				font->kern_advance(str[i], str[i + 1]);
+			font->kern_advance(str[i], str[i + 1]);
 	}
 
 	pop_colour_mode();
