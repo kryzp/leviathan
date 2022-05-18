@@ -6,6 +6,8 @@
 #include <lev/containers/pair.h>
 #include <lev/containers/optional.h>
 
+// todo: this needs  a big professor re-work moment
+
 namespace lv
 {
 	template <typename Key, typename Value>
@@ -13,21 +15,21 @@ namespace lv
 	{
 		struct Entry
 		{
-			Key key;
-			Optional<Value> value;
+			Pair<Key, Value> data;
 			Entry* next;
+			bool used;
 
 			Entry()
-				: key()
-				, value()
+				: data()
 				, next(nullptr)
+				, used(false)
 			{
 			}
 
-			Entry(const Key& key, const Optional<Value>& value, Entry* next)
-				: key(key)
-				, value(value)
+			Entry(const Pair<Key, Value>& data, Entry* next)
+				: data(data)
 				, next(next)
+				, used(true)
 			{
 			}
 		};
@@ -108,16 +110,16 @@ namespace lv
 
 		Entry& existing = m_entrys[index_of(key)];
 
-		if (!existing.value.enabled)
+		if (!existing.used)
 		{
-			m_entrys[index_of(key)] = Entry(key, { value }, nullptr);
+			m_entrys[index_of(key)] = Entry(Pair(key, value), nullptr);
 			m_count++;
 		}
 		else
 		{
-			if (existing.key == key)
+			if (existing.data.first == key)
 			{
-				existing.value.value = value;
+				existing.data.second = value;
 			}
 			else
 			{
@@ -127,20 +129,20 @@ namespace lv
 				{
 					while (entry)
 					{
-						if (entry->key == key)
+						if (entry->data.first == key)
 						{
-							entry->value = value;
+							entry->data.second = value;
 							return;
 						}
 
 						entry = entry->next;
 					}
 
-					entry->next = new Entry(key, value, nullptr);
+					entry->next = new Entry(Pair(key, value), nullptr);
 				}
 				else
 				{
-					existing.next = new Entry(key, value, nullptr);
+					existing.next = new Entry(Pair(key, value), nullptr);
 				}
 			}
 		}
@@ -155,7 +157,6 @@ namespace lv
 		while (entry)
 		{
 			auto next = entry->next;
-			entry->value.value.~Value();
 			(*entry) = Entry();
 			entry = next;
 		}
@@ -170,8 +171,8 @@ namespace lv
 
 		while (entry)
 		{
-			if (entry->key == key)
-				return entry->value.value;
+			if (entry->data.first == key)
+				return entry->data.second;
 
 			entry = entry->next;
 		}
@@ -196,7 +197,7 @@ namespace lv
 		mem::set(newbuf, 0, sizeof(Entry) * m_size);
 
         for (int i = 0; i < oldsize; i++)
-			new (newbuf + index_of(m_entrys[i].key)) Entry(std::move(m_entrys[i]));
+			new (newbuf + index_of(m_entrys[i].data.first)) Entry(std::move(m_entrys[i]));
 
 		delete[] m_entrys;
 		m_entrys = newbuf;
@@ -209,7 +210,7 @@ namespace lv
 
 		while (entry)
 		{
-			if (entry->key == key)
+			if (entry->data.first == key)
 				return true;
 
 			entry = entry->next;
@@ -258,11 +259,9 @@ namespace lv
 		{
 			Entry* entry = &m_entrys[i];
 
-			while (entry)
+			while (entry && entry->used)
 			{
-				if (entry->value.enabled)
-					result.push_back(Pair(entry->key, entry->value.value));
-
+				result.push_back(entry->data);
 				entry = entry->next;
 			}
 		}
@@ -279,11 +278,9 @@ namespace lv
 		{
 			Entry* entry = &m_entrys[i];
 
-			while (entry)
+			while (entry && entry->used)
 			{
-				if (entry->value.enabled)
-					result.push_back(entry->key);
-
+				result.push_back(entry->data.first);
 				entry = entry->next;
 			}
 		}
@@ -300,11 +297,9 @@ namespace lv
 		{
 			Entry* entry = &m_entrys[i];
 
-			while (entry)
+			while (entry && entry->used)
 			{
-				if (entry->value.enabled)
-					result.push_back(entry->value.value);
-
+				result.push_back(entry->data.second);
 				entry = entry->next;
 			}
 		}
