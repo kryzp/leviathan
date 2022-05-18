@@ -14,7 +14,7 @@ similar to the monogame ContentManager, handles loading assets and storing them
 - *AssetLoader* -> if inherited allows you to register it in an assetmgr and let it manage the object, effectively extending the functionality of a vanilla AssetMgr
 
 ### audio
-guess what? you never happening (:sunglasses:)
+guess what? never happening (:sunglasses:)
 
 ### containers
 no me gusta el std:: (i have a gcse in spanish)
