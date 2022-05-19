@@ -173,6 +173,8 @@ namespace lv
         for (int i = 0; i < m_count; i++)
             m_buf[i].~T();
 
+		mem::set(m_buf, 0, m_size * sizeof(T));
+
         m_count = 0;
     }
 
