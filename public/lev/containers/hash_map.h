@@ -6,35 +6,119 @@
 #include <lev/containers/pair.h>
 #include <lev/containers/optional.h>
 
-// todo: this needs  a big professor re-work moment
+/*
+for (auto& [thing0, thing1] : m_map)
+{
+	print(thing0);
+	thing0 += thing1;
+}
+ */
 
 namespace lv
 {
 	template <typename Key, typename Value>
 	class HashMap
 	{
+	public:
 		struct Entry
 		{
 			Pair<Key, Value> data;
 			Entry* next;
+			Entry* prev;
 			bool used;
 
 			Entry()
 				: data()
 				, next(nullptr)
+				, prev(nullptr)
 				, used(false)
 			{
 			}
 
-			Entry(const Pair<Key, Value>& data, Entry* next)
+			Entry(const Pair<Key, Value>& data, Entry* next, Entry* prev)
 				: data(data)
 				, next(next)
+				, prev(prev)
 				, used(true)
 			{
 			}
 		};
 
-	public:
+		struct KeyValueIterator
+		{
+			KeyValueIterator(Entry* initial_ptr)
+				: m_ptr(initial_ptr)
+				, m_end(nullptr)
+			{
+			}
+
+			KeyValueIterator(Entry* initial_ptr, Entry* end_ptr)
+				: m_ptr(initial_ptr)
+				, m_end(end_ptr)
+			{
+			}
+
+			~KeyValueIterator() = default;
+
+			Pair<Key, Value>& operator * () const
+			{
+				return m_ptr->data;
+			}
+
+			Pair<Key, Value>* operator -> ()
+			{
+				return &m_ptr->data;
+			}
+
+			KeyValueIterator& operator ++ ()
+			{
+				auto* next = m_ptr->next;
+
+				if (next)
+				{
+					// iterate over bucket
+					m_ptr = m_ptr->next;
+				}
+				else
+				{
+					// go all the way back
+					while (m_ptr->prev)
+						m_ptr = m_ptr->prev;
+
+					// increment
+					m_ptr++;
+
+					if (m_ptr == m_end)
+						return *this;
+
+					// increment until used entry is found
+					while (!m_ptr->used && m_ptr)
+					{
+						m_ptr++;
+
+						if (m_ptr == m_end)
+							return *this;
+					}
+				}
+
+				return *this;
+			}
+
+			KeyValueIterator operator ++ (int)
+			{
+				KeyValueIterator tmp = *this;
+				++(*this);
+				return tmp;
+			}
+
+			friend bool operator == (const KeyValueIterator& a, const KeyValueIterator& b) { return a.m_ptr == b.m_ptr; };
+			friend bool operator != (const KeyValueIterator& a, const KeyValueIterator& b) { return a.m_ptr != b.m_ptr; };
+
+		private:
+			Entry* m_ptr;
+			Entry* m_end;
+		};
+
 		HashMap();
 		HashMap(int initial_capacity);
 		~HashMap();
@@ -46,13 +130,12 @@ namespace lv
 		bool contains(const Key& key) const;
 		int index_of(const Key& key) const;
 
-		Entry* begin();
-		const Entry* begin() const;
+		KeyValueIterator begin();
+		const KeyValueIterator begin() const;
 
-		Entry* end();
-		const Entry* end() const;
+		KeyValueIterator end();
+		const KeyValueIterator end() const;
 
-		Vector<Pair<Key, Value>> items() const;
 		Vector<Key> keys() const;
 		Vector<Value> values() const;
 
@@ -112,7 +195,7 @@ namespace lv
 
 		if (!existing.used)
 		{
-			m_entrys[index_of(key)] = Entry(Pair(key, value), nullptr);
+			m_entrys[index_of(key)] = Entry(Pair(key, value), nullptr, nullptr);
 			m_count++;
 		}
 		else
@@ -138,11 +221,11 @@ namespace lv
 						entry = entry->next;
 					}
 
-					entry->next = new Entry(Pair(key, value), nullptr);
+					entry->next = new Entry(Pair(key, value), nullptr, entry);
 				}
 				else
 				{
-					existing.next = new Entry(Pair(key, value), nullptr);
+					existing.next = new Entry(Pair(key, value), nullptr, &existing);
 				}
 			}
 		}
@@ -227,46 +310,81 @@ namespace lv
 	}
 
 	template <typename Key, typename Value>
-	typename HashMap<Key, Value>::Entry* HashMap<Key, Value>::begin()
+	typename HashMap<Key, Value>::KeyValueIterator HashMap<Key, Value>::begin()
 	{
-		return m_entrys;
-	}
-
-	template <typename Key, typename Value>
-	const typename HashMap<Key, Value>::Entry* HashMap<Key, Value>::begin() const
-	{
-		return m_entrys;
-	}
-
-	template <typename Key, typename Value>
-	typename HashMap<Key, Value>::Entry* HashMap<Key, Value>::end()
-	{
-		return m_entrys + m_count;
-	}
-
-	template <typename Key, typename Value>
-	const typename HashMap<Key, Value>::Entry* HashMap<Key, Value>::end() const
-	{
-		return m_entrys + m_count;
-	}
-
-	template <typename Key, typename Value>
-	Vector<Pair<Key, Value>> HashMap<Key, Value>::items() const
-	{
-		Vector<Pair<Key, Value>> result;
+		Entry* begin = nullptr;
+		Entry* end = nullptr;
 
 		for (int i = 0; i < m_size; i++)
 		{
-			Entry* entry = &m_entrys[i];
-
-			while (entry && entry->used)
+			if (m_entrys[i].used)
 			{
-				result.push_back(entry->data);
-				entry = entry->next;
+				begin = &m_entrys[i];
+				break;
 			}
 		}
 
-		return result;
+		for (int i = m_size; i >= 0; i--)
+		{
+			if (m_entrys[i].used)
+			{
+				end = &m_entrys[i+1];
+				break;
+			}
+		}
+
+		return KeyValueIterator(begin, end);
+	}
+
+	template <typename Key, typename Value>
+	const typename HashMap<Key, Value>::KeyValueIterator HashMap<Key, Value>::begin() const
+	{
+		Entry* begin = nullptr;
+		Entry* end = nullptr;
+
+		for (int i = 0; i < m_size; i++)
+		{
+			if (m_entrys[i].used)
+			{
+				begin = &m_entrys[i];
+				break;
+			}
+		}
+
+		for (int i = m_size; i >= 0; i--)
+		{
+			if (m_entrys[i].used)
+			{
+				end = &m_entrys[i+1];
+				break;
+			}
+		}
+
+		return KeyValueIterator(begin, end);
+	}
+
+	template <typename Key, typename Value>
+	typename HashMap<Key, Value>::KeyValueIterator HashMap<Key, Value>::end()
+	{
+		for (int i = m_size; i >= 0; i--)
+		{
+			if (m_entrys[i].used)
+				return KeyValueIterator(&m_entrys[i+1]);
+		}
+
+		return KeyValueIterator(nullptr);
+	}
+
+	template <typename Key, typename Value>
+	const typename HashMap<Key, Value>::KeyValueIterator HashMap<Key, Value>::end() const
+	{
+		for (int i = m_size; i >= 0; i--)
+		{
+			if (m_entrys[i].used)
+				return KeyValueIterator(&m_entrys[i+1]);
+		}
+
+		return KeyValueIterator(nullptr);
 	}
 
 	template <typename Key, typename Value>
