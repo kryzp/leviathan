@@ -26,7 +26,7 @@ namespace lv
 
 		float random() const
 		{
-			return Random<std::mt19937>::inst()->real(min, max);
+			return Rand<std::mt19937>::inst()->real(min, max);
 		}
 	};
 }

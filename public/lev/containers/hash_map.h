@@ -1,17 +1,15 @@
 #pragma once
 
 #include <lev/core/util.h>
-
-#include <lev/containers/vector.h>
 #include <lev/containers/pair.h>
-#include <lev/containers/optional.h>
 
 /*
-for (auto& [thing0, thing1] : m_map)
-{
-	print(thing0);
-	thing0 += thing1;
-}
+ * WARNING
+ * THIS PROBABLY DOESNT WORK
+ * MOST LIKELY
+ * DEFINATELY
+ *
+ * ILL FIX (COMPLETELY REWORK) THIS WHEN I FEEL LIKE IT
  */
 
 namespace lv
@@ -20,41 +18,35 @@ namespace lv
 	class HashMap
 	{
 	public:
-		struct Entry
+		struct Bucket
 		{
 			Pair<Key, Value> data;
-			Entry* next;
-			Entry* prev;
 			bool used;
 
-			Entry()
+			Bucket* next;
+			Bucket* prev;
+
+			Bucket()
 				: data()
+				, used(false)
 				, next(nullptr)
 				, prev(nullptr)
-				, used(false)
 			{
 			}
 
-			Entry(const Pair<Key, Value>& data, Entry* next, Entry* prev)
+			Bucket(const Pair<Key, Value>& data, Bucket* next, Bucket* prev)
 				: data(data)
+				, used(true)
 				, next(next)
 				, prev(prev)
-				, used(true)
 			{
 			}
 		};
 
 		struct KeyValueIterator
 		{
-			KeyValueIterator(Entry* initial_ptr)
+			KeyValueIterator(Bucket* initial_ptr)
 				: m_ptr(initial_ptr)
-				, m_end(nullptr)
-			{
-			}
-
-			KeyValueIterator(Entry* initial_ptr, Entry* end_ptr)
-				: m_ptr(initial_ptr)
-				, m_end(end_ptr)
 			{
 			}
 
@@ -81,24 +73,12 @@ namespace lv
 				}
 				else
 				{
-					// go all the way back
+					// go all the way back to list of buckets
 					while (m_ptr->prev)
 						m_ptr = m_ptr->prev;
 
 					// increment
 					m_ptr++;
-
-					if (m_ptr == m_end)
-						return *this;
-
-					// increment until used entry is found
-					while (!m_ptr->used && m_ptr)
-					{
-						m_ptr++;
-
-						if (m_ptr == m_end)
-							return *this;
-					}
 				}
 
 				return *this;
@@ -115,8 +95,7 @@ namespace lv
 			friend bool operator != (const KeyValueIterator& a, const KeyValueIterator& b) { return a.m_ptr != b.m_ptr; };
 
 		private:
-			Entry* m_ptr;
-			Entry* m_end;
+			Bucket* m_ptr;
 		};
 
 		HashMap();
@@ -136,15 +115,13 @@ namespace lv
 		KeyValueIterator end();
 		const KeyValueIterator end() const;
 
-		Vector<Key> keys() const;
-		Vector<Value> values() const;
-
 	private:
 		void reallocate();
 
 		int m_size;
 		int m_count;
-		Entry* m_entrys;
+
+		Bucket* m_buckets;
 	};
 
 	template <typename Key, typename Value>
@@ -152,8 +129,8 @@ namespace lv
 		: m_size(16)
 		, m_count(0)
 	{
-		m_entrys = new Entry[m_size];
-		mem::set(m_entrys, 0, sizeof(Entry) * m_size);
+		m_buckets = new Bucket[m_size];
+		mem::set(m_buckets, 0, sizeof(Bucket) * m_size);
 	}
 
 	template <typename Key, typename Value>
@@ -161,26 +138,26 @@ namespace lv
 		: m_size(initial_capacity)
 		, m_count(0)
 	{
-		m_entrys = new Entry[m_size];
-		mem::set(m_entrys, 0, sizeof(Entry) * m_size);
+		m_buckets = new Bucket[m_size];
+		mem::set(m_buckets, 0, sizeof(Bucket) * m_size);
 	}
 
 	template <typename Key, typename Value>
 	HashMap<Key, Value>::~HashMap()
 	{
-		for (int i = 0; i < m_size; i++)
-		{
-			Entry* entry = m_entrys[i].next;
+//		for (int i = 0; i < m_size; i++)
+//		{
+//			Bucket* entry = m_buckets[i].next;
+//
+//			while (entry)
+//			{
+//				Bucket* next = entry->next;
+//				delete entry;
+//				entry = next;
+//			}
+//		}
 
-			while (entry)
-			{
-				Entry* next = entry->next;
-				delete entry;
-				entry = next;
-			}
-		}
-
-		delete[] m_entrys;
+		delete[] m_buckets;
 
 		m_size = 0;
 		m_count = 0;
@@ -191,11 +168,11 @@ namespace lv
 	{
 		reallocate();
 
-		Entry& existing = m_entrys[index_of(key)];
+		Bucket& existing = m_buckets[index_of(key)];
 
 		if (!existing.used)
 		{
-			m_entrys[index_of(key)] = Entry(Pair(key, value), nullptr, nullptr);
+			m_buckets[index_of(key)] = Bucket(Pair(key, value), nullptr, nullptr);
 			m_count++;
 		}
 		else
@@ -206,7 +183,7 @@ namespace lv
 			}
 			else
 			{
-				Entry* entry = existing.next;
+				Bucket* entry = existing.next;
 				
 				if (entry)
 				{
@@ -221,11 +198,11 @@ namespace lv
 						entry = entry->next;
 					}
 
-					entry->next = new Entry(Pair(key, value), nullptr, entry);
+					entry->next = new Bucket(Pair(key, value), nullptr, entry);
 				}
 				else
 				{
-					existing.next = new Entry(Pair(key, value), nullptr, &existing);
+					existing.next = new Bucket(Pair(key, value), nullptr, &existing);
 				}
 			}
 		}
@@ -236,11 +213,11 @@ namespace lv
 	{
 		reallocate();
 
-		Entry* entry = &m_entrys[index_of(key)];
+		Bucket* entry = &m_buckets[index_of(key)];
 		while (entry)
 		{
 			auto next = entry->next;
-			(*entry) = Entry();
+			(*entry) = Bucket();
 			entry = next;
 		}
 
@@ -250,7 +227,7 @@ namespace lv
 	template <typename Key, typename Value>
 	Value HashMap<Key, Value>::at(const Key& key) const
 	{
-		Entry* entry = &m_entrys[index_of(key)];
+		Bucket* entry = &m_buckets[index_of(key)];
 
 		while (entry)
 		{
@@ -276,20 +253,20 @@ namespace lv
 		if (oldsize == m_size)
 			return;
 		
-		Entry* newbuf = new Entry[m_size];
-		mem::set(newbuf, 0, sizeof(Entry) * m_size);
+		Bucket* newbuf = new Bucket[m_size];
+		mem::set(newbuf, 0, sizeof(Bucket) * m_size);
 
         for (int i = 0; i < oldsize; i++)
-			new (newbuf + index_of(m_entrys[i].data.first)) Entry(std::move(m_entrys[i]));
+			new (newbuf + index_of(m_buckets[i].data.first)) Bucket(std::move(m_buckets[i]));
 
-		delete[] m_entrys;
-		m_entrys = newbuf;
+		delete[] m_buckets;
+		m_buckets = newbuf;
 	}
 
 	template <typename Key, typename Value>
 	bool HashMap<Key, Value>::contains(const Key& key) const
 	{
-		Entry* entry = &m_entrys[index_of(key)];
+		Bucket* entry = &m_buckets[index_of(key)];
 
 		while (entry)
 		{
@@ -312,55 +289,29 @@ namespace lv
 	template <typename Key, typename Value>
 	typename HashMap<Key, Value>::KeyValueIterator HashMap<Key, Value>::begin()
 	{
-		Entry* begin = nullptr;
-		Entry* end = nullptr;
+		Bucket* begin = nullptr;
 
 		for (int i = 0; i < m_size; i++)
 		{
-			if (m_entrys[i].used)
-			{
-				begin = &m_entrys[i];
-				break;
-			}
+			if (m_buckets[i].used)
+				return KeyValueIterator(&m_buckets[i]);
 		}
 
-		for (int i = m_size; i >= 0; i--)
-		{
-			if (m_entrys[i].used)
-			{
-				end = &m_entrys[i+1];
-				break;
-			}
-		}
-
-		return KeyValueIterator(begin, end);
+		return KeyValueIterator(nullptr);
 	}
 
 	template <typename Key, typename Value>
 	const typename HashMap<Key, Value>::KeyValueIterator HashMap<Key, Value>::begin() const
 	{
-		Entry* begin = nullptr;
-		Entry* end = nullptr;
+		Bucket* begin = nullptr;
 
 		for (int i = 0; i < m_size; i++)
 		{
-			if (m_entrys[i].used)
-			{
-				begin = &m_entrys[i];
-				break;
-			}
+			if (m_buckets[i].used)
+				return KeyValueIterator(&m_buckets[i]);
 		}
 
-		for (int i = m_size; i >= 0; i--)
-		{
-			if (m_entrys[i].used)
-			{
-				end = &m_entrys[i+1];
-				break;
-			}
-		}
-
-		return KeyValueIterator(begin, end);
+		return KeyValueIterator(nullptr);
 	}
 
 	template <typename Key, typename Value>
@@ -368,8 +319,8 @@ namespace lv
 	{
 		for (int i = m_size; i >= 0; i--)
 		{
-			if (m_entrys[i].used)
-				return KeyValueIterator(&m_entrys[i+1]);
+			if (m_buckets[i].used)
+				return KeyValueIterator(&m_buckets[i+1]);
 		}
 
 		return KeyValueIterator(nullptr);
@@ -380,48 +331,48 @@ namespace lv
 	{
 		for (int i = m_size; i >= 0; i--)
 		{
-			if (m_entrys[i].used)
-				return KeyValueIterator(&m_entrys[i+1]);
+			if (m_buckets[i].used)
+				return KeyValueIterator(&m_buckets[i+1]);
 		}
 
 		return KeyValueIterator(nullptr);
 	}
 
-	template <typename Key, typename Value>
-	Vector<Key> HashMap<Key, Value>::keys() const
-	{
-		Vector<Key> result;
-
-		for (int i = 0; i < m_size; i++)
-		{
-			Entry* entry = &m_entrys[i];
-
-			while (entry && entry->used)
-			{
-				result.push_back(entry->data.first);
-				entry = entry->next;
-			}
-		}
-
-		return result;
-	}
-
-	template <typename Key, typename Value>
-	Vector<Value> HashMap<Key, Value>::values() const
-	{
-		Vector<Value> result;
-
-		for (int i = 0; i < m_size; i++)
-		{
-			Entry* entry = &m_entrys[i];
-
-			while (entry && entry->used)
-			{
-				result.push_back(entry->data.second);
-				entry = entry->next;
-			}
-		}
-
-		return result;
-	}
+//	template <typename Key, typename Value>
+//	Vector<Key> HashMap<Key, Value>::keys() const
+//	{
+//		Vector<Key> result;
+//
+//		for (int i = 0; i < m_size; i++)
+//		{
+//			Bucket* entry = &m_buckets[i];
+//
+//			while (entry && entry->used)
+//			{
+//				result.push_back(entry->data.first);
+//				entry = entry->next;
+//			}
+//		}
+//
+//		return result;
+//	}
+//
+//	template <typename Key, typename Value>
+//	Vector<Value> HashMap<Key, Value>::values() const
+//	{
+//		Vector<Value> result;
+//
+//		for (int i = 0; i < m_size; i++)
+//		{
+//			Bucket* entry = &m_buckets[i];
+//
+//			while (entry && entry->used)
+//			{
+//				result.push_back(entry->data.second);
+//				entry = entry->next;
+//			}
+//		}
+//
+//		return result;
+//	}
 };

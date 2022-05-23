@@ -2,9 +2,7 @@
 
 #include <lev/core/app.h>
 #include <lev/containers/hash_map.h>
-
-// struct vertex
-#include <lev/graphics/sprite_batch.h>
+#include <lev/graphics/sprite_batch.h> // struct vertex
 
 #include <backend/renderer.h>
 #include <backend/system.h>
@@ -12,7 +10,6 @@
 #include <third_party/glad/glad.h>
 
 #include <string>
-#include <stdlib.h>
 
 using namespace lv;
 using namespace lv::bknd;
