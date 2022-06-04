@@ -47,6 +47,7 @@ add_library(${PROJECT_NAME}
 	public/lev/math/polygon.cpp
 	public/lev/math/timer.cpp
 	public/lev/math/quaternion.cpp
+	public/lev/math/complex.cpp
 
 	public/lev/gui/gui_component.cpp
 	public/lev/gui/gui_constraints.cpp
@@ -90,7 +91,7 @@ if (IRRKLANG_ENABLED)
 	add_compile_definitions(LEV_USE_IRRKLANG)
 endif()
 
-add_executable(lv_test testing/src/yes.cpp)
+add_executable(lv_test testing/src/le_word.cpp)
 target_include_directories(lv_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/public)
 target_link_libraries(lv_test PUBLIC ${PROJECT_NAME})
 

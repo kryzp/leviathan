@@ -163,6 +163,21 @@ float calc::tan(float x)
 	return ::tanf(x);
 }
 
+float calc::sinh(float x)
+{
+	return ::sinhf(x);
+}
+
+float calc::cosh(float x)
+{
+	return ::coshf(x);
+}
+
+float calc::tanh(float x)
+{
+	return ::tanhf(x);
+}
+
 float calc::asin(float x)
 {
 	return ::asinf(x);

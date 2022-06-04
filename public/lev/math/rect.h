@@ -27,6 +27,9 @@ namespace lv
 		{
 		}
 
+		static const Rect& zero();
+		static const Rect& one();
+
 		bool contains(const Vec2<T>& other) const;
 		bool intersects(const Rect& other) const;
 
@@ -57,9 +60,6 @@ namespace lv
 		Rect& operator -= (const Rect& other);
 		Rect& operator *= (const Rect& other);
 		Rect& operator /= (const Rect& other);
-
-		static const Rect& zero();
-		static const Rect& one();
 	};
 
 	using RectF = Rect<float>;

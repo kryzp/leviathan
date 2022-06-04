@@ -48,6 +48,10 @@ namespace lv
 		float sin(float x);
 		float cos(float x);
 		float tan(float x);
+
+		float sinh(float x);
+		float cosh(float x);
+		float tanh(float x);
 		
 		float asin(float x);
 		float acos(float x);

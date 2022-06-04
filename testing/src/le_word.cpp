@@ -9,6 +9,7 @@
 #include <lev/containers/vector.h>
 #include <lev/containers/string.h>
 #include <lev/math/vec2.h>
+#include <lev/math/complex.h>
 
 using Word = lv::String;
 using WordList = lv::Vector<Word>;
@@ -85,6 +86,11 @@ WordList find_words(const char* board, const WordList& words)
 
 int main()
 {
+	auto number = lv::Complex::zeta(lv::Complex(7.0));
+	lv::log::print("%f + %fi", number.real, number.imag);
+
+	return 0;
+
 	WordList words;
 	words.push_back("lap");
 	words.push_back("bae");
