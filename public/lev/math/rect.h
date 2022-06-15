@@ -105,10 +105,15 @@ namespace lv
 	bool Rect<T>::contains(const Vec2<T>& other) const
 	{
 		return (
+
+			// X
 			this->left() < other.x &&
 			this->right() > other.x &&
+
+			// Y
 			this->top() < other.y &&
 			this->bottom() > other.y
+
 		);
 	}
 
@@ -116,10 +121,15 @@ namespace lv
 	bool Rect<T>::intersects(const Rect<T>& other) const
 	{
 		return (
+
+			// X
 			this->left() < other.right() &&
 			this->right() > other.left() &&
+
+			// Y
 			this->top() < other.bottom() &&
 			this->bottom() > other.top()
+
 		);
 	}
 
