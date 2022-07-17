@@ -86,8 +86,8 @@ WordList find_words(const char* board, const WordList& words)
 
 int main()
 {
-	auto number = lv::Complex::zeta(lv::Complex(7.0));
-	lv::log::print("%f + %fi", number.real, number.imag);
+	auto number = lv::Complex::pow(lv::Complex(0.0, 1.0), lv::Complex(0.0, 1.0));
+	lv::log::print("i^i = %f + %fi", number.real, number.imag);
 
 	return 0;
 

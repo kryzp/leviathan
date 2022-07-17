@@ -75,6 +75,16 @@ Colour Colour::from_hsv(float hue, float sat, float val, u8 alpha)
 	return Colour(r * 255.0f, g * 255.0f, b * 255.0f, alpha);
 }
 
+Colour Colour::lerp(const Colour& from, const Colour& to, float amount)
+{
+	return Colour(
+		calc::lerp(from.r, to.r, amount),
+		calc::lerp(from.g, to.g, amount),
+		calc::lerp(from.b, to.b, amount),
+		calc::lerp(from.a, to.a, amount)
+	);
+}
+
 void Colour::premultiply()
 {
 	r = (r * a) / 255;

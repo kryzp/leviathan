@@ -91,7 +91,7 @@ if (IRRKLANG_ENABLED)
 	add_compile_definitions(LEV_USE_IRRKLANG)
 endif()
 
-add_executable(lv_test testing/src/le_word.cpp)
+add_executable(lv_test testing/src/matrix_testing.cpp)
 target_include_directories(lv_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/public)
 target_link_libraries(lv_test PUBLIC ${PROJECT_NAME})
 

@@ -77,7 +77,7 @@ namespace lv
         allocate(data.size());
         m_count = data.size();
 
-        for (u64 i = 0; i < m_size; i++)
+        for (u64 i = 0; i < m_count; i++)
             new (m_buf + i) T(data.begin()[i]);
     }
 

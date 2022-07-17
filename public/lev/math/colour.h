@@ -34,6 +34,7 @@ namespace lv
 		static const Colour& cyan();
 
 		static Colour from_hsv(float hue, float sat, float val, u8 alpha = 255);
+		static Colour lerp(const Colour& from, const Colour& to, float amount);
 
 		void premultiply();
 		Colour premultiplied() const;
