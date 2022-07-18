@@ -36,7 +36,7 @@ namespace lv
 		Vec3<T> position() const;
 		Vec3<T> size() const;
 
-		Rect<T> front_face();
+		Rect<T> front_face() const;
 
 		T left() const;
 		T right() const;
@@ -148,9 +148,9 @@ namespace lv
 	}
 
 	template <typename T>
-	Rect<T> Cuboid<T>::front_face()
+	Rect<T> Cuboid<T>::front_face() const
 	{
-		return Rect<T>(0, 0, w, h);
+		return Rect<T>(x, y, w, h);
 	}
 
 	template <typename T>

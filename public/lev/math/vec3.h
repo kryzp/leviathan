@@ -2,6 +2,7 @@
 
 #include <lev/math/calc.h>
 #include <lev/math/rand.h>
+#include <lev/math/vec2.h>
 
 namespace lv
 {
@@ -23,6 +24,7 @@ namespace lv
 		Vec3();
 		Vec3(T x);
 		Vec3(T x, T y, T z);
+		Vec3(const Vec2<T>& xy);
 
 		// enable implicit casting to other vectors
 		template <typename Y>
@@ -76,6 +78,7 @@ namespace lv
 	using Size3		= Vec3<float>;
 	using Int3		= Vec3<int>;
 	using Point3	= Vec3<int>;
+	using Unsigned3 = Vec3<unsigned>;
 	
 	template <typename T>
 	Vec3<T>::Vec3()
@@ -92,6 +95,12 @@ namespace lv
 	template <typename T>
 	Vec3<T>::Vec3(T x, T y, T z)
 		: x(x), y(y), z(z)
+	{
+	}
+
+	template <typename T>
+	Vec3<T>::Vec3(const Vec2<T>& xy)
+		: x(xy.x), y(xy.y), z(0.0f)
 	{
 	}
 

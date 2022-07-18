@@ -70,8 +70,8 @@ Mat3x2 Mat3x2::inverse() const
 		-m12 * inv_det,
 		-m21 * inv_det,
 		 m11 * inv_det,
-		(m31*m22 - m32*m21) * inv_det,
-		(m32*m11 - m31*m12) * inv_det
+		((m32 * m21) - (m31 * m22)) * inv_det,
+		((m31 * m12) - (m32 * m11)) * inv_det
 	);
 }
 
