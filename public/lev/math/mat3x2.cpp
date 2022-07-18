@@ -129,24 +129,19 @@ Mat3x2 Mat3x2::create_transform(const Vec2F& position, float rotation, const Vec
 {
 	Mat3x2 mat = Mat3x2::identity();
 
-	if (origin.x != 0 || origin.y != 0)
+	if (origin != lv::Vec2F::zero())
 		mat *= create_translation(-origin);
 
-	if (scale.x != 1 || scale.y != 1)
+	if (scale != lv::Vec2F::one())
 		mat *= create_scale(scale);
 
-	if (rotation != 0)
+	if (rotation != 0.0f)
 		mat *= create_rotation(rotation);
 
-	if (position.x != 0 || position.y != 0)
+	if (position != lv::Vec2F::zero())
 		mat *= create_translation(position);
 
 	return mat;
-}
-
-Vec2F Mat3x2::extract_position() const
-{
-	return Vec2F(m31, m32);
 }
 
 Mat3x2 Mat3x2::operator - (const Mat3x2& other) const
@@ -187,23 +182,28 @@ Mat3x2 Mat3x2::operator * (const Mat3x2& other) const
 
 Mat3x2& Mat3x2::operator -= (const Mat3x2& other)
 {
-	*this = (*this) - other;
+	(*this) = (*this) - other;
 	return *this;
 }
 
 Mat3x2& Mat3x2::operator += (const Mat3x2& other)
 {
-	*this = (*this) + other;
+	(*this) = (*this) + other;
 	return *this;
 }
 
 Mat3x2& Mat3x2::operator *= (const Mat3x2& other)
 {
-	*this = (*this) * other;
+	(*this) = (*this) * other;
 	return *this;
 }
 
 float* Mat3x2::operator [] (int idx)
+{
+	return elements[idx];
+}
+
+const float* Mat3x2::operator [] (int idx) const
 {
 	return elements[idx];
 }

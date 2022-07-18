@@ -22,8 +22,7 @@ namespace lv
 				float m32;
 			};
 
-            float floats[6];
-			float elements[2][3];
+			float elements[3][2];
 		};
 
 		Mat3x2();
@@ -46,8 +45,6 @@ namespace lv
 		static Mat3x2 create_translation(const Vec2<float>& translation);
 		static Mat3x2 create_transform(const Vec2<float>& position, float rotation, const Vec2<float>& scale, const Vec2<float>& origin);
 
-		Vec2<float> extract_position() const;
-
 		float* value_ptr();
         const float* value_ptr() const;
 
@@ -63,5 +60,6 @@ namespace lv
 		Mat3x2& operator *= (const Mat3x2& other);
 
 		float* operator [] (int idx);
+		const float* operator [] (int idx) const;
 	};
 };

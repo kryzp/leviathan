@@ -24,13 +24,16 @@ namespace lv
 		Quaternion(float x);
 		Quaternion(float s, float i, float j, float k);
 
+		static const Quaternion& zero();
+		static const Quaternion& one();
+
 		static Quaternion from_euler(float pitch, float yaw, float roll);
 		static Vec3F to_euler(const Quaternion& quat);
 
 		float* value_ptr();
 		const float* value_ptr() const;
 
-		static const Quaternion& zero();
-		static const Quaternion& one();
+		bool operator == (const Quaternion& other) const;
+		bool operator != (const Quaternion& other) const;
 	};
 }

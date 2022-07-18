@@ -40,6 +40,7 @@ add_library(${PROJECT_NAME}
 	public/lev/math/circle.cpp
 	public/lev/math/colour.cpp
 	public/lev/math/mat3x2.cpp
+	public/lev/math/mat4x3.cpp
 	public/lev/math/mat4x4.cpp
 	public/lev/math/line.cpp
 	public/lev/math/quad.cpp

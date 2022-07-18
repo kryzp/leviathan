@@ -61,5 +61,20 @@ const float* Quaternion::value_ptr() const
 	return &s;
 }
 
+bool Quaternion::operator == (const Quaternion& other) const
+{
+	return (
+		this->s == other.s &&
+		this->i == other.i &&
+		this->j == other.j &&
+		this->k == other.k
+	);
+}
+
+bool Quaternion::operator != (const Quaternion& other) const
+{
+	return !(*this == other);
+}
+
 const Quaternion& Quaternion::zero()	{ static const Quaternion ZERO	= Quaternion(0.0f); return ZERO;	}
 const Quaternion& Quaternion::one()	{ static const Quaternion ONE	= Quaternion(1.0f); return ONE;		}
