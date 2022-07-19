@@ -3,6 +3,7 @@
 #include <lev/math/calc.h>
 #include <lev/math/rand.h>
 #include <lev/math/vec2.h>
+#include <lev/math/mat4x3.h>
 
 namespace lv
 {
@@ -24,7 +25,7 @@ namespace lv
 		Vec3();
 		Vec3(T x);
 		Vec3(T x, T y, T z);
-		Vec3(const Vec2<T>& xy);
+		explicit Vec3(const Vec2<T>& xy);
 
 		// enable implicit casting to other vectors
 		template <typename Y>
@@ -47,6 +48,7 @@ namespace lv
 
 		static float dot(const Vec3& a, const Vec3& b);
 		static Vec3 cross(const Vec3& a, const Vec3& b);
+		static Vec3 transform(const Vec3& vec, const Mat4x3& mat);
 		static Vec3 lerp(const Vec3& from, const Vec3& to, float amount);
 		static Vec3 spring(const Vec3& from, const Vec3& to, float bounciness, float tension, Vec3& intermediate);
 
@@ -117,6 +119,16 @@ namespace lv
 			(a.y * b.z) - (a.z * b.y),
 			(a.z * b.x) - (a.x * b.z),
 			(a.x * b.y) - (a.y * b.x)
+		);
+	}
+
+	template <typename T>
+	Vec3<T> Vec3<T>::transform(const Vec3<T>& vec, const Mat4x3& mat)
+	{
+		return Vec3(
+			(vec.x * mat.m11) + (vec.y * mat.m21) + (vec.z * mat.m31) + mat.m41,
+			(vec.x * mat.m12) + (vec.y * mat.m22) + (vec.z * mat.m32) + mat.m42,
+			(vec.x * mat.m13) + (vec.y * mat.m23) + (vec.z * mat.m33) + mat.m43
 		);
 	}
 	

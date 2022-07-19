@@ -71,9 +71,9 @@ Mat4x3 Mat4x3::create_scale(float scale)
 Mat4x3 Mat4x3::create_rotation(const Quaternion& q)
 {
 	return Mat4x3(
-		2.0f * ((q.s * q.s) + (q.i * q.i)) - 1.0f, 2.0f * ((q.i * q.j) - (q.s * q.k)), 2.0f * ((q.i * q.k) + (q.s * q.j)),
-		2.0f * ((q.i * q.j) + (q.s * q.k)), 2.0f * ((q.s * q.s) + (q.j * q.j)) - 1.0f, 2.0f * ((q.j * q.k) - (q.s * q.i)),
-		2.0f * ((q.i * q.k) - (q.s * q.j)), 2.0f * ((q.j * q.k) + (q.s * q.i)), 2.0f * ((q.s * q.s) + (q.k * q.k)) - 1.0f,
+		1.0f - 2.0f * ((q.s * q.s) + (q.i * q.i)), 2.0f * ((q.i * q.j) - (q.s * q.k)), 2.0f * ((q.i * q.k) + (q.s * q.j)),
+		2.0f * ((q.i * q.j) + (q.s * q.k)), 1.0f - 2.0f * ((q.s * q.s) + (q.j * q.j)), 2.0f * ((q.j * q.k) - (q.s * q.i)),
+		2.0f * ((q.i * q.k) - (q.s * q.j)), 2.0f * ((q.j * q.k) + (q.s * q.i)), 1.0f - 2.0f * ((q.s * q.s) + (q.k * q.k)),
 		0, 0, 0
 	);
 }
@@ -89,24 +89,24 @@ Mat4x3 Mat4x3::create_translation(const Vec3<float>& translation)
 }
 
 Mat4x3 Mat4x3::create_transform(
-	const Vec3<float>& position,
+	const Vec3F& position,
 	const Quaternion& quat,
-	const Vec3<float>& scale,
-	const Vec3<float>& origin
+	const Size3& scale,
+	const Vec3F& origin
 )
 {
 	Mat4x3 mat = Mat4x3::identity();
 
-	if (origin != lv::Vec2F::zero())
+	if (origin != lv::Vec3F::zero())
 		mat *= create_translation(-origin);
 
-	if (scale != lv::Vec2F::zero())
+	if (scale != lv::Size3::zero())
 		mat *= create_scale(scale);
 
 	if (quat != Quaternion::zero())
 		mat *= create_rotation(quat);
 
-	if (position != lv::Vec2F::zero())
+	if (position != lv::Vec3F::zero())
 		mat *= create_translation(position);
 
 	return mat;
@@ -203,9 +203,9 @@ Mat4x3 Mat4x3::operator * (const Mat4x3& other) const
 		(this->m31 * other.m12) + (this->m32 * other.m22) + (this->m33 * other.m32),
 		(this->m31 * other.m13) + (this->m32 * other.m23) + (this->m33 * other.m33),
 
-		(this->m41 * other.m11) + (this->m42 * other.m21) + (this->m43 * other.m31),
-		(this->m41 * other.m12) + (this->m42 * other.m22) + (this->m43 * other.m32),
-		(this->m41 * other.m13) + (this->m42 * other.m23) + (this->m43 * other.m33)
+		(this->m41 * other.m11) + (this->m42 * other.m21) + (this->m43 * other.m31) + other.m41,
+		(this->m41 * other.m12) + (this->m42 * other.m22) + (this->m43 * other.m32) + other.m42,
+		(this->m41 * other.m13) + (this->m42 * other.m23) + (this->m43 * other.m33) + other.m43
 	);
 }
 

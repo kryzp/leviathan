@@ -5,7 +5,7 @@
 using namespace lv;
 
 Quaternion::Quaternion()
-	: s(0.0f), i(0.0f), j(0.0f), k(0.0f)
+	: s(1.0f), i(0.0f), j(0.0f), k(0.0f)
 {
 }
 

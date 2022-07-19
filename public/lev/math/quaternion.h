@@ -3,7 +3,6 @@
 namespace lv
 {
 	template <typename T> struct Vec3;
-	using Vec3F = Vec3<float>;
 
 	struct Quaternion
 	{
@@ -28,7 +27,9 @@ namespace lv
 		static const Quaternion& one();
 
 		static Quaternion from_euler(float pitch, float yaw, float roll);
-		static Vec3F to_euler(const Quaternion& quat);
+		static Vec3<float> to_euler(const Quaternion& quat);
+
+		Quaternion rotate_on_axis(float amount, const Vec3<float>& axis);
 
 		float* value_ptr();
 		const float* value_ptr() const;
