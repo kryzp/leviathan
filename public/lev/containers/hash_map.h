@@ -12,12 +12,15 @@ namespace lv
 	class HashMap
 	{
 	public:
+		static constexpr int MIN_CAPACITY = 16;
+
 		using KeyValuePair = Pair<TKey, TValue>;
 
 		struct Bucket
 		{
 			Bucket() : data(), next(nullptr), prev(nullptr) { }
-			Bucket(const TKey& k, const TValue& v) : data(k, v), next(nullptr), prev(nullptr) { }
+			Bucket(const KeyValuePair& p) : data(p), next(nullptr), prev(nullptr) { }
+			Bucket(Bucket&& other) noexcept : data(std::move(other.data)), next(std::move(other.next)), prev(std::move(other.prev)) { };
 			KeyValuePair data;
 			Bucket* next;
 			Bucket* prev;
@@ -95,6 +98,7 @@ namespace lv
 		, m_bucket_count(0)
 		, m_capacity(0)
 	{
+		realloc();
 	}
 
 	template <typename TKey, typename TValue>
@@ -117,6 +121,24 @@ namespace lv
 	template <typename TKey, typename TValue>
 	void HashMap<TKey, TValue>::insert(const KeyValuePair& pair)
 	{
+		auto idx = index_of(pair.first);
+
+		Bucket* b = m_buckets[idx];
+
+		if (b)
+		{
+			while (b->next)
+				b = b->next;
+
+			b->next = new Bucket(pair);
+			b->next->prev = b;
+		}
+		else
+		{
+			m_buckets[idx] = new Bucket(pair);
+		}
+
+		m_bucket_count++;
 	}
 
 	template <typename TKey, typename TValue>
@@ -141,6 +163,10 @@ namespace lv
 					m_buckets[m_capacity-1] = b->prev;
 
 				::operator delete(b, sizeof(Bucket));
+
+				m_bucket_count--;
+
+				return;
 			}
 
 			b = b->next;
@@ -150,6 +176,36 @@ namespace lv
 	template <typename TKey, typename TValue>
 	void HashMap<TKey, TValue>::clear()
 	{
+		m_bucket_count = 0;
+	}
+
+	template <typename TKey, typename TValue>
+	void HashMap<TKey, TValue>::realloc()
+	{
+		int old_size = m_capacity;
+
+		if (m_bucket_count >= m_capacity)
+			m_capacity += MIN_CAPACITY;
+		else if (m_bucket_count < m_capacity-MIN_CAPACITY)
+			m_capacity -= MIN_CAPACITY;
+
+		if (old_size == m_capacity)
+			return;
+
+		Bucket** new_buf = new Bucket*[m_capacity];
+		mem::set(new_buf, 0, sizeof(Bucket*) * m_capacity);
+
+		for (int i = 0; i < old_size; i++)
+		{
+			if (m_buckets[i])
+			{
+				int idx = index_of(m_buckets[i]->data.first);
+				new_buf[idx] = new Bucket(std::move(*m_buckets[i]));
+			}
+		}
+
+		delete[] m_buckets;
+		m_buckets = new_buf;
 	}
 
 	template <typename TKey, typename TValue>
@@ -231,11 +287,6 @@ namespace lv
 	}
 
 	template <typename TKey, typename TValue>
-	void HashMap<TKey, TValue>::realloc()
-	{
-	}
-
-	template <typename TKey, typename TValue>
 	typename HashMap<TKey, TValue>::Bucket* HashMap<TKey, TValue>::first()
 	{
 		return m_buckets;
@@ -283,90 +334,3 @@ namespace lv
 		return ConstIterator(m_buckets + m_capacity);
 	}
 };
-
-/*
-template <typename Key, typename Value>
-void HashMap<Key, Value>::insert(const Key& key, const Value& value)
-{
-	reallocate();
-
-	Bucket& existing = m_buckets[index_of(key)];
-
-	if (!existing.used)
-	{
-		m_buckets[index_of(key)] = Bucket(Pair(key, value), nullptr, nullptr);
-		m_bucket_count++;
-	}
-	else
-	{
-		if (existing.data.first == key)
-		{
-			existing.data.second = value;
-		}
-		else
-		{
-			Bucket* entry = existing.next;
-
-			if (entry)
-			{
-				while (entry)
-				{
-					if (entry->data.first == key)
-					{
-						entry->data.second = value;
-						return;
-					}
-
-					entry = entry->next;
-				}
-
-				entry->next = new Bucket(Pair(key, value), nullptr, entry);
-			}
-			else
-			{
-				existing.next = new Bucket(Pair(key, value), nullptr, &existing);
-			}
-		}
-	}
-}
-
-template <typename Key, typename Value>
-void HashMap<Key, Value>::remove(const Key& key)
-{
-	reallocate();
-
-	Bucket* entry = &m_buckets[index_of(key)];
-	while (entry)
-	{
-		auto next = entry->next;
-		(*entry) = Bucket();
-		entry = next;
-	}
-
-	m_bucket_count--;
-}
-
-
-template <typename Key, typename Value>
-void HashMap<Key, Value>::reallocate()
-{
-	int oldsize = m_capacity;
-
-	if (m_bucket_count >= m_capacity)
-		m_capacity += 16;
-	else if (m_bucket_count < m_capacity-16)
-		m_capacity -= 16;
-
-	if (oldsize == m_capacity)
-		return;
-
-	Bucket* newbuf = new Bucket[m_capacity];
-	mem::set(newbuf, 0, sizeof(Bucket) * m_capacity);
-
-	for (int i = 0; i < oldsize; i++)
-		new (newbuf + index_of(m_buckets[i].data.first)) Bucket(std::move(m_buckets[i]));
-
-	delete[] m_buckets;
-	m_buckets = newbuf;
-}
- */

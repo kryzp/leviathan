@@ -73,7 +73,7 @@ namespace lv
 
 		// return the requested asset if its already loaded
 		if (asset_list->assets.contains(path))
-			return Ref<TAsset>(asset_list->assets.at(path));
+			return Ref<TAsset>(asset_list->assets.get(path));
 
 		// otherwise load a new asset
 		Ref<TAsset> obj = static_cast<AssetLoader<TAsset>*>(
@@ -82,7 +82,7 @@ namespace lv
 
 		// store it as a weak ptr
 		Weak<TAsset> weakptr = obj;
-		asset_list->assets.insert(path, weakptr);
+		asset_list->assets.insert(Pair(path, weakptr));
 
 		return obj;
 	}

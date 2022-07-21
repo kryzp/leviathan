@@ -9,6 +9,11 @@
 
 namespace lv
 {
+	// todo:
+	// vector currently doesnt realloc *down*
+	// once you allocate some amount, it can only take up more space, it never frees it up
+	// i think
+
 	template <typename T>
 	class Vector
 	{
