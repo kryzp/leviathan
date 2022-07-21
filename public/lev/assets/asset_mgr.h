@@ -13,37 +13,37 @@ namespace lv
 {
 	class AssetLoaderBase : public NonCopyable, public NonMovable { };
 
-	template <class Asset>
+	template <class TAsset>
 	class AssetLoader : public AssetLoaderBase
 	{
 	public:
 		AssetLoader() = default;
 		virtual ~AssetLoader() = default;
 
-		virtual Ref<Asset> load(const String& path) = 0;
+		virtual Ref<TAsset> load(const String& path) = 0;
 	};
 
 	class AssetMgr : public NonCopyable, public NonMovable
 	{
 		struct AssetListBase { };
-		template <typename Asset>
-		struct AssetList : public AssetListBase { HashMap<String, Weak<Asset>> assets; };
+		template <typename TAsset>
+		struct AssetList : public AssetListBase { HashMap<String, Weak<TAsset>> assets; };
 
 	public:
 		AssetMgr();
 		~AssetMgr();
 
-		template <class Loader, class Asset>
+		template <class TLoader, class TAsset>
 		void register_loader();
 
-		template <class Asset>
-		Ref<Asset> load(const String& path);
+		template <class TAsset>
+		Ref<TAsset> load(const String& path);
 
-		template <class Asset>
+		template <class TAsset>
 		void free_load_data();
 
 	private:
-		template <class Asset>
+		template <class TAsset>
 		u16 retrieve_asset_id()
 		{
 			static u16 id = m_counter++;
@@ -56,41 +56,41 @@ namespace lv
 		u16 m_counter = 0;
 	};
 
-	template <class Loader, class Asset>
+	template <class TLoader, class TAsset>
 	void AssetMgr::register_loader()
 	{
-		u16 id = retrieve_asset_id<Asset>();
-		m_loaders[id] = new Loader();
+		u16 id = retrieve_asset_id<TAsset>();
+		m_loaders[id] = new TLoader();
 	}
 
-	template <class Asset>
-	Ref<Asset> AssetMgr::load(const String& path)
+	template <class TAsset>
+	Ref<TAsset> AssetMgr::load(const String& path)
 	{
-		if (!m_assets[retrieve_asset_id<Asset>()])
-			m_assets[retrieve_asset_id<Asset>()] = new AssetList<Asset>();
+		if (!m_assets[retrieve_asset_id<TAsset>()])
+			m_assets[retrieve_asset_id<TAsset>()] = new AssetList<TAsset>();
 
-		auto* asset_list = static_cast<AssetList<Asset>*>(m_assets[retrieve_asset_id<Asset>()]);
+		auto* asset_list = static_cast<AssetList<TAsset>*>(m_assets[retrieve_asset_id<TAsset>()]);
 
 		// return the requested asset if its already loaded
 		if (asset_list->assets.contains(path))
-			return Ref<Asset>(asset_list->assets.at(path));
+			return Ref<TAsset>(asset_list->assets.at(path));
 
 		// otherwise load a new asset
-		Ref<Asset> obj = static_cast<AssetLoader<Asset>*>(
-			m_loaders[retrieve_asset_id<Asset>()]
+		Ref<TAsset> obj = static_cast<AssetLoader<TAsset>*>(
+			m_loaders[retrieve_asset_id<TAsset>()]
 		)->load(path);
 
 		// store it as a weak ptr
-		Weak<Asset> weakptr = obj;
+		Weak<TAsset> weakptr = obj;
 		asset_list->assets.insert(path, weakptr);
 
 		return obj;
 	}
 
-	template <class Asset>
+	template <class TAsset>
 	void AssetMgr::free_load_data()
 	{
-		delete static_cast<AssetList<Asset>*>(m_assets[retrieve_asset_id<Asset>()]);
-		delete static_cast<AssetLoader<Asset>*>(m_loaders[retrieve_asset_id<Asset>()]);
+		delete static_cast<AssetList<TAsset>*>(m_assets[retrieve_asset_id<TAsset>()]);
+		delete static_cast<AssetLoader<TAsset>*>(m_loaders[retrieve_asset_id<TAsset>()]);
 	}
 }

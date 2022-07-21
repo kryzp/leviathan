@@ -2,14 +2,14 @@
 
 namespace lv
 {
-	template <typename First, typename Second>
+	template <typename TFirst, typename TSecond>
 	struct Pair
 	{
-		First first;
-		Second second;
+		TFirst first;
+		TSecond second;
 
 		Pair();
-		Pair(const First& a, const Second& b);
+		Pair(const TFirst& a, const TSecond& b);
 
 		Pair(const Pair& other);
 		Pair(Pair&& other) noexcept;
@@ -23,36 +23,36 @@ namespace lv
 		bool operator != (const Pair& other) const;
 	};
 
-	template <typename First, typename Second>
-	Pair<First, Second>::Pair()
+	template <typename TFirst, typename TSecond>
+	Pair<TFirst, TSecond>::Pair()
 		: first()
 		, second()
 	{
 	}
 
-	template <typename First, typename Second>
-	Pair<First, Second>::Pair(const First& a, const Second& b)
+	template <typename TFirst, typename TSecond>
+	Pair<TFirst, TSecond>::Pair(const TFirst& a, const TSecond& b)
 		: first(a)
 		, second(b)
 	{
 	}
 
-	template <typename First, typename Second>
-	Pair<First, Second>::Pair(const Pair& other)
+	template <typename TFirst, typename TSecond>
+	Pair<TFirst, TSecond>::Pair(const Pair& other)
 		: first(other.first)
 		, second(other.second)
 	{
 	}
 
-	template <typename First, typename Second>
-	Pair<First, Second>::Pair(Pair&& other) noexcept
+	template <typename TFirst, typename TSecond>
+	Pair<TFirst, TSecond>::Pair(Pair&& other) noexcept
 		: first(std::move(other.first))
 		, second(std::move(other.second))
 	{
 	}
 
-	template <typename First, typename Second>
-	Pair<First, Second>& Pair<First, Second>::operator = (const Pair& other)
+	template <typename TFirst, typename TSecond>
+	Pair<TFirst, TSecond>& Pair<TFirst, TSecond>::operator = (const Pair& other)
 	{
 		this->first = other.first;
 		this->second = other.second;
@@ -60,8 +60,8 @@ namespace lv
 		return *this;
 	}
 
-	template <typename First, typename Second>
-	Pair<First, Second>& Pair<First, Second>::operator = (Pair&& other) noexcept
+	template <typename TFirst, typename TSecond>
+	Pair<TFirst, TSecond>& Pair<TFirst, TSecond>::operator = (Pair&& other) noexcept
 	{
 		this->first = std::move(other.first);
 		this->second = std::move(other.second);
@@ -69,8 +69,8 @@ namespace lv
 		return *this;
 	}
 
-	template <typename First, typename Second>
-	bool Pair<First, Second>::operator == (const Pair& other) const
+	template <typename TFirst, typename TSecond>
+	bool Pair<TFirst, TSecond>::operator == (const Pair& other) const
 	{
 		return (
 			this->first == other.first &&
@@ -78,8 +78,8 @@ namespace lv
 		);
 	}
 
-	template <typename First, typename Second>
-	bool Pair<First, Second>::operator != (const Pair& other) const
+	template <typename TFirst, typename TSecond>
+	bool Pair<TFirst, TSecond>::operator != (const Pair& other) const
 	{
 		return !(*this == other);
 	}

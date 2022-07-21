@@ -6,8 +6,8 @@
 #ifdef LEV_DEBUG
 
 // looks hacky but basically i just dereference oob memory and try writing to it, causing a crash
-#define LEV_ASSERT(_exp, _msg) if(!(_exp)){::lev::log::error("ASSERTION: " _msg);*((volatile int*)0)=0;}
-#define LEV_ERROR(_msg) {::lev::log::error("ERROR: " _msg);*((volatile int*)0)=0;}
+#define LEV_ASSERT(_exp, _msg) if(!(_exp)){::lv::log::error("ASSERTION: " _msg);*((volatile int*)0)=0;}
+#define LEV_ERROR(_msg) {::lv::log::error("ERROR: " _msg);*((volatile int*)0)=0;}
 
 #else
 
@@ -66,13 +66,13 @@ namespace lv
 
 	template <typename T>
 	using Unique = std::unique_ptr<T>;
-	template <typename T, typename... Args>
-	constexpr Unique<T> create_scope(Args&&... args) { return std::make_unique<T>(std::forward<Args>(args)...); }
+	template <typename T, typename... TArgs>
+	constexpr Unique<T> create_scope(TArgs&&... args) { return std::make_unique<T>(std::forward<TArgs>(args)...); }
 
 	template <typename T>
 	using Ref = std::shared_ptr<T>;
-	template <typename T, typename... Args>
-	constexpr Ref<T> create_ref(Args&&... args) { return std::make_shared<T>(std::forward<Args>(args)...); }
+	template <typename T, typename... TArgs>
+	constexpr Ref<T> create_ref(TArgs&&... args) { return std::make_shared<T>(std::forward<TArgs>(args)...); }
 
 	template <typename T>
 	using Weak = std::weak_ptr<T>;

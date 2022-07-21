@@ -6,7 +6,7 @@
 
 namespace lv
 {
-	template <typename T, u64 Size>
+	template <typename T, u64 TSize>
 	class Array
 	{
 	public:
@@ -31,91 +31,91 @@ namespace lv
 		const T& operator [] (u64 idx) const;
 
 	private:
-		T m_buf[Size];
+		T m_buf[TSize];
 	};
 
-	template <typename T, u64 Size>
-	Array<T, Size>::Array()
+	template <typename T, u64 TSize>
+	Array<T, TSize>::Array()
 	{
 	}
 	
-	template <typename T, u64 Size>
-	Array<T, Size>::Array(std::initializer_list<T> data)
+	template <typename T, u64 TSize>
+	Array<T, TSize>::Array(std::initializer_list<T> data)
 	{
-		for (u64 i = 0; i < Size; i++)
+		for (u64 i = 0; i < TSize; i++)
 			m_buf[i] = data.begin()[i];
 	}
 	
-	template <typename T, u64 Size>
-	Array<T, Size>::Array(const Array& other)
+	template <typename T, u64 TSize>
+	Array<T, TSize>::Array(const Array& other)
 	{
-		for (u64 i = 0; i < Size; i++)
+		for (u64 i = 0; i < TSize; i++)
 			m_buf[i] = other.m_buf[i];
 	}
 	
-	template <typename T, u64 Size>
-	Array<T, Size>& Array<T, Size>::operator = (const Array& other)
+	template <typename T, u64 TSize>
+	Array<T, TSize>& Array<T, TSize>::operator = (const Array& other)
 	{
-		for (u64 i = 0; i < Size; i++)
+		for (u64 i = 0; i < TSize; i++)
 			m_buf[i] = other.m_buf[i];
 	}
 	
-	template <typename T, u64 Size>
-	Array<T, Size>::~Array()
+	template <typename T, u64 TSize>
+	Array<T, TSize>::~Array()
 	{
 	}
 
-	template <typename T, u64 Size>
-	void Array<T, Size>::fill(const T& value)
+	template <typename T, u64 TSize>
+	void Array<T, TSize>::fill(const T& value)
 	{
-		for (int i = 0; i < Size; i++)
+		for (int i = 0; i < TSize; i++)
 			m_buf[i] = value;
 	}
 
-	template <typename T, u64 Size>
-	constexpr u64 Array<T, Size>::memory_size() const
+	template <typename T, u64 TSize>
+	constexpr u64 Array<T, TSize>::memory_size() const
 	{
-		return sizeof(T) * Size;
+		return sizeof(T) * TSize;
 	}
 
-	template <typename T, u64 Size>
-	constexpr u64 Array<T, Size>::size() const
+	template <typename T, u64 TSize>
+	constexpr u64 Array<T, TSize>::size() const
 	{
-		return Size;
+		return TSize;
 	}
 
-	template <typename T, u64 Size>
-	T& Array<T, Size>::at(u64 idx)
-	{
-		return m_buf[idx];
-	}
-
-	template <typename T, u64 Size>
-	const T& Array<T, Size>::at(u64 idx) const
+	template <typename T, u64 TSize>
+	T& Array<T, TSize>::at(u64 idx)
 	{
 		return m_buf[idx];
 	}
 
-	template <typename T, u64 Size>
-	T* Array<T, Size>::data()
+	template <typename T, u64 TSize>
+	const T& Array<T, TSize>::at(u64 idx) const
+	{
+		return m_buf[idx];
+	}
+
+	template <typename T, u64 TSize>
+	T* Array<T, TSize>::data()
 	{
 		return m_buf;
 	}
 
-	template <typename T, u64 Size>
-	const T* Array<T, Size>::data() const
+	template <typename T, u64 TSize>
+	const T* Array<T, TSize>::data() const
 	{
 		return m_buf;
 	}
 	
-	template <typename T, u64 Size>
-	T& Array<T, Size>::operator [] (u64 idx)
+	template <typename T, u64 TSize>
+	T& Array<T, TSize>::operator [] (u64 idx)
 	{
 		return m_buf[idx];
 	}
 	
-	template <typename T, u64 Size>
-	const T& Array<T, Size>::operator [] (u64 idx) const
+	template <typename T, u64 TSize>
+	const T& Array<T, TSize>::operator [] (u64 idx) const
 	{
 		return m_buf[idx];
 	}

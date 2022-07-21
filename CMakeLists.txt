@@ -78,6 +78,8 @@ set(SDL2_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/lib/SDL2-2.0.20/lib/x64/SDL2.lib
 
 add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
 
+add_compile_definitions(LEV_DEBUG)
+
 if (OPENGL_ENABLED)
 	add_compile_definitions(LEV_USE_OPENGL)
 endif()

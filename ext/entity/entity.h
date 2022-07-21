@@ -68,8 +68,8 @@ namespace lv
         u16 id() const;
         u16 index() const;
 
-        template <class T, typename... Args>
-        ComponentHandle<T> add(Args&&... args);
+        template <class T, typename... TArgs>
+        ComponentHandle<T> add(TArgs&&... args);
 
         template <class T>
         ComponentHandle<T> get();
@@ -166,8 +166,8 @@ namespace lv
         void remove_entity(const EntityHandle& handle);
         Entity* retrieve_entity(const EntityHandle& handle);
 
-        template <class T, typename... Args>
-        ComponentHandle<T>* add_component(const EntityHandle& handle, Args&&... args);
+        template <class T, typename... TArgs>
+        ComponentHandle<T>* add_component(const EntityHandle& handle, TArgs&&... args);
 
         template <class T>
         T* retrieve_component(const ComponentHandle<T>& handle);
@@ -179,8 +179,8 @@ namespace lv
         // todo
     };
 
-    template <class T, typename... Args>
-    ComponentHandle<T> Entity::add(Args&&... args)
+    template <class T, typename... TArgs>
+    ComponentHandle<T> Entity::add(TArgs&&... args)
     {
         EntityMgr::inst()->add_component<T>(EntityHandle(*this), args...);
     }
@@ -282,8 +282,8 @@ namespace lv
         return !(*this == other);
     }
 
-    template <class T, typename... Args>
-    ComponentHandle<T>* EntityMgr::add_component(const EntityHandle& handle, Args&&... args)
+    template <class T, typename... TArgs>
+    ComponentHandle<T>* EntityMgr::add_component(const EntityHandle& handle, TArgs&&... args)
     {
     }
 

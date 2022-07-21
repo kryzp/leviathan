@@ -355,13 +355,13 @@ namespace lv
         return m_buf + idx;
     }
 
-    template<typename T>
+    template <typename T>
     T& Vector<T>::operator [] (u64 idx)
     {
         return m_buf[idx];
     }
 
-    template<typename T>
+    template <typename T>
     const T& Vector<T>::operator [] (u64 idx) const
     {
         return m_buf[idx];
