@@ -58,15 +58,15 @@ namespace lv
 
     private:
         T* m_buf;
-        u64 m_count;
         u64 m_size;
+        u64 m_capacity;
 	};
 
     template <typename T>
     Vector<T>::Vector()
 		: m_buf(nullptr)
-        , m_count(0)
         , m_size(0)
+        , m_capacity(0)
     {
     }
     
@@ -75,9 +75,9 @@ namespace lv
         : Vector()
     {
         allocate(data.size());
-        m_count = data.size();
+        m_size = data.size();
 
-        for (u64 i = 0; i < m_count; i++)
+        for (u64 i = 0; i < m_size; i++)
             new (m_buf + i) T(data.begin()[i]);
     }
 
@@ -86,9 +86,9 @@ namespace lv
         : Vector()
     {
         allocate(initial_capacity);
-        m_count = initial_capacity;
+        m_size = initial_capacity;
 
-        for (u64 i = 0; i < m_size; i++)
+        for (u64 i = 0; i < m_capacity; i++)
             new (m_buf + i) T();
     }
     
@@ -96,13 +96,13 @@ namespace lv
     Vector<T>::Vector(const Vector& other)
         : Vector()
     {
-        if (other.m_size > 0)
+        if (other.m_capacity > 0)
         {
-            allocate(other.m_size);
+            allocate(other.m_capacity);
             clear();
-            m_count = other.size();
+            m_size = other.size();
 
-            for (int i = 0; i < other.m_size; i++)
+            for (int i = 0; i < other.m_capacity; i++)
                 new (m_buf + i) T(other.m_buf[i]);
         }
     }
@@ -110,25 +110,25 @@ namespace lv
     template <typename T>
     Vector<T>::Vector(Vector&& other) noexcept
     {
+        this->m_capacity = std::move(other.m_capacity);
         this->m_size = std::move(other.m_size);
-        this->m_count = std::move(other.m_count);
         this->m_buf = std::move(other.m_buf);
 
+        other.m_capacity = 0;
         other.m_size = 0;
-        other.m_count = 0;
         other.m_buf = nullptr;
     }
     
     template <typename T>
     Vector<T>& Vector<T>::operator = (const Vector& other)
     {
-        if (other.m_size > 0)
+        if (other.m_capacity > 0)
         {
-            allocate(other.m_size);
+            allocate(other.m_capacity);
             clear();
-            m_count = other.size();
+            m_size = other.size();
 
-            for (int i = 0; i < other.m_size; i++)
+            for (int i = 0; i < other.m_capacity; i++)
                 new (m_buf + i) T(other.m_buf[i]);
         }
 
@@ -141,14 +141,14 @@ namespace lv
         clear();
 
         if (m_buf)
-            ::operator delete (m_buf, sizeof(T) * m_size);
+            ::operator delete (m_buf, sizeof(T) * m_capacity);
 
+        this->m_capacity = std::move(other.m_capacity);
         this->m_size = std::move(other.m_size);
-        this->m_count = std::move(other.m_count);
         this->m_buf = std::move(other.m_buf);
 
+        other.m_capacity = 0;
         other.m_size = 0;
-        other.m_count = 0;
         other.m_buf = nullptr;
 
         return *this;
@@ -160,31 +160,31 @@ namespace lv
         clear();
 
         if (m_buf)
-            ::operator delete (m_buf, sizeof(T) * m_size);
+            ::operator delete (m_buf, sizeof(T) * m_capacity);
 
         m_buf = nullptr;
+        m_capacity = 0;
         m_size = 0;
-        m_count = 0;
     }
 
     template <typename T>
     void Vector<T>::clear()
     {
-        for (int i = 0; i < m_count; i++)
+        for (int i = 0; i < m_size; i++)
             m_buf[i].~T();
 
-		mem::set(m_buf, 0, m_size * sizeof(T));
+		mem::set(m_buf, 0, m_capacity * sizeof(T));
 
-        m_count = 0;
+        m_size = 0;
     }
 
     template <typename T>
     void Vector<T>::allocate(u64 capacity)
     {
-        if (capacity > m_size)
+        if (capacity > m_capacity)
         {
             // 8 is just a nice number since vectors this small likely will have lots of rapid push/pop action
-            u64 newsize = calc::max(8, m_size);
+            u64 newsize = calc::max(8, m_capacity);
             
             while (newsize < capacity)
                 newsize *= 2;
@@ -192,30 +192,30 @@ namespace lv
 		    T* new_buf = (T*)::operator new (sizeof(T) * newsize);
 			mem::set(new_buf, 0, sizeof(T) * newsize);
 
-            for (int i = 0; i < m_count; i++)
+            for (int i = 0; i < m_size; i++)
             {
-                if (i < m_size)
+                if (i < m_capacity)
                     new (new_buf+i) T(std::move(m_buf[i]));
 
                 m_buf[i].~T();
             }
 
             if (m_buf)
-		        ::operator delete (m_buf, sizeof(T) * m_size);
+		        ::operator delete (m_buf, sizeof(T) * m_capacity);
 
             m_buf = new_buf;
-            m_size = newsize;
+            m_capacity = newsize;
         }
     }
 
     template <typename T>
     void Vector<T>::resize(u64 new_count)
     {
-        if (new_count < m_count)
-            erase(new_count, m_count - new_count);
+        if (new_count < m_size)
+            erase(new_count, m_size - new_count);
 
-        else if (new_count > m_count)
-            expand(new_count - m_count);
+        else if (new_count > m_size)
+            expand(new_count - m_size);
     }
 
     template <typename T>
@@ -223,13 +223,13 @@ namespace lv
     {
 		if (amount > 0)
 		{
-			for (int i = 0; i < m_count - amount; i++)
+			for (int i = 0; i < m_size - amount; i++)
 				m_buf[i] = std::move(m_buf[i + amount]);
 
-			for (int i = m_count - amount; i < m_count; i++)
+			for (int i = m_size - amount; i < m_size; i++)
 				m_buf[i].~T();
 
-			m_count -= amount;
+			m_size -= amount;
 		}
     }
 
@@ -238,16 +238,16 @@ namespace lv
     {
         LEV_ASSERT(amount > 0, "Expand amount must be higher than 0");
 
-        allocate(m_count + amount);
+        allocate(m_size + amount);
 
         for (int i = 0; i < amount; i++)
-            new (m_buf + m_count + i) T();
+            new (m_buf + m_size + i) T();
     }
 
     template <typename T>
     void Vector<T>::fill(byte value)
     {
-        mem::set(m_buf, value, sizeof(T) * m_size);
+        mem::set(m_buf, value, sizeof(T) * m_capacity);
     }
 
     template <typename T>
@@ -265,30 +265,30 @@ namespace lv
     template <typename T>
     T& Vector<T>::back()
     {
-        return m_buf[m_count - 1];
+        return m_buf[m_size - 1];
     }
 
     template <typename T>
     const T& Vector<T>::back() const
     {
-        return m_buf[m_count - 1];
+        return m_buf[m_size - 1];
     }
 
     template <typename T>
     void Vector<T>::push_front(T item)
     {
-        resize(m_count + 1);
-        mem::move(m_buf + 1, m_buf, sizeof(T) * m_count);
+        resize(m_size + 1);
+        mem::move(m_buf + 1, m_buf, sizeof(T) * m_size);
         new (m_buf) T(std::move(item));
-        m_count++;
+        m_size++;
     }
 
     template <typename T>
     void Vector<T>::push_back(T item)
     {
-        resize(m_count + 1);
-        new (m_buf + m_count) T(std::move(item));
-        m_count++;
+        resize(m_size + 1);
+        new (m_buf + m_size) T(std::move(item));
+        m_size++;
     }
 
     template <typename T>
@@ -297,26 +297,26 @@ namespace lv
         T item = std::move(m_buf[0]);
         m_buf[0].~T();
 
-        for (int i = 0; i < m_count-1; i++)
+        for (int i = 0; i < m_size-1; i++)
             m_buf[i] = std::move(m_buf[i+1]);
 
-        m_count--;
+        m_size--;
         return item;
     }
 
     template <typename T>
     T Vector<T>::pop_back()
     {
-        T item = std::move(m_buf[m_count-1]);
-        m_buf[m_count-1].~T();
-        m_count--;
+        T item = std::move(m_buf[m_size-1]);
+        m_buf[m_size-1].~T();
+        m_size--;
         return item;
     }
 
     template <typename T>
     u64 Vector<T>::size() const
     {
-        return m_count;
+        return m_size;
     }
     
     template <typename T>
@@ -334,13 +334,13 @@ namespace lv
     template <typename T>
     T* Vector<T>::end()
     {
-        return m_buf + m_count;
+        return m_buf + m_size;
     }
 
     template <typename T>
     const T* Vector<T>::end() const
     {
-        return m_buf + m_count;
+        return m_buf + m_size;
     }
 
     template <typename T>

@@ -46,12 +46,14 @@ namespace lv
 		static Vec2 from_angle(float angle, float length);
 		static Vec2 lerp(const Vec2& from, const Vec2& to, float amount);
 		static Vec2 spring(const Vec2& from, const Vec2& to, float bounciness, float tension, Vec2& intermediate);
+		static Vec2 approach(const Vec2& from, const Vec2& to, float amount);
 
 		float angle() const;
 
 		float length() const;
 		float length_squared() const;
 
+		Vec2 abs() const;
 		Vec2 normalized() const;
 		Vec2 perpendicular() const;
 
@@ -61,6 +63,7 @@ namespace lv
 		Vec2 operator + (const Vec2& other) const;
 		Vec2 operator - (const Vec2& other) const;
 		Vec2 operator * (const Vec2& other) const;
+		Vec2 operator * (float scalar)      const;
 		Vec2 operator / (const Vec2& other) const;
 
 		Vec2 operator - () const;
@@ -68,6 +71,7 @@ namespace lv
 		Vec2& operator += (const Vec2& other);
 		Vec2& operator -= (const Vec2& other);
 		Vec2& operator *= (const Vec2& other);
+		Vec2& operator *= (float scalar);
 		Vec2& operator /= (const Vec2& other);
 	};
 
@@ -80,6 +84,7 @@ namespace lv
 	using Int2		= Vec2<int>;
 	using Point2	= Vec2<int>;
 	using UInt2		= Vec2<unsigned>;
+	using Unsigned2 = Vec2<unsigned>;
 
 	template <typename T>
 	Vec2<T>::Vec2()
@@ -146,6 +151,15 @@ namespace lv
 			calc::spring(from.y, to.y, bounciness, tension, intermediate.y)
 		);
 	}
+
+	template <typename T>
+	Vec2<T> Vec2<T>::approach(const Vec2& from, const Vec2& to, float amount)
+	{
+		return Vec2(
+			calc::approach(from.x, to.x, amount),
+			calc::approach(from.y, to.y, amount)
+		);
+	}
 	
 	template <typename T>
 	float Vec2<T>::angle() const
@@ -164,7 +178,16 @@ namespace lv
 	{
 		return x*x + y*y;
 	}
-	
+
+	template <typename T>
+	Vec2<T> Vec2<T>::abs() const
+	{
+		return Vec2(
+			lv::calc::abs(this->x),
+			lv::calc::abs(this->y)
+		);
+	}
+
 	template <typename T>
 	Vec2<T> Vec2<T>::normalized() const
 	{
@@ -189,11 +212,13 @@ namespace lv
 	template <typename T> Vec2<T> Vec2<T>::operator - (const Vec2& other) const { return Vec2( this->x - other.x,  this->y - other.y); }
 	template <typename T> Vec2<T> Vec2<T>::operator - ()                  const { return Vec2(-this->x,           -this->y          ); }
 	template <typename T> Vec2<T> Vec2<T>::operator * (const Vec2& other) const { return Vec2( this->x * other.x,  this->y * other.y); }
+	template <typename T> Vec2<T> Vec2<T>::operator * (float scalar)      const { return Vec2( this->x * scalar,   this->y * scalar ); }
 	template <typename T> Vec2<T> Vec2<T>::operator / (const Vec2& other) const { return Vec2( this->x / other.x,  this->y / other.y); }
 
 	template <typename T> Vec2<T>& Vec2<T>::operator += (const Vec2& other) { this->x += other.x; this->y += other.y; return *this; }
 	template <typename T> Vec2<T>& Vec2<T>::operator -= (const Vec2& other) { this->x -= other.x; this->y -= other.y; return *this; }
 	template <typename T> Vec2<T>& Vec2<T>::operator *= (const Vec2& other) { this->x *= other.x; this->y *= other.y; return *this; }
+	template <typename T> Vec2<T>& Vec2<T>::operator *= (float scalar)      { this->x *= scalar;  this->y *= scalar;  return *this; }
 	template <typename T> Vec2<T>& Vec2<T>::operator /= (const Vec2& other) { this->x /= other.x; this->y /= other.y; return *this; }
 
 	template <typename T> const Vec2<T>& Vec2<T>::unit()	{ static const Vec2 UNIT	= Vec2( 1,  1); return UNIT;	}
