@@ -13,7 +13,7 @@
 
 struct Joint
 {
-	lv::Vec2F position;
+	lev::Vec2F position;
 	float length;
 };
 
@@ -22,7 +22,7 @@ class Skeleton
 public:
 	static constexpr int ITERATIONS = 25;
 
-	void add_joint(const lv::Vec2F& position)
+	void add_joint(const lev::Vec2F& position)
 	{
 		Joint joint;
 		joint.position = position;
@@ -33,9 +33,9 @@ public:
 		m_joints.add(joint);
 	}
 
-	void solve_fabrik(const lv::Vec2F& target)
+	void solve_fabrik(const lev::Vec2F& target)
 	{
-		lv::Vec2F initial_position = m_joints.first->data.position;
+		lev::Vec2F initial_position = m_joints.first->data.position;
 
 		auto* starting_point = m_joints.last->prev;
 		bool backwards = true;
@@ -58,7 +58,7 @@ public:
 				Joint& joint = node->data;
 
 				auto angle = (joint.position - prev.position).angle();
-				joint.position = prev.position + lv::Vec2F::from_angle(angle, joint.length);
+				joint.position = prev.position + lev::Vec2F::from_angle(angle, joint.length);
 			}
 
 			backwards = !backwards;
@@ -66,41 +66,41 @@ public:
 		}
 	}
 
-	const lv::LinkedList<Joint>& joints() const { return m_joints; }
+	const lev::LinkedList<Joint>& joints() const { return m_joints; }
 
 private:
-	lv::LinkedList<Joint> m_joints;
+	lev::LinkedList<Joint> m_joints;
 };
 
 static Skeleton g_skelly;
-static lv::SpriteBatch g_batch;
-static lv::Vec2F g_target;
-static lv::Vec2F g_intermediate;
+static lev::SpriteBatch g_batch;
+static lev::Vec2F g_target;
+static lev::Vec2F g_intermediate;
 
 static void init()
 {
 	for (int i = 0; i < 50; i++)
-		g_skelly.add_joint(lv::Vec2F(20.0f + i * 40.0f, 60.0f));
+		g_skelly.add_joint(lev::Vec2F(20.0f + i * 40.0f, 60.0f));
 }
 
 static void update()
 {
-	g_target = lv::Vec2F::spring(g_target, lv::Input::inst()->mouse_position(), 8.0f, 0.4f, g_intermediate);
+	g_target = lev::Vec2F::spring(g_target, lev::Input::inst()->mouse_position(), 8.0f, 0.4f, g_intermediate);
 	g_skelly.solve_fabrik(g_target);
 }
 
 static void render()
 {
-	lv::App::clear(0x101013FF);
+	lev::App::clear(0x101013FF);
 	{
 		for (auto* node = g_skelly.joints().first; node; node = node->next)
 		{
 			const auto& joint = node->data;
 
 			if (node->next)
-				g_batch.push_line(lv::Line(joint.position, node->next->data.position), 2.0f, lv::Colour::blue());
+				g_batch.push_line(lev::Line(joint.position, node->next->data.position), 2.0f, lev::Colour::blue());
 
-			g_batch.push_circle(lv::Circle(joint.position, 5.0f), lv::Colour::cyan(), 10U);
+			g_batch.push_circle(lev::Circle(joint.position, 5.0f), lev::Colour::cyan(), 10U);
 		}
 	}
 	g_batch.render();
@@ -108,7 +108,7 @@ static void render()
 
 int main(int argc, char** argv)
 {
-	lv::Config conf;
+	lev::Config conf;
 	{
 		conf.name = "yes";
 		conf.width = 1280;
@@ -122,7 +122,7 @@ int main(int argc, char** argv)
 		conf.on_update = update;
 		conf.on_render = render;
 	}
-	lv::App::inst()->start(conf);
+	lev::App::inst()->start(conf);
 
 	return 0;
 }

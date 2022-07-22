@@ -2,7 +2,7 @@
 
 #include <limits>
 
-namespace lv
+namespace lev
 {
 	namespace calc
 	{

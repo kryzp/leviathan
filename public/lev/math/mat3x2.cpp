@@ -12,7 +12,7 @@ So, multiplication means doing 2x2 matrix multiplication then also applying
 that 'other' matrix to the position vector!
 */
 
-using namespace lv;
+using namespace lev;
 
 Mat3x2::Mat3x2()
 	: m11(0), m12(0)
@@ -129,16 +129,16 @@ Mat3x2 Mat3x2::create_transform(const Vec2F& position, float rotation, const Vec
 {
 	Mat3x2 mat = Mat3x2::identity();
 
-	if (origin != lv::Vec2F::zero())
+	if (origin != lev::Vec2F::zero())
 		mat *= create_translation(-origin);
 
-	if (scale != lv::Vec2F::one())
+	if (scale != lev::Vec2F::one())
 		mat *= create_scale(scale);
 
 	if (rotation != 0.0f)
 		mat *= create_rotation(rotation);
 
-	if (position != lv::Vec2F::zero())
+	if (position != lev::Vec2F::zero())
 		mat *= create_translation(position);
 
 	return mat;

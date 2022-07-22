@@ -2,7 +2,7 @@
 
 #include <lev/io/stream.h>
 
-namespace lv
+namespace lev
 {
 	class MemoryStream : public Stream
 	{

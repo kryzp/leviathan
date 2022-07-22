@@ -4,7 +4,7 @@
 #include <lev/io/stream.h>
 #include <lev/containers/string.h>
 
-namespace lv
+namespace lev
 {
 	class FileStream : public Stream
 	{

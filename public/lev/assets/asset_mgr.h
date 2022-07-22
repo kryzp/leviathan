@@ -9,7 +9,7 @@
 
 #define LEV_MAX_ASSET_TYPES 16
 
-namespace lv
+namespace lev
 {
 	class AssetLoaderBase : public NonCopyable, public NonMovable { };
 

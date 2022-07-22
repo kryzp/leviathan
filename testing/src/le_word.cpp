@@ -11,8 +11,8 @@
 #include <lev/math/vec2.h>
 #include <lev/math/complex.h>
 
-using Word = lv::String;
-using WordList = lv::Vector<Word>;
+using Word = lev::String;
+using WordList = lev::Vector<Word>;
 
 #define BOARD_WIDTH 5
 #define BOARD_HEIGHT 5
@@ -24,7 +24,7 @@ struct Node
 	char c;
 };
 
-bool iterate_dir(Node& node, const lv::Vec2I& dir, int index, const Word& word, const char* board)
+bool iterate_dir(Node& node, const lev::Vec2I& dir, int index, const Word& word, const char* board)
 {
 	node.x += dir.x;
 	node.y += dir.y;
@@ -55,7 +55,7 @@ bool check_node(const Node& node, const Word& word, const char* board)
 			{
 				Node n = node;
 
-				if (iterate_dir(n, lv::Vec2I(xo, yo), 1, word, board))
+				if (iterate_dir(n, lev::Vec2I(xo, yo), 1, word, board))
 					return true;
 			}
 		}
@@ -86,8 +86,8 @@ WordList find_words(const char* board, const WordList& words)
 
 int main()
 {
-	auto number = lv::Complex::pow(lv::Complex(0.0, 1.0), lv::Complex(0.0, 1.0));
-	lv::log::print("i^i = %f + %fi", number.real, number.imag);
+	auto number = lev::Complex::pow(lev::Complex(0.0, 1.0), lev::Complex(0.0, 1.0));
+	lev::log::print("i^i = %f + %fi", number.real, number.imag);
 
 	return 0;
 
@@ -106,7 +106,7 @@ int main()
 	};
 
 	for (auto& word : find_words(board, words))
-		lv::log::print("%s", word.c_str());
+		lev::log::print("%s", word.c_str());
 
 	// output:
 	// bae

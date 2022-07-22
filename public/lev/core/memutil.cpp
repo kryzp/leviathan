@@ -1,6 +1,6 @@
 #include <lev/core/util.h>
 
-using namespace lv;
+using namespace lev;
 
 void* mem::set(void* ptr, byte val, u64 size)
 {

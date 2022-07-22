@@ -12,7 +12,7 @@
 
 #define LEV_SHADER_MAX_SIZE LEV_KILOBYTES(5)
 
-namespace lv
+namespace lev
 {
 	enum ShaderType
 	{

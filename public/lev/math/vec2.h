@@ -4,7 +4,7 @@
 #include <lev/math/mat3x2.h>
 #include <lev/math/rand.h>
 
-namespace lv
+namespace lev
 {
 	template <typename T>
 	struct Vec2
@@ -183,8 +183,8 @@ namespace lv
 	Vec2<T> Vec2<T>::abs() const
 	{
 		return Vec2(
-			lv::calc::abs(this->x),
-			lv::calc::abs(this->y)
+			lev::calc::abs(this->x),
+			lev::calc::abs(this->y)
 		);
 	}
 

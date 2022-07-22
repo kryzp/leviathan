@@ -3,7 +3,7 @@
 #include <lev/gui/gui_constraints.h>
 #include <lev/input/input.h>
 
-namespace lv
+namespace lev
 {
 	class MousePosConstraint : public GUIConstraint
 	{

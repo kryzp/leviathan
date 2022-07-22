@@ -2,9 +2,9 @@
 
 #include <lev/core/util.h>
 
-namespace lv { struct Config; }
+namespace lev { struct Config; }
 
-namespace lv::bknd
+namespace lev::bknd
 {
 	struct SystemProperties
 	{

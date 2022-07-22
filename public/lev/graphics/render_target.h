@@ -6,7 +6,7 @@
 #include <lev/graphics/texture.h>
 #include <lev/math/colour.h>
 
-namespace lv
+namespace lev
 {
 	class RenderTarget : public NonCopyable, public NonMovable
 	{

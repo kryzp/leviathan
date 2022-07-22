@@ -7,7 +7,7 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <third_party/stb/stb_image_write.h>
 
-using namespace lv;
+using namespace lev;
 
 static void lev_stbi_write(void* context, void* data, int size)
 {

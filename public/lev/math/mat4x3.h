@@ -4,7 +4,7 @@
 // OK THIS IS GETTING OUT OF HAND
 // template based Matrix<R, C> structure?
 
-namespace lv
+namespace lev
 {
 	template <typename T> struct Vec3;
 	struct Quaternion;

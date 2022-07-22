@@ -1,6 +1,6 @@
 #include <lev/core/util.h>
 
-using namespace lv;
+using namespace lev;
 
 float time::milliseconds = 0.0f;
 float time::prev_milliseconds = 0.0f;

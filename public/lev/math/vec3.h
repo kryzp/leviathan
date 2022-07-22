@@ -5,7 +5,7 @@
 #include <lev/math/vec2.h>
 #include <lev/math/mat4x3.h>
 
-namespace lv
+namespace lev
 {
 	template <typename T>
 	struct Vec3
@@ -185,9 +185,9 @@ namespace lv
 	Vec3<T> Vec3<T>::abs() const
 	{
 		return Vec3(
-			lv::calc::abs(this->x),
-			lv::calc::abs(this->y),
-			lv::calc::abs(this->z)
+			lev::calc::abs(this->x),
+			lev::calc::abs(this->y),
+			lev::calc::abs(this->z)
 		);
 	}
 

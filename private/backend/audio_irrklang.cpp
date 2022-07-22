@@ -2,8 +2,8 @@
 
 #include <backend/audio.h>
 
-using namespace lv;
-using namespace lv::bknd;
+using namespace lev;
+using namespace lev::bknd;
 
 class IKSound : public Sound
 {

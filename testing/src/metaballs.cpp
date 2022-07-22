@@ -11,14 +11,14 @@
 
 struct Ball
 {
-	lv::Circle shape;
-	lv::Vec2F velocity;
+	lev::Circle shape;
+	lev::Vec2F velocity;
 };
 
-static lv::SpriteBatch g_batch;
-static lv::AssetMgr g_assets;
-static lv::Ref<lv::RenderTarget> g_target;
-static lv::Ref<lv::Shader> g_metaball_shader;
+static lev::SpriteBatch g_batch;
+static lev::AssetMgr g_assets;
+static lev::Ref<lev::RenderTarget> g_target;
+static lev::Ref<lev::Shader> g_metaball_shader;
 static Ball g_balls[BALL_COUNT];
 
 static void init_balls()
@@ -27,21 +27,21 @@ static void init_balls()
 	{
 		auto& b = g_balls[i];
 
-		b.shape.position = lv::Vec2F(
-			lv::Rand<>::inst()->real(0.0f, WINDOW_WIDTH),
-			lv::Rand<>::inst()->real(0.0f, WINDOW_HEIGHT)
+		b.shape.position = lev::Vec2F(
+			lev::Rand<>::inst()->real(0.0f, WINDOW_WIDTH),
+			lev::Rand<>::inst()->real(0.0f, WINDOW_HEIGHT)
 		);
 
-		b.shape.radius = lv::Rand<>::inst()->real(100.0f, 200.0f);
+		b.shape.radius = lev::Rand<>::inst()->real(100.0f, 200.0f);
 
-		b.velocity = lv::Vec2F::random_unit() * lv::Rand<>::inst()->real(20.0f, 40.0f);
+		b.velocity = lev::Vec2F::random_unit() * lev::Rand<>::inst()->real(20.0f, 40.0f);
 	}
 }
 
 static void init_render_stuff()
 {
-	g_target          = lv::RenderTarget::create(WINDOW_WIDTH, WINDOW_HEIGHT);
-	g_metaball_shader = g_assets.load<lv::Shader>("res\\shaders\\metaballs_shader.levshader");
+	g_target          = lev::RenderTarget::create(WINDOW_WIDTH, WINDOW_HEIGHT);
+	g_metaball_shader = g_assets.load<lev::Shader>("res\\shaders\\metaballs_shader.levshader");
 }
 
 static void init()
@@ -53,7 +53,7 @@ static void init()
 static void update()
 {
 	for (auto& b : g_balls)
-		b.shape.position += b.velocity * lv::time::delta;
+		b.shape.position += b.velocity * lev::time::delta;
 }
 
 static void render()
@@ -63,19 +63,19 @@ static void render()
 		g_target->clear();
 
 		for (auto& b : g_balls)
-			g_batch.push_circle_col(b.shape, lv::Colour::white(), lv::Colour::empty());
+			g_batch.push_circle_col(b.shape, lev::Colour::white(), lev::Colour::empty());
 
 		g_batch.render(g_target);
 	}
 
 	// render to screen
 	{
-		lv::App::clear();
+		lev::App::clear();
 		g_batch.set_shader(g_metaball_shader);
 		g_batch.push_texture(g_target->attachment(0));
 		g_batch.reset_shader();
 
-		g_batch.push_line_col(lv::Line(lv::Vec2F(50, 50), 45.0f * lv::calc::DEG2RAD, 50.0f), 10.0f,  lv::Colour::red(), lv::Colour::blue());
+		g_batch.push_line_col(lev::Line(lev::Vec2F(50, 50), 45.0f * lev::calc::DEG2RAD, 50.0f), 10.0f,  lev::Colour::red(), lev::Colour::blue());
 
 		g_batch.render();
 	}
@@ -83,7 +83,7 @@ static void render()
 
 int main()
 {
-	lv::Config conf;
+	lev::Config conf;
 	{
 		conf.name = "meta's balls";
 		conf.width = WINDOW_WIDTH;
@@ -97,7 +97,7 @@ int main()
 		conf.on_update = update;
 		conf.on_render = render;
 	}
-	lv::App::inst()->start(conf);
+	lev::App::inst()->start(conf);
 
 	return 0;
 }

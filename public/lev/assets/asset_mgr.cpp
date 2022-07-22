@@ -5,7 +5,7 @@
 #include <lev/audio/sound.h>
 #include <lev/io/file_stream.h>
 
-using namespace lv;
+using namespace lev;
 
 class TextureLoader : public AssetLoader<Texture>
 {

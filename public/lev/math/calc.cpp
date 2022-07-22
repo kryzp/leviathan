@@ -2,7 +2,7 @@
 
 #include <math.h>
 
-using namespace lv;
+using namespace lev;
 
 bool calc::is_prime(unsigned x)
 {

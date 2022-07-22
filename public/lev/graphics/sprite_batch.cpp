@@ -9,7 +9,7 @@
 
 #include <backend/renderer.h>
 
-using namespace lv;
+using namespace lev;
 
 Ref<Material> SpriteBatch::m_default_material = nullptr;
 

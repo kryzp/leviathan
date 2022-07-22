@@ -1,6 +1,6 @@
 # say hello to the Next Generation (tm) leviathan docs
 
-leviathan uses the lv:: namespace (lev:: was annoying to type)
+leviathan uses the lev:: namespace (lev:: was annoying to type)
 
 this framework isnt really built for rendering 3D, but it can with enough work (similar to how gamemaker CAN, its just not exactly built with that in mind)
 

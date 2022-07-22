@@ -2,7 +2,7 @@
 
 #include <lev/gui/gui_constraints.h>
 
-namespace lv
+namespace lev
 {
 	class PixelConstraint : public GUIConstraint
 	{

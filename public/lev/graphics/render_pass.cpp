@@ -1,7 +1,7 @@
 #include <lev/graphics/render_pass.h>
 #include <backend/renderer.h>
 
-using namespace lv;
+using namespace lev;
 
 void RenderPass::perform() const
 {

@@ -6,7 +6,7 @@
 
 #define LEV_MAX_TEXT_INPUT 256
 
-namespace lv
+namespace lev
 {
 	enum Key
 	{

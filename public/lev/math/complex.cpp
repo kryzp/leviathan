@@ -1,7 +1,7 @@
 #include <lev/math/complex.h>
 #include <math.h>
 
-using namespace lv;
+using namespace lev;
 
 // todo: calc:: making use of double not float (loss of precision)
 

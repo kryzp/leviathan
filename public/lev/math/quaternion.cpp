@@ -2,7 +2,7 @@
 #include <lev/math/calc.h>
 #include <lev/math/vec3.h>
 
-using namespace lv;
+using namespace lev;
 
 Quaternion::Quaternion()
 	: s(1.0f), i(0.0f), j(0.0f), k(0.0f)

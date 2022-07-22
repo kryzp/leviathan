@@ -4,7 +4,7 @@
 #include <functional>
 #include <lev/math/vec2.h>
 
-namespace lv
+namespace lev
 {
 	struct Polygon
 	{

@@ -2,7 +2,7 @@
 #include <lev/io/file_stream.h>
 #include <backend/renderer.h>
 
-using namespace lv;
+using namespace lev;
 
 Ref<ShaderBuffer> ShaderBuffer::create(u64 size)
 {

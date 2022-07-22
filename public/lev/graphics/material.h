@@ -6,7 +6,7 @@
 
 #define LEV_MAT_TEXTURES 32
 
-namespace lv
+namespace lev
 {
 	class Material
 	{

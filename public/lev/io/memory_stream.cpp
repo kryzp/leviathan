@@ -1,7 +1,7 @@
 #include <lev/io/memory_stream.h>
 #include <backend/system.h>
 
-using namespace lv;
+using namespace lev;
 
 MemoryStream::MemoryStream()
 	: Stream()

@@ -5,7 +5,7 @@
 #include <random>
 #include <ctime>
 
-namespace lv
+namespace lev
 {
 	template <typename TEngine = std::mt19937>
 	class Rand

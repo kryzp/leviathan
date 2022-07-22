@@ -7,7 +7,7 @@
 #include <backend/renderer.h>
 #include <backend/audio.h>
 
-using namespace lv;
+using namespace lev;
 
 void App::start(const Config& cfg)
 {

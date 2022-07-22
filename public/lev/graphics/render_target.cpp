@@ -1,7 +1,7 @@
 #include <lev/graphics/render_target.h>
 #include <backend/renderer.h>
 
-using namespace lv;
+using namespace lev;
 
 Ref<RenderTarget> RenderTarget::create(unsigned width, unsigned height)
 {

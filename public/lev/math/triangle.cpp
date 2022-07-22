@@ -1,6 +1,6 @@
 #include <lev/math/triangle.h>
 
-using namespace lv;
+using namespace lev;
 
 Triangle::Triangle()
 	: a(Vec2F::zero())

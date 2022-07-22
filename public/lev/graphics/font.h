@@ -10,7 +10,7 @@
 #define LEV_FONT_ATLAS_H 512
 #define LEV_FONT_CHARCOUNT 256
 
-namespace lv
+namespace lev
 {
     class Texture;
 

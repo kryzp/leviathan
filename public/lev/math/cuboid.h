@@ -3,7 +3,7 @@
 #include <lev/math/vec3.h>
 #include <lev/math/rect.h>
 
-namespace lv
+namespace lev
 {
 	template <typename T>
 	struct Cuboid

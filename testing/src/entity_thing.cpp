@@ -11,7 +11,7 @@
 #include <lev/containers/vector.h>
 #include <lev/math/vec2.h>
 
-using namespace lv;
+using namespace lev;
 
 struct Transform { Vec2F position;       };
 struct Physics   { Vec2F velocity;       };
@@ -35,7 +35,7 @@ public:
 	}
 
 	virtual void update() { }
-	virtual void render(lv::SpriteBatch& b) { }
+	virtual void render(lev::SpriteBatch& b) { }
 
 	Resources& resources() { return p_res; }
 	const Resources& resources() const { return p_res; }

@@ -19,7 +19,7 @@ public: \
 #define LEV_COMPONENT_IMPL(_classname) \
 int _classname::Meta::m_id = ComponentRegistry::retrieve_type_id();
 
-namespace lv
+namespace lev
 {
     class Entity;
     class EntityHandle;

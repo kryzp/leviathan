@@ -6,7 +6,7 @@
 #define STB_TRUETYPE_IMPLEMENTATION
 #include <third_party/stb/stb_truetype.h>
 
-using namespace lv;
+using namespace lev;
 
 #define LEV_FONT_ATLAS_SIZE (LEV_FONT_ATLAS_W*LEV_FONT_ATLAS_H)
 #define M_INTERNAL_INFO ((stbtt_fontinfo*)m_internal_info)

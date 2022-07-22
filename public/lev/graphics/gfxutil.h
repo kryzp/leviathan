@@ -7,7 +7,7 @@
 #include <lev/math/triangle.h>
 #include <lev/graphics/sprite_batch.h>
 
-namespace lv
+namespace lev
 {
 	namespace gfxutil
 	{

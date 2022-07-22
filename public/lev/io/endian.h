@@ -2,7 +2,7 @@
 
 #include <lev/core/util.h>
 
-namespace lv
+namespace lev
 {
 	enum Endianness
 	{

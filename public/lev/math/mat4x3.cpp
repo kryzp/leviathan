@@ -2,7 +2,7 @@
 #include <lev/math/quaternion.h>
 #include <lev/math/vec3.h>
 
-using namespace lv;
+using namespace lev;
 
 Mat4x3::Mat4x3()
 	: m11(0), m12(0), m13(0)
@@ -97,16 +97,16 @@ Mat4x3 Mat4x3::create_transform(
 {
 	Mat4x3 mat = Mat4x3::identity();
 
-	if (origin != lv::Vec3F::zero())
+	if (origin != lev::Vec3F::zero())
 		mat *= create_translation(-origin);
 
-	if (scale != lv::Size3::zero())
+	if (scale != lev::Size3::zero())
 		mat *= create_scale(scale);
 
 	if (quat != Quaternion::zero())
 		mat *= create_rotation(quat);
 
-	if (position != lv::Vec3F::zero())
+	if (position != lev::Vec3F::zero())
 		mat *= create_translation(position);
 
 	return mat;

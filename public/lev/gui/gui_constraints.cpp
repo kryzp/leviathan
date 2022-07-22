@@ -4,7 +4,7 @@
 #include <lev/gui/constraints/pixel_constraint.h>
 #include <lev/gui/constraints/mousepos_constraint.h>
 
-using namespace lv;
+using namespace lev;
 
 GUIConstraints GUIConstraints::create_fixed(int x, int y, int w, int h)
 {

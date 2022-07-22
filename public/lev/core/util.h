@@ -6,8 +6,8 @@
 #ifdef LEV_DEBUG
 
 // looks hacky but basically i just dereference oob memory and try writing to it, causing a crash
-#define LEV_ASSERT(_exp, _msg) if(!(_exp)){::lv::log::error("ASSERTION: " _msg);*((volatile int*)0)=0;}
-#define LEV_ERROR(_msg) {::lv::log::error("ERROR: " _msg);*((volatile int*)0)=0;}
+#define LEV_ASSERT(_exp, _msg) if(!(_exp)){::lev::log::error("ASSERTION: " _msg);*((volatile int*)0)=0;}
+#define LEV_ERROR(_msg) {::lev::log::error("ERROR: " _msg);*((volatile int*)0)=0;}
 
 #else
 
@@ -33,7 +33,7 @@ inline void __levutils_swap(T& x, T& y) {
 #define LEV_GIGABYTES(x) (LEV_MEGABYTES(x) * 1024LL)
 #define LEV_TERABYTES(x) (LEV_GIGABYTES(x) * 1024LL)
 
-namespace lv
+namespace lev
 {
 	using i8  = int8_t;
 	using i16 = int16_t;

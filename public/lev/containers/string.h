@@ -3,7 +3,7 @@
 #include <lev/core/util.h>
 #include <lev/containers/vector.h>
 
-namespace lv
+namespace lev
 {
 	template <u64 TSize>
 	class Str
@@ -467,11 +467,11 @@ namespace std
 {
 	// std::hash overload
 	template <>
-	struct hash<lv::String>
+	struct hash<lev::String>
 	{
-		std::size_t operator()(const lv::String& k) const
+		std::size_t operator()(const lev::String& k) const
 		{
-			return lv::cstr::hash(k.c_str());
+			return lev::cstr::hash(k.c_str());
 		}
 	};
 }

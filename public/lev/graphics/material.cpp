@@ -1,7 +1,7 @@
 #include <lev/graphics/material.h>
 #include <lev/core/util.h>
 
-using namespace lv;
+using namespace lev;
 
 Ref<Material> Material::create(const Ref<Shader>& shader)
 {

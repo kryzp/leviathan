@@ -1,7 +1,7 @@
 #include <lev/io/file_stream.h>
 #include <backend/system.h>
 
-using namespace lv;
+using namespace lev;
 
 FileStream::FileStream()
 	: Stream()

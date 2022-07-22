@@ -10,7 +10,7 @@
 // each bucket stores a 'next' and 'prev'.
 // last element of a bucket stores a next pointer to the next bucket for fast iteration
 
-namespace lv
+namespace lev
 {
 	template <typename TKey, typename TValue>
 	class HashMap

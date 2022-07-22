@@ -1,7 +1,7 @@
 #include <lev/input/input.h>
 #include <lev/core/app.h>
 
-using namespace lv;
+using namespace lev;
 
 bool Input::init()
 {
