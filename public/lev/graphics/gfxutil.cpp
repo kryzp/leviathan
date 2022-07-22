@@ -4,10 +4,6 @@
 
 using namespace lv;
 
-/*
- * TODO: this place is kinda hot garbage
- */
-
 static void _get_vtx_mode(ColourMode mode, float* buf)
 {
     buf[0] = (mode & COLOUR_MODE_NORMAL) != 0;

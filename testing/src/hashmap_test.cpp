@@ -1,5 +1,5 @@
-#include <lev/containers/hash_map.h>
 #include <lev/core/util.h>
+#include <lev/containers/hash_map.h>
 
 using namespace lv;
 

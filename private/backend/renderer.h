@@ -38,7 +38,7 @@ namespace lv::bknd
         virtual void clear(const Colour& colour = Colour::empty()) = 0;
 
 		virtual Ref<Texture> create_texture(u32 width, u32 height, const TextureFormatInfo& format_info) = 0;
-		virtual Ref<ArrayTexture> create_array_texture(u32 width, u32 height, const TextureFormatInfo& format_info, u32 depth) = 0;
+		virtual Ref<Texture> create_array_texture(u32 width, u32 height, const TextureFormatInfo& format_info, u32 depth) = 0;
 		virtual Ref<Shader> create_shader(const ShaderData& data) = 0;
 		virtual Ref<ShaderBuffer> create_shader_buffer(u64 size) = 0;
 		virtual Ref<RenderTarget> create_framebuffer(u32 width, u32 height, const RenderTarget::Attachments& attachments) = 0;

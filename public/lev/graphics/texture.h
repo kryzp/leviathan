@@ -168,7 +168,12 @@ namespace lv
 		static Ref<Texture> create(const Image& image, TextureFormat format, InternalTextureFormat internal_format, TextureType type);
 		static Ref<Texture> create(u32 width, u32 height, TextureFormat format, InternalTextureFormat internal_format, TextureType type, const byte* data);
 
+		static Ref<Texture> create_array(const char* path, u32 image_count);
+		static Ref<Texture> create_array(const Image& image, TextureFormat format, InternalTextureFormat internal_format, TextureType type, u32 image_count);
+		static Ref<Texture> create_array(u32 width, u32 height, TextureFormat format, InternalTextureFormat internal_format, TextureType type, u32 image_count, const byte* data);
+
 		static void unbind();
+		static void unbind_array();
 		static void unbind_image();
 
 		inline Int2 size() const { return Int2(width(), height()); }
@@ -186,28 +191,8 @@ namespace lv
 		virtual u32 width() const = 0;
 		virtual u32 height() const = 0;
 
-		virtual TextureFormatInfo format_info() const = 0;
-	};
-
-	class ArrayTexture
-	{
-	public:
-		ArrayTexture() = default;
-		virtual ~ArrayTexture() = default;
-
-		static Ref<ArrayTexture> create(const char* path, u32 image_count);
-		static Ref<ArrayTexture> create(const Image& image, TextureFormat format, InternalTextureFormat internal_format, TextureType type, u32 image_count);
-		static Ref<ArrayTexture> create(u32 width, u32 height, TextureFormat format, InternalTextureFormat internal_format, TextureType type, u32 image_count, const byte* data);
-
-		static void unbind();
-
-		virtual void bind(int idx) const = 0;
-
-		virtual void generate(const void* data) = 0;
-
-		virtual u32 width() const = 0;
-		virtual u32 height() const = 0;
-		virtual u32 image_count() const = 0;
+		virtual u32 array_depth() const = 0;
+		virtual bool is_array_texture() const = 0;
 
 		virtual TextureFormatInfo format_info() const = 0;
 	};

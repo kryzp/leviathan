@@ -229,6 +229,7 @@ class OpenGLTexture : public Texture
 
 	u32 m_width;
 	u32 m_height;
+	u32 m_depth;
 
 	u32 m_gl_format;
 	u32 m_gl_internal_format;
@@ -240,11 +241,12 @@ class OpenGLTexture : public Texture
 public:
 	bool fbo_parent = false;
 
-	OpenGLTexture(u32 width, u32 height, const TextureFormatInfo& format_info)
+	OpenGLTexture(u32 width, u32 height, const TextureFormatInfo& format_info, u32 depth = 1)
 		: Texture()
 		, m_id(0)
 		, m_width(width)
 		, m_height(height)
+		, m_depth(depth)
 		, m_format_info(format_info)
 		, m_gl_format(get_gl_texture_fmt(format_info.format))
 		, m_gl_internal_format(get_gl_texture_internal_fmt(format_info.internal))
@@ -253,7 +255,31 @@ public:
 		glGenTextures(1, &m_id);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, m_id);
-		glTexImage2D(GL_TEXTURE_2D, 0, m_gl_internal_format, m_width, m_height, 0, m_gl_format, m_gl_type, nullptr);
+
+		if (depth == 1)
+		{
+			glTexImage2D(
+				GL_TEXTURE_2D,
+				0,
+				m_gl_internal_format,
+				m_width, m_height,
+				0,
+				m_gl_format, m_gl_type,
+				nullptr
+			);
+		}
+		else
+		{
+			glTexImage3D(
+				GL_TEXTURE_2D_ARRAY,
+				0,
+				m_gl_internal_format,
+				width, height, depth,
+				0, m_gl_format, m_gl_type,
+				nullptr
+			);
+		}
+
 		update(TextureSampler::pixel()); // dont remove its needed for compute shaders lol
 	}
 
@@ -266,7 +292,11 @@ public:
 	{
 		LEV_ASSERT(idx >= 0 && idx <= 31, "Index must be within [0, 31] inclusive");
 		glActiveTexture(GL_TEXTURE0 + idx);
-		glBindTexture(GL_TEXTURE_2D, m_id);
+
+		if (m_depth == 1)
+			glBindTexture(GL_TEXTURE_2D, m_id);
+		else
+			glBindTexture(GL_TEXTURE_2D_ARRAY, m_id);
 	}
 
 	void bind_image(int idx) const override
@@ -296,13 +326,30 @@ public:
 	{
 		LEV_ASSERT(buf, "Buffer must not be nullptr");
 
-		glGetTexImage(
-			GL_TEXTURE_2D,
-			0,
-			m_gl_format,
-			m_gl_type,
-			buf
-		);
+		if (m_depth == 1)
+		{
+			glGetTexImage(
+				GL_TEXTURE_2D,
+				0,
+				m_gl_format,
+				m_gl_type,
+				buf
+			);
+		}
+		else
+		{
+			glTexImage3D(
+				GL_TEXTURE_2D_ARRAY,
+				0,
+				m_gl_internal_format,
+				m_width, m_height,
+				m_depth,
+				0,
+				m_gl_format,
+				m_gl_type,
+				buf
+			);
+		}
 	}
 
 	bool framebuffer_parent() override
@@ -344,108 +391,14 @@ public:
 		return m_height;
 	}
 
-	TextureFormatInfo format_info() const override
-	{
-		return m_format_info;
-	}
-
-	u32 id() const
-	{
-		return m_id;
-	}
-};
-
-// todo: could this be merged with 'Texture'?
-// lots of duplicate code
-
-class OpenGLArrayTexture : public ArrayTexture
-{
-	u32 m_id;
-
-	u32 m_width;
-	u32 m_height;
-	u32 m_depth;
-
-	u32 m_gl_format;
-	u32 m_gl_internal_format;
-	u32 m_gl_type;
-
-	TextureFormatInfo m_format_info;
-	TextureSampler m_sampler;
-
-public:
-	OpenGLArrayTexture(u32 width, u32 height, const TextureFormatInfo& format_info, u32 depth)
-		: ArrayTexture()
-		, m_id(0)
-		, m_width(width)
-		, m_height(height)
-		, m_format_info(format_info)
-		, m_depth(depth)
-		, m_gl_format(get_gl_texture_fmt(format_info.format))
-		, m_gl_internal_format(get_gl_texture_internal_fmt(format_info.internal))
-		, m_gl_type(get_gl_texture_type(format_info.type))
-	{
-		glGenTextures(1, &m_id);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D_ARRAY, m_id);
-		glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, m_gl_internal_format, width, height, depth, 0, m_gl_format, m_gl_type, nullptr);
-		update(TextureSampler::pixel());
-	}
-
-	~OpenGLArrayTexture() override
-	{
-		glDeleteTextures(1, &m_id);
-	}
-
-	void bind(int idx) const override
-	{
-		glActiveTexture(GL_TEXTURE0 + idx);
-		glBindTexture(GL_TEXTURE_2D_ARRAY, m_id);
-	}
-
-	void generate(const void* data) override
-	{
-		LEV_ASSERT(data, "Data must not be nullptr");
-
-		glTexImage3D(
-			GL_TEXTURE_2D_ARRAY,
-			0,
-			m_gl_internal_format,
-			m_width, m_height,
-			m_depth,
-			0,
-			m_gl_format,
-			m_gl_type,
-			data
-		);
-	}
-
-	void update(const TextureSampler& sampler)
-	{
-		if (m_sampler == sampler)
-			return;
-
-		m_sampler = sampler;
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (sampler.wrap_x == TEX_WRAP_CLAMP) ? GL_CLAMP_TO_EDGE : GL_REPEAT); // can we just take a moment to appreciate how nicely the spacing lines up here oh my god
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (sampler.wrap_y == TEX_WRAP_CLAMP) ? GL_CLAMP_TO_EDGE : GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (sampler.filter == TEX_FILTER_LINEAR) ? GL_LINEAR : GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (sampler.filter == TEX_FILTER_LINEAR) ? GL_LINEAR : GL_NEAREST);
-	}
-
-	u32 width() const override
-	{
-		return m_width;
-	}
-
-	u32 height() const override
-	{
-		return m_height;
-	}
-
-	u32 image_count() const override
+	u32 array_depth() const override
 	{
 		return m_depth;
+	}
+
+	bool is_array_texture() const override
+	{
+		return m_depth != 1;
 	}
 
 	TextureFormatInfo format_info() const override
@@ -1216,9 +1169,9 @@ public:
 		return create_ref<OpenGLTexture>(width, height, format_info);
 	}
 
-	Ref<ArrayTexture> create_array_texture(u32 width, u32 height, const TextureFormatInfo& format_info, u32 depth) override
+	Ref<Texture> create_array_texture(u32 width, u32 height, const TextureFormatInfo& format_info, u32 depth) override
 	{
-		return create_ref<OpenGLArrayTexture>(width, height, format_info, depth);
+		return create_ref<OpenGLTexture>(width, height, format_info, depth);
 	}
 
 	Ref<ShaderBuffer> create_shader_buffer(u64 size) override

@@ -224,7 +224,6 @@ namespace lv
 		delete[] m_buckets;
 		m_buckets = new_buf;
 
-		// todo: check if this is necessary
 		realign_ptrs();
 	}
 

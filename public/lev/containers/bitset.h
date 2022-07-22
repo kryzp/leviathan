@@ -4,7 +4,7 @@
 
 namespace lv
 {
-	template <u64 Size>
+	template <u64 TSize>
 	class Bitset
 	{
 	public:
@@ -39,23 +39,23 @@ namespace lv
 		u8* m_bits;
 	};
 
-	template <u64 Size>
-	Bitset<Size>::Bitset()
+	template <u64 TSize>
+	Bitset<TSize>::Bitset()
 	{
 		m_bits = new u8[memory_size()];
 		reset();
 	}
 
-	template <u64 Size>
-	Bitset<Size>::~Bitset()
+	template <u64 TSize>
+	Bitset<TSize>::~Bitset()
 	{
 		delete[] m_bits;
 	}
 
-	template <u64 Size>
-	bool Bitset<Size>::all() const
+	template <u64 TSize>
+	bool Bitset<TSize>::all() const
 	{
-		for (u64 i = 0; i < Size; i++)
+		for (u64 i = 0; i < TSize; i++)
 		{
 			if (off(i))
 				return false;
@@ -64,10 +64,10 @@ namespace lv
 		return true;
 	}
 
-	template <u64 Size>
-	bool Bitset<Size>::none() const
+	template <u64 TSize>
+	bool Bitset<TSize>::none() const
 	{
-		for (u64 i = 0; i < Size; i++)
+		for (u64 i = 0; i < TSize; i++)
 		{
 			if (on(i))
 				return false;
@@ -76,19 +76,19 @@ namespace lv
 		return true;
 	}
 
-	template <u64 Size>
-	bool Bitset<Size>::any() const
+	template <u64 TSize>
+	bool Bitset<TSize>::any() const
 	{
 		return !none();
 	}
 
-	template <u64 Size>
-	u64 Bitset<Size>::on_count() const
+	template <u64 TSize>
+	u64 Bitset<TSize>::on_count() const
 	{
 		// popcount???
 
 		u64 total = 0;
-		for (u64 i = 0; i < Size; i++)
+		for (u64 i = 0; i < TSize; i++)
 		{
 			if (on(i))
 				total++;
@@ -97,94 +97,94 @@ namespace lv
 		return total;
 	}
 
-	template <u64 Size>
-	u64 Bitset<Size>::off_count() const
+	template <u64 TSize>
+	u64 Bitset<TSize>::off_count() const
 	{
-		return Size - on_count();
+		return TSize - on_count();
 	}
 
-	template <u64 Size>
-	Bitset<Size>& Bitset<Size>::reset()
+	template <u64 TSize>
+	Bitset<TSize>& Bitset<TSize>::reset()
 	{
 		mem::set(m_bits, 0, memory_size());
 		return *this;
 	}
 
-	template <u64 Size>
-	Bitset<Size>& Bitset<Size>::invert()
+	template <u64 TSize>
+	Bitset<TSize>& Bitset<TSize>::invert()
 	{
-		for (int i = 0; i < Size; i++) toggle(i);
+		for (int i = 0; i < TSize; i++) toggle(i);
 		return *this;
 	}
 
-	template <u64 Size>
-	Bitset<Size>& Bitset<Size>::enable(u64 idx)
+	template <u64 TSize>
+	Bitset<TSize>& Bitset<TSize>::enable(u64 idx)
 	{
-		LEV_ASSERT(idx >= 0 && idx < Size, "Index must be within range of the bitset");
+		LEV_ASSERT(idx >= 0 && idx < TSize, "Index must be within range of the bitset");
 		m_bits[idx/8] |= (1 << idx);
 		return *this;
 	}
 
-	template <u64 Size>
-	Bitset<Size>& Bitset<Size>::disable(u64 idx)
+	template <u64 TSize>
+	Bitset<TSize>& Bitset<TSize>::disable(u64 idx)
 	{
-		LEV_ASSERT(idx >= 0 && idx < Size, "Index must be within range of the bitset");
+		LEV_ASSERT(idx >= 0 && idx < TSize, "Index must be within range of the bitset");
 		m_bits[idx/8] &= ~(1 << idx);
 		return *this;
 	}
 
-	template <u64 Size>
-	Bitset<Size>& Bitset<Size>::toggle(u64 idx)
+	template <u64 TSize>
+	Bitset<TSize>& Bitset<TSize>::toggle(u64 idx)
 	{
-		LEV_ASSERT(idx >= 0 && idx < Size, "Index must be within range of the bitset");
+		LEV_ASSERT(idx >= 0 && idx < TSize, "Index must be within range of the bitset");
 		m_bits[idx/8] ^= (1 << idx);
 		return *this;
 	}
 
-	template <u64 Size>
-	Bitset<Size>& Bitset<Size>::set(u64 idx, bool mode)
+	template <u64 TSize>
+	Bitset<TSize>& Bitset<TSize>::set(u64 idx, bool mode)
 	{
-		LEV_ASSERT(idx >= 0 && idx < Size, "Index must be within range of the bitset");
+		LEV_ASSERT(idx >= 0 && idx < TSize, "Index must be within range of the bitset");
 		if (mode) m_bits[idx/8] |= (1 << idx);
 		else m_bits[idx/8] &= ~(1 << idx);
 		return *this;
 	}
 
-	template <u64 Size>
-	bool Bitset<Size>::on(u64 idx) const
+	template <u64 TSize>
+	bool Bitset<TSize>::on(u64 idx) const
 	{
-		LEV_ASSERT(idx >= 0 && idx < Size, "Index must be within range of the bitset");
+		LEV_ASSERT(idx >= 0 && idx < TSize, "Index must be within range of the bitset");
 		return (m_bits[idx/8] & (1 << idx)) != 0;
 	}
 
-	template <u64 Size>
-	bool Bitset<Size>::on_only(u64 idx) const
+	template <u64 TSize>
+	bool Bitset<TSize>::on_only(u64 idx) const
 	{
-		LEV_ASSERT(idx >= 0 && idx < Size, "Index must be within range of the bitset");
+		LEV_ASSERT(idx >= 0 && idx < TSize, "Index must be within range of the bitset");
 		return (m_bits[idx/8] & (1 << idx)) == idx;
 	}
 
-	template <u64 Size>
-	bool Bitset<Size>::off(u64 idx) const
+	template <u64 TSize>
+	bool Bitset<TSize>::off(u64 idx) const
 	{
 		return !on(idx);
 	}
 
-	template <u64 Size>
-	bool Bitset<Size>::operator [] (u64 idx) const
+	template <u64 TSize>
+	bool Bitset<TSize>::operator [] (u64 idx) const
 	{
 		return on(idx);
 	}
 
-	template <u64 Size>
-	constexpr inline u64 Bitset<Size>::size() const
+	template <u64 TSize>
+	constexpr inline u64 Bitset<TSize>::size() const
 	{
-		return Size;
+		return TSize;
 	}
 
-	template <u64 Size>
-	constexpr inline u64 Bitset<Size>::memory_size() const
+	template <u64 TSize>
+	constexpr inline u64 Bitset<TSize>::memory_size() const
 	{
-		return (Size / 8) + 1;
+		return (TSize / 8) + 1;
 	}
 }

@@ -30,8 +30,6 @@ namespace lv
 
 	private:
 		Ref<Shader> m_shader;
-
-		// todo Vector<T>???
 		Ref<Texture> m_textures[LEV_MAT_TEXTURES];
 		TextureSampler m_samplers[LEV_MAT_TEXTURES];
 	};
