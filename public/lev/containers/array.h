@@ -36,6 +36,7 @@ namespace lv
 
 	template <typename T, u64 TSize>
 	Array<T, TSize>::Array()
+		: m_buf{}
 	{
 	}
 	
