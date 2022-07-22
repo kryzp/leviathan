@@ -6,6 +6,10 @@
 // std::hash
 #include <functional>
 
+// note to self:
+// each bucket stores a 'next' and 'prev'.
+// last element of a bucket stores a next pointer to the next bucket for fast iteration
+
 namespace lv
 {
 	template <typename TKey, typename TValue>
@@ -33,8 +37,14 @@ namespace lv
 			~Iterator() = default;
 			KeyValuePair& operator * () const { return m_bucket->data; }
 			KeyValuePair* operator -> () const { return &m_bucket->data; }
-			Iterator& operator ++ () { m_bucket = m_bucket->next; return *this; }
-			Iterator& operator -- () { m_bucket = m_bucket->prev; return *this; }
+
+			Iterator& operator ++ ()
+			{
+				if (m_bucket) { m_bucket = m_bucket->next; }
+				return *this;
+			}
+
+			Iterator& operator -- () { if (m_bucket) { m_bucket = m_bucket->prev; } return *this; }
 			bool operator == (const Iterator& other) { return this->m_bucket == other.m_bucket; }
 			bool operator != (const Iterator& other) { return this->m_bucket != other.m_bucket; }
 		private:
@@ -48,8 +58,8 @@ namespace lv
 			~ConstIterator() = default;
 			KeyValuePair& operator * () const { return m_bucket->data; }
 			KeyValuePair* operator -> () const { return &m_bucket->data; }
-			ConstIterator& operator ++ () { m_bucket = m_bucket->next; return *this; }
-			ConstIterator& operator -- () { m_bucket = m_bucket->prev; return *this; }
+			ConstIterator& operator ++ () { if (m_bucket) { m_bucket = m_bucket->next; } return *this; }
+			ConstIterator& operator -- () { if (m_bucket) { m_bucket = m_bucket->prev; } return *this; }
 			bool operator == (const ConstIterator& other) { return this->m_bucket == other.m_bucket; }
 			bool operator != (const ConstIterator& other) { return this->m_bucket != other.m_bucket; }
 		private:
@@ -86,6 +96,7 @@ namespace lv
 	private:
 		int index_of(const TKey& key);
 		void realloc();
+		void realign_ptrs();
 
 		int m_capacity;
 		Bucket** m_buckets;
@@ -138,6 +149,8 @@ namespace lv
 			m_buckets[idx] = new Bucket(pair);
 		}
 
+		realign_ptrs();
+
 		m_bucket_count++;
 	}
 
@@ -163,14 +176,18 @@ namespace lv
 					m_buckets[m_capacity-1] = b->prev;
 
 				::operator delete(b, sizeof(Bucket));
+				m_buckets[index_of(key)] = nullptr;
 
 				m_bucket_count--;
+
+				realign_ptrs();
 
 				return;
 			}
 
 			b = b->next;
 		}
+
 	}
 
 	template <typename TKey, typename TValue>
@@ -206,6 +223,59 @@ namespace lv
 
 		delete[] m_buckets;
 		m_buckets = new_buf;
+
+		// todo: check if this is necessary
+		realign_ptrs();
+	}
+
+	template <typename TKey, typename TValue>
+	void HashMap<TKey, TValue>::realign_ptrs()
+	{
+		// big o who?
+
+		auto f = first();
+		auto l = last();
+
+		for (int i = 0; i < m_capacity; i++)
+		{
+			Bucket* bkt = m_buckets[i];
+
+			if (!bkt)
+				continue;
+
+			if (bkt != l)
+			{
+				for (int j = 0; j < m_capacity - 1; j++)
+				{
+					int check_idx = (i + j + 1) % m_capacity;
+
+					if (m_buckets[check_idx])
+					{
+						bkt->next = m_buckets[check_idx];
+						break;
+					}
+				}
+			}
+
+			if (bkt != f)
+			{
+				for (int j = 0; j < m_capacity - 1; j++)
+				{
+					int check_idx = m_capacity - 1 - j + i;
+
+					if (check_idx < 0)
+						check_idx += m_capacity;
+					else if (check_idx >= m_capacity)
+						check_idx -= m_capacity;
+
+					if (m_buckets[check_idx])
+					{
+						bkt->prev = m_buckets[check_idx];
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	template <typename TKey, typename TValue>
@@ -289,48 +359,72 @@ namespace lv
 	template <typename TKey, typename TValue>
 	typename HashMap<TKey, TValue>::Bucket* HashMap<TKey, TValue>::first()
 	{
-		return m_buckets;
+		for (int i = 0; i < m_capacity; i++)
+		{
+			if (m_buckets[i])
+				return m_buckets[i];
+		}
+
+		return nullptr;
 	}
 
 	template <typename TKey, typename TValue>
 	const typename HashMap<TKey, TValue>::Bucket* HashMap<TKey, TValue>::first() const
 	{
-		return m_buckets;
+		for (int i = 0; i < m_capacity; i++)
+		{
+			if (m_buckets[i])
+				return m_buckets[i];
+		}
+
+		return nullptr;
 	}
 
 	template <typename TKey, typename TValue>
 	typename HashMap<TKey, TValue>::Bucket* HashMap<TKey, TValue>::last()
 	{
-		return m_buckets + m_capacity - 1;
+		for (int i = m_capacity - 1; i >= 0; i--)
+		{
+			if (m_buckets[i])
+				return m_buckets[i];
+		}
+
+		return nullptr;
 	}
 
 	template <typename TKey, typename TValue>
 	const typename HashMap<TKey, TValue>::Bucket* HashMap<TKey, TValue>::last() const
 	{
-		return m_buckets + m_capacity - 1;
+		for (int i = m_capacity; i >= 0; i--)
+		{
+			if (m_buckets[i])
+				return m_buckets[i];
+		}
+
+		return nullptr;
 	}
 
 	template <typename TKey, typename TValue>
 	typename HashMap<TKey, TValue>::Iterator HashMap<TKey, TValue>::begin()
 	{
-		return Iterator(m_buckets);
+		return Iterator(first());
 	}
 
 	template <typename TKey, typename TValue>
 	typename HashMap<TKey, TValue>::ConstIterator HashMap<TKey, TValue>::begin() const
 	{
-		return ConstIterator(m_buckets);
+		return ConstIterator(first());
 	}
 
 	template <typename TKey, typename TValue>
 	typename HashMap<TKey, TValue>::Iterator HashMap<TKey, TValue>::end()
 	{
-		return Iterator(m_buckets + m_capacity);
+		return Iterator(nullptr);
 	}
 
 	template <typename TKey, typename TValue>
 	typename HashMap<TKey, TValue>::ConstIterator HashMap<TKey, TValue>::end() const
 	{
-		return ConstIterator(m_buckets + m_capacity);
+		return ConstIterator(nullptr);
 	}
 };
