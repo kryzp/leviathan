@@ -93,6 +93,9 @@ namespace lev
 		Iterator end();
 		ConstIterator end() const;
 
+		TValue& operator [] (const TKey& idx);
+		const TValue& operator [] (const TKey& idx) const;
+
 	private:
 		int index_of(const TKey& key);
 		void realloc();
@@ -425,5 +428,17 @@ namespace lev
 	typename HashMap<TKey, TValue>::ConstIterator HashMap<TKey, TValue>::end() const
 	{
 		return ConstIterator(nullptr);
+	}
+
+	template <typename TKey, typename TValue>
+	TValue& HashMap<TKey, TValue>::operator [] (const TKey& idx)
+	{
+		return get(idx);
+	}
+
+	template <typename TKey, typename TValue>
+	const TValue& HashMap<TKey, TValue>::operator [] (const TKey& idx) const
+	{
+		return get(idx);
 	}
 };

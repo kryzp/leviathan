@@ -5,19 +5,21 @@ using namespace lev;
 
 int main()
 {
-	HashMap<int, char> hash_map;
+	HashMap<char, int> hash_map;
 
-	hash_map.insert(Pair(5, 'e'));
-	hash_map.insert(Pair(3, 'd'));
-	hash_map.insert(Pair(2, 'h'));
-	hash_map.insert(Pair(45, 'm'));
-	hash_map.erase(5);
+	hash_map.insert(Pair('e', 5));
+	hash_map.insert(Pair('d', 3));
+	hash_map.insert(Pair('h', 2));
+	hash_map.insert(Pair('m', 45));
+	hash_map.erase('e');
 
 	// d h m
 
+	log::print("%d", hash_map['h']);
+
 	for (auto& p : hash_map)
 	{
-		log::print("%d : %c", p.first, p.second);
+		log::print("%c : %d", p.first, p.second);
 	}
 
 	return 0;
