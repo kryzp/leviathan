@@ -92,14 +92,18 @@ custom maths classes, obviously dont need to clarify, theyre for doing anything 
 - *Calc* -> functions for general calculations such as abs(), sin(), etc... also contains constants such as calc::RAD2DEG and calc::3D_SPINNING_RAT_VELOCITY
 - *Circle* -> wrapper defining a point and a radius
 - *Colour* -> generic 4byte colour class
+- *Complex* -> for all your complex analysis... that i'm sure youre doing using a... game engine...
+- *Cuboid* -> 3d rectangle so you can accurately do physics with a 3d spinning rat
 - *Ease* -> functions for easing over a time *t*, such as a bounce
 - *Line* -> wrapper defining two points in space
 - *Mat3x2* -> general matrix representing a 2D transformation (actual transform + position). mathematically this isnt a 3x2 its a 2x2 (transformation) + 1x2 (position)
+- *Mat4x3* -> same as Mat3x2 but for 3D instead of 2D transformations. ideal for holding transformation info about a 3d spinning rat incase you need to do that
 - *Mat4x4* -> general matrix used for things like projections
 - *Polygon* -> wrapper for a set of 2D points
 - *Quad* -> wrapper for 4 points in space
-- *Quaternion* -> NOT FINISHED. represents a 4D hypersphere which is projected onto a 3D plane so you can render a spinning 3D rat while playing "Free Bird" without jittering
-- *Rand* -> wrapper for a set of randomness functions
+- *Quaternion* -> represents a 4D hypersphere which is projected onto a 3D plane so you can render a spinning 3D rat while playing "Free Bird" without jittering
+- *Rand<T>* -> wrapper for a set of randomness functions
+- *Range* -> abstracted rand basically, represents a 'range' between two 1D points that you can sample from
 - *Rect<T>* -> circol
 - *Range* -> wrapper over the wrapper of rand. define a min and max and sample random values in-between.
 - *Timer* -> timer for timing things and making sure the 3D spinning rat from before is spinning at physically correct speed
