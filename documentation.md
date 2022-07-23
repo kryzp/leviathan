@@ -11,7 +11,7 @@ ok so heres how it works:
 similar to the monogame ContentManager, handles loading assets and storing them
 
 - *AssetMgr* -> loads and stores assets efficiently
-- *AssetLoader* -> if inherited allows you to register it in an assetmgr and let it manage the object, effectively extending the functionality of a vanilla AssetMgr
+- *AssetImporter* -> if inherited allows you to register it in an assetmgr and let it manage the object, effectively extending the functionality of a vanilla AssetMgr
 
 ### audio
 guess what? never happening (:sunglasses:)

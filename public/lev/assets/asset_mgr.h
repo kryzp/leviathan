@@ -14,13 +14,13 @@ namespace lev
 	class AssetLoaderBase : public NonCopyable, public NonMovable { };
 
 	template <class TAsset>
-	class AssetLoader : public AssetLoaderBase
+	class AssetImporter : public AssetLoaderBase
 	{
 	public:
-		AssetLoader() = default;
-		virtual ~AssetLoader() = default;
+		AssetImporter() = default;
+		virtual ~AssetImporter() = default;
 
-		virtual Ref<TAsset> load(const String& path) = 0;
+		virtual Ref<TAsset> import(const String& path) = 0;
 	};
 
 	class AssetMgr : public NonCopyable, public NonMovable
@@ -34,7 +34,7 @@ namespace lev
 		~AssetMgr();
 
 		template <class TLoader, class TAsset>
-		void register_loader();
+		void register_importer();
 
 		template <class TAsset>
 		Ref<TAsset> load(const String& path);
@@ -50,17 +50,17 @@ namespace lev
 			return id;
 		}
 
-		AssetLoaderBase* m_loaders[LEV_MAX_ASSET_TYPES];
+		AssetLoaderBase* m_importers[LEV_MAX_ASSET_TYPES];
 		AssetListBase* m_assets[LEV_MAX_ASSET_TYPES];
 
 		u16 m_counter = 0;
 	};
 
 	template <class TLoader, class TAsset>
-	void AssetMgr::register_loader()
+	void AssetMgr::register_importer()
 	{
 		u16 id = retrieve_asset_id<TAsset>();
-		m_loaders[id] = new TLoader();
+		m_importers[id] = new TLoader();
 	}
 
 	template <class TAsset>
@@ -76,9 +76,9 @@ namespace lev
 			return Ref<TAsset>(asset_list->assets.get(path));
 
 		// otherwise load a new asset
-		Ref<TAsset> obj = static_cast<AssetLoader<TAsset>*>(
-			m_loaders[retrieve_asset_id<TAsset>()]
-		)->load(path);
+		Ref<TAsset> obj = static_cast<AssetImporter<TAsset>*>(
+			m_importers[retrieve_asset_id<TAsset>()]
+		)->import(path);
 
 		// store it as a weak ptr
 		Weak<TAsset> weakptr = obj;
@@ -91,6 +91,6 @@ namespace lev
 	void AssetMgr::free_load_data()
 	{
 		delete static_cast<AssetList<TAsset>*>(m_assets[retrieve_asset_id<TAsset>()]);
-		delete static_cast<AssetLoader<TAsset>*>(m_loaders[retrieve_asset_id<TAsset>()]);
+		delete static_cast<AssetImporter<TAsset>*>(m_importers[retrieve_asset_id<TAsset>()]);
 	}
 }

@@ -7,19 +7,19 @@
 
 using namespace lev;
 
-class TextureLoader : public AssetLoader<Texture>
+class TextureImporter : public AssetImporter<Texture>
 {
 public:
-	Ref<Texture> load(const String& path) override
+	Ref<Texture> import(const String& path) override
 	{
 		return Texture::create(path.c_str());
 	}
 };
 
-class ShaderLoader : public AssetLoader<Shader>
+class ShaderImporter : public AssetImporter<Shader>
 {
 public:
-	Ref<Shader> load(const String& path) override
+	Ref<Shader> import(const String& path) override
 	{
 		FileStream file(path.c_str(), "r");
 		String line = "";
@@ -79,10 +79,10 @@ public:
 	}
 };
 
-class FontLoader : public AssetLoader<Font>
+class FontImporter : public AssetImporter<Font>
 {
 public:
-	Ref<Font> load(const String& path) override
+	Ref<Font> import(const String& path) override
 	{
 		FileStream file(path.c_str(), "r");
 		String line;
@@ -113,10 +113,10 @@ public:
 	}
 };
 
-class SoundLoader : public AssetLoader<Sound>
+class SoundImporter : public AssetImporter<Sound>
 {
 public:
-	Ref<Sound> load(const String& path) override
+	Ref<Sound> import(const String& path) override
 	{
 		return nullptr;
 	}
@@ -124,13 +124,13 @@ public:
 
 AssetMgr::AssetMgr()
 	: m_counter(0)
-	, m_loaders()
+	, m_importers()
 	, m_assets()
 {
-	register_loader<TextureLoader, Texture>();
-	register_loader<ShaderLoader, Shader>();
-	register_loader<FontLoader, Font>();
-	register_loader<SoundLoader, Sound>();
+	register_importer<TextureImporter, Texture>();
+	register_importer<ShaderImporter, Shader>();
+	register_importer<FontImporter, Font>();
+	register_importer<SoundImporter, Sound>();
 }
 
 AssetMgr::~AssetMgr()
