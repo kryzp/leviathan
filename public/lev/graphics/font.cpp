@@ -50,7 +50,8 @@ void Font::load(float size, const String& path)
 	{
 		FileStream fs(path.c_str(), "rb");
 		byte* ttf_buffer = new byte[fs.size()];
-		fs.read(ttf_buffer, fs.size()).close();
+		fs.read(ttf_buffer, fs.size());
+		fs.close();
 
 		m_internal_info = new stbtt_fontinfo();
 		if (!stbtt_InitFont(M_INTERNAL_INFO, ttf_buffer, stbtt_GetFontOffsetForIndex(ttf_buffer, 0)))

@@ -10,12 +10,12 @@ namespace lev
 		Stream();
 		virtual ~Stream();
 
-		virtual Stream& read(void* buffer, s64 length);
-		virtual Stream& write(void* data, s64 length);
-		virtual Stream& seek(s64 offset);
-		virtual Stream& close();
-		virtual s64 position();
-		virtual s64 size();
+		virtual void read(void* buffer, s64 length) const;
+		virtual void write(void* data, s64 length) const;
+		virtual void seek(s64 offset) const;
+		virtual void close();
+		virtual s64 position() const;
+		virtual s64 size() const;
 
 		void* stream();
 		const void* stream() const;
