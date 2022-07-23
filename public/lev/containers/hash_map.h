@@ -37,16 +37,10 @@ namespace lev
 			~Iterator() = default;
 			KeyValuePair& operator * () const { return m_bucket->data; }
 			KeyValuePair* operator -> () const { return &m_bucket->data; }
-
-			Iterator& operator ++ ()
-			{
-				if (m_bucket) { m_bucket = m_bucket->next; }
-				return *this;
-			}
-
+			Iterator& operator ++ () { if (m_bucket) { m_bucket = m_bucket->next; } return *this; }
 			Iterator& operator -- () { if (m_bucket) { m_bucket = m_bucket->prev; } return *this; }
-			bool operator == (const Iterator& other) { return this->m_bucket == other.m_bucket; }
-			bool operator != (const Iterator& other) { return this->m_bucket != other.m_bucket; }
+			bool operator == (const Iterator& other) const { return this->m_bucket == other.m_bucket; }
+			bool operator != (const Iterator& other) const { return this->m_bucket != other.m_bucket; }
 		private:
 			Bucket* m_bucket;
 		};
@@ -60,8 +54,8 @@ namespace lev
 			KeyValuePair* operator -> () const { return &m_bucket->data; }
 			ConstIterator& operator ++ () { if (m_bucket) { m_bucket = m_bucket->next; } return *this; }
 			ConstIterator& operator -- () { if (m_bucket) { m_bucket = m_bucket->prev; } return *this; }
-			bool operator == (const ConstIterator& other) { return this->m_bucket == other.m_bucket; }
-			bool operator != (const ConstIterator& other) { return this->m_bucket != other.m_bucket; }
+			bool operator == (const ConstIterator& other) const { return this->m_bucket == other.m_bucket; }
+			bool operator != (const ConstIterator& other) const { return this->m_bucket != other.m_bucket; }
 		private:
 			const Bucket* m_bucket;
 		};
