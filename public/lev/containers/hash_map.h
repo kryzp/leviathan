@@ -6,10 +6,6 @@
 // std::hash
 #include <functional>
 
-// note to self:
-// each bucket stores a 'next' and 'prev'.
-// last element of a bucket stores a next pointer to the next bucket for fast iteration
-
 namespace lev
 {
 	template <typename TKey, typename TValue>
@@ -20,20 +16,20 @@ namespace lev
 
 		using KeyValuePair = Pair<TKey, TValue>;
 
-		struct Bucket
+		struct Element
 		{
-			Bucket() : data(), next(nullptr), prev(nullptr) { }
-			Bucket(const KeyValuePair& p) : data(p), next(nullptr), prev(nullptr) { }
-			Bucket(Bucket&& other) noexcept : data(std::move(other.data)), next(std::move(other.next)), prev(std::move(other.prev)) { };
+			Element() : data(), next(nullptr), prev(nullptr) { }
+			Element(const KeyValuePair& p) : data(p), next(nullptr), prev(nullptr) { }
+			Element(Element&& other) noexcept : data(std::move(other.data)), next(std::move(other.next)), prev(std::move(other.prev)) { };
 			KeyValuePair data;
-			Bucket* next;
-			Bucket* prev;
+			Element* next;
+			Element* prev;
 		};
 
 		struct Iterator
 		{
 			Iterator() : m_bucket(nullptr) { }
-			Iterator(Bucket* init) : m_bucket(init) { }
+			Iterator(Element* init) : m_bucket(init) { }
 			~Iterator() = default;
 			KeyValuePair& operator * () const { return m_bucket->data; }
 			KeyValuePair* operator -> () const { return &m_bucket->data; }
@@ -42,22 +38,22 @@ namespace lev
 			bool operator == (const Iterator& other) const { return this->m_bucket == other.m_bucket; }
 			bool operator != (const Iterator& other) const { return this->m_bucket != other.m_bucket; }
 		private:
-			Bucket* m_bucket;
+			Element* m_bucket;
 		};
 
 		struct ConstIterator
 		{
-			ConstIterator() : m_bucket(nullptr) { }
-			ConstIterator(const Bucket* init) : m_bucket(init) { }
+			ConstIterator() : m_elem(nullptr) { }
+			ConstIterator(const Element* init) : m_elem(init) { }
 			~ConstIterator() = default;
-			KeyValuePair& operator * () const { return m_bucket->data; }
-			KeyValuePair* operator -> () const { return &m_bucket->data; }
-			ConstIterator& operator ++ () { if (m_bucket) { m_bucket = m_bucket->next; } return *this; }
-			ConstIterator& operator -- () { if (m_bucket) { m_bucket = m_bucket->prev; } return *this; }
-			bool operator == (const ConstIterator& other) const { return this->m_bucket == other.m_bucket; }
-			bool operator != (const ConstIterator& other) const { return this->m_bucket != other.m_bucket; }
+			KeyValuePair& operator * () const { return m_elem->data; }
+			KeyValuePair* operator -> () const { return &m_elem->data; }
+			ConstIterator& operator ++ () { if (m_elem) { m_elem = m_elem->next; } return *this; }
+			ConstIterator& operator -- () { if (m_elem) { m_elem = m_elem->prev; } return *this; }
+			bool operator == (const ConstIterator& other) const { return this->m_elem == other.m_elem; }
+			bool operator != (const ConstIterator& other) const { return this->m_elem != other.m_elem; }
 		private:
-			const Bucket* m_bucket;
+			const Element* m_elem;
 		};
 
 		HashMap();
@@ -73,14 +69,14 @@ namespace lev
 
 		bool contains(const TKey& key);
 
-		int bucket_count() const;
+		int element_count() const;
 		int capacity() const;
 		bool is_empty() const;
 
-		Bucket* first();
-		const Bucket* first() const;
-		Bucket* last();
-		const Bucket* last() const;
+		Element* first();
+		const Element* first() const;
+		Element* last();
+		const Element* last() const;
 
 		Iterator begin();
 		ConstIterator begin() const;
@@ -95,15 +91,15 @@ namespace lev
 		void realloc();
 		void realign_ptrs();
 
+		Element** m_elements;
+		int m_element_count;
 		int m_capacity;
-		Bucket** m_buckets;
-		int m_bucket_count;
 	};
 
 	template <typename TKey, typename TValue>
 	HashMap<TKey, TValue>::HashMap()
-		: m_buckets(nullptr)
-		, m_bucket_count(0)
+		: m_elements(nullptr)
+		, m_element_count(0)
 		, m_capacity(0)
 	{
 		realloc();
@@ -111,8 +107,8 @@ namespace lev
 
 	template <typename TKey, typename TValue>
 	HashMap<TKey, TValue>::HashMap(int initial_capacity)
-		: m_buckets(nullptr)
-		, m_bucket_count(0)
+		: m_elements(nullptr)
+		, m_element_count(0)
 		, m_capacity(initial_capacity)
 	{
 		realloc();
@@ -121,9 +117,9 @@ namespace lev
 	template <typename TKey, typename TValue>
 	HashMap<TKey, TValue>::~HashMap()
 	{
-		delete[] m_buckets;
+		delete[] m_elements;
 		m_capacity = 0;
-		m_bucket_count = 0;
+		m_element_count = 0;
 	}
 
 	template <typename TKey, typename TValue>
@@ -131,51 +127,47 @@ namespace lev
 	{
 		auto idx = index_of(pair.first);
 
-		Bucket* b = m_buckets[idx];
+		Element* b = m_elements[idx];
 
 		if (b)
 		{
 			while (b->next)
 				b = b->next;
 
-			b->next = new Bucket(pair);
+			b->next = new Element(pair);
 			b->next->prev = b;
 		}
 		else
 		{
-			m_buckets[idx] = new Bucket(pair);
+			m_elements[idx] = new Element(pair);
 		}
 
 		realign_ptrs();
 
-		m_bucket_count++;
+		m_element_count++;
 	}
 
 	template <typename TKey, typename TValue>
 	void HashMap<TKey, TValue>::erase(const TKey& key)
 	{
-		Bucket* b = m_buckets[index_of(key)];
+		Element* b = m_elements[index_of(key)];
 
 		while (b)
 		{
 			if (b->data.first == key)
 			{
+				if (b == m_elements[index_of(key)])
+					m_elements[index_of(key)] = b->next;
+
 				if (b->next)
 					b->next->prev = b->prev;
 
 				if (b->prev)
 					b->prev->next = b->next;
 
-				if (b == m_buckets[0])
-					m_buckets[0] = b->next;
+				::operator delete(b, sizeof(Element));
 
-				if (b == m_buckets[m_capacity-1])
-					m_buckets[m_capacity-1] = b->prev;
-
-				::operator delete(b, sizeof(Bucket));
-				m_buckets[index_of(key)] = nullptr;
-
-				m_bucket_count--;
+				m_element_count--;
 
 				realign_ptrs();
 
@@ -190,7 +182,7 @@ namespace lev
 	template <typename TKey, typename TValue>
 	void HashMap<TKey, TValue>::clear()
 	{
-		m_bucket_count = 0;
+		m_element_count = 0;
 	}
 
 	template <typename TKey, typename TValue>
@@ -198,28 +190,28 @@ namespace lev
 	{
 		int old_size = m_capacity;
 
-		if (m_bucket_count >= m_capacity)
+		if (m_element_count >= m_capacity)
 			m_capacity += MIN_CAPACITY;
-		else if (m_bucket_count < m_capacity-MIN_CAPACITY)
+		else if (m_element_count < m_capacity-MIN_CAPACITY)
 			m_capacity -= MIN_CAPACITY;
 
 		if (old_size == m_capacity)
 			return;
 
-		Bucket** new_buf = new Bucket*[m_capacity];
-		mem::set(new_buf, 0, sizeof(Bucket*) * m_capacity);
+		Element** new_buf = new Element*[m_capacity];
+		mem::set(new_buf, 0, sizeof(Element*) * m_capacity);
 
 		for (int i = 0; i < old_size; i++)
 		{
-			if (m_buckets[i])
+			if (m_elements[i])
 			{
-				int idx = index_of(m_buckets[i]->data.first);
-				new_buf[idx] = new Bucket(std::move(*m_buckets[i]));
+				int idx = index_of(m_elements[i]->data.first);
+				new_buf[idx] = new Element(std::move(*m_elements[i]));
 			}
 		}
 
-		delete[] m_buckets;
-		m_buckets = new_buf;
+		delete[] m_elements;
+		m_elements = new_buf;
 
 		realign_ptrs();
 	}
@@ -234,7 +226,7 @@ namespace lev
 
 		for (int i = 0; i < m_capacity; i++)
 		{
-			Bucket* bkt = m_buckets[i];
+			Element* bkt = m_elements[i];
 
 			if (!bkt)
 				continue;
@@ -245,9 +237,9 @@ namespace lev
 				{
 					int check_idx = (i + j + 1) % m_capacity;
 
-					if (m_buckets[check_idx])
+					if (m_elements[check_idx])
 					{
-						bkt->next = m_buckets[check_idx];
+						bkt->next = m_elements[check_idx];
 						break;
 					}
 				}
@@ -264,9 +256,9 @@ namespace lev
 					else if (check_idx >= m_capacity)
 						check_idx -= m_capacity;
 
-					if (m_buckets[check_idx])
+					if (m_elements[check_idx])
 					{
-						bkt->prev = m_buckets[check_idx];
+						bkt->prev = m_elements[check_idx];
 						break;
 					}
 				}
@@ -277,7 +269,7 @@ namespace lev
 	template <typename TKey, typename TValue>
 	TValue& HashMap<TKey, TValue>::get(const TKey& key)
 	{
-		Bucket* b = m_buckets[index_of(key)];
+		Element* b = m_elements[index_of(key)];
 
 		while (b)
 		{
@@ -293,7 +285,7 @@ namespace lev
 	template <typename TKey, typename TValue>
 	const TValue& HashMap<TKey, TValue>::get(const TKey& key) const
 	{
-		Bucket* b = m_buckets[index_of(key)];
+		Element* b = m_elements[index_of(key)];
 
 		while (b)
 		{
@@ -309,7 +301,7 @@ namespace lev
 	template <typename TKey, typename TValue>
 	bool HashMap<TKey, TValue>::contains(const TKey& key)
 	{
-		Bucket* b = m_buckets[index_of(key)];
+		Element* b = m_elements[index_of(key)];
 
 		while (b)
 		{
@@ -323,9 +315,9 @@ namespace lev
 	}
 
 	template <typename TKey, typename TValue>
-	int HashMap<TKey, TValue>::bucket_count() const
+	int HashMap<TKey, TValue>::element_count() const
 	{
-		return m_bucket_count;
+		return m_element_count;
 	}
 
 	template <typename TKey, typename TValue>
@@ -339,7 +331,7 @@ namespace lev
 	{
 		for (int i = 0; i < m_capacity; i++)
 		{
-			if (m_buckets[i])
+			if (m_elements[i])
 				return false;
 		}
 
@@ -353,48 +345,48 @@ namespace lev
 	}
 
 	template <typename TKey, typename TValue>
-	typename HashMap<TKey, TValue>::Bucket* HashMap<TKey, TValue>::first()
+	typename HashMap<TKey, TValue>::Element* HashMap<TKey, TValue>::first()
 	{
 		for (int i = 0; i < m_capacity; i++)
 		{
-			if (m_buckets[i])
-				return m_buckets[i];
+			if (m_elements[i])
+				return m_elements[i];
 		}
 
 		return nullptr;
 	}
 
 	template <typename TKey, typename TValue>
-	const typename HashMap<TKey, TValue>::Bucket* HashMap<TKey, TValue>::first() const
+	const typename HashMap<TKey, TValue>::Element* HashMap<TKey, TValue>::first() const
 	{
 		for (int i = 0; i < m_capacity; i++)
 		{
-			if (m_buckets[i])
-				return m_buckets[i];
+			if (m_elements[i])
+				return m_elements[i];
 		}
 
 		return nullptr;
 	}
 
 	template <typename TKey, typename TValue>
-	typename HashMap<TKey, TValue>::Bucket* HashMap<TKey, TValue>::last()
+	typename HashMap<TKey, TValue>::Element* HashMap<TKey, TValue>::last()
 	{
 		for (int i = m_capacity - 1; i >= 0; i--)
 		{
-			if (m_buckets[i])
-				return m_buckets[i];
+			if (m_elements[i])
+				return m_elements[i];
 		}
 
 		return nullptr;
 	}
 
 	template <typename TKey, typename TValue>
-	const typename HashMap<TKey, TValue>::Bucket* HashMap<TKey, TValue>::last() const
+	const typename HashMap<TKey, TValue>::Element* HashMap<TKey, TValue>::last() const
 	{
 		for (int i = m_capacity; i >= 0; i--)
 		{
-			if (m_buckets[i])
-				return m_buckets[i];
+			if (m_elements[i])
+				return m_elements[i];
 		}
 
 		return nullptr;

@@ -42,8 +42,8 @@ namespace lev
         T& back();
         const T& back() const;
 
-        void push_front(const T& item);
-        void push_back(const T& item);
+        T* push_front(const T& item);
+        T* push_back(const T& item);
 
         T pop_front();
         T pop_back();
@@ -280,20 +280,22 @@ namespace lev
     }
 
     template <typename T>
-    void Vector<T>::push_front(const T& item)
+    T* Vector<T>::push_front(const T& item)
     {
         resize(m_size + 1);
         mem::move(m_buf + 1, m_buf, sizeof(T) * m_size);
         new (m_buf) T(std::move(item));
         m_size++;
+		return &m_buf[0];
     }
 
     template <typename T>
-    void Vector<T>::push_back(const T& item)
+    T* Vector<T>::push_back(const T& item)
     {
         resize(m_size + 1);
         new (m_buf + m_size) T(std::move(item));
         m_size++;
+		return &m_buf[m_size - 1];
     }
 
     template <typename T>
