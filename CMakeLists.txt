@@ -50,9 +50,6 @@ add_library(${PROJECT_NAME}
 	public/lev/math/quaternion.cpp
 	public/lev/math/complex.cpp
 
-	public/lev/gui/gui_component.cpp
-	public/lev/gui/gui_constraints.cpp
-
 	private/backend/system_sdl2.cpp
 	private/backend/renderer_opengl.cpp
 	private/backend/audio_irrklang.cpp
