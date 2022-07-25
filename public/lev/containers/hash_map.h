@@ -46,8 +46,8 @@ namespace lev
 			ConstIterator() : m_elem(nullptr) { }
 			ConstIterator(const Element* init) : m_elem(init) { }
 			~ConstIterator() = default;
-			KeyValuePair& operator * () const { return m_elem->data; }
-			KeyValuePair* operator -> () const { return &m_elem->data; }
+			const KeyValuePair& operator * () const { return m_elem->data; }
+			const KeyValuePair* operator -> () const { return &m_elem->data; }
 			ConstIterator& operator ++ () { if (m_elem) { m_elem = m_elem->next; } return *this; }
 			ConstIterator& operator -- () { if (m_elem) { m_elem = m_elem->prev; } return *this; }
 			bool operator == (const ConstIterator& other) const { return this->m_elem == other.m_elem; }
