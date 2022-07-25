@@ -1,26 +1,17 @@
 #include <lev/core/util.h>
-#include <lev/containers/hash_map.h>
+#include <lev/containers/linked_list.h>
 
 using namespace lev;
 
 int main()
 {
-	HashMap<char, int> hash_map;
+	LinkedList<int> ll;
+	ll.add(4);
+	ll.add(3);
+	ll.add(1);
 
-	hash_map.insert(Pair('e', 5));
-	hash_map.insert(Pair('d', 3));
-	hash_map.insert(Pair('h', 2));
-	hash_map.insert(Pair('m', 45));
-	hash_map.erase('e');
-
-	// d h m
-
-	log::print("%d", hash_map['h']);
-
-	for (auto& p : hash_map)
-	{
-		log::print("%c : %d", p.first, p.second);
-	}
+	for (int i : ll)
+		log::print("%d", i);
 
 	return 0;
 }

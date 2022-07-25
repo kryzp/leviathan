@@ -13,6 +13,36 @@ namespace lev
 			T data;
 		};
 
+		struct Iterator
+		{
+			Iterator() : m_node(nullptr) { }
+			Iterator(Node* init) : m_node(init) { }
+			~Iterator() = default;
+			T& operator * () const { return m_node->data; }
+			T* operator -> () const { return &m_node->data; }
+			Iterator& operator ++ () { if (m_node) { m_node = m_node->next; } return *this; }
+			Iterator& operator -- () { if (m_node) { m_node = m_node->prev; } return *this; }
+			bool operator == (const Iterator& other) const { return this->m_node == other.m_node; }
+			bool operator != (const Iterator& other) const { return this->m_node != other.m_node; }
+		private:
+			Node* m_node;
+		};
+
+		struct ConstIterator
+		{
+			ConstIterator() : m_node(nullptr) { }
+			ConstIterator(const Node* init) : m_node(init) { }
+			~ConstIterator() = default;
+			const T& operator * () const { return m_node->data; }
+			const T* operator -> () const { return &m_node->data; }
+			Iterator& operator ++ () { if (m_node) { m_node = m_node->next; } return *this; }
+			Iterator& operator -- () { if (m_node) { m_node = m_node->prev; } return *this; }
+			bool operator == (const Iterator& other) const { return this->m_node == other.m_node; }
+			bool operator != (const Iterator& other) const { return this->m_node != other.m_node; }
+		private:
+			const Node* m_node;
+		};
+
 		LinkedList();
 		~LinkedList();
 
@@ -20,6 +50,11 @@ namespace lev
 		void remove(Node* node);
 		void remove(T item);
 		Node* find(T item) const;
+
+		Iterator begin();
+		ConstIterator begin() const;
+		Iterator end();
+		ConstIterator end() const;
 
 		Node* first;
 		Node* last;
@@ -106,9 +141,35 @@ namespace lev
 	typename LinkedList<T>::Node* LinkedList<T>::find(T item) const
 	{
 		for (auto* node = first; node != nullptr; node = node->next)
+		{
 			if (node->data == item)
 				return node;
-		
+		}
+
 		return nullptr;
+	}
+
+	template <typename T>
+	typename LinkedList<T>::Iterator LinkedList<T>::begin()
+	{
+		return Iterator(first);
+	}
+
+	template <typename T>
+	typename LinkedList<T>::ConstIterator LinkedList<T>::begin() const
+	{
+		return ConstIterator(first);
+	}
+
+	template <typename T>
+	typename LinkedList<T>::Iterator LinkedList<T>::end()
+	{
+		return Iterator(nullptr);
+	}
+
+	template <typename T>
+	typename LinkedList<T>::ConstIterator LinkedList<T>::end() const
+	{
+		return ConstIterator(nullptr);
 	}
 }
