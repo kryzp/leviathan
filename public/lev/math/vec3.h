@@ -23,7 +23,7 @@ namespace lev
 		};
 
 		Vec3();
-		Vec3(T x);
+		Vec3(T s);
 		Vec3(T x, T y, T z);
 		explicit Vec3(const Vec2<T>& xy);
 
@@ -66,7 +66,6 @@ namespace lev
 		Vec3<T> operator + (const Vec3& other) const;
 		Vec3<T> operator - (const Vec3& other) const;
 		Vec3<T> operator * (const Vec3& other) const;
-		Vec3<T> operator * (float scalar)      const;
 		Vec3<T> operator / (const Vec3& other) const;
 
 		Vec3<T> operator - () const;
@@ -74,9 +73,12 @@ namespace lev
 		Vec3<T>& operator += (const Vec3& other);
 		Vec3<T>& operator -= (const Vec3& other);
 		Vec3<T>& operator *= (const Vec3& other);
-		Vec3<T>& operator *= (float scalar);
 		Vec3<T>& operator /= (const Vec3& other);
 	};
+
+	// global operators
+	template <typename T> Vec3<T> operator * (const Vec3<T>& lhs, float rhs) { return Vec3<T>(lhs.x * rhs, lhs.y * rhs, lhs.z * rhs); }
+	template <typename T> Vec3<T> operator * (float lhs, const Vec3<T>& rhs) { return Vec3<T>(rhs.x * lhs, rhs.y * lhs, rhs.z * lhs); }
 
 	using Vec3F		= Vec3<float>;
 	using Vec3I		= Vec3<int>;
@@ -96,8 +98,8 @@ namespace lev
 	}
 
 	template <typename T>
-	Vec3<T>::Vec3(T x)
-		: x(x), y(x), z(x)
+	Vec3<T>::Vec3(T s)
+		: x(s), y(s), z(s)
 	{
 	}
 
@@ -196,6 +198,9 @@ namespace lev
 	{
 		float len = length();
 
+		if (len == 0.0f)
+			return zero();
+
 		return Vec3(
 			x / len,
 			y / len,
@@ -218,7 +223,6 @@ namespace lev
 	template <typename T> Vec3<T> Vec3<T>::operator + (const Vec3& other) const { return Vec3(this->x + other.x, this->y + other.y, this->z + other.z); }
 	template <typename T> Vec3<T> Vec3<T>::operator - (const Vec3& other) const { return Vec3(this->x - other.x, this->y - other.y, this->z - other.z); }
 	template <typename T> Vec3<T> Vec3<T>::operator * (const Vec3& other) const { return Vec3(this->x * other.x, this->y * other.y, this->z * other.z); }
-	template <typename T> Vec3<T> Vec3<T>::operator * (float scalar)      const { return Vec3(this->x * scalar,  this->y * scalar,  this->z * scalar ); }
 	template <typename T> Vec3<T> Vec3<T>::operator / (const Vec3& other) const { return Vec3(this->x / other.x, this->y / other.y, this->z / other.z); }
 
 	template <typename T> Vec3<T> Vec3<T>::operator - () const { return Vec3(-this->x, -this->y, -this->z); }
@@ -226,7 +230,6 @@ namespace lev
 	template <typename T> Vec3<T>& Vec3<T>::operator += (const Vec3& other) { this->x += other.x; this->y += other.y; this->z += other.z; return *this; }
 	template <typename T> Vec3<T>& Vec3<T>::operator -= (const Vec3& other) { this->x -= other.x; this->y -= other.y; this->z -= other.z; return *this; }
 	template <typename T> Vec3<T>& Vec3<T>::operator *= (const Vec3& other) { this->x *= other.x; this->y *= other.y; this->z *= other.z; return *this; }
-	template <typename T> Vec3<T>& Vec3<T>::operator *= (float scalar)      { this->x *= scalar;  this->y *= scalar;  this->z *= scalar;  return *this; }
 	template <typename T> Vec3<T>& Vec3<T>::operator /= (const Vec3& other) { this->x /= other.x; this->y /= other.y; this->z /= other.z; return *this; }
 
 	template <typename T> const Vec3<T>& Vec3<T>::unit()		{ static const Vec3 UNIT		= Vec3( 1,  1,  1); return UNIT;		}

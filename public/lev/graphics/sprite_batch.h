@@ -78,12 +78,14 @@ namespace lev
 		void push_quad_col(const Quad& quad, const Colour& c0, const Colour& c1, const Colour& c2, const Colour& c3);
 
 		void push_triangle(const Triangle& tri, const Colour& colour);
+		void push_triangle_outline(const Triangle& tri, float thickness, const Colour& colour);
 		void push_triangle_col(const Triangle& tri, const Colour& c0, const Colour& c1, const Colour& c2);
 
 		void push_string(const char* str, const Ref<Font>& font, const Colour& colour);
 		void push_string(const char* str, const Ref<Font>& font, const std::function<Vec2F(Font::Character,int)>& offset_fn, const Colour& colour);
 
 		void push_circle(const Circle& circle, const Colour& colour, u32 accuracy = 40U);
+		void push_circle_outline(const Circle& circle, float thickness, const Colour& colour, u32 accuracy = 40U);
 		void push_circle_col(const Circle& circle, const Colour& inner, const Colour& outer, u32 accuracy = 40U);
 
 		void push_line(const Line& line, float thickness, const Colour& colour);

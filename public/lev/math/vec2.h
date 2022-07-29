@@ -21,7 +21,7 @@ namespace lev
 		};
 
 		Vec2();
-		Vec2(T x);
+		Vec2(T s);
 		Vec2(T x, T y);
 
 		// enable implicit casting to other vectors
@@ -63,7 +63,6 @@ namespace lev
 		Vec2 operator + (const Vec2& other) const;
 		Vec2 operator - (const Vec2& other) const;
 		Vec2 operator * (const Vec2& other) const;
-		Vec2 operator * (float scalar)      const;
 		Vec2 operator / (const Vec2& other) const;
 
 		Vec2 operator - () const;
@@ -71,9 +70,12 @@ namespace lev
 		Vec2& operator += (const Vec2& other);
 		Vec2& operator -= (const Vec2& other);
 		Vec2& operator *= (const Vec2& other);
-		Vec2& operator *= (float scalar);
 		Vec2& operator /= (const Vec2& other);
 	};
+
+	// global operators
+	template <typename T> Vec2<T> operator * (const Vec2<T>& lhs, float rhs) { return Vec2<T>(lhs.x * rhs, lhs.y * rhs); }
+	template <typename T> Vec2<T> operator * (float lhs, const Vec2<T>& rhs) { return Vec2<T>(rhs.x * lhs, rhs.y * lhs); }
 
 	using Vec2F		= Vec2<float>;
 	using Vec2I		= Vec2<int>;
@@ -91,13 +93,13 @@ namespace lev
 		: x(0), y(0)
 	{
 	}
-	
+
 	template <typename T>
-	Vec2<T>::Vec2(T x)
-		: x(x), y(x)
+	Vec2<T>::Vec2(T s)
+		: x(s), y(s)
 	{
 	}
-	
+
 	template <typename T>
 	Vec2<T>::Vec2(T x, T y)
 		: x(x), y(y)
@@ -193,6 +195,9 @@ namespace lev
 	{
 		float len = length();
 
+		if (len == 0.0f)
+			return zero();
+
 		return Vec2(
 			x / len,
 			y / len
@@ -212,13 +217,11 @@ namespace lev
 	template <typename T> Vec2<T> Vec2<T>::operator - (const Vec2& other) const { return Vec2( this->x - other.x,  this->y - other.y); }
 	template <typename T> Vec2<T> Vec2<T>::operator - ()                  const { return Vec2(-this->x,           -this->y          ); }
 	template <typename T> Vec2<T> Vec2<T>::operator * (const Vec2& other) const { return Vec2( this->x * other.x,  this->y * other.y); }
-	template <typename T> Vec2<T> Vec2<T>::operator * (float scalar)      const { return Vec2( this->x * scalar,   this->y * scalar ); }
 	template <typename T> Vec2<T> Vec2<T>::operator / (const Vec2& other) const { return Vec2( this->x / other.x,  this->y / other.y); }
 
 	template <typename T> Vec2<T>& Vec2<T>::operator += (const Vec2& other) { this->x += other.x; this->y += other.y; return *this; }
 	template <typename T> Vec2<T>& Vec2<T>::operator -= (const Vec2& other) { this->x -= other.x; this->y -= other.y; return *this; }
 	template <typename T> Vec2<T>& Vec2<T>::operator *= (const Vec2& other) { this->x *= other.x; this->y *= other.y; return *this; }
-	template <typename T> Vec2<T>& Vec2<T>::operator *= (float scalar)      { this->x *= scalar;  this->y *= scalar;  return *this; }
 	template <typename T> Vec2<T>& Vec2<T>::operator /= (const Vec2& other) { this->x /= other.x; this->y /= other.y; return *this; }
 
 	template <typename T> const Vec2<T>& Vec2<T>::unit()	{ static const Vec2 UNIT	= Vec2( 1,  1); return UNIT;	}

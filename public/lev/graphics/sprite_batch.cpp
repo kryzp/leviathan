@@ -515,6 +515,39 @@ void SpriteBatch::push_triangle(const Triangle& tri, const Colour& colour)
 	push_triangle_col(tri, colour, colour, colour);
 }
 
+void SpriteBatch::push_triangle_outline(const lev::Triangle& tri, float thickness, const lev::Colour& colour)
+{
+	const Vec2F& a1 = tri.a;
+	const Vec2F& b1 = tri.b;
+	const Vec2F& c1 = tri.c;
+
+	const Vec2F& centre = tri.centre();
+
+	const Vec2F ab = (b1 - a1).normalized();
+	const Vec2F bc = (c1 - b1).normalized();
+	const Vec2F ca = (a1 - c1).normalized();
+
+	const Vec2F a2 = a1 + (thickness * ab);
+	const Vec2F b2 = b1 + (thickness * bc);
+	const Vec2F c2 = c1 + (thickness * ca);
+
+	const Vec2F a3 = a1 - (thickness * ca);
+	const Vec2F b3 = b1 - (thickness * ab);
+	const Vec2F c3 = c1 - (thickness * bc);
+
+	push_colour_mode(COLOUR_MODE_SILHOUETTE);
+
+	Quad quad1 = Quad(a1, b1, b2, a3);
+	Quad quad2 = Quad(b1, c1, c2, b3);
+	Quad quad3 = Quad(c1, a1, a2, c3);
+
+	push_quad(quad1, Colour::red());
+	push_quad(quad2, Colour::green());
+	push_quad(quad3, Colour::blue());
+
+	pop_colour_mode();
+}
+
 void SpriteBatch::push_triangle_col(const Triangle& tri, const Colour& c0, const Colour& c1, const Colour& c2)
 {
 	Vertex vertices[3];
@@ -584,7 +617,7 @@ void SpriteBatch::push_circle(const Circle& circle, const Colour& colour, u32 ac
 {
 	push_colour_mode(COLOUR_MODE_SILHOUETTE);
 
-	float dtheta = calc::TAU / accuracy;
+	float dtheta = calc::TAU / (float)accuracy;
 
 	for (float theta = 0.0f; theta < calc::TAU; theta += dtheta)
 	{
@@ -599,11 +632,31 @@ void SpriteBatch::push_circle(const Circle& circle, const Colour& colour, u32 ac
 	pop_colour_mode();
 }
 
+void SpriteBatch::push_circle_outline(const lev::Circle& circle, float thickness, const lev::Colour& colour, u32 accuracy)
+{
+	push_colour_mode(COLOUR_MODE_SILHOUETTE);
+
+	float dtheta = calc::TAU / (float)accuracy;
+
+	for (float theta = 0.0f; theta < calc::TAU; theta += dtheta)
+	{
+		Quad quad;
+		quad.a = Vec2F::from_angle(theta, circle.radius) + circle.position;
+		quad.b = Vec2F::from_angle(theta + dtheta, circle.radius) + circle.position;
+		quad.c = Vec2F::from_angle(theta, circle.radius - thickness) + circle.position;
+		quad.d = Vec2F::from_angle(theta + dtheta, circle.radius - thickness) + circle.position;
+
+		push_quad(quad, colour);
+	}
+
+	pop_colour_mode();
+}
+
 void SpriteBatch::push_circle_col(const Circle& circle, const Colour& inner, const Colour& outer, u32 accuracy)
 {
 	push_colour_mode(COLOUR_MODE_SILHOUETTE);
 
-	float dtheta = calc::TAU / accuracy;
+	float dtheta = calc::TAU / (float)accuracy;
 
 	for (float theta = 0.0f; theta < calc::TAU; theta += dtheta)
 	{
@@ -638,4 +691,3 @@ void SpriteBatch::push_line_col(const Line& line, float thickness, const Colour&
 
 	pop_colour_mode();
 }
-

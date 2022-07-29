@@ -15,3 +15,8 @@ Triangle::Triangle(const Vec2F& a, const Vec2F& b, const Vec2F& c)
 	, c(c)
 {
 }
+
+Vec2F Triangle::centre() const
+{
+	return (a + b + c) / 3.0f;
+}

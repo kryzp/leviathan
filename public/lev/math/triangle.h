@@ -12,5 +12,7 @@ namespace lev
 
 		Triangle();
 		Triangle(const Vec2F& a, const Vec2F& b, const Vec2F& c);
+
+		Vec2F centre() const;
 	};
 }
