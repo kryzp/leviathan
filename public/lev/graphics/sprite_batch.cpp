@@ -541,9 +541,9 @@ void SpriteBatch::push_triangle_outline(const lev::Triangle& tri, float thicknes
 	Quad quad2 = Quad(b1, c1, c2, b3);
 	Quad quad3 = Quad(c1, a1, a2, c3);
 
-	push_quad(quad1, Colour::red());
-	push_quad(quad2, Colour::green());
-	push_quad(quad3, Colour::blue());
+	push_quad(quad1, colour);
+	push_quad(quad2, colour);
+	push_quad(quad3, colour);
 
 	pop_colour_mode();
 }
