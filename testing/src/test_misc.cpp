@@ -92,9 +92,9 @@ int main()
 				.wait_compute();
 
 			compute_shader_part->use()
-				.set("u_delta_time", time::delta)
-				.set("u_mouse_pos", Input::inst()->mouse_draw_pos())
-				.set("u_mouse_pressed", Input::inst()->down_mb(MB_LEFT))
+				.set_float("u_delta_time", time::delta)
+				.set_vec2f("u_mouse_pos", Input::inst()->mouse_draw_pos())
+				.set_bool("u_mouse_pressed", Input::inst()->down_mb(MB_LEFT))
 				.set_buffer(particle_buf, 1)
 				.dispatch_compute(PARTICLE_COUNT, 1, 1)
 				.wait_compute();

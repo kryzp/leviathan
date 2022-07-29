@@ -1,6 +1,7 @@
 #include <lev/core/app.h>
 #include <lev/assets/asset_mgr.h>
 #include <lev/graphics/sprite_batch.h>
+#include <lev/input/input.h>
 #include <lev/math/rand.h>
 #include <lev/math/circle.h>
 #include <lev/math/vec2.h>
@@ -53,7 +54,21 @@ static void init()
 static void update()
 {
 	for (auto& b : g_balls)
+	{
 		b.shape.position += b.velocity * lev::time::delta;
+
+		if (b.shape.position.x <= 0.0f)
+			b.shape.position.x = WINDOW_WIDTH;
+
+		if (b.shape.position.x >= WINDOW_WIDTH)
+			b.shape.position.x = 0.0f;
+
+		if (b.shape.position.y <= 0.0f)
+			b.shape.position.y = WINDOW_HEIGHT;
+
+		if (b.shape.position.y >= WINDOW_HEIGHT)
+			b.shape.position.y = 0.0f;
+	}
 }
 
 static void render()
@@ -61,6 +76,8 @@ static void render()
 	// render to target
 	{
 		g_target->clear();
+
+		g_batch.push_circle_col(lev::Circle(lev::Input::inst()->mouse_position(), 100.0f), lev::Colour::white(), lev::Colour::empty());
 
 		for (auto& b : g_balls)
 			g_batch.push_circle_col(b.shape, lev::Colour::white(), lev::Colour::empty());
@@ -74,9 +91,6 @@ static void render()
 		g_batch.set_shader(g_metaball_shader);
 		g_batch.push_texture(g_target->attachment(0));
 		g_batch.reset_shader();
-
-		g_batch.push_line_col(lev::Line(lev::Vec2F(50, 50), 45.0f * lev::calc::DEG2RAD, 50.0f), 10.0f,  lev::Colour::red(), lev::Colour::blue());
-
 		g_batch.render();
 	}
 }

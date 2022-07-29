@@ -646,49 +646,49 @@ public:
 		return m_id;
 	}
 
-	Shader& set(const char* name, bool value) override
+	Shader& set_bool(const char* name, bool value) override
 	{
 		glUniform1i(get_uniform_location(name), value);
 		return *this;
 	}
 
-	Shader& set(const char* name, int value) override
+	Shader& set_int(const char* name, int value) override
 	{
 		glUniform1i(get_uniform_location(name), value);
 		return *this;
 	}
 
-	Shader& set(const char* name, float value) override
+	Shader& set_float(const char* name, float value) override
 	{
 		glUniform1f(get_uniform_location(name), value);
 		return *this;
 	}
 
-	Shader& set(const char* name, const Vec2I& value) override
+	Shader& set_vec2i(const char* name, const Vec2I& value) override
 	{
 		glUniform2i(get_uniform_location(name), value.x, value.y);
 		return *this;
 	}
 
-	Shader& set(const char* name, const Vec2F& value) override
+	Shader& set_vec2f(const char* name, const Vec2F& value) override
 	{
 		glUniform2f(get_uniform_location(name), value.x, value.y);
 		return *this;
 	}
 
-	Shader& set(const char* name, const Vec3I& value) override
+	Shader& set_vec3i(const char* name, const Vec3I& value) override
 	{
 		glUniform3i(get_uniform_location(name), value.x, value.y, value.z);
 		return *this;
 	}
 
-	Shader& set(const char* name, const Vec3F& value) override
+	Shader& set_vec3f(const char* name, const Vec3F& value) override
 	{
 		glUniform3f(get_uniform_location(name), value.x, value.y, value.z);
 		return *this;
 	}
 
-	Shader& set(const char* name, const Colour& value) override
+	Shader& set_colour(const char* name, const Colour& value) override
 	{
 		glUniform4f(get_uniform_location(name),
 			static_cast<float>(value.r) / 255.0f,
@@ -699,13 +699,19 @@ public:
 		return *this;
 	}
 
-	Shader& set(const char* name, const Mat3x2& value) override
+	Shader& set_mat3x2(const char* name, const Mat3x2& value) override
 	{
 		glUniformMatrix3x2fv(get_uniform_location(name), 1, GL_FALSE, value.value_ptr());
 		return *this;
 	}
 
-	Shader& set(const char* name, const Mat4x4& value) override
+	Shader& set_mat4x3(const char* name, const Mat4x3& value) override
+	{
+		glUniformMatrix4x3fv(get_uniform_location(name), 1, GL_FALSE, value.value_ptr());
+		return *this;
+	}
+
+	Shader& set_mat4x4(const char* name, const Mat4x4& value) override
 	{
 		glUniformMatrix4fv(get_uniform_location(name), 1, GL_FALSE, value.value_ptr());
 		return *this;
@@ -1042,7 +1048,7 @@ public:
 
 			texture->bind(i);
 			texture->update(sampler);
-			shader->set(UNIFORM_TEXTURE_NAMES[i], i);
+			shader->set_int(UNIFORM_TEXTURE_NAMES[i], i);
 		}
 
 		// depth stencil

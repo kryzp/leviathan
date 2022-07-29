@@ -7,6 +7,7 @@
 #include <lev/math/vec3.h>
 #include <lev/math/colour.h>
 #include <lev/math/mat3x2.h>
+#include <lev/math/mat4x3.h>
 #include <lev/math/mat4x4.h>
 #include <lev/graphics/texture.h>
 
@@ -99,15 +100,16 @@ namespace lev
 
 		virtual Shader& set_buffer(const Ref<ShaderBuffer>& buf, int binding) = 0;
 
-		virtual Shader& set(const char* name, bool value)          = 0;
-		virtual Shader& set(const char* name, int value)           = 0;
-		virtual Shader& set(const char* name, float value)         = 0;
-		virtual Shader& set(const char* name, const Vec2I& value)  = 0;
-		virtual Shader& set(const char* name, const Vec2F& value)  = 0;
-		virtual Shader& set(const char* name, const Vec3I& value)  = 0;
-		virtual Shader& set(const char* name, const Vec3F& value)  = 0;
-		virtual Shader& set(const char* name, const Colour& value) = 0;
-		virtual Shader& set(const char* name, const Mat3x2& value) = 0;
-		virtual Shader& set(const char* name, const Mat4x4& value) = 0;
+		virtual Shader& set_bool(const char* name, bool value)            = 0;
+		virtual Shader& set_int(const char* name, int value)              = 0;
+		virtual Shader& set_float(const char* name, float value)          = 0;
+		virtual Shader& set_vec2i(const char* name, const Vec2I& value)   = 0;
+		virtual Shader& set_vec2f(const char* name, const Vec2F& value)   = 0;
+		virtual Shader& set_vec3i(const char* name, const Vec3I& value)   = 0;
+		virtual Shader& set_vec3f(const char* name, const Vec3F& value)   = 0;
+		virtual Shader& set_colour(const char* name, const Colour& value) = 0;
+		virtual Shader& set_mat3x2(const char* name, const Mat3x2& value) = 0;
+		virtual Shader& set_mat4x3(const char* name, const Mat4x3& value) = 0;
+		virtual Shader& set_mat4x4(const char* name, const Mat4x4& value) = 0;
 	};
 }

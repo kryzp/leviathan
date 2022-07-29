@@ -181,8 +181,8 @@ void SpriteBatch::render_batch(RenderPass& pass, const RenderBatch& b, const Mat
 		pass.material->set_sampler(b.sampler, 0);
 
 		pass.material->shader()->use()
-			.set(Shader::PROJECTION, proj)
-			.set(Shader::RESOLUTION, Vec2I(res_x, res_y));
+			.set_mat4x4(Shader::PROJECTION, proj)
+			.set_vec2i(Shader::RESOLUTION, Vec2I(res_x, res_y));
 	}
 
 	if (pass.viewport == RectI::zero())
