@@ -45,7 +45,7 @@ float calc::pow(float x, float e)
 
 float calc::exp(float x)
 {
-	return ::powf(calc::E, x);
+	return ::expf(x);
 }
 
 float calc::sigmoid(float x)
@@ -139,7 +139,9 @@ float calc::lerp(float from, float to, float amount)
 
 float calc::lerp_t(float from, float to, float amount, float t)
 {
-	return to + (from - to) * ::powf(1.0f - amount, t);
+	// i cant believe i just manually did 2 pages of work using the laplace transform to solve the equation
+	// L'(t) = amount * (to - L(t))
+	return (::expf(-1.0f * amount * t) * (from - to)) + to;
 }
 
 float calc::spring(float from, float to, float bounciness, float tension, float& intermediate)
