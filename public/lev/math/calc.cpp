@@ -141,7 +141,8 @@ float calc::lerp_t(float from, float to, float amount, float t)
 {
 	// i cant believe i just manually did 2 pages of work using the laplace transform to solve the equation
 	// L'(t) = amount * (to - L(t))
-	return (::expf(-1.0f * amount * t) * (from - to)) + to;
+	// also amount has to be normalized [0, 1] by doing amount = amount/(1-amount)
+	return (::expf(-1.0f * amount * t / (1.0f - amount)) * (from - to)) + to;
 }
 
 float calc::spring(float from, float to, float bounciness, float tension, float& intermediate)
